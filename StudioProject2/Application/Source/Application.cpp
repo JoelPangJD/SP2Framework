@@ -14,6 +14,7 @@
 #include "SceneMain.h"
 #include "SceneMuseum.h"
 #include "SceneChangi.h"
+#include "SceneMarinaBay.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
@@ -139,10 +140,11 @@ void Application::Run()
 	Scene* scene = new SceneMain();
 	Scene* scene1 = new SceneMuseum();
 	Scene* scene2 = new SceneChangi();
+	Scene* scene3 = new SceneMarinaBay();
 	scene->Init();
 	scene1->Init();
 	scene2->Init();
-	//scene2->Init();
+	scene3->Init();
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
@@ -151,6 +153,8 @@ void Application::Run()
 			scene = scene1;
 		else if (IsKeyPressed(VK_F2))
 			scene = scene2;
+		else if (IsKeyPressed(VK_F3))
+			scene = scene3;
 		scene->Update(m_timer.getElapsedTime());
 		scene->Render();
 		//Swap buffers
@@ -163,6 +167,7 @@ void Application::Run()
 	scene->Exit();
 	scene1->Exit();
 	scene2->Exit();
+	scene3->Exit();
 	delete scene;
 
 }
