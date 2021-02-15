@@ -388,7 +388,7 @@ void SceneMain::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int size
 	modelStack.PushMatrix();
 	modelStack.LoadIdentity();
 	modelStack.Translate(x, y, 0);
-	modelStack.Scale(20, 20, 0);
+	modelStack.Scale(sizex, sizey, 0);
 	RenderMesh(mesh, false); //UI should not have light
 	projectionStack.PopMatrix();
 	viewStack.PopMatrix();
