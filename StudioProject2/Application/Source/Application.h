@@ -27,6 +27,8 @@ private:
 
 	//Declare a window object
 	StopWatch m_timer;
+	bool firstMouse;
+	float lastX, lastY;
 };
 
 #endif
