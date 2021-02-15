@@ -77,3 +77,8 @@ bool Entity::circlecollider(Vector3 camera)
 {
 	return true;
 }
+
+bool Entity::boxcollider(Vector3 camera)
+{
+	return false;
+}

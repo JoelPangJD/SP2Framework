@@ -9,7 +9,11 @@ private:
 	Vector3 position;
 	float scale;
 	float angle;
-
+	enum TYPE
+	{
+		TYPE_COLLISION,
+		TYPE_INTERACTION,
+	};
 public:
 	Entity();
 	Entity(Vector3 position, float scale, float angle);
@@ -24,6 +28,6 @@ public:
 	void moveentity(int direction, float speed, double dt);
 
 	bool circlecollider(Vector3 camera);
-
+	bool boxcollider(Vector3 camera);
 };
 
