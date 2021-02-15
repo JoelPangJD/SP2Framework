@@ -44,50 +44,36 @@ void SceneMain::Init()
 
 	//=============================================================================================
 
-	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("axis", 1, 1, 1);
+	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
+	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.0f);
+	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.5f, 0.2f, 0.0f), 1);
+	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(0.5, 0.5, 0.5), 10, 10, 10);
+	meshList[GEO_SPHERE]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[GEO_SPHERE]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
+	meshList[GEO_SPHERE]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
+	meshList[GEO_SPHERE]->material.kShininess = 1.f;
+	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("Lightball", Color(1, 1, 1), 10, 10, 10);
 
-	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", 1, 30, 30, Color(1, 1, 1));
 
-	meshList[GEO_HEMISPHERE] = MeshBuilder::GenerateHemisphere("hemisphere", 1, 30, 30, Color(1, 1, 1));
 
-	meshList[GEO_CYLINDER] = MeshBuilder::GenerateCylinder("cylinder", 1, 1, 30, 10, Color(1, 1, 1));
-
-	meshList[GEO_CONE] = MeshBuilder::GenerateCone("cone", 1, 20, 30, Color(1, 1, 1));
-
-	meshList[GEO_PYRAMID] = MeshBuilder::GenerateCone("pyramid", 1, 2, 3, Color(1, 1, 1));
-
-	meshList[GEO_TORUS] = MeshBuilder::GenerateTorus("torus", 30, 30, 0.3, 0.15, Color(1, 1, 1));
-
-	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", 1, 1, 1, Color(0.5, 0.5, 0.5));
-
-	meshList[GEO_TRUNCATEDHEMISPHERE] = MeshBuilder::GenerateTruncatedHemisphere("hemisphere", 1, 10, 30, 6, Color(1, 1, 1));
-
-	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("light", 1, 30, 30, Color(1, 1, 1));
-	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("fishheld", 1, 1, Color(1, 1, 1),1);
-	meshList[GEO_QUAD]->textureID = LoadTGA("Image//fishheld.tga");
+	meshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
+	meshList[GEO_INVENTORY]->textureID = LoadTGA("Image//testing.tga");
 
 
 	//Skybox quads
-	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", 1, 1, Color(1, 1, 1),1);
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//front.tga");
-	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", 1, 1, Color(1, 1, 1),1);
-	meshList[GEO_BACK]->textureID = LoadTGA("Image//back.tga");
-	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", 1, 1, Color(1, 1, 1),1);
-	meshList[GEO_TOP]->textureID = LoadTGA("Image//top.tga");
-	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", 1, 1, Color(1, 1, 1),1);
-	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//bottom.tga");
-	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", 1, 1, Color(1, 1, 1),1);
+	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.0f);
 	meshList[GEO_LEFT]->textureID = LoadTGA("Image//left.tga");
-	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", 1, 1, Color(1, 1, 1),1);
+	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.0f);
 	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//right.tga");
+	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.0f);
+	meshList[GEO_FRONT]->textureID = LoadTGA("Image//front.tga");
+	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.0f);
+	meshList[GEO_BACK]->textureID = LoadTGA("Image//back.tga");
+	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.0f);
+	meshList[GEO_TOP]->textureID = LoadTGA("Image//top.tga");
+	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
+	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//bottom.tga");
 
-	////OBJs
-	//meshList[GEO_ROCK1] = MeshBuilder::GenerateOBJMTL("rock1", "OBJ//rock1.obj", "OBJ//rock1.mtl");
-	//meshList[GEO_ROCK1]->textureID = LoadTGA("Image//rock1.tga");
-
-	//========================================================================
-		//Load vertex and fragment shaders
-		//m_programID = LoadShaders("Shader//Shading.vertexshader", "Shader//LightSource.fragmentshader");
 
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 	m_parameters[U_COLOR_TEXTURE_ENABLED] = glGetUniformLocation(m_programID, "colorTextureEnabled");
@@ -401,9 +387,8 @@ void SceneMain::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int size
 	viewStack.LoadIdentity(); //No need camera for ortho mode
 	modelStack.PushMatrix();
 	modelStack.LoadIdentity();
-	//to do: scale and translate accordingly
-	modelStack.Translate(x, y, 0); //translate is last
-	modelStack.Scale(sizex, sizey, sizex); // scale is first
+	modelStack.Translate(x, y, 0);
+	modelStack.Scale(20, 20, 0);
 	RenderMesh(mesh, false); //UI should not have light
 	projectionStack.PopMatrix();
 	viewStack.PopMatrix();
@@ -462,6 +447,9 @@ void SceneMain::Render()
 		Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
 		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
 	}
+
+	RenderMeshOnScreen(meshList[GEO_INVENTORY], 40, 20, 30, 30);
+
 	//Skybox
 	RenderSkybox();
 
@@ -469,13 +457,9 @@ void SceneMain::Render()
 	//modelStack.LoadIdentity();
 
 	modelStack.PushMatrix();
-
 	modelStack.PushMatrix();
 	RenderMesh(meshList[GEO_AXES], false);
 	modelStack.PopMatrix();
-
-
-
 	modelStack.PopMatrix();
 
 	RenderUI();

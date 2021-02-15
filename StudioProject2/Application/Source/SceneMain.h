@@ -32,6 +32,7 @@ class SceneMain : public Scene
 		GEO_BOTTOM,
 		GEO_FRONT,
 		GEO_BACK,
+		GEO_INVENTORY,
 		GEO_TEXT,
 		NUM_GEOMETRY,
 	};
