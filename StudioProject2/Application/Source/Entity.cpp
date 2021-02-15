@@ -94,8 +94,10 @@ bool Entity::circlecollider(Vector3 camera)
 }
 
 bool Entity::boxcollider(Vector3 camera)
-{
-	if (camera.x < position.x + scale * 0.5 && camera.x > position.x - scale * 0.5
-		&& camera.y < position.y + scale * 0.5 && camera.y > position.y - scale * 0.5)
+{	//checks if entity is within the camera's Vector3 passed in
+	if (camera.x < position.x + xwidth * 0.5 && camera.x > position.x - xwidth * 0.5
+		&& camera.y < position.y + height * 0.5 && camera.y > position.y - height * 0.5
+		&& camera.z < position.z + zwidth * 0.5 && camera.z > position.z - zwidth * 0.5)
+		return true;
 	return false;
 }

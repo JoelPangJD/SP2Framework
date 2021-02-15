@@ -459,9 +459,8 @@ void SceneMain::Render()
 	//========================================================
 	//modelStack.LoadIdentity();
 
-	modelStack.PushMatrix();
 	RenderMesh(meshList[GEO_AXES], false);
-	modelStack.PopMatrix();
+	
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();
 }
