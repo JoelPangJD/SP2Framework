@@ -14,9 +14,6 @@ Entity::Entity(Vector3 position, float scale, float angle, float radius)
 	this->scale = scale;
 	this->angle = angle;
 	this->radius = radius;
-	this->height = height;
-	xwidth = width;
-	zwidth = width;
 }
 
 Entity::Entity(Vector3 position, float scale, float angle, float height, float width)
@@ -105,6 +102,7 @@ bool Entity::spherecollider(Vector3 position)
 	//distance between two points ( ( (x1-x2)^2 + (z1-z2)^2 )*0.5 )^2 + (y1-y2)^2 )^0.5) 
 	if(pow(pow(pow(pow((this->position.x - position.x), 2.f) + pow((this->position.z - position.z), 2.f), 0.5f),2.f) + pow((this-> position.y - position.y), 2.f),0.5f) < radius)
 		return true;
+	return false;
 }
 
 bool Entity::boxcollider(Vector3 camera)
