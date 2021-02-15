@@ -88,6 +88,10 @@ http://creativecommons.org/licenses/by/3.0/
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//newdown.tga");
 
+	//Ground mesh
+	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.0f);
+	meshList[GEO_QUAD]->textureID = LoadTGA("Image//Wood.tga");
+
 
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 	m_parameters[U_COLOR_TEXTURE_ENABLED] = glGetUniformLocation(m_programID, "colorTextureEnabled");
@@ -296,7 +300,6 @@ void SceneMuseum::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Translate(0, -499, 0);
 	modelStack.Rotate(-90, 1, 0, 0);
-	modelStack.Rotate(90, 0, 0, 1);
 	modelStack.Scale(1000, 1000, 1000);
 	RenderMesh(meshList[GEO_BOTTOM], false);
 	modelStack.PopMatrix();
@@ -304,7 +307,6 @@ void SceneMuseum::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 499, 0);
 	modelStack.Rotate(90, 1, 0, 0);
-	modelStack.Rotate(-90, 0, 0, 1);
 	modelStack.Scale(1000, 1000, 1000);
 	RenderMesh(meshList[GEO_TOP], false);
 	modelStack.PopMatrix();
@@ -488,6 +490,14 @@ void SceneMuseum::Render()
 	modelStack.PushMatrix();
 	RenderMesh(meshList[GEO_AXES], false);
 	modelStack.PopMatrix();
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, -5, 0);
+	modelStack.Rotate(90, 1, 0, 0);
+	modelStack.Rotate(180, 1, 0, 0);
+	modelStack.Scale(1000, 1000, 1000);
+	RenderMesh(meshList[GEO_QUAD], false);
 	modelStack.PopMatrix();
 
 	RenderUI();
