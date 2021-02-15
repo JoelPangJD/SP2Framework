@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Camera3.cpp" />
     <ClCompile Include="Source\Entity.cpp" />
@@ -160,6 +161,7 @@
     <ClCompile Include="Source\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Inventory.h" />
     <ClInclude Include="Source\Application.h" />
     <ClInclude Include="Source\Camera3.h" />
     <ClInclude Include="Source\Entity.h" />
