@@ -49,6 +49,16 @@ void Entity::setangle(float angle)
 		angle += 360;
 }
 
+Entity::TYPE Entity::gettype()
+{
+	return type;
+}
+
+void Entity::settype(TYPE typeofhitbox)
+{
+	type = typeofhitbox;
+}
+
 
 void Entity::moveentity(int direction, float speed, double dt)
 {

@@ -14,6 +14,7 @@ private:
 		TYPE_COLLISION,
 		TYPE_INTERACTION,
 	};
+	TYPE type;
 public:
 	Entity();
 	Entity(Vector3 position, float scale, float angle);
@@ -24,6 +25,8 @@ public:
 	void setscale(float x);
 	float getangle();
 	void setangle(float x);
+	TYPE gettype();
+	void settype(TYPE typeofhitbox);
 
 	void moveentity(int direction, float speed, double dt);
 
