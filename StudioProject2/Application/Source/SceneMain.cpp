@@ -88,11 +88,7 @@ void SceneMain::Init()
 	//========================================================================
 		//Load vertex and fragment shaders
 		//m_programID = LoadShaders("Shader//Shading.vertexshader", "Shader//LightSource.fragmentshader");
-<<<<<<< HEAD
-	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Texture.fragmentshader");
-	//m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Blending.fragmentshader");
-=======
->>>>>>> 93237f43960ab81f50a31afc4402775bfa0fe0b8
+
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 	m_parameters[U_COLOR_TEXTURE_ENABLED] = glGetUniformLocation(m_programID, "colorTextureEnabled");
 	m_parameters[U_COLOR_TEXTURE] = glGetUniformLocation(m_programID, "colorTexture");
