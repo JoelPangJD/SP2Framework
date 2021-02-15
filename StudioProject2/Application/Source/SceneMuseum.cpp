@@ -74,18 +74,19 @@ License
 This work is licensed under a Creative Commons Attribution 3.0 Unported License.
 http://creativecommons.org/licenses/by/3.0/
 */
+	//skybox
 	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.0f);
-	meshList[GEO_LEFT]->textureID = LoadTGA("Image//leftward.tga");
+	meshList[GEO_LEFT]->textureID = LoadTGA("Image//newleft.tga");
 	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.0f);
-	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//rightward.tga");
+	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//newright.tga");
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.0f);
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//forward.tga");
+	meshList[GEO_FRONT]->textureID = LoadTGA("Image//newforward.tga");
 	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.0f);
-	meshList[GEO_BACK]->textureID = LoadTGA("Image//backward.tga");
+	meshList[GEO_BACK]->textureID = LoadTGA("Image/newbackward.tga");
 	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.0f);
-	meshList[GEO_TOP]->textureID = LoadTGA("Image//up.tga");
+	meshList[GEO_TOP]->textureID = LoadTGA("Image//upward.tga");
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
-	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//down.tga");
+	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//newdown.tga");
 
 
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
@@ -264,19 +265,20 @@ void SceneMuseum::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Translate(camera.position.x, camera.position.y + 200, camera.position.z);
 
-	/*~~~~~~~~~~~~~~~~
+	/*Author
+		======
 
-		Skybox Textures
-		SceneMuseum
+		This is the work of Emil Persson, aka Humus.
+		http://www.humus.name
 
-		~~~~~~~~~~~~~~~~
 
-		Author
-		~~~~~~
 
-		TH3RoP0D - X
+	License
+		====== =
 
-		~~~~~~~~~~~~~~~~*/
+		This work is licensed under a Creative Commons Attribution 3.0 Unported License.
+		http://creativecommons.org/licenses/by/3.0/*/
+
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, -499);
