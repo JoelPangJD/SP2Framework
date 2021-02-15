@@ -14,6 +14,29 @@ Entity::Entity(Vector3 position, float scale, float angle, float radius)
 	this->scale = scale;
 	this->angle = angle;
 	this->radius = radius;
+	this->height = height;
+	xwidth = width;
+	zwidth = width;
+}
+
+Entity::Entity(Vector3 position, float scale, float angle, float height, float width)
+{
+	this->position = position;
+	this->scale = scale;
+	this->angle = angle;
+	this->radius = radius;
+	this->height = height;
+	xwidth = width;
+	zwidth = width;
+}
+Entity::Entity(Vector3 position, float scale, float angle, float height, float xwidth, float zwidth)
+{
+	this->position = position;
+	this->scale = scale;
+	this->angle = angle;
+	this->height = height;
+	this->xwidth = xwidth;
+	this->zwidth = zwidth;
 }
 
 Entity::~Entity()
@@ -54,7 +77,6 @@ void Entity::setangle(float angle)
 		angle += 360;
 }
 
-
 void Entity::moveentity(int direction, float speed, double dt)
 {
 	speed = speed * dt;
@@ -87,6 +109,8 @@ bool Entity::spherecollider(Vector3 position)
 
 bool Entity::boxcollider(Vector3 camera)
 {
+	if (camera.x < position.x + scale * 0.5 && camera.x > position.x - scale * 0.5
+		&& camera.y < position.y + scale * 0.5 && camera.y > position.y - scale * 0.5)
 	return false;
 }
 
