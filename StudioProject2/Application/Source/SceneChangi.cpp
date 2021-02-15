@@ -1,4 +1,4 @@
-#include "SceneMain.h"
+#include "SceneChangi.h"
 #include "GL\glew.h"
 #include "Application.h"
 
@@ -9,15 +9,15 @@
 #include"MeshBuilder.h"
 //testing 12132132123
 
-SceneMain::SceneMain()
+SceneChangi::SceneChangi()
 {
 }
 
-SceneMain::~SceneMain()
+SceneChangi::~SceneChangi()
 {
 }
 
-void SceneMain::Init()
+void SceneChangi::Init()
 {
 	//======Matrix stack========
 	Mtx44 projection;
@@ -178,7 +178,7 @@ void SceneMain::Init()
 
 
 
-void SceneMain::Update(double dt)
+void SceneChangi::Update(double dt)
 {
 	fps = 1.f / dt;
 	camera.Update(dt);
@@ -203,7 +203,7 @@ void SceneMain::Update(double dt)
 
 }
 
-void SceneMain::RenderMesh(Mesh* mesh, bool enableLight)
+void SceneChangi::RenderMesh(Mesh* mesh, bool enableLight)
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 
@@ -245,7 +245,7 @@ void SceneMain::RenderMesh(Mesh* mesh, bool enableLight)
 	}
 }
 
-void SceneMain::RenderSkybox()
+void SceneChangi::RenderSkybox()
 {
 	modelStack.PushMatrix();
 	modelStack.Translate(camera.position.x, camera.position.y + 200, camera.position.z);
@@ -296,7 +296,7 @@ void SceneMain::RenderSkybox()
 	modelStack.PopMatrix();
 }
 
-void SceneMain::RenderUI()
+void SceneChangi::RenderUI()
 {
 	modelStack.PushMatrix();
 	std::ostringstream ss;
@@ -305,7 +305,7 @@ void SceneMain::RenderUI()
 	modelStack.PopMatrix();
 }
 
-void SceneMain::RenderText(Mesh* mesh, std::string text, Color color)
+void SceneChangi::RenderText(Mesh* mesh, std::string text, Color color)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -336,7 +336,7 @@ void SceneMain::RenderText(Mesh* mesh, std::string text, Color color)
 	//glEnable(GL_DEPTH_TEST);
 }
 
-void SceneMain::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
+void SceneChangi::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -377,7 +377,7 @@ void SceneMain::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 
 }
 
-void SceneMain::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
+void SceneChangi::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -397,7 +397,7 @@ void SceneMain::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int size
 	glEnable(GL_DEPTH_TEST);
 }
 
-void SceneMain::Render()
+void SceneChangi::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -455,7 +455,7 @@ void SceneMain::Render()
 	RenderSkybox();
 
 	//========================================================
-	//modelStack.LoadIdentity();
+	modelStack.LoadIdentity();
 
 	RenderMesh(meshList[GEO_AXES], false);
 	
@@ -463,7 +463,7 @@ void SceneMain::Render()
 	RenderUI();
 }
 
-void SceneMain::Exit()
+void SceneChangi::Exit()
 {
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 	glDeleteProgram(m_programID);
