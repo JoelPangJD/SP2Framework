@@ -60,19 +60,32 @@ void SceneMuseum::Init()
 	meshList[GEO_INVENTORY]->textureID = LoadTGA("Image//testing.tga");
 
 
-	//Skybox quads
+	/*Author for skybox
+======
+
+This is the work of Emil Persson, aka Humus.
+http://www.humus.name
+
+
+
+License
+=======
+
+This work is licensed under a Creative Commons Attribution 3.0 Unported License.
+http://creativecommons.org/licenses/by/3.0/
+*/
 	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.0f);
-	meshList[GEO_LEFT]->textureID = LoadTGA("Image//museum_lf.tga");
+	meshList[GEO_LEFT]->textureID = LoadTGA("Image//leftward.tga");
 	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.0f);
-	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//museum_rt.tga");
+	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//rightward.tga");
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.0f);
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//museum_ft.tga");
+	meshList[GEO_FRONT]->textureID = LoadTGA("Image//forward.tga");
 	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.0f);
-	meshList[GEO_BACK]->textureID = LoadTGA("Image//museum_bk.tga");
+	meshList[GEO_BACK]->textureID = LoadTGA("Image//backward.tga");
 	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.0f);
-	meshList[GEO_TOP]->textureID = LoadTGA("Image//museum_up.tga");
+	meshList[GEO_TOP]->textureID = LoadTGA("Image//up.tga");
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
-	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//museum_dn.tga");
+	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//down.tga");
 
 
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");

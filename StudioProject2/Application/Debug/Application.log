@@ -1,0 +1,5 @@
+﻿Common.lib(MatrixStack.obj) : warning LNK4099: PDB 'Common.pdb' was not found with 'Common.lib(MatrixStack.obj)' or at 'C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\Common.pdb'; linking object as if no debug info
+Common.lib(Mtx44.obj) : warning LNK4099: PDB 'Common.pdb' was not found with 'Common.lib(Mtx44.obj)' or at 'C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\Common.pdb'; linking object as if no debug info
+Common.lib(timer.obj) : warning LNK4099: PDB 'Common.pdb' was not found with 'Common.lib(timer.obj)' or at 'C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\Common.pdb'; linking object as if no debug info
+Common.lib(Vector3.obj) : warning LNK4099: PDB '' was not found with 'Common.lib(Vector3.obj)' or at ''; linking object as if no debug info
+  Application.vcxproj -> C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\Application.exe
