@@ -1,10 +1,13 @@
-﻿  SceneMuseum.cpp
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(159,22): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(184,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(404,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(404,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  Application.vcxproj -> C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\Application.exe
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(491,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (StudioProject2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  SceneMain.cpp
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(160,22): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(185,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(393,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(393,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(394,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(394,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Application.vcxproj -> C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Debug\Application.exe
