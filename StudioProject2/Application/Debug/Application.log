@@ -1,29 +1,13 @@
 ﻿  Entity.cpp
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(18,11): error C2065: 'width': undeclared identifier
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(19,11): error C2065: 'width': undeclared identifier
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(82,16): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(85,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(86,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(88,55): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(90,55): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(94,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(95,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(97,55): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(99,55): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
-  Inventory.cpp
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  SceneMuseum.cpp
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(173,22): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(198,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(419,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(419,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(79,16): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(82,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(83,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(85,55): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(87,55): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(91,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(92,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(94,55): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(96,55): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
   SceneMain.cpp
 C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
 C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
@@ -36,3 +20,15 @@ C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\S
 C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(392,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(392,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Generating Code...
+Utility.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'Utility.obj' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+shader.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'shader.obj' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+SceneMuseum.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'SceneMuseum.obj' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+MeshBuilder.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'MeshBuilder.obj' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+Mesh.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'Mesh.obj' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+main.obj : warning LNK4099: PDB '' was not found with 'main.obj' or at ''; linking object as if no debug info
+LoadTGA.obj : warning LNK4099: PDB '' was not found with 'LoadTGA.obj' or at ''; linking object as if no debug info
+LoadOBJ.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'LoadOBJ.obj' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+Inventory.obj : warning LNK4099: PDB '' was not found with 'Inventory.obj' or at ''; linking object as if no debug info
+Camera3.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'Camera3.obj' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+Application.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'Application.obj' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+  Application.vcxproj -> C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\Application.exe
