@@ -60,7 +60,6 @@ void SceneMain::Init()
 	meshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
 	meshList[GEO_INVENTORY]->textureID = LoadTGA("Image//testing.tga");
 
-
 	//Skybox quads
 	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.0f);
 	meshList[GEO_LEFT]->textureID = LoadTGA("Image//left.tga");

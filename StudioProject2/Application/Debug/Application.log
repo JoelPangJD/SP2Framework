@@ -1,13 +1,45 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(491,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (StudioProject2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  Application.cpp
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Entity.cpp
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(60,16): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(63,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(64,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(66,55): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(68,55): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(72,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(73,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(75,55): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(77,55): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
   SceneMain.cpp
 C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
 C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
 C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(160,22): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(185,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(159,22): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(184,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(392,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(392,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(393,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(393,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(394,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(394,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(393,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  SceneMuseum.cpp
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(159,22): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(184,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(404,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(404,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Generating Code...
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(86): warning C4715: 'Entity::spherecollider': not all control paths return a value
+Utility.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'Utility.obj' or at 'C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+shader.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'shader.obj' or at 'C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+Mesh.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'Mesh.obj' or at 'C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+main.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'main.obj' or at 'C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+LoadTGA.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'LoadTGA.obj' or at 'C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+LoadOBJ.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'LoadOBJ.obj' or at 'C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
   Application.vcxproj -> C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Debug\Application.exe

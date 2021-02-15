@@ -14,9 +14,10 @@ private:
 		TYPE_COLLISION,
 		TYPE_INTERACTION,
 	};
+	float radius;
 public:
 	Entity();
-	Entity(Vector3 position, float scale, float angle);
+	Entity(Vector3 position, float scale, float angle, float radius);
 	~Entity();
 	Vector3 getposition();
 	void setposition(Vector3 position);
@@ -27,7 +28,7 @@ public:
 
 	void moveentity(int direction, float speed, double dt);
 
-	bool circlecollider(Vector3 camera);
+	bool spherecollider(Vector3 position);
 	bool boxcollider(Vector3 camera);
 };
 
