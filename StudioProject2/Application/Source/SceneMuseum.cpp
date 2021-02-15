@@ -304,7 +304,6 @@ void SceneMuseum::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 499, 0);
 	modelStack.Rotate(90, 1, 0, 0);
-	modelStack.Rotate(-90, 0, 0, 1);
 	modelStack.Scale(1000, 1000, 1000);
 	RenderMesh(meshList[GEO_TOP], false);
 	modelStack.PopMatrix();
