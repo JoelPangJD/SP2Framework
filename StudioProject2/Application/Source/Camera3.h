@@ -2,11 +2,14 @@
 #define CAMERA3_H
 
 #include "Vector3.h"
+#include "Application.h"
 
 class Camera3
 {
 public:
 	float phi, theta;
+	float lastX, lastY;
+	bool firstMouse;
 	Vector3 position;
 	Vector3 target;
 	Vector3 up;
