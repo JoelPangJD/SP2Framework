@@ -1,4 +1,19 @@
-﻿  SceneMain.cpp
+﻿  Application.cpp
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Entity.cpp
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(70,16): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(73,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(74,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(76,55): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(78,55): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(82,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(83,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(85,55): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(87,55): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+  SceneMain.cpp
 C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
 C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
 C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
@@ -9,4 +24,15 @@ C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\S
 C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(393,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(394,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(394,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  SceneMuseum.cpp
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(172,22): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(197,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(417,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(417,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Generating Code...
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Entity.cpp(101): warning C4715: 'Entity::boxcollider': not all control paths return a value
   Application.vcxproj -> C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\Application.exe
