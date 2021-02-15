@@ -86,7 +86,7 @@ http://creativecommons.org/licenses/by/3.0/
 	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.0f);
 	meshList[GEO_TOP]->textureID = LoadTGA("Image//upward.tga");
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
-	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//newdown.tga");
+	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//down.tga");
 
 
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
