@@ -2,9 +2,7 @@
 
 Entity::Entity()
 {
-	x = 0;
-	y = 0;
-	z = 0;
+	Position = 
 	scale = 0;
 	angle = 0;
 }
@@ -77,15 +75,6 @@ void Entity::setangle(float angle)
 		angle += 360;
 }
 
-std::string Entity::gettype()
-{
-	return type;
-}
-
-void Entity::settype(std::string type)
-{
-	this->type = type;
-}
 
 void Entity::moveentity(int direction, float speed, double dt)
 {
@@ -108,4 +97,9 @@ void Entity::moveentity(int direction, float speed, double dt)
 		if (testz < 100 && testz > -100)
 			z -= cos(angle * (3.141592 / 180)) * speed;
 	}
+}
+
+bool Entity::circlecollider(Vector3 camera)
+{
+	if()
 }
