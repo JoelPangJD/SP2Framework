@@ -13,6 +13,7 @@
 
 #include "SceneMain.h"
 #include "SceneMuseum.h"
+#include "SceneChangi.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
@@ -137,8 +138,10 @@ void Application::Run()
 	//Main Loop
 	Scene* scene = new SceneMain();
 	Scene* scene1 = new SceneMuseum();
+	Scene* scene2 = new SceneChangi();
 	scene->Init();
 	scene1->Init();
+	scene2->Init();
 	//scene2->Init();
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
@@ -146,6 +149,8 @@ void Application::Run()
 	{
 		if (IsKeyPressed(VK_F1))
 			scene = scene1;
+		else if (IsKeyPressed(VK_F2))
+			scene = scene2;
 		scene->Update(m_timer.getElapsedTime());
 		scene->Render();
 		//Swap buffers
@@ -156,7 +161,11 @@ void Application::Run()
 
 	} //Check if the ESC key had been pressed or if the window had been closed
 	scene->Exit();
+	scene1->Exit();
+	scene2->Exit();
 	delete scene;
+	delete scene1;
+	delete scene2;
 }
 
 void Application::Exit()
