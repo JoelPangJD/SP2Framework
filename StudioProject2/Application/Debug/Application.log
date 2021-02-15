@@ -1,12 +1,10 @@
-﻿  SceneChangi.cpp
-S:\SP2\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(123,22): warning C4305: '=': truncation from 'double' to 'float'
-S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(183,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(391,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(391,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(392,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(392,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  Application.vcxproj -> S:\SP2\SP2Framework\StudioProject2\Debug\Application.exe
+﻿  SceneMuseum.cpp
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(173,22): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(198,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(419,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(419,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Application.vcxproj -> C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\Application.exe
