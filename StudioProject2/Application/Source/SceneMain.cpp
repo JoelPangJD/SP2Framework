@@ -458,6 +458,7 @@ void SceneMain::Render()
 		Vector3 spotDirection_cameraspace = viewStack.Top() * light[1].spotDirection;
 		glUniform3fv(m_parameters[U_LIGHT1_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
 	}
+	//hi
 	else
 	{
 		Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
