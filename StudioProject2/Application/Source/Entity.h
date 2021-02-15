@@ -9,14 +9,11 @@ private:
 	Vector3 position;
 	float scale;
 	float angle;
-	enum TYPE
-	{
-		TYPE_COLLISION,
-		TYPE_INTERACTION,
-	};
+	float height, xwidth, zwidth;	//scaling of hitbox
 public:
 	Entity();
-	Entity(Vector3 position, float scale, float angle);
+	Entity(Vector3 position, float scale, float angle, float height, float width);
+	Entity(Vector3 position, float scale, float angle, float height, float xwidth, float zwidth);
 	~Entity();
 	Vector3 getposition();
 	void setposition(Vector3 position);
