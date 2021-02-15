@@ -5,8 +5,8 @@ S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4
 S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(123,22): warning C4305: '=': truncation from 'double' to 'float'
 S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(183,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(391,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(391,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(392,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(392,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(392,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(393,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(393,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Application.vcxproj -> S:\SP2\SP2Framework\StudioProject2\Debug\Application.exe
