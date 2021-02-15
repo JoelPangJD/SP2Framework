@@ -1,33 +1,33 @@
 #pragma once
 #include<iostream>
 #include<string>
+#include "Vector3.h"
 
 class Entity
 {
 private:
-	float x, y, z;
+	Vector3 position;
 	float scale;
 	float angle;
-	std::string type;
-
+	enum TYPE
+	{
+		TYPE_COLLISION,
+		TYPE_INTERACTION,
+	};
 public:
 	Entity();
-	Entity(float x, float y, float z, float scale, float angle, std::string type);
+	Entity(Vector3 position, float scale, float angle);
 	~Entity();
-	float getx();
-	void setx(float x);
-	float gety();
-	void sety(float x);
-	float getz();
-	void setz(float x);
+	Vector3 getposition();
+	void setposition(Vector3 position);
 	float getscale();
 	void setscale(float x);
 	float getangle();
 	void setangle(float x);
-	std::string gettype();
-	void settype(std::string type);
 
 	void moveentity(int direction, float speed, double dt);
 
+	bool circlecollider(Vector3 camera);
+	bool boxcollider(Vector3 camera);
 };
 

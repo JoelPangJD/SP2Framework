@@ -2,55 +2,27 @@
 
 Entity::Entity()
 {
-	x = 0;
-	y = 0;
-	z = 0;
-	scale = 0;
+	position = Vector3(0, 0, 0);
+	scale = 1;
 	angle = 0;
 }
 
-Entity::Entity(float x, float y, float z, float scale, float angle, std::string type)
+Entity::Entity(Vector3 position, float scale, float angle)
 {
-	this->x = x;
-	this->y = y;
-	this->z = z;
-	this->scale = scale;
-	this->angle = angle;
-	this->type = type;
 }
 
 Entity::~Entity()
 {
 }
 
-float Entity::getx()
+Vector3 Entity::getposition()
 {
-	return x;
+	return position;
 }
 
-void Entity::setx(float x)
+void Entity::setposition(Vector3 position)
 {
-	this->x = x;
-}
-
-float Entity::gety()
-{
-	return y;
-}
-
-void Entity::sety(float y)
-{
-	this->y = y;
-}
-
-float Entity::getz()
-{
-	return z;
-}
-
-void Entity::setz(float z)
-{
-	this->z = z;
+	this->position = position;
 }
 
 float Entity::getscale()
@@ -77,35 +49,36 @@ void Entity::setangle(float angle)
 		angle += 360;
 }
 
-std::string Entity::gettype()
-{
-	return type;
-}
-
-void Entity::settype(std::string type)
-{
-	this->type = type;
-}
 
 void Entity::moveentity(int direction, float speed, double dt)
 {
 	speed = speed * dt;
 	if (direction == 1) //foward //World bounds are 100 to -100
 	{
-		float testx = x + sin(angle * (3.141592 / 180)) * speed;
-		float testz = z + sin(angle * (3.141592 / 180)) * speed;
+		float testx = position.x + sin(angle * (3.141592 / 180)) * speed;
+		float testz = position.z + sin(angle * (3.141592 / 180)) * speed;
 		if(testx < 100 && testx > -100)
-			x += sin(angle * (3.141592 / 180)) * speed;
+			position.x += sin(angle * (3.141592 / 180)) * speed;
 		if (testz < 100 && testz > -100)
-			z += cos(angle * (3.141592 / 180)) * speed;
+			position.z += cos(angle * (3.141592 / 180)) * speed;
 	}
 	else if (direction == 2) //backwards
 	{
-		float testx = x - sin(angle * (3.141592 / 180)) * speed;
-		float testz = z - sin(angle * (3.141592 / 180)) * speed;
+		float testx = position.x - sin(angle * (3.141592 / 180)) * speed;
+		float testz = position.z - sin(angle * (3.141592 / 180)) * speed;
 		if (testx < 100 && testx > -100)
-			x -= sin(angle * (3.141592 / 180)) * speed;
+			position.x -= sin(angle * (3.141592 / 180)) * speed;
 		if (testz < 100 && testz > -100)
-			z -= cos(angle * (3.141592 / 180)) * speed;
+			position.z -= cos(angle * (3.141592 / 180)) * speed;
 	}
+}
+
+bool Entity::circlecollider(Vector3 camera)
+{
+	return true;
+}
+
+bool Entity::boxcollider(Vector3 camera)
+{
+	return false;
 }

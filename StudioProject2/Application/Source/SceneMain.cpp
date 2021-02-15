@@ -54,7 +54,8 @@ void SceneMain::Init()
 	meshList[GEO_SPHERE]->material.kShininess = 1.f;
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("Lightball", Color(1, 1, 1), 10, 10, 10);
 
-
+	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//font.tga");
 
 	meshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
 	meshList[GEO_INVENTORY]->textureID = LoadTGA("Image//testing.tga");
@@ -299,9 +300,11 @@ void SceneMain::RenderSkybox()
 
 void SceneMain::RenderUI()
 {
+	modelStack.PushMatrix();
 	std::ostringstream ss;
 	ss << "FPS: " << fps;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 0, 29);
+	modelStack.PopMatrix();
 }
 
 void SceneMain::RenderText(Mesh* mesh, std::string text, Color color)
@@ -388,7 +391,7 @@ void SceneMain::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int size
 	modelStack.PushMatrix();
 	modelStack.LoadIdentity();
 	modelStack.Translate(x, y, 0);
-	modelStack.Scale(20, 20, 0);
+	modelStack.Scale(sizex, sizey, 0);
 	RenderMesh(mesh, false); //UI should not have light
 	projectionStack.PopMatrix();
 	viewStack.PopMatrix();
@@ -448,7 +451,7 @@ void SceneMain::Render()
 		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
 	}
 
-	RenderMeshOnScreen(meshList[GEO_INVENTORY], 40, 20, 30, 30);
+	//RenderMeshOnScreen(meshList[GEO_INVENTORY], 40, 20, 30, 30);
 
 	//Skybox
 	RenderSkybox();
@@ -457,11 +460,9 @@ void SceneMain::Render()
 	//modelStack.LoadIdentity();
 
 	modelStack.PushMatrix();
-	modelStack.PushMatrix();
 	RenderMesh(meshList[GEO_AXES], false);
 	modelStack.PopMatrix();
-	modelStack.PopMatrix();
-
+	RenderMeshOnScreen(meshList[GEO_INVENTORY], 40, 20, 30, 30);
 	RenderUI();
 }
 
