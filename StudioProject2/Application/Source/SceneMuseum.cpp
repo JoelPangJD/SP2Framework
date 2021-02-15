@@ -1,4 +1,4 @@
-#include "SceneMain.h"
+#include "SceneMuseum.h"
 #include "GL\glew.h"
 #include "Application.h"
 
@@ -9,15 +9,15 @@
 #include"MeshBuilder.h"
 
 
-SceneMain::SceneMain()
+SceneMuseum::SceneMuseum()
 {
 }
 
-SceneMain::~SceneMain()
+SceneMuseum::~SceneMuseum()
 {
 }
 
-void SceneMain::Init()
+void SceneMuseum::Init()
 {
 	//======Matrix stack========
 	Mtx44 projection;
@@ -62,17 +62,17 @@ void SceneMain::Init()
 
 	//Skybox quads
 	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.0f);
-	meshList[GEO_LEFT]->textureID = LoadTGA("Image//left.tga");
+	meshList[GEO_LEFT]->textureID = LoadTGA("Image//museum_lf.tga");
 	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.0f);
-	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//right.tga");
+	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//museum_rt.tga");
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.0f);
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//front.tga");
+	meshList[GEO_FRONT]->textureID = LoadTGA("Image//museum_ft.tga");
 	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.0f);
-	meshList[GEO_BACK]->textureID = LoadTGA("Image//back.tga");
+	meshList[GEO_BACK]->textureID = LoadTGA("Image//museum_bk.tga");
 	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.0f);
-	meshList[GEO_TOP]->textureID = LoadTGA("Image//top.tga");
+	meshList[GEO_TOP]->textureID = LoadTGA("Image//museum_up.tga");
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
-	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//bottom.tga");
+	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//museum_dn.tga");
 
 
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
@@ -179,7 +179,7 @@ void SceneMain::Init()
 
 
 
-void SceneMain::Update(double dt)
+void SceneMuseum::Update(double dt)
 {
 	fps = 1.f / dt;
 	camera.Update(dt);
@@ -204,7 +204,7 @@ void SceneMain::Update(double dt)
 
 }
 
-void SceneMain::RenderMesh(Mesh* mesh, bool enableLight)
+void SceneMuseum::RenderMesh(Mesh* mesh, bool enableLight)
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 
@@ -246,10 +246,24 @@ void SceneMain::RenderMesh(Mesh* mesh, bool enableLight)
 	}
 }
 
-void SceneMain::RenderSkybox()
+void SceneMuseum::RenderSkybox()
 {
 	modelStack.PushMatrix();
 	modelStack.Translate(camera.position.x, camera.position.y + 200, camera.position.z);
+
+	/*~~~~~~~~~~~~~~~~
+
+		Skybox Textures
+		SceneMuseum
+
+		~~~~~~~~~~~~~~~~
+
+		Author
+		~~~~~~
+
+		TH3RoP0D - X
+
+		~~~~~~~~~~~~~~~~*/
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, -499);
@@ -297,14 +311,14 @@ void SceneMain::RenderSkybox()
 	modelStack.PopMatrix();
 }
 
-void SceneMain::RenderUI()
+void SceneMuseum::RenderUI()
 {
 	std::ostringstream ss;
 	ss << "FPS: " << fps;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 0, 29);
 }
 
-void SceneMain::RenderText(Mesh* mesh, std::string text, Color color)
+void SceneMuseum::RenderText(Mesh* mesh, std::string text, Color color)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -335,7 +349,7 @@ void SceneMain::RenderText(Mesh* mesh, std::string text, Color color)
 	//glEnable(GL_DEPTH_TEST);
 }
 
-void SceneMain::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
+void SceneMuseum::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -376,7 +390,7 @@ void SceneMain::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 
 }
 
-void SceneMain::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
+void SceneMuseum::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -396,7 +410,7 @@ void SceneMain::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int size
 	glEnable(GL_DEPTH_TEST);
 }
 
-void SceneMain::Render()
+void SceneMuseum::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -448,7 +462,6 @@ void SceneMain::Render()
 		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
 	}
 
-	RenderMeshOnScreen(meshList[GEO_INVENTORY], 40, 20, 30, 30);
 
 	//Skybox
 	RenderSkybox();
@@ -465,7 +478,7 @@ void SceneMain::Render()
 	RenderUI();
 }
 
-void SceneMain::Exit()
+void SceneMuseum::Exit()
 {
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 	glDeleteProgram(m_programID);

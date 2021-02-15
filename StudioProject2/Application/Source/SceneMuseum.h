@@ -1,5 +1,5 @@
-#ifndef SCENE_MAIN_H
-#define SCENE_MAIN_H
+#ifndef SCENE_MUSEUM_H
+#define SCENE_MUSEUM_H
 #include "Camera3.h"
 #include "Scene.h"
 #include "Mesh.h"
@@ -10,7 +10,7 @@
 #include <sstream>
 #include <math.h>
 
-class SceneMain : public Scene
+class SceneMuseum : public Scene
 {
 	enum GEOMETRY_TYPE
 	{
@@ -85,8 +85,8 @@ public:
 	bool lighton = true;
 	float fps;
 
-	SceneMain();
-	~SceneMain();
+	SceneMuseum();
+	~SceneMuseum();
 
 	virtual void Init();
 	virtual void Update(double dt);

@@ -12,6 +12,7 @@
 #include <stdlib.h>
 
 #include "SceneMain.h"
+#include "SceneMuseum.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
@@ -133,14 +134,17 @@ void Application::SetSwitchScene()
 void Application::Run()
 {
 	//Main Loop
-	Scene* scene1 = new SceneMain();
-	Scene* scene = scene1;
+	Scene* scene = new SceneMain();
+	Scene* scene1 = new SceneMuseum();
+	scene->Init();
 	scene1->Init();
 	//scene2->Init();
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
 	{
+		if (IsKeyPressed(VK_F1))
+			scene = scene1;
 		scene->Update(m_timer.getElapsedTime());
 		scene->Render();
 		//Swap buffers
@@ -150,8 +154,8 @@ void Application::Run()
         m_timer.waitUntil(frameTime);       // Frame rate limiter. Limits each frame to a specified time in ms.   
 
 	} //Check if the ESC key had been pressed or if the window had been closed
-	scene1->Exit();
-	delete scene1;
+	scene->Exit();
+	delete scene;
 }
 
 void Application::Exit()
