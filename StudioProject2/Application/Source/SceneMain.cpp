@@ -85,8 +85,6 @@ void SceneMain::Init()
 
 	glUniform1i(m_parameters[U_NUMLIGHTS], 2);
 
-	glUniform1i(m_parameters[U_NUMLIGHTS], 3);
-
 	Mesh::SetMaterialLoc(m_parameters[U_MATERIAL_AMBIENT],
 		m_parameters[U_MATERIAL_DIFFUSE],
 		m_parameters[U_MATERIAL_SPECULAR],
@@ -461,9 +459,8 @@ void SceneMain::Render()
 	//========================================================
 	//modelStack.LoadIdentity();
 
-	modelStack.PushMatrix();
 	RenderMesh(meshList[GEO_AXES], false);
-	modelStack.PopMatrix();
+	
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();
 }

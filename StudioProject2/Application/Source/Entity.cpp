@@ -5,6 +5,18 @@ Entity::Entity()
 	position = Vector3(0, 0, 0);
 	scale = 1;
 	angle = 0;
+	radius = 0;
+}
+
+Entity::Entity(Vector3 position, float scale, float angle, float radius)
+{
+	this->position = position;
+	this->scale = scale;
+	this->angle = angle;
+	this->radius = radius;
+	this->height = height;
+	xwidth = width;
+	zwidth = width;
 }
 
 Entity::Entity(Vector3 position, float scale, float angle, float height, float width)
@@ -12,11 +24,11 @@ Entity::Entity(Vector3 position, float scale, float angle, float height, float w
 	this->position = position;
 	this->scale = scale;
 	this->angle = angle;
+	this->radius = radius;
 	this->height = height;
 	xwidth = width;
 	zwidth = width;
 }
-
 Entity::Entity(Vector3 position, float scale, float angle, float height, float xwidth, float zwidth)
 {
 	this->position = position;
@@ -88,14 +100,19 @@ void Entity::moveentity(int direction, float speed, double dt)
 	}
 }
 
-bool Entity::circlecollider(Vector3 camera)
+bool Entity::spherecollider(Vector3 position)
 {
-	return true;
+	//distance between two points ( ( (x1-x2)^2 + (z1-z2)^2 )*0.5 )^2 + (y1-y2)^2 )^0.5) 
+	if(pow(pow(pow(pow((this->position.x - position.x), 2.f) + pow((this->position.z - position.z), 2.f), 0.5f),2.f) + pow((this-> position.y - position.y), 2.f),0.5f) < radius)
+		return true;
 }
 
 bool Entity::boxcollider(Vector3 camera)
-{
-	if (camera.x < position.x + scale * 0.5 && camera.x > position.x - scale * 0.5
-		&& camera.y < position.y + scale * 0.5 && camera.y > position.y - scale * 0.5)
+{	//checks if entity is within the camera's Vector3 passed in
+	if (camera.x < position.x + xwidth * 0.5 && camera.x > position.x - xwidth * 0.5
+		&& camera.y < position.y + height * 0.5 && camera.y > position.y - height * 0.5
+		&& camera.z < position.z + zwidth * 0.5 && camera.z > position.z - zwidth * 0.5)
+		return true;
 	return false;
 }
+
