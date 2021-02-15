@@ -164,8 +164,7 @@ void Application::Run()
 	scene1->Exit();
 	scene2->Exit();
 	delete scene;
-	delete scene1;
-	delete scene2;
+
 }
 
 void Application::Exit()
