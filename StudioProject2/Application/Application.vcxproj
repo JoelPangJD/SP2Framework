@@ -156,6 +156,7 @@
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshBuilder.cpp" />
     <ClCompile Include="Source\SceneChangi.cpp" />
+    <ClCompile Include="Source\SceneGarden.cpp" />
     <ClCompile Include="Source\SceneMarinaBay.cpp" />
     <ClCompile Include="Source\SceneMain.cpp" />
     <ClCompile Include="Source\SceneMuseum.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="Source\LoadTGA.h" />
     <ClInclude Include="Source\Material.h" />
     <ClInclude Include="Source\SceneChangi.h" />
+    <ClInclude Include="Source\SceneGarden.h" />
     <ClInclude Include="Source\SceneMarinaBay.h" />
     <ClInclude Include="Source\SceneMain.h" />
     <ClInclude Include="Source\SceneMuseum.h" />
