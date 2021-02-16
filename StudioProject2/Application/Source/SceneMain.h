@@ -34,6 +34,7 @@ class SceneMain : public Scene
 		GEO_BACK,
 		GEO_INVENTORY,
 		GEO_TEXT,
+		TREE,
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE

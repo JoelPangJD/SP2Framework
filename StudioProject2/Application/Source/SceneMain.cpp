@@ -81,8 +81,6 @@ void SceneMain::Init()
 	m_parameters[U_NUMLIGHTS] = glGetUniformLocation(m_programID, "numLights");
 
 	glUseProgram(m_programID);
-	glUniform1i(m_parameters[U_NUMLIGHTS], 1);
-
 	glUniform1i(m_parameters[U_NUMLIGHTS], 2);
 
 	Mesh::SetMaterialLoc(m_parameters[U_MATERIAL_AMBIENT],
@@ -95,7 +93,7 @@ void SceneMain::Init()
 	m_parameters[U_TEXT_COLOR] = glGetUniformLocation(m_programID, "textColor");
 	//==================Initialise light0===========
 	light[0].type = Light::LIGHT_POINT;
-	light[0].position.Set(0, 0, 90);
+	light[0].position.Set(0, 3, 0);
 	light[0].color.Set(0.24725f, 0.1995f, 0.0745f);
 	light[0].power = 0;
 	light[0].kC = 1.f;
@@ -118,7 +116,7 @@ void SceneMain::Init()
 
 	//==================Initialise light1===========
 	light[1].type = Light::LIGHT_DIRECTIONAL;
-	light[1].position.Set(10, 20, 0);
+	light[1].position.Set(0, 20, 0);
 	light[1].color.Set(1, 1, 1);
 	light[1].power = 1.3;
 	light[1].kC = 1.5f;
@@ -173,7 +171,7 @@ void SceneMain::Init()
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//bottomCityCenter.tga");
 
-
+	meshList[TREE] = MeshBuilder::GenerateOBJMTL("Tree", "OBJ//tree.obj", "OBJ//tree.mtl");
 
 }
 
@@ -428,6 +426,7 @@ void SceneMain::Render()
 	{
 		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
 		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
+		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
 	}
 
 	//LIGHT1====================================================
@@ -436,18 +435,7 @@ void SceneMain::Render()
 		Vector3 lightDir(light[1].position.x, light[1].position.y, light[1].position.z);
 		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
 		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightDirection_cameraspace.x);
-	}
-	else if (light[1].type == Light::LIGHT_SPOT)
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
-		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * light[1].spotDirection;
-		glUniform3fv(m_parameters[U_LIGHT1_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-	}
-	else
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
-		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
+		glUniform1i(m_parameters[U_LIGHT1_TYPE], light[1].type);
 	}
 
 	//RenderMeshOnScreen(meshList[GEO_INVENTORY], 40, 20, 30, 30);
@@ -464,6 +452,12 @@ void SceneMain::Render()
 	modelStack.Scale(1000, 1000, 1000);
 	modelStack.Rotate(-90, 1, 0, 0);
 	RenderMesh(meshList[GEO_QUAD], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(5, 0, 5);
+	modelStack.Scale(10, 10, 10);
+	RenderMesh(meshList[TREE], true);
 	modelStack.PopMatrix();
 	
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
