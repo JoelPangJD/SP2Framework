@@ -156,6 +156,18 @@ void SceneGarden::Init()
 	meshList[GEO_GRASSFLOOR]->material.kSpecular.Set(0.1f, 0.1f, 0.1f);
 	meshList[GEO_GRASSFLOOR]->material.kShininess = 1.f;
 
+	meshList[GEO_POND] = MeshBuilder::GenerateQuad("pondwater", 1, 1, Color(1, 1, 1), 10);
+	meshList[GEO_POND]->textureID = LoadTGA("Image//watertexture.tga");
+	meshList[GEO_POND]->material.kAmbient.Set(0.3f, 0.3f, 0.3f);
+	meshList[GEO_POND]->material.kDiffuse.Set(0.4f, 0.4f, 0.4f);
+	meshList[GEO_POND]->material.kSpecular.Set(0.1f, 0.1f, 0.1f);
+	meshList[GEO_POND]->material.kShininess = 1.f;
+
+	meshList[GEO_GAZEBO] = MeshBuilder::GenerateOBJMTL("gazebo", "OBJ//garden//gazebo.obj", "OBJ//garden//gazebo.mtl");
+	meshList[GEO_GAZEBO]->textureID = LoadTGA("Image//gazebo.tga");
+
+	meshList[GEO_TREE1] = MeshBuilder::GenerateOBJMTL("tree1", "OBJ//citycenter//tree.obj", "OBJ//citycenter//tree.mtl");
+
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//font.tga");
 
@@ -458,11 +470,26 @@ void SceneGarden::Render()
 	modelStack.LoadIdentity();
 
 	RenderMesh(meshList[GEO_AXES], false);
+
 	modelStack.PushMatrix();
 	modelStack.Rotate(-90, 1, 0, 0);
 	modelStack.Scale(500,500,500);
 	RenderMesh(meshList[GEO_GRASSFLOOR], true);
 	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(10, 0, 10);
+	modelStack.Scale(0.15, 0.15, 0.15);
+	RenderMesh(meshList[GEO_GAZEBO], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(100, 0, 1000);
+	modelStack.Rotate(-90, 1, 0, 0);
+	modelStack.Scale(200, 200, 200);
+	RenderMesh(meshList[GEO_POND], true);
+	modelStack.PopMatrix();
+
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();
 }
