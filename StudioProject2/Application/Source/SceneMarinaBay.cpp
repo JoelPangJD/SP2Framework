@@ -118,7 +118,7 @@ void SceneMarinaBay::Init()
 	light[1].type = Light::LIGHT_DIRECTIONAL;
 	light[1].position.Set(10, 20, 0);
 	light[1].color.Set(1, 1, 1);
-	light[1].power = 1.3;
+	light[1].power = 0.7f;
 	light[1].kC = 1.5f;
 	light[1].kL = 0.01f;
 	light[1].kQ = 0.001f;
@@ -476,17 +476,22 @@ void SceneMarinaBay::Render()
 	RenderMesh(meshList[GEO_BOAT], true);
 	modelStack.PopMatrix();
 
+	//infinity pool (to be fixed)
 	modelStack.PushMatrix();
 	modelStack.Translate(15, -4.5, 0);
 	modelStack.Scale(30, 1, 30);
 	RenderMesh(meshList[GEO_WATER], true);
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	modelStack.Translate(0, 0, 0);
-	modelStack.Scale(10, 10, 10);
-	RenderMesh(meshList[GEO_TREE], true);
-	modelStack.PopMatrix();
+	//all the trees by the infinity pool
+	for (int z = 0; z > -100; z -= 20)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(-10, -5, z);
+		modelStack.Scale(10, 10, 10);
+		RenderMesh(meshList[GEO_TREE], true);
+		modelStack.PopMatrix();
+	}
 
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();

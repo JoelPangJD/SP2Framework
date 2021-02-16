@@ -33,6 +33,7 @@ class SceneChangi : public Scene
 		GEO_FRONT,
 		GEO_BACK,
 		GEO_TOWER,
+		GEO_AIRPORT,
 		GEO_INVENTORY,
 		GEO_TEXT,
 		NUM_GEOMETRY,
