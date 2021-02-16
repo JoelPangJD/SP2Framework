@@ -1,14 +1,12 @@
-﻿  Application.cpp
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-Utility.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'Utility.obj' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
-shader.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'shader.obj' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
-main.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'main.obj' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
-LoadTGA.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'LoadTGA.obj' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
-Common.lib(MatrixStack.obj) : warning LNK4099: PDB 'Common.pdb' was not found with 'Common.lib(MatrixStack.obj)' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\Common.pdb'; linking object as if no debug info
-Common.lib(Mtx44.obj) : warning LNK4099: PDB 'Common.pdb' was not found with 'Common.lib(Mtx44.obj)' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\Common.pdb'; linking object as if no debug info
-Common.lib(timer.obj) : warning LNK4099: PDB 'Common.pdb' was not found with 'Common.lib(timer.obj)' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\Common.pdb'; linking object as if no debug info
-Common.lib(Vector3.obj) : warning LNK4099: PDB 'Common.pdb' was not found with 'Common.lib(Vector3.obj)' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\Common.pdb'; linking object as if no debug info
-  Application.vcxproj -> C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\Application.exe
+﻿  SceneMain.cpp
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(121,22): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(184,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(392,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(392,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(393,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(393,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Application.vcxproj -> C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\Application.exe
