@@ -145,7 +145,7 @@ void Application::Run()
 	Scene* scene3 = new SceneMarinaBay();
 	Scene* scene4 = new SceneGarden();
 	Scene* scene = scene0;
-	scene0->Init();
+	scene->Init();
 	scene1->Init();
 	scene2->Init();
 	scene3->Init();
@@ -162,6 +162,8 @@ void Application::Run()
 			scene = scene3;
 		else if (IsKeyPressed(VK_F4))
 			scene = scene4;
+		else if (IsKeyPressed(VK_RETURN))
+			scene = scene0;
 		scene->Update(m_timer.getElapsedTime());
 		scene->Render();
 		//Swap buffers
