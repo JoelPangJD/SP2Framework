@@ -19,6 +19,17 @@ SceneChangi::~SceneChangi()
 
 void SceneChangi::Init()
 {
+	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
+	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
+	m_parameters[U_MODELVIEW] = glGetUniformLocation(m_programID, "MV");
+	m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE] = glGetUniformLocation(m_programID, "MV_inverse_transpose");
+	m_parameters[U_MATERIAL_AMBIENT] = glGetUniformLocation(m_programID, "material.kAmbient");
+	m_parameters[U_MATERIAL_DIFFUSE] = glGetUniformLocation(m_programID, "material.kDiffuse");
+	m_parameters[U_MATERIAL_SPECULAR] = glGetUniformLocation(m_programID, "material.kSpecular");
+	m_parameters[U_MATERIAL_SHININESS] = glGetUniformLocation(m_programID, "material.kShininess");
+
+
+	Mesh::SetMaterialLoc(m_parameters[U_MATERIAL_AMBIENT], m_parameters[U_MATERIAL_DIFFUSE], m_parameters[U_MATERIAL_SPECULAR], m_parameters[U_MATERIAL_SHININESS]);
 	//======Matrix stack========
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
@@ -43,16 +54,9 @@ void SceneChangi::Init()
 	glBindVertexArray(m_vertexArrayID);
 
 	//=============================================================================================
-	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
+
 	m_parameters[U_COLOR_TEXTURE_ENABLED] = glGetUniformLocation(m_programID, "colorTextureEnabled");
 	m_parameters[U_COLOR_TEXTURE] = glGetUniformLocation(m_programID, "colorTexture");
-	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
-	m_parameters[U_MODELVIEW] = glGetUniformLocation(m_programID, "MV");
-	m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE] = glGetUniformLocation(m_programID, "MV_inverse_transpose");
-	m_parameters[U_MATERIAL_AMBIENT] = glGetUniformLocation(m_programID, "material.kAmbient");
-	m_parameters[U_MATERIAL_DIFFUSE] = glGetUniformLocation(m_programID, "material.kDiffuse");
-	m_parameters[U_MATERIAL_SPECULAR] = glGetUniformLocation(m_programID, "material.kSpecular");
-	m_parameters[U_MATERIAL_SHININESS] = glGetUniformLocation(m_programID, "material.kShininess");
 	m_parameters[U_LIGHT0_POSITION] = glGetUniformLocation(m_programID, "lights[0].position_cameraspace");
 	m_parameters[U_LIGHT0_COLOR] = glGetUniformLocation(m_programID, "lights[0].color");
 	m_parameters[U_LIGHT0_POWER] = glGetUniformLocation(m_programID, "lights[0].power");
@@ -85,10 +89,6 @@ void SceneChangi::Init()
 
 	glUniform1i(m_parameters[U_NUMLIGHTS], 2);
 
-	Mesh::SetMaterialLoc(m_parameters[U_MATERIAL_AMBIENT],
-		m_parameters[U_MATERIAL_DIFFUSE],
-		m_parameters[U_MATERIAL_SPECULAR],
-		m_parameters[U_MATERIAL_SHININESS]);
 
 	// Get a handle for our "textColor" uniform
 	m_parameters[U_TEXT_ENABLED] = glGetUniformLocation(m_programID, "textEnabled");
@@ -172,7 +172,8 @@ void SceneChangi::Init()
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//cloudDown.tga");
 
-
+	//OBJ
+	meshList[GEO_TOWER] = MeshBuilder::GenerateOBJMTL("tower", "OBJ//ChangiTower.obj", "OBJ//ChangiTower.mtl");
 
 }
 
@@ -462,6 +463,10 @@ void SceneChangi::Render()
 	
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();
+
+	modelStack.PushMatrix();
+	RenderMesh(meshList[GEO_TOWER], true);
+	modelStack.PopMatrix();
 }
 
 void SceneChangi::Exit()
