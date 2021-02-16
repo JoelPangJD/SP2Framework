@@ -150,11 +150,30 @@ void SceneGarden::Init()
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("Lightball", Color(1, 1, 1), 10, 10, 10);
 
 	meshList[GEO_GRASSFLOOR] = MeshBuilder::GenerateQuad("grassfloor",1,1,Color(1,1,1), 30);
-	meshList[GEO_GRASSFLOOR]->textureID = LoadTGA("Image//grassfloor.tga");
+	meshList[GEO_GRASSFLOOR]->textureID = LoadTGA("Image//garden//grassfloor.tga");
 	meshList[GEO_GRASSFLOOR]->material.kAmbient.Set(0.2f, 0.2f, 0.2f);
 	meshList[GEO_GRASSFLOOR]->material.kDiffuse.Set(0.4f, 0.4f, 0.4f);
 	meshList[GEO_GRASSFLOOR]->material.kSpecular.Set(0.1f, 0.1f, 0.1f);
 	meshList[GEO_GRASSFLOOR]->material.kShininess = 1.f;
+
+	meshList[GEO_POND] = MeshBuilder::GenerateQuad("pondwater", 1, 1, Color(1, 1, 1), 10);
+	meshList[GEO_POND]->textureID = LoadTGA("Image//watertexture.tga");
+	meshList[GEO_POND]->material.kAmbient.Set(0.3f, 0.3f, 0.3f);
+	meshList[GEO_POND]->material.kDiffuse.Set(0.4f, 0.4f, 0.4f);
+	meshList[GEO_POND]->material.kSpecular.Set(0.5f, 0.5f, 0.5f);
+
+	meshList[GEO_PONDBED] = MeshBuilder::GenerateQuad("pondwater", 1, 1, Color(1, 1, 1), 10);
+	meshList[GEO_PONDBED]->textureID = LoadTGA("Image//garden//pondbed.tga");
+	meshList[GEO_PONDBED]->material.kAmbient.Set(0.5f, 0.5f, 0.5f);
+	meshList[GEO_PONDBED]->material.kDiffuse.Set(0.1f, 0.1f, 0.1f);
+	meshList[GEO_PONDBED]->material.kSpecular.Set(0.1f, 0.1f, 0.1f);
+	meshList[GEO_PONDBED]->material.kShininess = 1.f;
+
+	meshList[GEO_GAZEBO] = MeshBuilder::GenerateOBJMTL("gazebo", "OBJ//garden//gazebo.obj", "OBJ//garden//gazebo.mtl");
+	meshList[GEO_GAZEBO]->textureID = LoadTGA("Image//gazebo.tga");
+
+	meshList[GEO_TREE1] = MeshBuilder::GenerateOBJMTL("tree1", "OBJ//garden//tree.obj", "OBJ//garden//tree.mtl");
+	meshList[GEO_TREE2] = MeshBuilder::GenerateOBJMTL("tree2", "OBJ//garden//tree_fat.obj", "OBJ//garden//tree.mtl");
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//font.tga");
@@ -165,17 +184,17 @@ void SceneGarden::Init()
 
 	//Skybox quads
 	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.0f);
-	meshList[GEO_LEFT]->textureID = LoadTGA("Image//gardenleft.tga");
+	meshList[GEO_LEFT]->textureID = LoadTGA("Image//garden//gardenleft.tga");
 	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.0f);
-	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//gardenright.tga");
+	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//garden//gardenright.tga");
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.0f);
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//gardenfront.tga");
+	meshList[GEO_FRONT]->textureID = LoadTGA("Image//garden//gardenfront.tga");
 	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.0f);
-	meshList[GEO_BACK]->textureID = LoadTGA("Image//gardenback.tga");
+	meshList[GEO_BACK]->textureID = LoadTGA("Image//garden//gardenback.tga");
 	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.0f);
-	meshList[GEO_TOP]->textureID = LoadTGA("Image//gardentop.tga");
+	meshList[GEO_TOP]->textureID = LoadTGA("Image//garden//gardentop.tga");
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
-	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//gardenbottom.tga");
+	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//garden//gardenbottom.tga");
 
 }
 
@@ -201,7 +220,18 @@ void SceneGarden::Update(double dt)
 		light[0].type = Light::LIGHT_SPOT;
 		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
 	}
-
+	if (Application::IsKeyPressed('1'))
+		glEnable(GL_CULL_FACE);
+	else if (Application::IsKeyPressed('2'))
+		glDisable(GL_CULL_FACE);
+	else if (Application::IsKeyPressed('3'))
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //default fill mode
+	else if (Application::IsKeyPressed('4'))
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //wireframe mode
+	if (Application::IsKeyPressed('Z'))
+		lighton = false;						//to test whether colours and stuff are working properly
+	else if (Application::IsKeyPressed('X'))
+		lighton = true;
 }
 
 void SceneGarden::RenderMesh(Mesh* mesh, bool enableLight)
@@ -267,7 +297,6 @@ void SceneGarden::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Translate(0, -499, 0);
 	modelStack.Rotate(-90, 1, 0, 0);
-	modelStack.Rotate(90, 0, 0, 1);
 	modelStack.Scale(1000, 1000, 1000);
 	RenderMesh(meshList[GEO_BOTTOM], false);
 	modelStack.PopMatrix();
@@ -275,7 +304,6 @@ void SceneGarden::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 499, 0);
 	modelStack.Rotate(90, 1, 0, 0);
-	//modelStack.Rotate(90, 0, 0, 1);
 	modelStack.Scale(1000, 1000, 1000);
 	RenderMesh(meshList[GEO_TOP], false);
 	modelStack.PopMatrix();
@@ -458,11 +486,80 @@ void SceneGarden::Render()
 	modelStack.LoadIdentity();
 
 	RenderMesh(meshList[GEO_AXES], false);
+	//entire pond
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(0, -5, -150);
+		modelStack.Rotate(-90, 1, 0, 0);
+		modelStack.Scale(200, 200, 200);
+		RenderMesh(meshList[GEO_PONDBED], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(0, -2.5, -247.50);
+		modelStack.Rotate(-45, 1, 0, 0);
+		modelStack.Scale(200, 7.1, 200);
+		RenderMesh(meshList[GEO_PONDBED], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(0, -2.5, -52.50);
+		modelStack.Rotate(180, 0, 1, 0);
+		modelStack.Rotate(-45, 1, 0, 0);
+		modelStack.Scale(200, 7.1, 200);
+		RenderMesh(meshList[GEO_PONDBED], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(-97.5, -2.5, -150);
+		modelStack.Rotate(90, 0, 1, 0);
+		modelStack.Rotate(-45, 1, 0, 0);
+		modelStack.Scale(200, 7.1, 200);
+		RenderMesh(meshList[GEO_PONDBED], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(97.5, -2.5, -150);
+		modelStack.Rotate(-90, 0, 1, 0);
+		modelStack.Rotate(-45, 1, 0, 0);
+		modelStack.Scale(200, 7.1, 200);
+		RenderMesh(meshList[GEO_PONDBED], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(0, 0.1, -150);
+		modelStack.Rotate(90, 1, 0, 0);
+		modelStack.Scale(200, 200, 200);
+		glDisable(GL_CULL_FACE);
+		RenderMesh(meshList[GEO_POND], true);
+		glEnable(GL_CULL_FACE);
+		modelStack.PopMatrix();
+	}
+
 	modelStack.PushMatrix();
 	modelStack.Rotate(-90, 1, 0, 0);
 	modelStack.Scale(500,500,500);
 	RenderMesh(meshList[GEO_GRASSFLOOR], true);
 	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(50, 0, 50);
+	modelStack.Scale(0.15, 0.15, 0.15);
+	RenderMesh(meshList[GEO_GAZEBO], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	//modelStack.Translate(50, 0, 50);
+	//modelStack.Scale(0.15, 0.15, 0.15);
+	RenderMesh(meshList[GEO_TREE2], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	//modelStack.Translate(50, 0, 50);
+	//modelStack.Scale(0.15, 0.15, 0.15);
+	RenderMesh(meshList[GEO_TREE1], true);
+	modelStack.PopMatrix();
+
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();
 }

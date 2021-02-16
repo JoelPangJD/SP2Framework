@@ -34,9 +34,9 @@ class SceneMarinaBay : public Scene
 		GEO_BACK,
 		GEO_INVENTORY,
 		GEO_TEXT,
-
 		GEO_BOAT,
 		GEO_TREE,
+		GEO_TALLTREE,
 		GEO_WATER,
 
 		NUM_GEOMETRY,
@@ -105,6 +105,7 @@ private:
 	unsigned m_programID;
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
+	float x, y, z;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();

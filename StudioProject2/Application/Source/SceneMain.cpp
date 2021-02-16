@@ -93,9 +93,9 @@ void SceneMain::Init()
 	m_parameters[U_TEXT_COLOR] = glGetUniformLocation(m_programID, "textColor");
 	//==================Initialise light0===========
 	light[0].type = Light::LIGHT_POINT;
-	light[0].position.Set(0, 3, 0);
-	light[0].color.Set(0.24725f, 0.1995f, 0.0745f);
-	light[0].power = 0;
+	light[0].position.Set(0, 5, 0);
+	light[0].color.Set(1,1,1);
+	light[0].power = 1.f;
 	light[0].kC = 1.f;
 	light[0].kL = 0.01f;
 	light[0].kQ = 0.001f;
@@ -118,7 +118,7 @@ void SceneMain::Init()
 	light[1].type = Light::LIGHT_DIRECTIONAL;
 	light[1].position.Set(0, 20, 0);
 	light[1].color.Set(1, 1, 1);
-	light[1].power = 1.3;
+	light[1].power = 0.f;
 	light[1].kC = 1.5f;
 	light[1].kL = 0.01f;
 	light[1].kQ = 0.001f;
@@ -171,7 +171,11 @@ void SceneMain::Init()
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//bottomCityCenter.tga");
 
-	meshList[TREE] = MeshBuilder::GenerateOBJMTL("Tree", "OBJ//tree.obj", "OBJ//tree.mtl");
+	meshList[TREE] = MeshBuilder::GenerateOBJMTL("Tree", "OBJ//CityCenter//tree.obj", "OBJ//CityCenter//tree.mtl");
+	meshList[RoadTileStraight] = MeshBuilder::GenerateOBJMTL("straight", "OBJ//CityCenter//road_straight.obj", "OBJ//CityCenter//road_straight.mtl");
+	meshList[RoadStraightBarrier] = MeshBuilder::GenerateOBJMTL("straight", "OBJ//CityCenter//road_straightBarrier.obj", "OBJ//CityCenter//road_straightBarrier.mtl");
+	meshList[RoadCross] = MeshBuilder::GenerateOBJMTL("roadcross", "OBJ//CityCenter//road_roundabout.obj", "OBJ//CityCenter//road_roundabout.mtl");
+	meshList[RoadCrossBarrier] = MeshBuilder::GenerateOBJMTL("roadcrossbarrier", "OBJ//CityCenter//road_roundaboutBarrier.obj", "OBJ//CityCenter//road_roundaboutBarrier.mtl");
 
 }
 
@@ -452,6 +456,59 @@ void SceneMain::Render()
 	modelStack.Scale(1000, 1000, 1000);
 	modelStack.Rotate(-90, 1, 0, 0);
 	RenderMesh(meshList[GEO_QUAD], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(17.5, 0, 0);
+	modelStack.Scale(20, 5, 5);
+	RenderMesh(meshList[RoadTileStraight], true);
+	modelStack.PushMatrix();
+	modelStack.Rotate(90, 0, 1, 0);
+	RenderMesh(meshList[RoadStraightBarrier], true);
+	modelStack.PopMatrix();
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-17.5, 0, 0);
+	modelStack.Scale(20, 5, 5);
+	RenderMesh(meshList[RoadTileStraight], true);
+	modelStack.PushMatrix();
+	modelStack.Rotate(90, 0, 1, 0);
+	RenderMesh(meshList[RoadStraightBarrier], true);
+	modelStack.PopMatrix();
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 0, 17.5);
+	modelStack.Scale(5, 5, 20);
+	modelStack.Rotate(90, 0, 1, 0);
+	RenderMesh(meshList[RoadTileStraight], true);
+	modelStack.PushMatrix();
+	modelStack.Rotate(90, 0, 1, 0);
+	RenderMesh(meshList[RoadStraightBarrier], true);
+	modelStack.PopMatrix();
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 0, -17.5);
+	modelStack.Scale(5, 5, 20);
+	modelStack.Rotate(90, 0, 1, 0);
+	RenderMesh(meshList[RoadTileStraight], true);
+	modelStack.PushMatrix();
+	modelStack.Rotate(90, 0, 1, 0);
+	RenderMesh(meshList[RoadStraightBarrier], true);
+	modelStack.PopMatrix();
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[RoadCrossBarrier], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 0, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[RoadCross], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();

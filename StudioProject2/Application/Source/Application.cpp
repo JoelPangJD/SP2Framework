@@ -138,11 +138,13 @@ void Application::SetSwitchScene()
 void Application::Run()
 {
 	//Main Loop
-	Scene* scene = new SceneMain();
+	Scene* scene0 = new SceneMain();
 	Scene* scene1 = new SceneMuseum();
 	Scene* scene2 = new SceneChangi();
 	Scene* scene3 = new SceneMarinaBay();
 	Scene* scene4 = new SceneGarden();
+
+	Scene* scene = scene0;
 	scene->Init();
 	scene1->Init();
 	scene2->Init();
@@ -160,6 +162,8 @@ void Application::Run()
 			scene = scene3;
 		else if (IsKeyPressed(VK_F4))
 			scene = scene4;
+		else if (IsKeyPressed(VK_RETURN))
+			scene = scene0;
 		scene->Update(m_timer.getElapsedTime());
 		scene->Render();
 		//Swap buffers
@@ -169,12 +173,12 @@ void Application::Run()
         m_timer.waitUntil(frameTime);       // Frame rate limiter. Limits each frame to a specified time in ms. 
 
 	} //Check if the ESC key had been pressed or if the window had been closed
-	scene->Exit();
+	scene0->Exit();
 	scene1->Exit();
 	scene2->Exit();
 	scene3->Exit();
 	scene4->Exit();
-	delete scene;
+	delete scene0;
 	delete scene1;
 	delete scene2;
 	delete scene3;

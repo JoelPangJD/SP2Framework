@@ -35,6 +35,9 @@ class SceneGarden : public Scene
 		GEO_INVENTORY,
 		GEO_TEXT,
 		GEO_GRASSFLOOR,
+		GEO_POND,
+		GEO_PONDBED,
+		GEO_GAZEBO,
 		GEO_TREE1,
 		GEO_TREE2,
 		NUM_GEOMETRY,
@@ -110,7 +113,6 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
-
 };
 
 #endif

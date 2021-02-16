@@ -118,7 +118,7 @@ void SceneMarinaBay::Init()
 	light[1].type = Light::LIGHT_DIRECTIONAL;
 	light[1].position.Set(10, 20, 0);
 	light[1].color.Set(1, 1, 1);
-	light[1].power = 1.3;
+	light[1].power = 0.7f;
 	light[1].kC = 1.5f;
 	light[1].kL = 0.01f;
 	light[1].kQ = 0.001f;
@@ -136,8 +136,6 @@ void SceneMarinaBay::Init()
 	glUniform1f(m_parameters[U_LIGHT1_COSCUTOFF], light[1].cosCutoff);
 	glUniform1f(m_parameters[U_LIGHT1_COSINNER], light[1].cosInner);
 	glUniform1f(m_parameters[U_LIGHT1_EXPONENT], light[1].exponent);
-
-
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.0f);
@@ -171,8 +169,11 @@ void SceneMarinaBay::Init()
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//bottom.tga");
 
 	meshList[GEO_BOAT] = MeshBuilder::GenerateOBJMTL("boat", "OBJ//boat.obj", "OBJ//boat.mtl");
-	meshList[GEO_WATER]= MeshBuilder::GenerateOBJMTL("water", "OBJ//water1.obj", "OBJ//water1.mtl");
-	meshList[GEO_TREE] = MeshBuilder::GenerateOBJMTL("water", "OBJ//palm_tree_short.obj", "OBJ//palm_tree_short.mtl");
+	//meshList[GEO_WATER]= MeshBuilder::GenerateOBJMTL("water", "OBJ//water1.obj", "OBJ//water1.mtl");
+	meshList[GEO_WATER] = MeshBuilder::GenerateQuad("quad", 1.0f, 1.0f, Color(1, 1, 1), 10);
+	meshList[GEO_WATER]->textureID = LoadTGA("Image//watertexture.tga");
+	meshList[GEO_TREE] = MeshBuilder::GenerateOBJMTL("short tree", "OBJ//palm_tree_short.obj", "OBJ//palm_tree_short.mtl");
+	meshList[GEO_TALLTREE] = MeshBuilder::GenerateOBJMTL("tree", "OBJ//palm_tree.obj", "OBJ//palm_tree.mtl");
 }
 
 
@@ -211,6 +212,14 @@ void SceneMarinaBay::Update(double dt)
 		lighton = false;						//to test whether colours and stuff are working properly
 	else if (Application::IsKeyPressed('X'))
 		lighton = true;
+	if (Application::IsKeyPressed('I'))
+		x -= 10 * dt;
+	if (Application::IsKeyPressed('K'))
+		x += 10 * dt;
+	if (Application::IsKeyPressed('J'))
+		z += 10 * dt;
+	if (Application::IsKeyPressed('L'))
+		z -= 10 * dt;
 }
 
 void SceneMarinaBay::RenderMesh(Mesh* mesh, bool enableLight)
@@ -310,8 +319,11 @@ void SceneMarinaBay::RenderUI()
 {
 	modelStack.PushMatrix();
 	std::ostringstream ss;
-	ss << "FPS: " << fps;
+	ss << "x: " << x;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 29);
+	ss.str("");
+	ss << "z: " << z;
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 27);
 	modelStack.PopMatrix();
 }
 
@@ -332,9 +344,6 @@ void SceneMarinaBay::RenderText(Mesh* mesh, std::string text, Color color)
 	{
 		Mtx44 characterSpacing;
 		std::vector<std::pair<std::string, std::vector<int>>> result;
-		//std::ifstream myFile("Fontdata.csv");
-		//if (!myFile.is_open()) throw std::runtime_error("Could not open file");
-
 		characterSpacing.SetToTranslation(i * 1.0f, 0, 0); //1.0f is the spacing of each character, you may change this value
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
 		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
@@ -469,6 +478,16 @@ void SceneMarinaBay::Render()
 
 	RenderMesh(meshList[GEO_AXES], false);
 	
+	//infinity pool (to be changed, maybe)
+	modelStack.PushMatrix();
+	modelStack.Translate(34, -4.2, -52);
+	modelStack.Rotate(90, 1, 0, 0);
+	modelStack.Scale(25, 175, 1);
+	glDisable(GL_CULL_FACE);
+	RenderMesh(meshList[GEO_WATER], true);
+	glEnable(GL_CULL_FACE);
+	modelStack.PopMatrix();
+
 	//boat
 	modelStack.PushMatrix();
 	modelStack.Translate(0, -10, 0);
@@ -476,17 +495,18 @@ void SceneMarinaBay::Render()
 	RenderMesh(meshList[GEO_BOAT], true);
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	modelStack.Translate(15, -4.5, 0);
-	modelStack.Scale(30, 1, 30);
-	RenderMesh(meshList[GEO_WATER], true);
-	modelStack.PopMatrix();
+	
 
-	modelStack.PushMatrix();
-	modelStack.Translate(0, 0, 0);
-	modelStack.Scale(10, 10, 10);
-	RenderMesh(meshList[GEO_TREE], true);
-	modelStack.PopMatrix();
+	//trees by the infinity pool
+	//to add poolside chairs if possible
+	for (int z = 0; z > -200; z -= 30)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(10, -4.1, z);
+		modelStack.Scale(10, 20, 10);
+		RenderMesh(meshList[GEO_TREE], true);
+		modelStack.PopMatrix();
+	}
 
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();
