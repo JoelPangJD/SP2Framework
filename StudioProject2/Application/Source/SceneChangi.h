@@ -35,6 +35,9 @@ class SceneChangi : public Scene
 		GEO_TOWER,
 		GEO_AIRPORT,
 		GEO_STRAIGHT,
+		GEO_ROADL,
+		GEO_T_LT,
+		GEO_T_RT,
 		GEO_PLANE,
 		GEO_INVENTORY,
 		GEO_TEXT,
@@ -87,6 +90,7 @@ class SceneChangi : public Scene
 public:
 	Camera3 camera;
 	bool lighton = true;
+	bool use;
 	float fps;
 
 	SceneChangi();
