@@ -1,14 +1,19 @@
-﻿  Application.cpp
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-Utility.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'Utility.obj' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
-shader.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'shader.obj' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
-main.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'main.obj' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
-LoadTGA.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'LoadTGA.obj' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
-Common.lib(MatrixStack.obj) : warning LNK4099: PDB 'Common.pdb' was not found with 'Common.lib(MatrixStack.obj)' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\Common.pdb'; linking object as if no debug info
-Common.lib(Mtx44.obj) : warning LNK4099: PDB 'Common.pdb' was not found with 'Common.lib(Mtx44.obj)' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\Common.pdb'; linking object as if no debug info
-Common.lib(timer.obj) : warning LNK4099: PDB 'Common.pdb' was not found with 'Common.lib(timer.obj)' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\Common.pdb'; linking object as if no debug info
-Common.lib(Vector3.obj) : warning LNK4099: PDB 'Common.pdb' was not found with 'Common.lib(Vector3.obj)' or at 'C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\Common.pdb'; linking object as if no debug info
-  Application.vcxproj -> C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\Application.exe
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(491,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (StudioProject2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  SceneGarden.cpp
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(121,22): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(203,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(420,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(420,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(421,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(421,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(501,33): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(509,33): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(517,33): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(525,33): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(530,36): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(547,35): warning C4305: 'argument': truncation from 'double' to 'float'
+  Application.vcxproj -> C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Debug\Application.exe
