@@ -171,7 +171,8 @@ void SceneMain::Init()
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//bottomCityCenter.tga");
 
-	meshList[TREE] = MeshBuilder::GenerateOBJMTL("Tree", "OBJ//tree.obj", "OBJ//tree.mtl");
+	meshList[TREE] = MeshBuilder::GenerateOBJMTL("Tree", "OBJ//CityCenter//tree.obj", "OBJ//CityCenter//tree.mtl");
+	meshList[RoadTileStraight] = MeshBuilder::GenerateOBJMTL("Tree", "OBJ//CityCenter//roadTileStraight.obj", "OBJ//CityCenter//roadTileStraight.mtl");
 
 }
 
@@ -452,6 +453,12 @@ void SceneMain::Render()
 	modelStack.Scale(1000, 1000, 1000);
 	modelStack.Rotate(-90, 1, 0, 0);
 	RenderMesh(meshList[GEO_QUAD], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0,-2,0);
+	modelStack.Scale(10, 1, 1);
+	RenderMesh(meshList[RoadTileStraight], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
