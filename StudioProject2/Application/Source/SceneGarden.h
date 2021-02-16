@@ -36,6 +36,7 @@ class SceneGarden : public Scene
 		GEO_TEXT,
 		GEO_GRASSFLOOR,
 		GEO_POND,
+		GEO_PONDBED,
 		GEO_GAZEBO,
 		GEO_TREE1,
 		GEO_TREE2,

@@ -1,0 +1,12 @@
+# Created by Kenney (www.kenney.nl)
+
+newmtl leafsGreen
+Ka 0.0607843 0.5882353 0.2705883
+Kd 0.1607843 0.5882353 0.3705883
+
+newmtl woodBark
+Ka 0.4862745 0.2137255 0.0411765
+Kd 0.6862745 0.4137255 0.2411765
+
+newmtl _defaultMat
+Kd 1 1 1
