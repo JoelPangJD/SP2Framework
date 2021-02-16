@@ -161,6 +161,8 @@ void Application::Run()
 			scene = scene3;
 		else if (IsKeyPressed(VK_F4))
 			scene = scene4;
+		else if (IsKeyPressed(VK_RETURN))
+			scene = scene0;
 		scene->Update(m_timer.getElapsedTime());
 		scene->Render();
 		//Swap buffers
