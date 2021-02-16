@@ -1,6 +1,6 @@
 # Blender v2.90.1 OBJ File: 'paint_picture.blend'
 # www.blender.org
-mtllib paint_flower.mtl
+mtllib Painting.mtl
 o painting_1.001_Cube.024
 v 0.000034 0.849288 -0.805047
 v 0.000034 1.401365 -0.805047

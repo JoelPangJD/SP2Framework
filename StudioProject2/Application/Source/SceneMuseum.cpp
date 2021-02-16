@@ -177,12 +177,15 @@ void SceneMuseum::Init()
 	meshList[GEO_ELEPHANT]->textureID = LoadTGA("Image//Museum//elephantfull.tga");
 	meshList[GEO_PAINTING] = MeshBuilder::GenerateOBJMTL("Painting", "OBJ//Museum//Painting.obj", "OBJ//Museum//Painting.mtl");
 	meshList[GEO_PAINTING]->textureID = LoadTGA("Image//Museum//painting.tga");
+	meshList[GEO_PAINTING2] = MeshBuilder::GenerateOBJMTL("2nd Painting", "OBJ//Museum//Painting.obj", "OBJ//Museum//Painting.mtl");
+	meshList[GEO_PAINTING2]->textureID = LoadTGA("Image//Museum//BritishlosttoJapan.tga");
 	meshList[GEO_GLASSTABLE] = MeshBuilder::GenerateOBJMTL("Glass Table", "OBJ//Museum//Wood_Table.obj", "OBJ//Museum//Wood_Table.mtl");
 	meshList[GEO_GLASSTABLE]->textureID = LoadTGA("Image//Museum//Reflexion.tga");
 	meshList[GEO_GLASSTABLE]->textureID = LoadTGA("Image//Museum//Wood_Table_C.tga");
 	meshList[GEO_GLASSTABLE]->textureID = LoadTGA("Image//Museum//Wood_Table_C_2.tga");
 	meshList[GEO_WALL] = MeshBuilder::GenerateOBJMTL("Wall", "OBJ//Museum//wallWoodHalf.obj", "OBJ//Museum//wallWoodHalf.mtl");
 	meshList[GEO_WALLCURVED] = MeshBuilder::GenerateOBJMTL("Wall", "OBJ//Museum//wallWoodCurved.obj", "OBJ//Museum//wallWoodCurved.mtl");
+	//meshList[GEO_RICKSHAW] = MeshBuilder::GenerateOBJMTL("Rickshaw", "OBJ//Museum//trishawobj.obj", "OBJ//Museum//trishawobj.mtl");
 
 
 	//Ground mesh
@@ -281,15 +284,10 @@ void SceneMuseum::RenderSkybox()
 
 	/*Author
 		======
-
 		This is the work of Emil Persson, aka Humus.
 		http://www.humus.name
-
-
-
 	License
 		====== =
-
 		This work is licensed under a Creative Commons Attribution 3.0 Unported License.
 		http://creativecommons.org/licenses/by/3.0/*/
 
@@ -335,6 +333,66 @@ void SceneMuseum::RenderSkybox()
 	RenderMesh(meshList[GEO_LEFT], false);
 	modelStack.PopMatrix();
 
+	modelStack.PopMatrix();
+}
+
+void SceneMuseum::RenderWalls()
+{
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 0, -2);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(20, 20, 90);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 0, -2);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(20, 80, 90);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(54.5, 0, -113.507);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(20, 80, 205);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+
+	modelStack.PushMatrix();
+	modelStack.Translate(93.77, 0, -235.091);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(20, 80, 60);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(161.5, 0, -120.507);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(20, 80, 217);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(206.5, 0, -2);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(20, 80, 110);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(57.0803, 0, -229.69);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(25, 40, 30);
+	RenderMesh(meshList[GEO_WALLCURVED], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(138.77, 0, -233.091);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(25, 40, 30);
+	RenderMesh(meshList[GEO_WALLCURVED], true);
 	modelStack.PopMatrix();
 }
 
@@ -505,63 +563,43 @@ void SceneMuseum::Render()
 	modelStack.Scale(1000, 1000, 1000);
 	RenderMesh(meshList[GEO_GROUND], false);
 	modelStack.PopMatrix();
-	
+
 	//OBJ
 	modelStack.PushMatrix();
-	modelStack.Translate(90.2891, 15, -156.542);
+	modelStack.Translate(90.2891, 20, -210.542);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(7, 7, 7);
 	RenderMesh(meshList[GEO_ELEPHANT], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-30, 0, 0);
-	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Translate(45.9141, -8.1529, -87.926);
+	modelStack.Rotate(0, 0, 1, 0);
 	modelStack.Scale(20, 25, 50);
 	RenderMesh(meshList[GEO_PAINTING], true);
 	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(145.9141, -8.1529, -87.926);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(20, 25, 50);
+	RenderMesh(meshList[GEO_PAINTING2], true);
+	modelStack.PopMatrix();
+	RenderWalls();
+
+	//modelStack.PushMatrix();
+	//modelStack.Translate(0, 0, -7.926);
+	//modelStack.Rotate(180, 0, 1, 0);
+	//modelStack.Scale(20, 25, 50);
+	//RenderMesh(meshList[GEO_RICKSHAW], true);
+	//modelStack.PopMatrix();
+	//RenderWalls();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(100, 5, 10);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(10, 10, 10);
 	RenderMesh(meshList[GEO_GLASSTABLE], true);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(0, 0, -2);
-	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(20, 20, 90);
-	RenderMesh(meshList[GEO_WALL], true);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(0, 0, -2);
-	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(20, 80, 90);
-	RenderMesh(meshList[GEO_WALL], true);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(54.5, 0, -113.507);
-	modelStack.Rotate(180, 0, 1, 0);
-	modelStack.Scale(20, 80, 205);
-	RenderMesh(meshList[GEO_WALL], true);
-	modelStack.PopMatrix();
-
-
-	modelStack.PushMatrix();
-	modelStack.Translate(93.77, 0, -235.091);
-	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(20, 80, 60);
-	RenderMesh(meshList[GEO_WALL], true);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(57.0803, 0, -229.69);
-	modelStack.Rotate(180, 0, 1, 0);
-	modelStack.Scale(25, 40, 30);
-	RenderMesh(meshList[GEO_WALLCURVED], true);
 	modelStack.PopMatrix();
 
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
