@@ -107,6 +107,9 @@ private:
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
 
+	float movex = 0, movez = 0;
+	float scale = 1;
+
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
 	void RenderUI();

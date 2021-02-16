@@ -7,7 +7,7 @@
 #include "shader.hpp"
 #include <Mtx44.h>
 #include"MeshBuilder.h"
-//testing 12132132123
+
 
 SceneMain::SceneMain()
 {
