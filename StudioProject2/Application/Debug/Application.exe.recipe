@@ -1,18 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
-<<<<<<< HEAD
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\Application.exe</FullPath>
+      <FullPath>C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\Application.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />
   <SatelliteDlls />
   <NonRecipeFileRefs />
-=======
-  <ProjectOutputs>S:\SP2\SP2Framework\StudioProject2\Debug\Application.exe</ProjectOutputs>
-  <ContentFiles></ContentFiles>
-  <SatelliteDlls></SatelliteDlls>
-  <NonRecipeFileRefs></NonRecipeFileRefs>
->>>>>>> 0dd208e631eb72f5de4ffdad4ae6b04a3942bea4
 </Project>
