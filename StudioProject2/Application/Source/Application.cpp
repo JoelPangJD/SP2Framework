@@ -138,16 +138,16 @@ void Application::SetSwitchScene()
 void Application::Run()
 {
 	//Main Loop
-	Scene* scene = new SceneMain();
+	Scene* scene3 = new SceneMain();
 	Scene* scene1 = new SceneMuseum();
 	Scene* scene2 = new SceneChangi();
-	Scene* scene3 = new SceneMarinaBay();
+	Scene* scene = new SceneMarinaBay();
 	Scene* scene4 = new SceneGarden();
 	scene->Init();
 	scene1->Init();
 	scene2->Init();
-	scene3->Init();
 	scene4->Init();
+	scene3->Init();
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
