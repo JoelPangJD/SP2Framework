@@ -139,30 +139,30 @@ void Application::Run()
 {
 	//Main Loop
 	Scene* scene0 = new SceneMain();
-	Scene* scene1 = new SceneMuseum();
-	Scene* scene2 = new SceneChangi();
-	Scene* scene3 = new SceneMarinaBay();
-	Scene* scene4 = new SceneGarden();
+	//Scene* scene1 = new SceneMuseum();
+	//Scene* scene2 = new SceneChangi();
+	//Scene* scene3 = new SceneMarinaBay();
+	//Scene* scene4 = new SceneGarden();
 	Scene* scene = scene0;
 	scene->Init();
-	scene1->Init();
-	scene2->Init();
-	scene3->Init();
-	scene4->Init();
+	//scene1->Init();
+	//scene2->Init();
+	//scene3->Init();
+	//scene4->Init();
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
 	{
-		if (IsKeyPressed(VK_F1))
-			scene = scene1;
-		else if (IsKeyPressed(VK_F2))
-			scene = scene2;
-		else if (IsKeyPressed(VK_F3))
-			scene = scene3;
-		else if (IsKeyPressed(VK_F4))
-			scene = scene4;
-		else if (IsKeyPressed(VK_RETURN))
-			scene = scene0;
+		//if (IsKeyPressed(VK_F1))
+		//	scene = scene1;
+		//else if (IsKeyPressed(VK_F2))
+		//	scene = scene2;
+		//else if (IsKeyPressed(VK_F3))
+		//	scene = scene3;
+		//else if (IsKeyPressed(VK_F4))
+		//	scene = scene4;
+		//else if (IsKeyPressed(VK_RETURN))
+		//	scene = scene0;
 		scene->Update(m_timer.getElapsedTime());
 		scene->Render();
 		//Swap buffers
@@ -173,15 +173,15 @@ void Application::Run()
 
 	} //Check if the ESC key had been pressed or if the window had been closed
 	scene0->Exit();
-	scene1->Exit();
-	scene2->Exit();
-	scene3->Exit();
-	scene4->Exit();
+	//scene1->Exit();
+	//scene2->Exit();
+	//scene3->Exit();
+	//scene4->Exit();
 	delete scene0;
-	delete scene1;
-	delete scene2;
-	delete scene3;
-	delete scene4;
+	//delete scene1;
+	//delete scene2;
+	//delete scene3;
+	//delete scene4;
 }
 
 void Application::Exit()
