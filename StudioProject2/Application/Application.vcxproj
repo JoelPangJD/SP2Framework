@@ -92,7 +92,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)glew\lib;$(SolutionDir)glfw\lib-vc2019;$(SolutionDir)$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;winmm.lib;Common.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:MSVCRT %(AdditionalOptions)</AdditionalOptions>
@@ -155,9 +155,10 @@
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshBuilder.cpp" />
-    <ClCompile Include="Source\SceneGarden.cpp" />
-    <ClCompile Include="Source\SceneMuseum.cpp" />
+    <ClCompile Include="Source\SceneChangi.cpp" />
+    <ClCompile Include="Source\SceneMarinaBay.cpp" />
     <ClCompile Include="Source\SceneMain.cpp" />
+    <ClCompile Include="Source\SceneMuseum.cpp" />
     <ClCompile Include="Source\shader.cpp" />
     <ClCompile Include="Source\Utility.cpp" />
   </ItemGroup>
@@ -170,9 +171,10 @@
     <ClInclude Include="Source\LoadOBJ.h" />
     <ClInclude Include="Source\LoadTGA.h" />
     <ClInclude Include="Source\Material.h" />
-    <ClInclude Include="Source\SceneGarden.h" />
-    <ClInclude Include="Source\SceneMuseum.h" />
+    <ClInclude Include="Source\SceneChangi.h" />
+    <ClInclude Include="Source\SceneMarinaBay.h" />
     <ClInclude Include="Source\SceneMain.h" />
+    <ClInclude Include="Source\SceneMuseum.h" />
     <ClInclude Include="Source\Utility.h" />
     <ClInclude Include="Source\Vertex.h" />
     <ClInclude Include="Source\Mesh.h" />

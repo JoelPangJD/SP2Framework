@@ -303,8 +303,6 @@ void SceneMain::RenderUI()
 	ss << "FPS: " << fps;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 29);
 	modelStack.PopMatrix();
-
-	std::cout << "d" << std::endl;
 }
 
 void SceneMain::RenderText(Mesh* mesh, std::string text, Color color)

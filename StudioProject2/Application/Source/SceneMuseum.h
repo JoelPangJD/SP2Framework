@@ -33,6 +33,7 @@ class SceneMuseum : public Scene
 		GEO_FRONT,
 		GEO_BACK,
 		GEO_INVENTORY,
+		GEO_GROUND,
 		GEO_TEXT,
 		NUM_GEOMETRY,
 	};

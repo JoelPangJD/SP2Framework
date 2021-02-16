@@ -7,7 +7,7 @@
 #include "shader.hpp"
 #include <Mtx44.h>
 #include"MeshBuilder.h"
-
+//testing 12132132123
 
 SceneMuseum::SceneMuseum()
 {
@@ -43,56 +43,9 @@ void SceneMuseum::Init()
 	glBindVertexArray(m_vertexArrayID);
 
 	//=============================================================================================
-
-	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
-	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.0f);
-	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.5f, 0.2f, 0.0f), 1);
-	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(0.5, 0.5, 0.5), 10, 10, 10);
-	meshList[GEO_SPHERE]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
-	meshList[GEO_SPHERE]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
-	meshList[GEO_SPHERE]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
-	meshList[GEO_SPHERE]->material.kShininess = 1.f;
-	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("Lightball", Color(1, 1, 1), 10, 10, 10);
-
-
-
-	meshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
-	meshList[GEO_INVENTORY]->textureID = LoadTGA("Image//testing.tga");
-
-
-	/*Author for skybox
-======
-
-This is the work of Emil Persson, aka Humus.
-http://www.humus.name
-
-
-
-License
-=======
-
-This work is licensed under a Creative Commons Attribution 3.0 Unported License.
-http://creativecommons.org/licenses/by/3.0/
-*/
-	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.0f);
-	meshList[GEO_LEFT]->textureID = LoadTGA("Image//leftward.tga");
-	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.0f);
-	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//rightward.tga");
-	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.0f);
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//forward.tga");
-	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.0f);
-	meshList[GEO_BACK]->textureID = LoadTGA("Image//backward.tga");
-	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.0f);
-	meshList[GEO_TOP]->textureID = LoadTGA("Image//up.tga");
-	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
-	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//down.tga");
-
-
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 	m_parameters[U_COLOR_TEXTURE_ENABLED] = glGetUniformLocation(m_programID, "colorTextureEnabled");
 	m_parameters[U_COLOR_TEXTURE] = glGetUniformLocation(m_programID, "colorTexture");
-
-
 	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
 	m_parameters[U_MODELVIEW] = glGetUniformLocation(m_programID, "MV");
 	m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE] = glGetUniformLocation(m_programID, "MV_inverse_transpose");
@@ -131,8 +84,6 @@ http://creativecommons.org/licenses/by/3.0/
 	glUniform1i(m_parameters[U_NUMLIGHTS], 1);
 
 	glUniform1i(m_parameters[U_NUMLIGHTS], 2);
-
-	glUniform1i(m_parameters[U_NUMLIGHTS], 3);
 
 	Mesh::SetMaterialLoc(m_parameters[U_MATERIAL_AMBIENT],
 		m_parameters[U_MATERIAL_DIFFUSE],
@@ -187,6 +138,42 @@ http://creativecommons.org/licenses/by/3.0/
 	glUniform1f(m_parameters[U_LIGHT1_COSCUTOFF], light[1].cosCutoff);
 	glUniform1f(m_parameters[U_LIGHT1_COSINNER], light[1].cosInner);
 	glUniform1f(m_parameters[U_LIGHT1_EXPONENT], light[1].exponent);
+
+
+
+	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
+	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.5f, 0.2f, 0.0f), 1);
+	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(0.5, 0.5, 0.5), 10, 10, 10);
+	meshList[GEO_SPHERE]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[GEO_SPHERE]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
+	meshList[GEO_SPHERE]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
+	meshList[GEO_SPHERE]->material.kShininess = 1.f;
+	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("Lightball", Color(1, 1, 1), 10, 10, 10);
+
+	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//font.tga");
+	meshList[GEO_GROUND] = MeshBuilder::GenerateQuad("Ground mesh", Color(1, 1, 1), 1.0f);
+	meshList[GEO_GROUND]->textureID = LoadTGA("Image//Wood.tga");
+
+	meshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
+	meshList[GEO_INVENTORY]->textureID = LoadTGA("Image//inventory.tga");
+
+
+	//Skybox quads
+	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.0f);
+	meshList[GEO_LEFT]->textureID = LoadTGA("Image//newleft.tga");
+	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.0f);
+	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//newright.tga");
+	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.0f);
+	meshList[GEO_FRONT]->textureID = LoadTGA("Image//newforward.tga");
+	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.0f);
+	meshList[GEO_BACK]->textureID = LoadTGA("Image//newbackward.tga");
+	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.0f);
+	meshList[GEO_TOP]->textureID = LoadTGA("Image//upward.tga");
+	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
+	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//newdown.tga");
+
+
 
 }
 
@@ -264,19 +251,20 @@ void SceneMuseum::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Translate(camera.position.x, camera.position.y + 200, camera.position.z);
 
-	/*~~~~~~~~~~~~~~~~
+	/*Author
+		======
 
-		Skybox Textures
-		SceneMuseum
+		This is the work of Emil Persson, aka Humus.
+		http://www.humus.name
 
-		~~~~~~~~~~~~~~~~
 
-		Author
-		~~~~~~
 
-		TH3RoP0D - X
+	License
+		====== =
 
-		~~~~~~~~~~~~~~~~*/
+		This work is licensed under a Creative Commons Attribution 3.0 Unported License.
+		http://creativecommons.org/licenses/by/3.0/*/
+
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, -499);
@@ -294,7 +282,6 @@ void SceneMuseum::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Translate(0, -499, 0);
 	modelStack.Rotate(-90, 1, 0, 0);
-	modelStack.Rotate(90, 0, 0, 1);
 	modelStack.Scale(1000, 1000, 1000);
 	RenderMesh(meshList[GEO_BOTTOM], false);
 	modelStack.PopMatrix();
@@ -302,7 +289,6 @@ void SceneMuseum::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 499, 0);
 	modelStack.Rotate(90, 1, 0, 0);
-	modelStack.Rotate(-90, 0, 0, 1);
 	modelStack.Scale(1000, 1000, 1000);
 	RenderMesh(meshList[GEO_TOP], false);
 	modelStack.PopMatrix();
@@ -326,9 +312,11 @@ void SceneMuseum::RenderSkybox()
 
 void SceneMuseum::RenderUI()
 {
+	modelStack.PushMatrix();
 	std::ostringstream ss;
 	ss << "FPS: " << fps;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 0, 29);
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 29);
+	modelStack.PopMatrix();
 }
 
 void SceneMuseum::RenderText(Mesh* mesh, std::string text, Color color)
@@ -415,7 +403,7 @@ void SceneMuseum::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int si
 	modelStack.PushMatrix();
 	modelStack.LoadIdentity();
 	modelStack.Translate(x, y, 0);
-	modelStack.Scale(20, 20, 0);
+	modelStack.Scale(sizex, sizey, 0);
 	RenderMesh(mesh, false); //UI should not have light
 	projectionStack.PopMatrix();
 	viewStack.PopMatrix();
@@ -475,6 +463,7 @@ void SceneMuseum::Render()
 		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
 	}
 
+	//RenderMeshOnScreen(meshList[GEO_INVENTORY], 40, 20, 30, 30);
 
 	//Skybox
 	RenderSkybox();
@@ -482,12 +471,17 @@ void SceneMuseum::Render()
 	//========================================================
 	//modelStack.LoadIdentity();
 
-	modelStack.PushMatrix();
-	modelStack.PushMatrix();
 	RenderMesh(meshList[GEO_AXES], false);
-	modelStack.PopMatrix();
-	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	modelStack.Translate(0, -5, 0);
+	modelStack.Rotate(90, 1, 0, 0);
+	modelStack.Rotate(-180, 1, 0, 0);
+	modelStack.Scale(1000, 1000, 1000);
+	RenderMesh(meshList[GEO_GROUND], false);
+	modelStack.PopMatrix();
+	
+	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();
 }
 
