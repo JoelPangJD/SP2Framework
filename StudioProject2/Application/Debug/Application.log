@@ -1,2 +1,13 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(491,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (StudioProject2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  Application.vcxproj -> C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Debug\Application.exe
+﻿  SceneChangi.cpp
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(29,35): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(121,22): warning C4305: '=': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(191,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(403,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(403,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(404,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(404,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Application.vcxproj -> S:\SP2\SP2Framework\StudioProject2\Debug\Application.exe

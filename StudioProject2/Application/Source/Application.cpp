@@ -140,10 +140,10 @@ void Application::Run()
 	//Main Loop
 	Scene* scene0 = new SceneMain();
 	Scene* scene1 = new SceneMuseum();
-	//Scene* scene1 = new SceneMain();
 	Scene* scene2 = new SceneChangi();
 	Scene* scene3 = new SceneMarinaBay();
 	Scene* scene4 = new SceneGarden();
+
 	Scene* scene = scene0;
 	scene->Init();
 	scene1->Init();
