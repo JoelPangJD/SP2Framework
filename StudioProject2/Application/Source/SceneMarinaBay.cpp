@@ -172,8 +172,8 @@ void SceneMarinaBay::Init()
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//bottom.tga");
 
-	meshList[GEO_BOAT] = MeshBuilder::GenerateOBJMTL("boat", "OBJ//watercraftPack_004.obj", "OBJ//watercraftPack_004.mtl");
-
+	meshList[GEO_BOAT] = MeshBuilder::GenerateOBJMTL("boat", "OBJ//boat.obj", "OBJ//boat.mtl");
+	meshList[GEO_WATER]= MeshBuilder::GenerateOBJMTL("water", "OBJ//water1.obj", "OBJ//water1.mtl");
 }
 
 
@@ -200,7 +200,14 @@ void SceneMarinaBay::Update(double dt)
 		light[0].type = Light::LIGHT_SPOT;
 		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
 	}
-
+	if (Application::IsKeyPressed('1'))
+		glEnable(GL_CULL_FACE);
+	else if (Application::IsKeyPressed('2'))
+		glDisable(GL_CULL_FACE);
+	else if (Application::IsKeyPressed('3'))
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //default fill mode
+	else if (Application::IsKeyPressed('4'))
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //wireframe mode
 }
 
 void SceneMarinaBay::RenderMesh(Mesh* mesh, bool enableLight)
@@ -461,12 +468,16 @@ void SceneMarinaBay::Render()
 	
 	//boat
 	modelStack.PushMatrix();
-	modelStack.Translate(0, -5, 0);
-	modelStack.Scale(10, 5, 10);
+	modelStack.Translate(0, -10, 0);
+	modelStack.Scale(30, 5, 50);
 	RenderMesh(meshList[GEO_BOAT], true);
 	modelStack.PopMatrix();
 
-
+	modelStack.PushMatrix();
+	modelStack.Translate(0, -2, 0);
+	modelStack.Scale(10, 1, 10);
+	RenderMesh(meshList[GEO_WATER], true);
+	modelStack.PopMatrix();
 
 
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
