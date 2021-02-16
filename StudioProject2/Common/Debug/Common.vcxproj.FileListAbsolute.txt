@@ -1,2 +1,4 @@
 C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\Common.pdb
 C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Common\Debug\Common.pdb
+S:\SP2\SP2Framework\StudioProject2\Debug\Common.pdb
+S:\SP2\SP2Framework\StudioProject2\Common\Debug\Common.pdb
