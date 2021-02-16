@@ -1,13 +1,6 @@
-﻿  SceneChangi.cpp
-S:\SP2\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(29,35): warning C4305: 'argument': truncation from 'double' to 'float'
-S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(121,22): warning C4305: '=': truncation from 'double' to 'float'
-S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(191,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(403,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(403,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(404,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(404,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  Application.vcxproj -> S:\SP2\SP2Framework\StudioProject2\Debug\Application.exe
+﻿  Application.cpp
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Application.vcxproj -> C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\Application.exe
