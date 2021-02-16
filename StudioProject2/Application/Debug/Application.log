@@ -1,21 +1,6 @@
-﻿  SceneMuseum.cpp
-C:\Users\admin\source\repos\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\admin\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\admin\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\admin\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\admin\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(27,68): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\admin\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(123,22): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\admin\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(201,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\admin\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(356,40): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\admin\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(364,41): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\admin\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(371,41): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\admin\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(385,42): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\admin\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(392,42): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\admin\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(491,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\admin\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(491,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\admin\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(492,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\admin\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(492,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\admin\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(569,44): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\admin\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(576,48): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\admin\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(583,49): warning C4305: 'argument': truncation from 'double' to 'float'
-  Application.vcxproj -> C:\Users\admin\Source\Repos\SP2Framework\StudioProject2\Debug\Application.exe
+﻿  Application.cpp
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Application.vcxproj -> S:\SP2\SP2Framework\StudioProject2\Debug\Application.exe
