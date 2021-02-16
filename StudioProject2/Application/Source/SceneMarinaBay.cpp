@@ -172,7 +172,7 @@ void SceneMarinaBay::Init()
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//bottom.tga");
 
-
+	meshList[GEO_BOAT] = MeshBuilder::GenerateOBJMTL("boat", "OBJ//watercraftPack_004.obj", "OBJ//watercraftPack_004.mtl");
 
 }
 
@@ -459,6 +459,16 @@ void SceneMarinaBay::Render()
 
 	RenderMesh(meshList[GEO_AXES], false);
 	
+	//boat
+	modelStack.PushMatrix();
+	modelStack.Translate(0, -5, 0);
+	modelStack.Scale(10, 5, 10);
+	RenderMesh(meshList[GEO_BOAT], true);
+	modelStack.PopMatrix();
+
+
+
+
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();
 }

@@ -142,7 +142,7 @@ void SceneMain::Init()
 
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
-	meshList[GEO_QUAD] = MeshBuilder::GenerateGroundMesh("quad", Color(1, 1, 1), 1.0f);
+	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", 1, 1, Color(1, 1, 1), 100);
 	meshList[GEO_QUAD]->textureID = LoadTGA("Image//brick.tga");
 	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.5f, 0.2f, 0.0f), 1);
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(0.5, 0.5, 0.5), 10, 10, 10);
