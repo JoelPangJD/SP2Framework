@@ -172,7 +172,8 @@ void SceneMain::Init()
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//bottomCityCenter.tga");
 
 	meshList[TREE] = MeshBuilder::GenerateOBJMTL("Tree", "OBJ//CityCenter//tree.obj", "OBJ//CityCenter//tree.mtl");
-	meshList[RoadTileStraight] = MeshBuilder::GenerateOBJMTL("Tree", "OBJ//CityCenter//roadTileStraight.obj", "OBJ//CityCenter//roadTileStraight.mtl");
+	meshList[RoadTileStraight] = MeshBuilder::GenerateOBJMTL("straight", "OBJ//CityCenter//roadTileStraight.obj", "OBJ//CityCenter//roadTileStraight.mtl");
+	meshList[RoadTileCross] = MeshBuilder::GenerateOBJMTL("cross", "OBJ//CityCenter//roadTileCross.obj", "OBJ//CityCenter//roadTileCross.mtl");
 
 }
 
@@ -456,10 +457,32 @@ void SceneMain::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(0,-2,0);
-	modelStack.Scale(10, 1, 1);
+	modelStack.Translate(3, -0.5, 1.5);
+	modelStack.Scale(20, 1, 1);
 	RenderMesh(meshList[RoadTileStraight], true);
 	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Translate(3, -0.5, 1.5);
+	modelStack.Scale(20, 1, 1);
+	RenderMesh(meshList[RoadTileStraight], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Translate(3, -0.5, 1.5);
+	modelStack.Scale(20, 1, 1);
+	RenderMesh(meshList[RoadTileStraight], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Rotate(270, 0, 1, 0);
+	modelStack.Translate(3, -0.5, 1.5);
+	modelStack.Scale(20, 1, 1);
+	RenderMesh(meshList[RoadTileStraight], true);
+	modelStack.PopMatrix();
+
 
 	modelStack.PushMatrix();
 	modelStack.Translate(5, 0, 5);
