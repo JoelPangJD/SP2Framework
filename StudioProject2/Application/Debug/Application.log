@@ -1,6 +1,2 @@
-﻿  Application.cpp
-C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+﻿  LINK : C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\Application.exe not found or not built by the last incremental link; performing full link
   Application.vcxproj -> C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\Application.exe
