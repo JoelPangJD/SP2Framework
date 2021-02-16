@@ -232,6 +232,19 @@ void SceneGarden::Update(double dt)
 		lighton = false;						//to test whether colours and stuff are working properly
 	else if (Application::IsKeyPressed('X'))
 		lighton = true;
+
+	if (Application::IsKeyPressed('I'))
+		movez += 10 * dt;
+	if (Application::IsKeyPressed('K'))
+		movez -= 10 * dt;
+	if (Application::IsKeyPressed('J'))
+		movex += 10 * dt;
+	if (Application::IsKeyPressed('L'))
+		movex -= 10 * dt;
+	if (Application::IsKeyPressed('U'))
+		scale += 10 * dt;
+	if (Application::IsKeyPressed('O'))
+		scale -= 10 * dt;
 }
 
 void SceneGarden::RenderMesh(Mesh* mesh, bool enableLight)
@@ -548,16 +561,106 @@ void SceneGarden::Render()
 	RenderMesh(meshList[GEO_GAZEBO], true);
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	//modelStack.Translate(50, 0, 50);
-	//modelStack.Scale(0.15, 0.15, 0.15);
-	RenderMesh(meshList[GEO_TREE2], true);
-	modelStack.PopMatrix();
+	//Tree1 locations
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(70, 0, 64);
+		modelStack.Scale(22, 22, 22);
+		RenderMesh(meshList[GEO_TREE1], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(24, 0, 47);
+		modelStack.Scale(18, 18, 18);
+		RenderMesh(meshList[GEO_TREE1], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(-25, 0, 80);
+		modelStack.Scale(18, 18, 18);
+		RenderMesh(meshList[GEO_TREE1], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(-25, 0, 16);
+		modelStack.Scale(11, 11, 11);
+		RenderMesh(meshList[GEO_TREE1], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(-43, 0, 47);
+		modelStack.Scale(18, 18, 18);
+		RenderMesh(meshList[GEO_TREE1], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(-43, 0, -24);
+		modelStack.Scale(17, 17, 17);
+		RenderMesh(meshList[GEO_TREE1], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(88, 0, -17);
+		modelStack.Scale(13, 13, 13);
+		RenderMesh(meshList[GEO_TREE1], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(112, 0, -75);
+		modelStack.Scale(13, 13, 13);
+		RenderMesh(meshList[GEO_TREE1], true);
+		modelStack.PopMatrix();
+	}
+
+	//Tree2 locations
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(-47, 0, 76);
+		modelStack.Scale(13, 13, 13);
+		RenderMesh(meshList[GEO_TREE2], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(1, 0, 54);
+		modelStack.Scale(17, 17, 17);
+		RenderMesh(meshList[GEO_TREE2], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(130, 0, -60);
+		modelStack.Scale(17, 17, 17);
+		RenderMesh(meshList[GEO_TREE2], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(80, 0, 27);
+		modelStack.Scale(15, 15, 15);
+		RenderMesh(meshList[GEO_TREE2], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(-124, 0, -129);
+		modelStack.Scale(19, 19, 19);
+		RenderMesh(meshList[GEO_TREE2], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(-120, 0, 32);
+		modelStack.Scale(14, 14, 14);
+		RenderMesh(meshList[GEO_TREE2], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(-123, 0, -42);
+		modelStack.Scale(21, 21, 21);
+		RenderMesh(meshList[GEO_TREE2], true);
+		modelStack.PopMatrix();
+	}
 
 	modelStack.PushMatrix();
-	//modelStack.Translate(50, 0, 50);
-	//modelStack.Scale(0.15, 0.15, 0.15);
-	RenderMesh(meshList[GEO_TREE1], true);
+	modelStack.Translate(movex, 0, movez);
+	modelStack.Scale(scale, scale, scale);
+	RenderMesh(meshList[GEO_TREE2], true);
 	modelStack.PopMatrix();
 
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
