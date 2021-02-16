@@ -36,6 +36,7 @@ class SceneGarden : public Scene
 		GEO_TEXT,
 		GEO_GRASSFLOOR,
 		GEO_POND,
+		GEO_PONDBED,
 		GEO_GAZEBO,
 		GEO_TREE1,
 		GEO_TREE2,
@@ -105,6 +106,9 @@ private:
 	unsigned m_programID;
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
+
+	float movex = 0, movez = 0;
+	float scale = 1;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();

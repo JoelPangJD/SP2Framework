@@ -29,6 +29,9 @@ class SceneMain : public Scene
 		GEO_TEXT,
 		TREE,
 		RoadTileStraight,
+		RoadStraightBarrier,
+		RoadCross,
+		RoadCrossBarrier,
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE
