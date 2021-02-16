@@ -24,7 +24,7 @@ void SceneMuseum::Init()
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
 	//==========================
-	camera.Init(Vector3(0, 3, 0), Vector3(0, 3, 5), Vector3(0, 1, 0));
+	camera.Init(Vector3(0, 10, 0), Vector3(-0.0539515, 10.0687, 0.996179), Vector3(0, 1, 0));
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 
@@ -142,6 +142,7 @@ void SceneMuseum::Init()
 
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
+	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.0f);
 	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.5f, 0.2f, 0.0f), 1);
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(0.5, 0.5, 0.5), 10, 10, 10);
 	meshList[GEO_SPHERE]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
@@ -152,8 +153,6 @@ void SceneMuseum::Init()
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//font.tga");
-	meshList[GEO_GROUND] = MeshBuilder::GenerateQuad("Ground mesh", Color(1, 1, 1), 1.0f);
-	meshList[GEO_GROUND]->textureID = LoadTGA("Image//Wood.tga");
 
 	meshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
 	meshList[GEO_INVENTORY]->textureID = LoadTGA("Image//inventory.tga");
@@ -173,7 +172,20 @@ void SceneMuseum::Init()
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//newdown.tga");
 
+	//OBJs
+	meshList[GEO_ELEPHANT] = MeshBuilder::GenerateOBJMTL("Elephant", "OBJ//elephant.obj", "OBJ//elephant.mtl");
+	meshList[GEO_ELEPHANT]->textureID = LoadTGA("Image//elephantfull.tga");
+	meshList[GEO_PAINTING] = MeshBuilder::GenerateOBJMTL("Painting", "OBJ//Painting.obj", "OBJ//Painting.mtl");
+	meshList[GEO_PAINTING]->textureID = LoadTGA("Image//painting.tga");
+	meshList[GEO_GLASSTABLE] = MeshBuilder::GenerateOBJMTL("Glass Table", "OBJ//Wood_Table.obj", "OBJ//Wood_Table.mtl");
+	meshList[GEO_GLASSTABLE]->textureID = LoadTGA("Image//Reflexion.tga");
+	meshList[GEO_GLASSTABLE]->textureID = LoadTGA("Image//Wood_Table_C.tga");
+	meshList[GEO_GLASSTABLE]->textureID = LoadTGA("Image//Wood_Table_C_2.tga");
 
+
+	//Ground mesh
+	meshList[GEO_GROUND] = MeshBuilder::GenerateQuad("ground", Color(1, 1, 1), 1.0f);
+	meshList[GEO_GROUND]->textureID = LoadTGA("Image//wood.tga");
 
 }
 
@@ -200,6 +212,20 @@ void SceneMuseum::Update(double dt)
 		//to do: switch light type to SPOT and pass the information to shader
 		light[0].type = Light::LIGHT_SPOT;
 		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
+	}
+
+	if (Application::IsKeyPressed('Z'))
+	{
+		std::cout << "Character position X: " << camera.position.x << std::endl;
+		std::cout << "Character position Y: " << camera.position.y << std::endl;
+		std::cout << "Character position Z: " << camera.position.z << std::endl;
+	}
+
+	if (Application::IsKeyPressed('X'))
+	{
+		std::cout << "Target position X: " << camera.target.x << std::endl;
+		std::cout << "Target position Y: " << camera.target.y << std::endl;
+		std::cout << "Target position X: " << camera.target.z << std::endl;
 	}
 
 }
@@ -463,24 +489,49 @@ void SceneMuseum::Render()
 		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
 	}
 
-	//RenderMeshOnScreen(meshList[GEO_INVENTORY], 40, 20, 30, 30);
-
 	//Skybox
 	RenderSkybox();
 
-	//========================================================
-	//modelStack.LoadIdentity();
 
 	RenderMesh(meshList[GEO_AXES], false);
 
+	//GROUND MESH
 	modelStack.PushMatrix();
-	modelStack.Translate(0, -5, 0);
+	modelStack.Translate(0, 0, 0);
 	modelStack.Rotate(90, 1, 0, 0);
-	modelStack.Rotate(-180, 1, 0, 0);
+	modelStack.Rotate(180, 1, 0, 0);
 	modelStack.Scale(1000, 1000, 1000);
 	RenderMesh(meshList[GEO_GROUND], false);
 	modelStack.PopMatrix();
 	
+	//OBJ
+	modelStack.PushMatrix();
+	modelStack.Translate(200, 20, -20);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(7, 7, 7);
+	RenderMesh(meshList[GEO_ELEPHANT], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 0, 0);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(20, 25, 50);
+	RenderMesh(meshList[GEO_PAINTING], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(100, 5, 10);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(10, 10, 10);
+	RenderMesh(meshList[GEO_GLASSTABLE], true);
+	modelStack.PopMatrix();
+
+
+
+
+
+
+
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();
 }
