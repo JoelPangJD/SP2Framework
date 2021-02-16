@@ -185,6 +185,7 @@ void SceneMuseum::Init()
 	meshList[GEO_GLASSTABLE]->textureID = LoadTGA("Image//Museum//Wood_Table_C_2.tga");
 	meshList[GEO_WALL] = MeshBuilder::GenerateOBJMTL("Wall", "OBJ//Museum//wallWoodHalf.obj", "OBJ//Museum//wallWoodHalf.mtl");
 	meshList[GEO_WALLCURVED] = MeshBuilder::GenerateOBJMTL("Wall", "OBJ//Museum//wallWoodCurved.obj", "OBJ//Museum//wallWoodCurved.mtl");
+	meshList[GEO_RICKSHAW] = MeshBuilder::GenerateOBJMTL("Rickshaw", "OBJ//Museum//trishawobj.obj", "OBJ//Museum//trishawobj.mtl");
 
 
 	//Ground mesh
@@ -588,6 +589,14 @@ void SceneMuseum::Render()
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(20, 25, 50);
 	RenderMesh(meshList[GEO_PAINTING2], true);
+	modelStack.PopMatrix();
+	RenderWalls();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 0, -7.926);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(20, 25, 50);
+	RenderMesh(meshList[GEO_RICKSHAW], true);
 	modelStack.PopMatrix();
 	RenderWalls();
 
