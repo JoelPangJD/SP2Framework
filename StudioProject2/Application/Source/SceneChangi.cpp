@@ -7,6 +7,8 @@
 #include "shader.hpp"
 #include <Mtx44.h>
 #include"MeshBuilder.h"
+#include <iostream>
+#include <sstream>
 //testing 12132132123
 
 SceneChangi::SceneChangi()
@@ -24,7 +26,7 @@ void SceneChangi::Init()
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
 	//==========================
-	camera.Init(Vector3(0, 3, 0), Vector3(0, 3, 5), Vector3(0, 1, 0));
+	camera.Init(Vector3(-189, 4.34, 0), Vector3(0, 3, 5), Vector3(0, 1, 0));
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 
@@ -51,10 +53,6 @@ void SceneChangi::Init()
 	m_parameters[U_MATERIAL_DIFFUSE] = glGetUniformLocation(m_programID, "material.kDiffuse");
 	m_parameters[U_MATERIAL_SPECULAR] = glGetUniformLocation(m_programID, "material.kSpecular");
 	m_parameters[U_MATERIAL_SHININESS] = glGetUniformLocation(m_programID, "material.kShininess");
-
-
-	Mesh::SetMaterialLoc(m_parameters[U_MATERIAL_AMBIENT], m_parameters[U_MATERIAL_DIFFUSE], m_parameters[U_MATERIAL_SPECULAR], m_parameters[U_MATERIAL_SHININESS]);
-
 	m_parameters[U_COLOR_TEXTURE_ENABLED] = glGetUniformLocation(m_programID, "colorTextureEnabled");
 	m_parameters[U_COLOR_TEXTURE] = glGetUniformLocation(m_programID, "colorTexture");
 	m_parameters[U_LIGHT0_POSITION] = glGetUniformLocation(m_programID, "lights[0].position_cameraspace");
@@ -89,7 +87,7 @@ void SceneChangi::Init()
 
 	glUniform1i(m_parameters[U_NUMLIGHTS], 2);
 
-
+	Mesh::SetMaterialLoc(m_parameters[U_MATERIAL_AMBIENT], m_parameters[U_MATERIAL_DIFFUSE], m_parameters[U_MATERIAL_SPECULAR], m_parameters[U_MATERIAL_SHININESS]);
 	// Get a handle for our "textColor" uniform
 	m_parameters[U_TEXT_ENABLED] = glGetUniformLocation(m_programID, "textEnabled");
 	m_parameters[U_TEXT_COLOR] = glGetUniformLocation(m_programID, "textColor");
@@ -177,6 +175,8 @@ void SceneChangi::Init()
 
 	//OBJ
 	meshList[GEO_TOWER] = MeshBuilder::GenerateOBJMTL("tower", "OBJ//ChangiTower.obj", "OBJ//ChangiTower.mtl");
+
+	meshList[GEO_AIRPORT] = MeshBuilder::GenerateOBJMTL("airport", "OBJ//airport.obj", "OBJ//airport.mtl");
 
 }
 
@@ -477,7 +477,26 @@ void SceneChangi::Render()
 	RenderUI();
 
 	modelStack.PushMatrix();
+	modelStack.Translate(117, 0, 117);
+	modelStack.Scale(10, 10, 10);
 	RenderMesh(meshList[GEO_TOWER], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Scale(10,10, 10);
+	RenderMesh(meshList[GEO_AIRPORT], true);
+	modelStack.PopMatrix();
+
+
+	std::stringstream ssX;
+	std::stringstream ssZ;
+	ssX.precision(3);
+	ssX << "X: " << camera.position.x;
+	ssZ.precision(3);
+	ssZ << "Z: " << camera.position.z;
+	modelStack.PushMatrix();
+	modelStack.Scale(5, 5, 5);
+	RenderTextOnScreen(meshList[GEO_TEXT], ssX.str() + ssZ.str(), Color(0, 1, 0), 4, 0, 13);
 	modelStack.PopMatrix();
 }
 
