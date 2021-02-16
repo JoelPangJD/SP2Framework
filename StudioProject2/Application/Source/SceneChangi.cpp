@@ -178,6 +178,10 @@ void SceneChangi::Init()
 
 	meshList[GEO_AIRPORT] = MeshBuilder::GenerateOBJMTL("airport", "OBJ//airport.obj", "OBJ//airport.mtl");
 
+	meshList[GEO_PLANE] = MeshBuilder::GenerateOBJMTL("plane", "OBJ//plane.obj", "OBJ//plane.mtl");
+
+	//roadOBJ
+	meshList[GEO_STRAIGHT] = MeshBuilder::GenerateOBJMTL("roadStraight", "OBJ//straightRoad.obj", "OBJ//straightRoad.mtl");
 }
 
 
@@ -311,6 +315,7 @@ void SceneChangi::RenderUI()
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 29);
 	modelStack.PopMatrix();
 }
+
 
 void SceneChangi::RenderText(Mesh* mesh, std::string text, Color color)
 {
@@ -473,30 +478,49 @@ void SceneChangi::Render()
 	RenderMesh(meshList[GEO_QUAD], false);
 	modelStack.PopMatrix();
 	
-	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
-	RenderUI();
-
 	modelStack.PushMatrix();
-	modelStack.Translate(117, 0, 117);
-	modelStack.Scale(10, 10, 10);
+	modelStack.Translate(-500, 0, 0);
+	modelStack.Scale(20, 20, 20);
 	RenderMesh(meshList[GEO_TOWER], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Scale(10,10, 10);
+	modelStack.Translate(0, -10, 0);
+	modelStack.Scale(10 ,30, 30);
 	RenderMesh(meshList[GEO_AIRPORT], true);
 	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	modelStack.Translate(10, 16.5, -6.5);
+	modelStack.Rotate(-90, 0, 1, 0);
+	modelStack.Scale(7, 7, 7);
+	RenderMesh(meshList[GEO_PLANE], true);
+	modelStack.PopMatrix();
 
 	std::stringstream ssX;
 	std::stringstream ssZ;
-	ssX.precision(3);
+	ssX.precision(3);	
 	ssX << "X: " << camera.position.x;
 	ssZ.precision(3);
 	ssZ << "Z: " << camera.position.z;
 	modelStack.PushMatrix();
 	modelStack.Scale(5, 5, 5);
 	RenderTextOnScreen(meshList[GEO_TEXT], ssX.str() + ssZ.str(), Color(0, 1, 0), 4, 0, 13);
+	modelStack.PopMatrix();
+
+	RenderRoad();
+
+	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
+	RenderUI();
+}
+
+void SceneChangi::RenderRoad()
+{
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 0, 50);
+	modelStack.Scale(100, 100, 100);
+	modelStack.Rotate(-90, 0, 1, 0);
+	RenderMesh(meshList[GEO_STRAIGHT], true);
 	modelStack.PopMatrix();
 }
 

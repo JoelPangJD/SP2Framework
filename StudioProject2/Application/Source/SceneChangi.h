@@ -34,6 +34,8 @@ class SceneChangi : public Scene
 		GEO_BACK,
 		GEO_TOWER,
 		GEO_AIRPORT,
+		GEO_STRAIGHT,
+		GEO_PLANE,
 		GEO_INVENTORY,
 		GEO_TEXT,
 		NUM_GEOMETRY,
@@ -106,6 +108,7 @@ private:
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
 	void RenderUI();
+	void RenderRoad();
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
