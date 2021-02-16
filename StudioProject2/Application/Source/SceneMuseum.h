@@ -38,6 +38,7 @@ class SceneMuseum : public Scene
 		GEO_WALL,
 		GEO_WALLCURVED,
 		GEO_PAINTING,
+		GEO_PAINTING2,
 		GEO_GLASSTABLE,
 		GEO_GROUND,
 		NUM_GEOMETRY,
@@ -109,6 +110,7 @@ private:
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
+	void RenderWalls();
 	void RenderUI();
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
