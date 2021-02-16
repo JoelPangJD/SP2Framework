@@ -172,6 +172,7 @@ void SceneMarinaBay::Init()
 
 	meshList[GEO_BOAT] = MeshBuilder::GenerateOBJMTL("boat", "OBJ//boat.obj", "OBJ//boat.mtl");
 	meshList[GEO_WATER]= MeshBuilder::GenerateOBJMTL("water", "OBJ//water1.obj", "OBJ//water1.mtl");
+	meshList[GEO_TREE] = MeshBuilder::GenerateOBJMTL("water", "OBJ//palm_tree_short.obj", "OBJ//palm_tree_short.mtl");
 }
 
 
@@ -206,6 +207,10 @@ void SceneMarinaBay::Update(double dt)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //default fill mode
 	else if (Application::IsKeyPressed('4'))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //wireframe mode
+	if (Application::IsKeyPressed('Z'))
+		lighton = false;						//to test whether colours and stuff are working properly
+	else if (Application::IsKeyPressed('X'))
+		lighton = true;
 }
 
 void SceneMarinaBay::RenderMesh(Mesh* mesh, bool enableLight)
@@ -472,11 +477,16 @@ void SceneMarinaBay::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(0, -2, 0);
-	modelStack.Scale(10, 1, 10);
+	modelStack.Translate(15, -4.5, 0);
+	modelStack.Scale(30, 1, 30);
 	RenderMesh(meshList[GEO_WATER], true);
 	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 0, 0);
+	modelStack.Scale(10, 10, 10);
+	RenderMesh(meshList[GEO_TREE], true);
+	modelStack.PopMatrix();
 
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();
