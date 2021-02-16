@@ -13,6 +13,7 @@
 
 #include "SceneMain.h"
 #include "SceneMuseum.h"
+#include "SceneGarden.h"
 #include "SceneChangi.h"
 #include "SceneMarinaBay.h"
 
@@ -141,10 +142,12 @@ void Application::Run()
 	Scene* scene1 = new SceneMuseum();
 	Scene* scene2 = new SceneChangi();
 	Scene* scene3 = new SceneMarinaBay();
+	Scene* scene4 = new SceneGarden();
 	scene->Init();
 	scene1->Init();
 	scene2->Init();
 	scene3->Init();
+	scene4->Init();
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
@@ -155,6 +158,8 @@ void Application::Run()
 			scene = scene2;
 		else if (IsKeyPressed(VK_F3))
 			scene = scene3;
+		else if (IsKeyPressed(VK_F4))
+			scene = scene4;
 		scene->Update(m_timer.getElapsedTime());
 		scene->Render();
 		//Swap buffers
@@ -168,7 +173,11 @@ void Application::Run()
 	scene1->Exit();
 	scene2->Exit();
 	scene3->Exit();
-	delete scene;
+	scene4->Exit();
+	delete scene1;
+	delete scene2;
+	delete scene3;
+	delete scene4;
 
 }
 
