@@ -469,6 +469,7 @@ void SceneChangi::Render()
 	if (use == true) {
 		camera.position.x = -45;
 		camera.position.y = 40;
+		camera.position.z = 0;
 	}
 	//Skybox
 	RenderSkybox();
@@ -478,13 +479,17 @@ void SceneChangi::Render()
 
 	RenderMesh(meshList[GEO_AXES], false);
 
+
+
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, 0);
+	modelStack.Translate(camera.position.x,0, camera.position.z);
 	modelStack.Scale(1000, 1000, 1000);
 	modelStack.Rotate(-90, 1, 0, 0);
 	RenderMesh(meshList[GEO_QUAD], false);
 	modelStack.PopMatrix();
-	
+
+
 	modelStack.PushMatrix();
 	modelStack.Translate(-500, 0, 0);
 	modelStack.Scale(20, 20, 20);
@@ -504,6 +509,8 @@ void SceneChangi::Render()
 	RenderMesh(meshList[GEO_PLANE], true);
 	modelStack.PopMatrix();
 
+	RenderRoad();
+
 	std::stringstream ssX;
 	std::stringstream ssZ;
 	ssX.precision(3);	
@@ -514,8 +521,6 @@ void SceneChangi::Render()
 	modelStack.Scale(5, 5, 5);
 	RenderTextOnScreen(meshList[GEO_TEXT], ssX.str() + ssZ.str(), Color(0, 1, 0), 4, 0, 13);
 	modelStack.PopMatrix();
-
-	RenderRoad();
 
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();
