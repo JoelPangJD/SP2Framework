@@ -178,7 +178,6 @@ void Application::Run()
 	delete scene2;
 	delete scene3;
 	delete scene4;
-
 }
 
 void Application::Exit()

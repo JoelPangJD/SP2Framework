@@ -142,7 +142,8 @@ void SceneMain::Init()
 
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
-	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.0f);
+	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", 1, 1, Color(1, 1, 1), 100);
+	meshList[GEO_QUAD]->textureID = LoadTGA("Image//brick.tga");
 	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.5f, 0.2f, 0.0f), 1);
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(0.5, 0.5, 0.5), 10, 10, 10);
 	meshList[GEO_SPHERE]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
@@ -160,17 +161,17 @@ void SceneMain::Init()
 
 	//Skybox quads
 	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.0f);
-	meshList[GEO_LEFT]->textureID = LoadTGA("Image//left.tga");
+	meshList[GEO_LEFT]->textureID = LoadTGA("Image//leftCityCenter.tga");
 	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.0f);
-	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//right.tga");
+	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//rightCityCenter.tga");
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.0f);
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//front.tga");
+	meshList[GEO_FRONT]->textureID = LoadTGA("Image//frontCityCenter.tga");
 	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.0f);
-	meshList[GEO_BACK]->textureID = LoadTGA("Image//back.tga");
+	meshList[GEO_BACK]->textureID = LoadTGA("Image//backCityCenter.tga");
 	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.0f);
-	meshList[GEO_TOP]->textureID = LoadTGA("Image//top.tga");
+	meshList[GEO_TOP]->textureID = LoadTGA("Image//topCityCenter.tga");
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
-	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//bottom.tga");
+	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//bottomCityCenter.tga");
 
 
 
@@ -248,7 +249,7 @@ void SceneMain::RenderMesh(Mesh* mesh, bool enableLight)
 void SceneMain::RenderSkybox()
 {
 	modelStack.PushMatrix();
-	modelStack.Translate(camera.position.x, camera.position.y + 200, camera.position.z);
+	modelStack.Translate(camera.position.x, camera.position.y, camera.position.z);
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, -499);
@@ -458,6 +459,12 @@ void SceneMain::Render()
 	//modelStack.LoadIdentity();
 
 	RenderMesh(meshList[GEO_AXES], false);
+
+	modelStack.PushMatrix();
+	modelStack.Scale(1000, 1000, 1000);
+	modelStack.Rotate(-90, 1, 0, 0);
+	RenderMesh(meshList[GEO_QUAD], false);
+	modelStack.PopMatrix();
 	
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();
