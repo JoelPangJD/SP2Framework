@@ -7,6 +7,8 @@
 #include "shader.hpp"
 #include <Mtx44.h>
 #include"MeshBuilder.h"
+#include <iostream>
+#include <sstream>
 //testing 12132132123
 
 SceneChangi::SceneChangi()
@@ -19,23 +21,12 @@ SceneChangi::~SceneChangi()
 
 void SceneChangi::Init()
 {
-	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
-	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
-	m_parameters[U_MODELVIEW] = glGetUniformLocation(m_programID, "MV");
-	m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE] = glGetUniformLocation(m_programID, "MV_inverse_transpose");
-	m_parameters[U_MATERIAL_AMBIENT] = glGetUniformLocation(m_programID, "material.kAmbient");
-	m_parameters[U_MATERIAL_DIFFUSE] = glGetUniformLocation(m_programID, "material.kDiffuse");
-	m_parameters[U_MATERIAL_SPECULAR] = glGetUniformLocation(m_programID, "material.kSpecular");
-	m_parameters[U_MATERIAL_SHININESS] = glGetUniformLocation(m_programID, "material.kShininess");
-
-
-	Mesh::SetMaterialLoc(m_parameters[U_MATERIAL_AMBIENT], m_parameters[U_MATERIAL_DIFFUSE], m_parameters[U_MATERIAL_SPECULAR], m_parameters[U_MATERIAL_SHININESS]);
 	//======Matrix stack========
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
 	//==========================
-	camera.Init(Vector3(0, 3, 0), Vector3(0, 3, 5), Vector3(0, 1, 0));
+	camera.Init(Vector3(-189, 4.34, 0), Vector3(0, 3, 5), Vector3(0, 1, 0));
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 
@@ -54,7 +45,14 @@ void SceneChangi::Init()
 	glBindVertexArray(m_vertexArrayID);
 
 	//=============================================================================================
-
+	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
+	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
+	m_parameters[U_MODELVIEW] = glGetUniformLocation(m_programID, "MV");
+	m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE] = glGetUniformLocation(m_programID, "MV_inverse_transpose");
+	m_parameters[U_MATERIAL_AMBIENT] = glGetUniformLocation(m_programID, "material.kAmbient");
+	m_parameters[U_MATERIAL_DIFFUSE] = glGetUniformLocation(m_programID, "material.kDiffuse");
+	m_parameters[U_MATERIAL_SPECULAR] = glGetUniformLocation(m_programID, "material.kSpecular");
+	m_parameters[U_MATERIAL_SHININESS] = glGetUniformLocation(m_programID, "material.kShininess");
 	m_parameters[U_COLOR_TEXTURE_ENABLED] = glGetUniformLocation(m_programID, "colorTextureEnabled");
 	m_parameters[U_COLOR_TEXTURE] = glGetUniformLocation(m_programID, "colorTexture");
 	m_parameters[U_LIGHT0_POSITION] = glGetUniformLocation(m_programID, "lights[0].position_cameraspace");
@@ -89,7 +87,7 @@ void SceneChangi::Init()
 
 	glUniform1i(m_parameters[U_NUMLIGHTS], 2);
 
-
+	Mesh::SetMaterialLoc(m_parameters[U_MATERIAL_AMBIENT], m_parameters[U_MATERIAL_DIFFUSE], m_parameters[U_MATERIAL_SPECULAR], m_parameters[U_MATERIAL_SHININESS]);
 	// Get a handle for our "textColor" uniform
 	m_parameters[U_TEXT_ENABLED] = glGetUniformLocation(m_programID, "textEnabled");
 	m_parameters[U_TEXT_COLOR] = glGetUniformLocation(m_programID, "textColor");
@@ -142,7 +140,10 @@ void SceneChangi::Init()
 
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
-	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.0f);
+
+	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("ground", Color(1, 1, 1), 1.0f);
+	meshList[GEO_QUAD]->textureID = LoadTGA("Image//changiGround.tga");
+
 	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.5f, 0.2f, 0.0f), 1);
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(0.5, 0.5, 0.5), 10, 10, 10);
 	meshList[GEO_SPHERE]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
@@ -160,13 +161,13 @@ void SceneChangi::Init()
 
 	//Skybox quads
 	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.0f);
-	meshList[GEO_LEFT]->textureID = LoadTGA("Image//cloudLeft.tga");
+	meshList[GEO_LEFT]->textureID = LoadTGA("Image//cloudBack.tga");
 	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.0f);
-	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//cloudRight.tga");
+	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//cloudFront.tga");
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.0f);
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//cloudFront.tga");
+	meshList[GEO_FRONT]->textureID = LoadTGA("Image//cloudRight.tga");
 	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.0f);
-	meshList[GEO_BACK]->textureID = LoadTGA("Image//cloudBack.tga");
+	meshList[GEO_BACK]->textureID = LoadTGA("Image//cloudLeft.tga");
 	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.0f);
 	meshList[GEO_TOP]->textureID = LoadTGA("Image//cloudUp.tga");
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
@@ -174,6 +175,8 @@ void SceneChangi::Init()
 
 	//OBJ
 	meshList[GEO_TOWER] = MeshBuilder::GenerateOBJMTL("tower", "OBJ//ChangiTower.obj", "OBJ//ChangiTower.mtl");
+
+	meshList[GEO_AIRPORT] = MeshBuilder::GenerateOBJMTL("airport", "OBJ//airport.obj", "OBJ//airport.mtl");
 
 }
 
@@ -284,6 +287,7 @@ void SceneChangi::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Translate(499, 0, 0);
 	modelStack.Rotate(-90, 0, 1, 0);
+	modelStack.Rotate(180, 0, 0, 1);
 	modelStack.Scale(1000, 1000, 1000);
 	RenderMesh(meshList[GEO_RIGHT], false);
 	modelStack.PopMatrix();
@@ -291,6 +295,7 @@ void SceneChangi::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Translate(-499, 0, 0);
 	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(180, 0, 0, 1);
 	modelStack.Scale(1000, 1000, 1000);
 	RenderMesh(meshList[GEO_LEFT], false);
 	modelStack.PopMatrix();
@@ -460,12 +465,38 @@ void SceneChangi::Render()
 	modelStack.LoadIdentity();
 
 	RenderMesh(meshList[GEO_AXES], false);
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 0, 0);
+	modelStack.Scale(1000, 1000, 1000);
+	modelStack.Rotate(-90, 1, 0, 0);
+	RenderMesh(meshList[GEO_QUAD], false);
+	modelStack.PopMatrix();
 	
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();
 
 	modelStack.PushMatrix();
+	modelStack.Translate(117, 0, 117);
+	modelStack.Scale(10, 10, 10);
 	RenderMesh(meshList[GEO_TOWER], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Scale(10,10, 10);
+	RenderMesh(meshList[GEO_AIRPORT], true);
+	modelStack.PopMatrix();
+
+
+	std::stringstream ssX;
+	std::stringstream ssZ;
+	ssX.precision(3);
+	ssX << "X: " << camera.position.x;
+	ssZ.precision(3);
+	ssZ << "Z: " << camera.position.z;
+	modelStack.PushMatrix();
+	modelStack.Scale(5, 5, 5);
+	RenderTextOnScreen(meshList[GEO_TEXT], ssX.str() + ssZ.str(), Color(0, 1, 0), 4, 0, 13);
 	modelStack.PopMatrix();
 }
 

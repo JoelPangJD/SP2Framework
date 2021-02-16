@@ -34,9 +34,9 @@ class SceneMarinaBay : public Scene
 		GEO_BACK,
 		GEO_INVENTORY,
 		GEO_TEXT,
-
 		GEO_BOAT,
 		GEO_TREE,
+		GEO_WATER,
 
 		NUM_GEOMETRY,
 	};

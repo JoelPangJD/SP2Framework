@@ -1,13 +1,57 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(491,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (StudioProject2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  SceneGarden.cpp
-C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(121,22): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(194,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(402,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(402,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(403,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(403,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  Application.vcxproj -> C:\Users\Squid\Documents\GitHub\SP2Framework\StudioProject2\Debug\Application.exe
+﻿  Application.cpp
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  SceneChangi.cpp
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(29,35): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(121,22): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(187,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(398,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(398,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(399,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(399,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  SceneMarinaBay.cpp
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(182,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(401,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(401,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(402,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(402,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(490,33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  SceneMuseum.cpp
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(27,70): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(123,22): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(196,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(431,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(431,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(432,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(432,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Generating Code...
+  LINK : C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\Application.exe not found or not built by the last incremental link; performing full link
+Utility.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'Utility.obj' or at 'C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+shader.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'shader.obj' or at 'C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+SceneGarden.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'SceneGarden.obj' or at 'C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+MeshBuilder.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'MeshBuilder.obj' or at 'C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+Mesh.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'Mesh.obj' or at 'C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+main.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'main.obj' or at 'C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+LoadTGA.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'LoadTGA.obj' or at 'C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+LoadOBJ.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'LoadOBJ.obj' or at 'C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+Entity.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'Entity.obj' or at 'C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+Camera3.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'Camera3.obj' or at 'C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\vc142.pdb'; linking object as if no debug info
+Common.lib(MatrixStack.obj) : warning LNK4099: PDB '' was not found with 'Common.lib(MatrixStack.obj)' or at ''; linking object as if no debug info
+Common.lib(Mtx44.obj) : warning LNK4099: PDB 'Common.pdb' was not found with 'Common.lib(Mtx44.obj)' or at 'C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\Common.pdb'; linking object as if no debug info
+Common.lib(timer.obj) : warning LNK4099: PDB 'Common.pdb' was not found with 'Common.lib(timer.obj)' or at 'C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\Common.pdb'; linking object as if no debug info
+Common.lib(Vector3.obj) : warning LNK4099: PDB 'Common.pdb' was not found with 'Common.lib(Vector3.obj)' or at 'C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\Common.pdb'; linking object as if no debug info
+  Application.vcxproj -> C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\Application.exe

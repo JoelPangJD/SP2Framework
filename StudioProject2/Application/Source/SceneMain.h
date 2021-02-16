@@ -18,14 +18,7 @@ class SceneMain : public Scene
 		GEO_QUAD,
 		GEO_CUBE,
 		GEO_SPHERE,
-		GEO_HEMISPHERE,
-		GEO_TRUNCATEDHEMISPHERE,
-		GEO_PYRAMID,
 		GEO_LIGHTBALL,
-		GEO_RING,
-		GEO_CONE,
-		GEO_CYLINDER,
-		GEO_TORUS,
 		GEO_LEFT,
 		GEO_RIGHT,
 		GEO_TOP,
@@ -34,6 +27,8 @@ class SceneMain : public Scene
 		GEO_BACK,
 		GEO_INVENTORY,
 		GEO_TEXT,
+		TREE,
+		RoadTileStraight,
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE

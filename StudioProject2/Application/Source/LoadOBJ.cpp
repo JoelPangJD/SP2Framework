@@ -200,8 +200,6 @@ bool LoadMTL(const char* file_path, std::map<std::string, Material*>& materials_
 			strcpy_s(mtl_name, buf + 7);
 			if (mtl_name[strlen(mtl_name) - 1] == '\r')
 				mtl_name[strlen(mtl_name) - 1] = '\0';
-			else
-				mtl_name[strlen(mtl_name)] = '\0';
 			mtl = nullptr;
 			if (materials_map.find(mtl_name) == materials_map.end())
 			{

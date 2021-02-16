@@ -81,8 +81,6 @@ void SceneMarinaBay::Init()
 	m_parameters[U_NUMLIGHTS] = glGetUniformLocation(m_programID, "numLights");
 
 	glUseProgram(m_programID);
-	glUniform1i(m_parameters[U_NUMLIGHTS], 1);
-
 	glUniform1i(m_parameters[U_NUMLIGHTS], 2);
 
 	Mesh::SetMaterialLoc(m_parameters[U_MATERIAL_AMBIENT],
@@ -120,7 +118,7 @@ void SceneMarinaBay::Init()
 	light[1].type = Light::LIGHT_DIRECTIONAL;
 	light[1].position.Set(10, 20, 0);
 	light[1].color.Set(1, 1, 1);
-	light[1].power = 1.3;
+	light[1].power = 0.7f;
 	light[1].kC = 1.5f;
 	light[1].kL = 0.01f;
 	light[1].kQ = 0.001f;
@@ -172,8 +170,9 @@ void SceneMarinaBay::Init()
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//bottom.tga");
 
-	meshList[GEO_BOAT] = MeshBuilder::GenerateOBJMTL("boat", "OBJ//watercraftPack_004.obj", "OBJ//watercraftPack_004.mtl");
-
+	meshList[GEO_BOAT] = MeshBuilder::GenerateOBJMTL("boat", "OBJ//boat.obj", "OBJ//boat.mtl");
+	meshList[GEO_WATER]= MeshBuilder::GenerateOBJMTL("water", "OBJ//water1.obj", "OBJ//water1.mtl");
+	meshList[GEO_TREE] = MeshBuilder::GenerateOBJMTL("water", "OBJ//palm_tree_short.obj", "OBJ//palm_tree_short.mtl");
 }
 
 
@@ -200,7 +199,18 @@ void SceneMarinaBay::Update(double dt)
 		light[0].type = Light::LIGHT_SPOT;
 		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
 	}
-
+	if (Application::IsKeyPressed('1'))
+		glEnable(GL_CULL_FACE);
+	else if (Application::IsKeyPressed('2'))
+		glDisable(GL_CULL_FACE);
+	else if (Application::IsKeyPressed('3'))
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //default fill mode
+	else if (Application::IsKeyPressed('4'))
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //wireframe mode
+	if (Application::IsKeyPressed('Z'))
+		lighton = false;						//to test whether colours and stuff are working properly
+	else if (Application::IsKeyPressed('X'))
+		lighton = true;
 }
 
 void SceneMarinaBay::RenderMesh(Mesh* mesh, bool enableLight)
@@ -461,13 +471,27 @@ void SceneMarinaBay::Render()
 	
 	//boat
 	modelStack.PushMatrix();
-	modelStack.Translate(0, -5, 0);
-	modelStack.Scale(10, 5, 10);
+	modelStack.Translate(0, -10, 0);
+	modelStack.Scale(30, 5, 50);
 	RenderMesh(meshList[GEO_BOAT], true);
 	modelStack.PopMatrix();
 
+	//infinity pool (to be fixed)
+	modelStack.PushMatrix();
+	modelStack.Translate(15, -4.5, 0);
+	modelStack.Scale(30, 1, 30);
+	RenderMesh(meshList[GEO_WATER], true);
+	modelStack.PopMatrix();
 
-
+	//all the trees by the infinity pool
+	for (int z = 0; z > -100; z -= 20)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(-10, -5, z);
+		modelStack.Scale(10, 10, 10);
+		RenderMesh(meshList[GEO_TREE], true);
+		modelStack.PopMatrix();
+	}
 
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();
