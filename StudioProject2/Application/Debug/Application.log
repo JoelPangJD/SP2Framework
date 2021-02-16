@@ -3,19 +3,8 @@ C:\Users\aaaro\source\repos\SP2Framework\StudioProject2\Application\Source\Mater
 C:\Users\aaaro\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
 C:\Users\aaaro\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\aaaro\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  LoadOBJ.cpp
-C:\Users\aaaro\source\repos\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\aaaro\source\repos\SP2Framework\StudioProject2\Application\Source\LoadOBJ.cpp(284,48): warning C4552: '-': result of expression not used
-  SceneMarinaBay.cpp
-C:\Users\aaaro\source\repos\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\aaaro\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\aaaro\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\aaaro\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\aaaro\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(123,22): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\aaaro\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(183,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\aaaro\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(398,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\aaaro\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(398,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\aaaro\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(399,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\aaaro\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(399,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  Generating Code...
-LINK : fatal error LNK1104: cannot open file 'Common.lib'
+Common.lib(MatrixStack.obj) : warning LNK4099: PDB '' was not found with 'Common.lib(MatrixStack.obj)' or at ''; linking object as if no debug info
+Common.lib(Mtx44.obj) : warning LNK4099: PDB 'Common.pdb' was not found with 'Common.lib(Mtx44.obj)' or at 'C:\Users\aaaro\source\repos\SP2Framework\StudioProject2\Debug\Common.pdb'; linking object as if no debug info
+Common.lib(timer.obj) : warning LNK4099: PDB 'Common.pdb' was not found with 'Common.lib(timer.obj)' or at 'C:\Users\aaaro\source\repos\SP2Framework\StudioProject2\Debug\Common.pdb'; linking object as if no debug info
+Common.lib(Vector3.obj) : warning LNK4099: PDB 'Common.pdb' was not found with 'Common.lib(Vector3.obj)' or at 'C:\Users\aaaro\source\repos\SP2Framework\StudioProject2\Debug\Common.pdb'; linking object as if no debug info
+  Application.vcxproj -> C:\Users\aaaro\source\repos\SP2Framework\StudioProject2\Debug\Application.exe
