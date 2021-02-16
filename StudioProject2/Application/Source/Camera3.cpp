@@ -108,6 +108,14 @@ void Camera3::Update(double dt)
 		Vector3 test = position - right * speed * dt;
 		position += right * speed * dt;
 	}
+	if (Application::IsKeyPressed('R'))
+	{
+		Reset();
+	}
+	if (Application::IsKeyPressed('C'))
+	{
+		//set scenery view
+	}
 	//if (Application::IsKeyPressed('Q')) {
 	//	position.y += speed * dt;
 	//}

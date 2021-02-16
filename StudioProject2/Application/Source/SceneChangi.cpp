@@ -174,14 +174,15 @@ void SceneChangi::Init()
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//cloudDown.tga");
 
 	//OBJ
-	meshList[GEO_TOWER] = MeshBuilder::GenerateOBJMTL("tower", "OBJ//ChangiTower.obj", "OBJ//ChangiTower.mtl");
+	meshList[GEO_TOWER] = MeshBuilder::GenerateOBJMTL("tower", "OBJ//Changi//ChangiTower.obj", "OBJ//Changi//ChangiTower.mtl");
 
-	meshList[GEO_AIRPORT] = MeshBuilder::GenerateOBJMTL("airport", "OBJ//airport.obj", "OBJ//airport.mtl");
+	meshList[GEO_AIRPORT] = MeshBuilder::GenerateOBJMTL("airport", "OBJ//Changi//airport.obj", "OBJ//Changi//airport.mtl");
 
-	meshList[GEO_PLANE] = MeshBuilder::GenerateOBJMTL("plane", "OBJ//plane.obj", "OBJ//plane.mtl");
+	meshList[GEO_PLANE] = MeshBuilder::GenerateOBJMTL("plane", "OBJ//Changi//plane.obj", "OBJ//Changi//plane.mtl");
 
 	//roadOBJ
-	meshList[GEO_STRAIGHT] = MeshBuilder::GenerateOBJMTL("roadStraight", "OBJ//straightRoad.obj", "OBJ//straightRoad.mtl");
+	meshList[GEO_STRAIGHT] = MeshBuilder::GenerateOBJMTL("roadStraight", "OBJ//Changi//straightRoad.obj", "OBJ//Changi//straightRoad.mtl");
+	meshList[GEO_ROADL] = MeshBuilder::GenerateOBJMTL("roadL", "OBJ//Changi//roadL.obj", "OBJ//Changi//roadL.mtl");
 }
 
 
@@ -208,7 +209,10 @@ void SceneChangi::Update(double dt)
 		light[0].type = Light::LIGHT_SPOT;
 		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
 	}
-
+	if (Application::IsKeyPressed('E'))
+		use = true;
+	else
+		use = false;
 }
 
 void SceneChangi::RenderMesh(Mesh* mesh, bool enableLight)
@@ -462,7 +466,10 @@ void SceneChangi::Render()
 	}
 
 	//RenderMeshOnScreen(meshList[GEO_INVENTORY], 40, 20, 30, 30);
-
+	if (use == true) {
+		camera.position.x = -45;
+		camera.position.y = 40;
+	}
 	//Skybox
 	RenderSkybox();
 
@@ -491,7 +498,7 @@ void SceneChangi::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(10, 16.5, -6.5);
+	modelStack.Translate(10, 17, -6.5);
 	modelStack.Rotate(-90, 0, 1, 0);
 	modelStack.Scale(7, 7, 7);
 	RenderMesh(meshList[GEO_PLANE], true);
@@ -517,10 +524,17 @@ void SceneChangi::Render()
 void SceneChangi::RenderRoad()
 {
 	modelStack.PushMatrix();
-	modelStack.Translate(0, 0, 50);
+	modelStack.Translate(0, 1, 50);
 	modelStack.Scale(100, 100, 100);
 	modelStack.Rotate(-90, 0, 1, 0);
 	RenderMesh(meshList[GEO_STRAIGHT], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-200, 1, 50);
+	modelStack.Scale(100, 100, 100);
+	modelStack.Rotate(-90, 0, 1, 0);
+	RenderMesh(meshList[GEO_ROADL], true);
 	modelStack.PopMatrix();
 }
 

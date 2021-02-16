@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿  Application.cpp
 C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
 C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
@@ -27,3 +28,18 @@ C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Scene
 C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(561,42): warning C4305: 'argument': truncation from 'double' to 'float'
 C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(564,22): error C2065: 'GEO_WALLCURVED': undeclared identifier
   Generating Code...
+=======
+﻿  SceneChangi.cpp
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(29,35): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(121,22): warning C4305: '=': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(192,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(407,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(407,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(408,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(408,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Application.vcxproj -> S:\SP2\SP2Framework\StudioProject2\Debug\Application.exe
+>>>>>>> 0dd208e631eb72f5de4ffdad4ae6b04a3942bea4
