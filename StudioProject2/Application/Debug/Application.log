@@ -1,22 +1,45 @@
-﻿  SceneMuseum.cpp
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(27,68): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(123,22): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(201,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(361,40): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(369,41): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(376,41): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(390,42): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(397,42): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(496,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(496,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(497,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(497,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(574,44): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(581,48): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(588,49): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(596,36): warning C4305: 'argument': truncation from 'double' to 'float'
-  Application.vcxproj -> C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\Application.exe
+<<<<<<< HEAD
+﻿  Application.cpp
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  SceneMuseum.cpp
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(27,68): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(123,22): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(184,11): error C2065: 'GEO_WALL': undeclared identifier
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(185,11): error C2065: 'GEO_WALLCURVED': undeclared identifier
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(198,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(433,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(433,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(434,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(434,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(511,44): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(535,22): error C2065: 'GEO_WALL': undeclared identifier
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(542,22): error C2065: 'GEO_WALL': undeclared identifier
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(546,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(549,22): error C2065: 'GEO_WALL': undeclared identifier
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(554,41): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(557,22): error C2065: 'GEO_WALL': undeclared identifier
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(561,42): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(564,22): error C2065: 'GEO_WALLCURVED': undeclared identifier
+  Generating Code...
+=======
+﻿  SceneChangi.cpp
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(29,35): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(121,22): warning C4305: '=': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(192,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(407,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(407,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(408,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(408,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Application.vcxproj -> S:\SP2\SP2Framework\StudioProject2\Debug\Application.exe
+>>>>>>> 0dd208e631eb72f5de4ffdad4ae6b04a3942bea4
