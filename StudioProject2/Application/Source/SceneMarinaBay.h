@@ -38,7 +38,7 @@ class SceneMarinaBay : public Scene
 		GEO_TREE,
 		GEO_TALLTREE,
 		GEO_WATER,
-
+		GEO_CHAIR,
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE
@@ -105,7 +105,7 @@ private:
 	unsigned m_programID;
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
-	float x, y, z;
+	float x, z, scale=1.f;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();

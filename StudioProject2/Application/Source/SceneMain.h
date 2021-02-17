@@ -32,6 +32,8 @@ class SceneMain : public Scene
 		RoadStraightBarrier,
 		RoadCross,
 		RoadCrossBarrier,
+		Museum,
+		Lamp,
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE
@@ -99,6 +101,7 @@ private:
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
 
+	float CharWidth[256];
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
 	void RenderUI();

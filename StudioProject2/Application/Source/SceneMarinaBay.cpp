@@ -24,7 +24,7 @@ void SceneMarinaBay::Init()
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
 	//==========================
-	camera.Init(Vector3(0, 3, 0), Vector3(0, 3, 5), Vector3(0, 1, 0));
+	camera.Init(Vector3(0, 8, 0), Vector3(0, 3, 5), Vector3(0, 1, 0));
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 
@@ -168,12 +168,13 @@ void SceneMarinaBay::Init()
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//bottom.tga");
 
-	meshList[GEO_BOAT] = MeshBuilder::GenerateOBJMTL("boat", "OBJ//boat.obj", "OBJ//boat.mtl");
+	meshList[GEO_BOAT] = MeshBuilder::GenerateOBJMTL("boat", "OBJ//Marina//boat.obj", "OBJ//Marina//boat.mtl");
 	//meshList[GEO_WATER]= MeshBuilder::GenerateOBJMTL("water", "OBJ//water1.obj", "OBJ//water1.mtl");
 	meshList[GEO_WATER] = MeshBuilder::GenerateQuad("quad", 1.0f, 1.0f, Color(1, 1, 1), 10);
 	meshList[GEO_WATER]->textureID = LoadTGA("Image//watertexture.tga");
-	meshList[GEO_TREE] = MeshBuilder::GenerateOBJMTL("short tree", "OBJ//palm_tree_short.obj", "OBJ//palm_tree_short.mtl");
-	meshList[GEO_TALLTREE] = MeshBuilder::GenerateOBJMTL("tree", "OBJ//palm_tree.obj", "OBJ//palm_tree.mtl");
+	meshList[GEO_TREE] = MeshBuilder::GenerateOBJMTL("short tree", "OBJ//Marina//palm_tree_short.obj", "OBJ//Marina//palm_tree_short.mtl");
+	meshList[GEO_TALLTREE] = MeshBuilder::GenerateOBJMTL("tree", "OBJ//Marina//big_tree.obj", "OBJ//Marina//big_tree.mtl");
+	meshList[GEO_CHAIR] = MeshBuilder::GenerateOBJMTL("chair", "OBJ//Marina//modifiedchair.obj", "OBJ//Marina//modifiedchair.mtl");
 }
 
 
@@ -220,6 +221,10 @@ void SceneMarinaBay::Update(double dt)
 		z += 10 * dt;
 	if (Application::IsKeyPressed('L'))
 		z -= 10 * dt;
+	if (Application::IsKeyPressed('O'))
+		scale += 10*dt;
+	if (Application::IsKeyPressed('P'))
+		scale -= 10 * dt;
 }
 
 void SceneMarinaBay::RenderMesh(Mesh* mesh, bool enableLight)
@@ -324,6 +329,9 @@ void SceneMarinaBay::RenderUI()
 	ss.str("");
 	ss << "z: " << z;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 27);
+	ss.str("");
+	ss << "scale: " << scale;
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 25);
 	modelStack.PopMatrix();
 }
 
@@ -478,9 +486,9 @@ void SceneMarinaBay::Render()
 
 	RenderMesh(meshList[GEO_AXES], false);
 	
-	//infinity pool (to be changed, maybe)
+	//infinity pool (to be changed to fix the need for face culling, maybe)
 	modelStack.PushMatrix();
-	modelStack.Translate(34, -4.2, -52);
+	modelStack.Translate(34, 0.0001, -66);
 	modelStack.Rotate(90, 1, 0, 0);
 	modelStack.Scale(25, 175, 1);
 	glDisable(GL_CULL_FACE);
@@ -490,23 +498,55 @@ void SceneMarinaBay::Render()
 
 	//boat
 	modelStack.PushMatrix();
-	modelStack.Translate(0, -10, 0);
-	modelStack.Scale(30, 5, 50);
+	modelStack.Translate(0, -27.7, 0);
+	modelStack.Scale(30, 25, 50);
 	RenderMesh(meshList[GEO_BOAT], true);
 	modelStack.PopMatrix();
 
 	
 
-	//trees by the infinity pool
-	//to add poolside chairs if possible
-	for (int z = 0; z > -200; z -= 30)
+	//infinity poolside
+	for (int z = 0; z > -170; z -= 30)
 	{
+		//trees
 		modelStack.PushMatrix();
-		modelStack.Translate(10, -4.1, z);
+		modelStack.Translate(10, 0, z);
 		modelStack.Scale(10, 20, 10);
 		RenderMesh(meshList[GEO_TREE], true);
 		modelStack.PopMatrix();
+
+		//all the chairs
+
+		//chair right after tree
+		modelStack.PushMatrix();
+		modelStack.Translate(10, 0, z + 5);
+		modelStack.Rotate(-90, 0, 1, 0);
+		modelStack.Scale(0.2, 0.2, 0.2);
+		RenderMesh(meshList[GEO_CHAIR], true);
+		modelStack.PopMatrix();
+
+		//chair in the middle of trees
+		modelStack.PushMatrix();
+		modelStack.Translate(10, 0, z + 15);
+		modelStack.Rotate(-90, 0, 1, 0);
+		modelStack.Scale(0.2, 0.2, 0.2);
+		RenderMesh(meshList[GEO_CHAIR], true);
+		modelStack.PopMatrix();
+
+		//chair directly before the tree
+		modelStack.PushMatrix();
+		modelStack.Translate(10, 0, z - 5);
+		modelStack.Rotate(-90, 0, 1, 0);
+		modelStack.Scale(0.2, 0.2, 0.2);
+		RenderMesh(meshList[GEO_CHAIR], true);
+		modelStack.PopMatrix();
 	}
+
+	modelStack.PushMatrix();
+	modelStack.Translate(x, 0, z);
+	modelStack.Scale(scale, 2*scale, scale);
+	RenderMesh(meshList[GEO_TALLTREE], true);
+	modelStack.PopMatrix();
 
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();

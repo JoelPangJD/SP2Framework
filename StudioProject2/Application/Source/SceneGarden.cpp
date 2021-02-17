@@ -170,7 +170,13 @@ void SceneGarden::Init()
 	meshList[GEO_PONDBED]->material.kShininess = 1.f;
 
 	meshList[GEO_GAZEBO] = MeshBuilder::GenerateOBJMTL("gazebo", "OBJ//garden//gazebo.obj", "OBJ//garden//gazebo.mtl");
-	meshList[GEO_GAZEBO]->textureID = LoadTGA("Image//gazebo.tga");
+	meshList[GEO_GAZEBO]->textureID = LoadTGA("Image//garden//gazebo.tga");
+
+	meshList[GEO_PATH] = MeshBuilder::GenerateOBJMTL("path", "OBJ//garden//path.obj", "OBJ//garden//path.mtl");
+	meshList[GEO_PATH]->textureID = LoadTGA("Image//garden//pathtexture.tga");
+
+	meshList[GEO_PATHT] = MeshBuilder::GenerateOBJMTL("path", "OBJ//garden//patht.obj", "OBJ//garden//path.mtl");
+	meshList[GEO_PATHT]->textureID = LoadTGA("Image//garden//pathtexture.tga");
 
 	meshList[GEO_TREE1] = MeshBuilder::GenerateOBJMTL("tree1", "OBJ//garden//tree.obj", "OBJ//garden//tree.mtl");
 	meshList[GEO_TREE2] = MeshBuilder::GenerateOBJMTL("tree2", "OBJ//garden//tree_fat.obj", "OBJ//garden//tree.mtl");
@@ -555,11 +561,11 @@ void SceneGarden::Render()
 	RenderMesh(meshList[GEO_GRASSFLOOR], true);
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	modelStack.Translate(50, 0, 50);
-	modelStack.Scale(0.15, 0.15, 0.15);
-	RenderMesh(meshList[GEO_GAZEBO], true);
-	modelStack.PopMatrix();
+	//modelStack.PushMatrix();
+	//modelStack.Translate(50, 0, 50);
+	//modelStack.Scale(0.15, 0.15, 0.15);
+	//RenderMesh(meshList[GEO_GAZEBO], true);
+	//modelStack.PopMatrix();
 
 	//Tree1 locations
 	{
@@ -657,11 +663,57 @@ void SceneGarden::Render()
 		modelStack.PopMatrix();
 	}
 
-	modelStack.PushMatrix();
-	modelStack.Translate(movex, 0, movez);
-	modelStack.Scale(scale, scale, scale);
-	RenderMesh(meshList[GEO_TREE2], true);
-	modelStack.PopMatrix();
+	{
+		for (int i = -200; i < 200; i += 18.0)
+		{
+			modelStack.PushMatrix();
+			if (i < 60 && i > 50)
+			{
+				modelStack.Translate(i, -2.29, -0.18);
+				modelStack.Rotate(180, 0, 1, 0);
+				modelStack.Scale(2.3, 2.3, 2.3);
+				RenderMesh(meshList[GEO_PATHT], true);
+				modelStack.Rotate(90, 0, 1, 0);
+				modelStack.Translate(7.9, 0, 0.1);
+				RenderMesh(meshList[GEO_PATH], true);
+				modelStack.Translate(7.9, 0, 00);
+				RenderMesh(meshList[GEO_PATH], true);
+				modelStack.Translate(6.5, 0.7, 0);
+				modelStack.Rotate(90, 0, 1, 0);
+				modelStack.Scale(0.07, 0.07, 0.07);
+				RenderMesh(meshList[GEO_GAZEBO], true);
+			}
+			else
+			{
+				modelStack.Translate(i, -2.29, 0);
+				modelStack.Scale(2.3, 2.3, 2.3);
+				RenderMesh(meshList[GEO_PATH], true);
+			}
+			modelStack.PopMatrix();
+		}
+		//modelStack.PushMatrix();
+		//modelStack.Translate(0, -2.29, 0);
+		//modelStack.Scale(2.3, 2.3, 2.3);
+		//RenderMesh(meshList[GEO_PATH], true);
+		//modelStack.PopMatrix();
+		//modelStack.PushMatrix();
+		//modelStack.Translate(18.4, -2.29, 0);
+		//modelStack.Scale(2.3, 2.3, 2.3);
+		//RenderMesh(meshList[GEO_PATH], true);
+		//modelStack.PopMatrix();
+
+		//modelStack.PushMatrix();
+		//modelStack.Translate(36.8, -2.29, -0.18);
+		//modelStack.Rotate(180,0,1,0);
+		//modelStack.Scale(2.3, 2.3, 2.3);
+		//RenderMesh(meshList[GEO_PATHT], true);
+		//modelStack.PopMatrix();
+	}
+	//modelStack.PushMatrix();
+	//modelStack.Translate(movex, -2, movez);
+	//modelStack.Scale(scale, scale, scale);
+	//RenderMesh(meshList[GEO_GAZEBO], true);
+	//modelStack.PopMatrix();
 
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();
