@@ -396,6 +396,20 @@ void SceneMuseum::RenderWalls()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
+	modelStack.Translate(140.5, 0, 317);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(20, 80, 150);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(160, 0, 180);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(20, 80, 217);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
 	modelStack.Translate(53, 0, 298);
 	modelStack.Rotate(270, 0, 1, 0);
 	modelStack.Scale(21, 40, 30);
