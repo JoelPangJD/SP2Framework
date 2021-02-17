@@ -34,11 +34,22 @@ class SceneMarinaBay : public Scene
 		GEO_BACK,
 		GEO_INVENTORY,
 		GEO_TEXT,
+
 		GEO_BOAT,
 		GEO_TREE,
 		GEO_TALLTREE,
 		GEO_WATER,
 		GEO_CHAIR,
+
+		//fight specific
+		GEO_LAYOUT,
+		GEO_HEALTH,
+		GEO_LOSTHEALTH,
+
+		//text 
+		GEO_TEXTBOX,
+		GEO_HEADER,
+
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE
@@ -84,7 +95,21 @@ class SceneMarinaBay : public Scene
 		U_TEXT_COLOR,
 		U_TOTAL,
 	};
-
+	enum ACTION_TYPE
+	{
+		A_ATTACK,
+		A_ITEMS,
+		A_RUN,
+		A_ATTACK1,
+		A_ATTACK2,
+		A_ATTACK3,
+		A_ATTACK4,
+		A_ITEM1,
+		A_ITEM2,
+		A_ITEM3,
+		A_ITEM4,
+		NUM_ACTION,
+	};
 public:
 	Camera3 camera;
 	bool lighton = true;
@@ -106,13 +131,17 @@ private:
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
 	float x, z, scale=1.f;
+	ACTION_TYPE playerAction, enemyAction;
+	std::string fightText, dialogueText;
+	bool fight=true, fightDia, playerTurn, enemyTurn, fightSelected, itemsSelected, backSelected, attackSelected;
+	float cooldownTimer;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
 	void RenderUI();
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
+	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey);
 
 };
 

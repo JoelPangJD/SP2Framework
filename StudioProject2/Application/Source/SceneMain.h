@@ -101,6 +101,8 @@ private:
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
 
+	bool inFrontOfMuseum;
+
 	float CharWidth[256];
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
