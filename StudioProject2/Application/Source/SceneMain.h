@@ -33,6 +33,7 @@ class SceneMain : public Scene
 		RoadCross,
 		RoadCrossBarrier,
 		Museum,
+		Lamp,
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE

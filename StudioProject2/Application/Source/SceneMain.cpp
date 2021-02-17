@@ -7,7 +7,6 @@
 #include "shader.hpp"
 #include <Mtx44.h>
 #include"MeshBuilder.h"
-//testing 12132132123
 
 SceneMain::SceneMain()
 {
@@ -176,6 +175,7 @@ void SceneMain::Init()
 	meshList[RoadStraightBarrier] = MeshBuilder::GenerateOBJMTL("straight", "OBJ//CityCenter//road_straightBarrier.obj", "OBJ//CityCenter//road_straightBarrier.mtl");
 	meshList[RoadCross] = MeshBuilder::GenerateOBJMTL("roadcross", "OBJ//CityCenter//road_roundabout.obj", "OBJ//CityCenter//road_roundabout.mtl");
 	meshList[RoadCrossBarrier] = MeshBuilder::GenerateOBJMTL("roadcrossbarrier", "OBJ//CityCenter//road_roundaboutBarrier.obj", "OBJ//CityCenter//road_roundaboutBarrier.mtl");
+	meshList[Lamp] = MeshBuilder::GenerateOBJMTL("lamp", "OBJ//CityCenter//lamp.obj", "OBJ//CityCenter//lamp.mtl");
 	meshList[Museum] = MeshBuilder::GenerateOBJMTL("museum", "OBJ//CityCenter//museum.obj", "OBJ//CityCenter//museum.mtl");
 
 	int charac = 0;
@@ -198,16 +198,19 @@ void SceneMain::Update(double dt)
 	fps = 1.f / dt;
 	camera.Update(dt);
 
-	if (Application::IsKeyPressed('5'))
+	if (Application::IsKeyPressed('U'))
 	{
-		light[0].type = Light::LIGHT_POINT;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
+		light[0].power = 0;
+		light[1].power = 0;
+		glUniform1i(m_parameters[U_LIGHT0_POWER], light[0].power);
+		glUniform1i(m_parameters[U_LIGHT1_POWER], light[1].power);
 	}
-	else if (Application::IsKeyPressed('6'))
+	else if (Application::IsKeyPressed('Y'))
 	{
-		//to do: switch light type to DIRECTIONAL and pass the information to shader
-		light[0].type = Light::LIGHT_DIRECTIONAL;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
+		light[0].power = 1;
+		light[1].power = 1;
+		glUniform1i(m_parameters[U_LIGHT0_POWER], light[0].power);
+		glUniform1i(m_parameters[U_LIGHT1_POWER], light[1].power);
 	}
 	else if (Application::IsKeyPressed('7'))
 	{
@@ -215,7 +218,6 @@ void SceneMain::Update(double dt)
 		light[0].type = Light::LIGHT_SPOT;
 		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
 	}
-
 }
 
 void SceneMain::RenderMesh(Mesh* mesh, bool enableLight)
@@ -479,9 +481,15 @@ void SceneMain::Render()
 	RenderMesh(meshList[GEO_AXES], false);
 
 	modelStack.PushMatrix();
+	modelStack.Translate(light[0].position.x, light[0].position.y, light[0].position.z);
+	modelStack.Scale(0.05, 0.05, 0.05);
+	RenderMesh(meshList[GEO_LIGHTBALL], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
 	modelStack.Scale(1000, 1000, 1000);
 	modelStack.Rotate(-90, 1, 0, 0);
-	RenderMesh(meshList[GEO_QUAD], false);
+	RenderMesh(meshList[GEO_QUAD], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
@@ -552,9 +560,15 @@ void SceneMain::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(5, 0, 5);
+	modelStack.Translate(7, 0, 7);
 	modelStack.Scale(10, 10, 10);
 	RenderMesh(meshList[TREE], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 0, 0);
+	modelStack.Scale(7, 7, 7);
+	RenderMesh(meshList[Lamp], true);
 	modelStack.PopMatrix();
 	
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
