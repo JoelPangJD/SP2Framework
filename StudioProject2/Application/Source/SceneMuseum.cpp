@@ -185,7 +185,7 @@ void SceneMuseum::Init()
 	meshList[GEO_GLASSTABLE]->textureID = LoadTGA("Image//Museum//Wood_Table_C_2.tga");
 	meshList[GEO_WALL] = MeshBuilder::GenerateOBJMTL("Wall", "OBJ//Museum//wallWoodHalf.obj", "OBJ//Museum//wallWoodHalf.mtl");
 	meshList[GEO_WALLCURVED] = MeshBuilder::GenerateOBJMTL("Wall", "OBJ//Museum//wallWoodCurved.obj", "OBJ//Museum//wallWoodCurved.mtl");
-	//meshList[GEO_RICKSHAW] = MeshBuilder::GenerateOBJMTL("Rickshaw", "OBJ//Museum//trishawobj.obj", "OBJ//Museum//trishawobj.mtl");
+	meshList[GEO_RICKSHAW] = MeshBuilder::GenerateOBJ("rickshaw", "OBJ//Museum//18569_Human-Pulled Rickshaw_v1.obj");
 
 
 	//Ground mesh
@@ -379,6 +379,34 @@ void SceneMuseum::RenderWalls()
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(20, 80, 110);
 	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-107.9315, 0, 82);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(20, 80, 300);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(50, 0, 180);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(20, 80, 217);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(55, 0, 298);
+	modelStack.Rotate(270, 0, 1, 0);
+	modelStack.Scale(21, 40, 30);
+	RenderMesh(meshList[GEO_WALLCURVED], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(250, 0, 180);
+	modelStack.Rotate(360, 0, 1, 0);
+	modelStack.Scale(25, 40, 30);
+	RenderMesh(meshList[GEO_WALLCURVED], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
@@ -587,13 +615,14 @@ void SceneMuseum::Render()
 	modelStack.PopMatrix();
 	RenderWalls();
 
-	//modelStack.PushMatrix();
-	//modelStack.Translate(0, 0, -7.926);
-	//modelStack.Rotate(180, 0, 1, 0);
-	//modelStack.Scale(20, 25, 50);
-	//RenderMesh(meshList[GEO_RICKSHAW], true);
-	//modelStack.PopMatrix();
-	//RenderWalls();
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 5, 10.926);
+	modelStack.Rotate(90, 0, 0, 1);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_RICKSHAW], true);
+	modelStack.PopMatrix();
+	RenderWalls();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(100, 5, 10);
