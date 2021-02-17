@@ -188,7 +188,7 @@ void SceneMain::Init()
 		charac++;
 	}
 	fin.close();
-
+	inFrontOfMuseum = false;
 }
 
 
@@ -217,6 +217,13 @@ void SceneMain::Update(double dt)
 		//to do: switch light type to SPOT and pass the information to shader
 		light[0].type = Light::LIGHT_SPOT;
 		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
+	}
+
+	if ((camera.position.x >= 18) && (camera.position.x <= 27.5) && (camera.position.z >= -3) && (camera.position.z <= 3)) {
+		inFrontOfMuseum = true;
+	}
+	else {
+		inFrontOfMuseum = false;
 	}
 }
 
@@ -320,6 +327,10 @@ void SceneMain::RenderUI()
 	ss << "FPS: " << fps;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 70, 58);
 	modelStack.PopMatrix();
+
+	ss.str("");
+	ss << "Pos: X: " << camera.position.x << " Z: " << camera.position.z;
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(1, 0, 0), 4, 0, 50);
 }
 
 void SceneMain::RenderText(Mesh* mesh, std::string text, Color color)
@@ -514,6 +525,19 @@ void SceneMain::Render()
 	modelStack.Scale(2, 2, 2);
 	modelStack.Rotate(-90, 0, 1, 0);
 	RenderText(meshList[GEO_TEXT], "Museum", Color(0, 0, 0));
+
+	if (inFrontOfMuseum == true) {
+		modelStack.PushMatrix();
+		modelStack.Translate(0.7, -2, -0.29);
+		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0));
+
+		modelStack.PushMatrix();
+		modelStack.Translate(-0.2, -1, 0);
+		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0));
+
+		modelStack.PopMatrix();
+		modelStack.PopMatrix();
+	}
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
