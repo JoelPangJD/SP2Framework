@@ -1,4 +1,9 @@
-﻿  Camera3.cpp
+﻿  Application.cpp
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Camera3.cpp
 S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(49,98): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(50,54): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(87,44): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
@@ -26,6 +31,32 @@ S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(172,19): warni
 S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(174,131): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(174,83): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(174,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  Entity.cpp
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Entity.cpp(79,16): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Entity.cpp(82,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Entity.cpp(83,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Entity.cpp(85,55): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Entity.cpp(87,55): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Entity.cpp(91,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Entity.cpp(92,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Entity.cpp(94,55): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Entity.cpp(96,55): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+  Inventory.cpp
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  LoadOBJ.cpp
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+S:\SP2\SP2Framework\StudioProject2\Application\Source\LoadOBJ.cpp(284,48): warning C4552: '-': result of expression not used
+  LoadTGA.cpp
+  main.cpp
+  Mesh.cpp
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  MeshBuilder.cpp
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+S:\SP2\SP2Framework\StudioProject2\Application\Source\MeshBuilder.cpp(246,20): warning C4018: '<': signed/unsigned mismatch
+S:\SP2\SP2Framework\StudioProject2\Application\Source\MeshBuilder.cpp(254,20): warning C4018: '<': signed/unsigned mismatch
   SceneChangi.cpp
 S:\SP2\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
 S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
@@ -38,5 +69,109 @@ S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(421,26): w
 S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(421,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(422,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(422,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  SceneGarden.cpp
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(121,22): warning C4305: '=': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(209,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(243,19): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(245,19): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(247,19): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(249,19): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(251,19): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(253,19): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(439,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(439,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(440,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(440,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(520,33): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(528,33): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(536,33): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(544,33): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(549,36): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(667,40): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(672,41): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(672,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(674,35): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(677,37): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(679,36): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(681,37): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(683,38): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(688,37): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(688,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneGarden.cpp(689,35): warning C4305: 'argument': truncation from 'double' to 'float'
+  SceneMarinaBay.cpp
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(184,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(217,15): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(219,15): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(221,15): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(223,15): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(225,17): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(227,19): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(418,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(418,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(419,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(419,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(491,38): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(501,34): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(513,31): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(522,33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(524,33): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(530,33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(532,33): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(538,33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMarinaBay.cpp(540,33): warning C4305: 'argument': truncation from 'double' to 'float'
+  SceneMain.cpp
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(187,27): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(198,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(205,53): warning C4244: 'argument': conversion from 'float' to 'GLint', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(206,53): warning C4244: 'argument': conversion from 'float' to 'GLint', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(212,53): warning C4244: 'argument': conversion from 'float' to 'GLint', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(213,53): warning C4244: 'argument': conversion from 'float' to 'GLint', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(348,18): warning C4305: '+=': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(422,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(422,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(423,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(423,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(485,35): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMain.cpp(513,36): warning C4305: 'argument': truncation from 'double' to 'float'
+  SceneMuseum.cpp
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(27,68): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(123,22): warning C4305: '=': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(201,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(356,40): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(364,41): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(371,41): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(385,39): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(413,42): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(420,42): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(519,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(519,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(520,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(520,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(597,44): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(604,48): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(611,49): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneMuseum.cpp(619,35): warning C4305: 'argument': truncation from 'double' to 'float'
+  shader.cpp
+  Utility.cpp
   Generating Code...
+Common.lib(MatrixStack.obj) : warning LNK4204: 'S:\SP2\SP2Framework\StudioProject2\Debug\Common.pdb' is missing debugging information for referencing module; linking object as if no debug info
+Common.lib(Mtx44.obj) : warning LNK4204: 'S:\SP2\SP2Framework\StudioProject2\Debug\Common.pdb' is missing debugging information for referencing module; linking object as if no debug info
+Common.lib(timer.obj) : warning LNK4204: 'S:\SP2\SP2Framework\StudioProject2\Debug\Common.pdb' is missing debugging information for referencing module; linking object as if no debug info
+Common.lib(Vector3.obj) : warning LNK4204: 'S:\SP2\SP2Framework\StudioProject2\Debug\Common.pdb' is missing debugging information for referencing module; linking object as if no debug info
   Application.vcxproj -> S:\SP2\SP2Framework\StudioProject2\Debug\Application.exe
