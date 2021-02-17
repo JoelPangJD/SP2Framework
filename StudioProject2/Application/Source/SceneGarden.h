@@ -40,6 +40,8 @@ class SceneGarden : public Scene
 		GEO_GAZEBO,
 		GEO_TREE1,
 		GEO_TREE2,
+		GEO_PATHSTRAIGHT,
+		GEO_PATHT,
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE

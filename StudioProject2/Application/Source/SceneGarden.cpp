@@ -170,10 +170,14 @@ void SceneGarden::Init()
 	meshList[GEO_PONDBED]->material.kShininess = 1.f;
 
 	meshList[GEO_GAZEBO] = MeshBuilder::GenerateOBJMTL("gazebo", "OBJ//garden//gazebo.obj", "OBJ//garden//gazebo.mtl");
-	meshList[GEO_GAZEBO]->textureID = LoadTGA("Image//gazebo.tga");
+	meshList[GEO_GAZEBO]->textureID = LoadTGA("Image//garden//gazebo.tga");
 
 	meshList[GEO_TREE1] = MeshBuilder::GenerateOBJMTL("tree1", "OBJ//garden//tree.obj", "OBJ//garden//tree.mtl");
 	meshList[GEO_TREE2] = MeshBuilder::GenerateOBJMTL("tree2", "OBJ//garden//tree_fat.obj", "OBJ//garden//tree.mtl");
+
+	meshList[GEO_PATHSTRAIGHT] = MeshBuilder::GenerateOBJMTL("path", "OBJ//garden//path.obj", "OBJ//garden//path.mtl");
+	meshList[GEO_PATHSTRAIGHT]->textureID = LoadTGA("Image//garden//pathtexture.tga");
+	//meshList[GEO_PATHT] = MeshBuilder::GenerateOBJMTL("patht", "OBJ//garden//patht.obj", "OBJ//garden//patht.mtl");
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//font.tga");
@@ -660,7 +664,7 @@ void SceneGarden::Render()
 	modelStack.PushMatrix();
 	modelStack.Translate(movex, 0, movez);
 	modelStack.Scale(scale, scale, scale);
-	RenderMesh(meshList[GEO_TREE2], true);
+	RenderMesh(meshList[GEO_PATHSTRAIGHT], true);
 	modelStack.PopMatrix();
 
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
