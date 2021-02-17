@@ -185,7 +185,7 @@ void SceneMuseum::Init()
 	meshList[GEO_GLASSTABLE]->textureID = LoadTGA("Image//Museum//Wood_Table_C_2.tga");
 	meshList[GEO_WALL] = MeshBuilder::GenerateOBJMTL("Wall", "OBJ//Museum//wallWoodHalf.obj", "OBJ//Museum//wallWoodHalf.mtl");
 	meshList[GEO_WALLCURVED] = MeshBuilder::GenerateOBJMTL("Wall", "OBJ//Museum//wallWoodCurved.obj", "OBJ//Museum//wallWoodCurved.mtl");
-	meshList[GEO_RICKSHAW] = MeshBuilder::GenerateOBJMTL("Rickshaw", "OBJ//Museum//trishawobj.obj", "OBJ//Museum//trishawobj.mtl");
+	//meshList[GEO_RICKSHAW] = MeshBuilder::GenerateOBJMTL("Rickshaw", "OBJ//Museum//trishawobj.obj", "OBJ//Museum//trishawobj.mtl");
 
 
 	//Ground mesh
@@ -284,15 +284,10 @@ void SceneMuseum::RenderSkybox()
 
 	/*Author
 		======
-
 		This is the work of Emil Persson, aka Humus.
 		http://www.humus.name
-
-
-
 	License
 		====== =
-
 		This work is licensed under a Creative Commons Attribution 3.0 Unported License.
 		http://creativecommons.org/licenses/by/3.0/*/
 
@@ -568,7 +563,7 @@ void SceneMuseum::Render()
 	modelStack.Scale(1000, 1000, 1000);
 	RenderMesh(meshList[GEO_GROUND], false);
 	modelStack.PopMatrix();
-	
+
 	//OBJ
 	modelStack.PushMatrix();
 	modelStack.Translate(90.2891, 20, -210.542);
@@ -592,13 +587,13 @@ void SceneMuseum::Render()
 	modelStack.PopMatrix();
 	RenderWalls();
 
-	modelStack.PushMatrix();
-	modelStack.Translate(0, 10, -7.926);
-	modelStack.Rotate(180, 0, 1, 0);
-	modelStack.Scale(20, 25, 50);
-	RenderMesh(meshList[GEO_RICKSHAW], true);
-	modelStack.PopMatrix();
-	RenderWalls();
+	//modelStack.PushMatrix();
+	//modelStack.Translate(0, 0, -7.926);
+	//modelStack.Rotate(180, 0, 1, 0);
+	//modelStack.Scale(20, 25, 50);
+	//RenderMesh(meshList[GEO_RICKSHAW], true);
+	//modelStack.PopMatrix();
+	//RenderWalls();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(100, 5, 10);
