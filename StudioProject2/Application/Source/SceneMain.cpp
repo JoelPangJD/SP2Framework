@@ -94,7 +94,7 @@ void SceneMain::Init()
 	light[0].type = Light::LIGHT_POINT;
 	light[0].position.Set(0, 10, 0);
 	light[0].color.Set(1,1,1);
-	light[0].power = .5f;
+	light[0].power = 1.f;
 	light[0].kC = 1.f;
 	light[0].kL = 0.01f;
 	light[0].kQ = 0.001f;
@@ -524,6 +524,13 @@ void SceneMain::Render()
 	modelStack.Rotate(90, 0, 1, 0);
 	RenderMesh(meshList[RoadStraightBarrier], true);
 	modelStack.PopMatrix();
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(2.5, 9, 27.4);
+	modelStack.Scale(2, 2, 2);
+	modelStack.Rotate(180, 0, 1, 0);
+	RenderText(meshList[GEO_TEXT], "Changi Airport", Color(0, 0, 0));
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
