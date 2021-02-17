@@ -93,7 +93,7 @@ void SceneMain::Init()
 	m_parameters[U_TEXT_COLOR] = glGetUniformLocation(m_programID, "textColor");
 	//==================Initialise light0===========
 	light[0].type = Light::LIGHT_POINT;
-	light[0].position.Set(0, 5, 0);
+	light[0].position.Set(0, 10, 0);
 	light[0].color.Set(1,1,1);
 	light[0].power = 1.f;
 	light[0].kC = 1.f;
@@ -151,7 +151,7 @@ void SceneMain::Init()
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("Lightball", Color(1, 1, 1), 10, 10, 10);
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//font.tga");
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//ArialNarrow.tga");
 
 	meshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
 	meshList[GEO_INVENTORY]->textureID = LoadTGA("Image//inventory.tga");
@@ -176,6 +176,18 @@ void SceneMain::Init()
 	meshList[RoadStraightBarrier] = MeshBuilder::GenerateOBJMTL("straight", "OBJ//CityCenter//road_straightBarrier.obj", "OBJ//CityCenter//road_straightBarrier.mtl");
 	meshList[RoadCross] = MeshBuilder::GenerateOBJMTL("roadcross", "OBJ//CityCenter//road_roundabout.obj", "OBJ//CityCenter//road_roundabout.mtl");
 	meshList[RoadCrossBarrier] = MeshBuilder::GenerateOBJMTL("roadcrossbarrier", "OBJ//CityCenter//road_roundaboutBarrier.obj", "OBJ//CityCenter//road_roundaboutBarrier.mtl");
+	meshList[Museum] = MeshBuilder::GenerateOBJMTL("museum", "OBJ//CityCenter//museum.obj", "OBJ//CityCenter//museum.mtl");
+
+	int charac = 0;
+	std::ifstream fin;
+	std::string line;
+	fin.open("fontdata.csv");
+	while (std::getline(fin, line)) {
+
+		CharWidth[charac] = stoi(line);
+		charac++;
+	}
+	fin.close();
 
 }
 
@@ -304,7 +316,7 @@ void SceneMain::RenderUI()
 	modelStack.PushMatrix();
 	std::ostringstream ss;
 	ss << "FPS: " << fps;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 29);
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 70, 58);
 	modelStack.PopMatrix();
 }
 
@@ -312,6 +324,9 @@ void SceneMain::RenderText(Mesh* mesh, std::string text, Color color)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
+
+	float totalspace = 0;
+	float totalz = 0;
 
 	//glDisable(GL_DEPTH_TEST);
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
@@ -323,13 +338,13 @@ void SceneMain::RenderText(Mesh* mesh, std::string text, Color color)
 	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
 	for (unsigned i = 0; i < text.length(); ++i)
 	{
-		Mtx44 characterSpacing;
-		std::vector<std::pair<std::string, std::vector<int>>> result;
-		//std::ifstream myFile("Fontdata.csv");
-		//if (!myFile.is_open()) throw std::runtime_error("Could not open file");
 
-		characterSpacing.SetToTranslation(i * 1.0f, 0, 0); //1.0f is the spacing of each character, you may change this value
+		Mtx44 characterSpacing;
+		characterSpacing.SetToTranslation(totalspace, 0, totalz); //1.0f is the spacing of each character, you may change this value
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
+		totalspace += (CharWidth[text[i]] / 64);
+		totalz += 0.001;
+
 		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
 
 		mesh->Render((unsigned)text[i] * 6, 6);
@@ -345,6 +360,7 @@ void SceneMain::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 		return;
 
 	glDisable(GL_DEPTH_TEST);
+
 	Mtx44 ortho;
 	ortho.SetToOrtho(0, 80, 0, 60, -10, 10); //size of screen UI
 	projectionStack.PushMatrix();
@@ -353,8 +369,14 @@ void SceneMain::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 	viewStack.LoadIdentity(); //No need camera for ortho mode
 	modelStack.PushMatrix();
 	modelStack.LoadIdentity(); //Reset modelStack
-	modelStack.Scale(size, size, size);
 	modelStack.Translate(x, y, 0);
+	modelStack.Scale(size, size, size);
+
+
+	float totalspace = 0.5f;
+	float totalz = 0;
+
+
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
 	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
 	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
@@ -365,19 +387,23 @@ void SceneMain::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 	for (unsigned i = 0; i < text.length(); ++i)
 	{
 		Mtx44 characterSpacing;
-		characterSpacing.SetToTranslation(0.5f + i * 0.5f, 0.5f, 0); //1.0f is the spacing of each character, you may change this value
+
+		//Change this line inside for loop
+		characterSpacing.SetToTranslation(totalspace, 0.5f, 0);
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
 		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+
+		totalspace += (CharWidth[text[i]] / 64);
 
 		mesh->Render((unsigned)text[i] * 6, 6);
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
+	//Add these code just before glEnable(GL_DEPTH_TEST);
 	projectionStack.PopMatrix();
 	viewStack.PopMatrix();
 	modelStack.PopMatrix();
 	glEnable(GL_DEPTH_TEST);
-
 }
 
 void SceneMain::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
@@ -466,6 +492,20 @@ void SceneMain::Render()
 	modelStack.Rotate(90, 0, 1, 0);
 	RenderMesh(meshList[RoadStraightBarrier], true);
 	modelStack.PopMatrix();
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(37.5, 0, 0);
+	modelStack.Scale(25, 25, 25);
+	modelStack.Rotate(90, 0, 1, 0);
+	RenderMesh(meshList[Museum], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(27.4, 9, -1.5);
+	modelStack.Scale(2, 2, 2);
+	modelStack.Rotate(-90, 0, 1, 0);
+	RenderText(meshList[GEO_TEXT], "Museum", Color(0, 0, 0));
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
