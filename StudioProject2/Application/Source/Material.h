@@ -31,9 +31,9 @@ struct Material
 	float kShininess;
 	Material()
 	{
-		kAmbient = Component(0.5f, 0.5f, 0.5f);
-		kDiffuse = Component(0.5f, 0.5f, 0.5f);
-		kSpecular = Component(0.5f, 0.5f, 0.5f);
+		kAmbient = Component(0.1f, 0.1f, 0.1f);
+		kDiffuse = Component(0.6f, 0.6f, 0.6f);
+		kSpecular = Component(0.3f, 0.3f, 0.3f);
 		kShininess = 1.f;
 		size = 0;
 	}

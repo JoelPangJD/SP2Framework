@@ -23,7 +23,7 @@ void SceneMain::Init()
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
 	//==========================
-	camera.Init(Vector3(0, 3, 0), Vector3(0, 3, 5), Vector3(0, 1, 0));
+	camera.Init(Vector3(-30, 3, 0), Vector3(0, 3, 5), Vector3(0, 1, 0));
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 
@@ -94,7 +94,7 @@ void SceneMain::Init()
 	light[0].type = Light::LIGHT_POINT;
 	light[0].position.Set(0, 10, 0);
 	light[0].color.Set(1,1,1);
-	light[0].power = 1.f;
+	light[0].power = .5f;
 	light[0].kC = 1.f;
 	light[0].kL = 0.01f;
 	light[0].kQ = 0.001f;
@@ -115,7 +115,7 @@ void SceneMain::Init()
 
 	//==================Initialise light1===========
 	light[1].type = Light::LIGHT_DIRECTIONAL;
-	light[1].position.Set(0, 20, 0);
+	light[1].position.Set(-20, 20, 0);
 	light[1].color.Set(1, 1, 1);
 	light[1].power = 0.f;
 	light[1].kC = 1.5f;
@@ -561,6 +561,24 @@ void SceneMain::Render()
 
 	modelStack.PushMatrix();
 	modelStack.Translate(7, 0, 7);
+	modelStack.Scale(10, 10, 10);
+	RenderMesh(meshList[TREE], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-7, 0, 7);
+	modelStack.Scale(10, 10, 10);
+	RenderMesh(meshList[TREE], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(7, 0, -7);
+	modelStack.Scale(10, 10, 10);
+	RenderMesh(meshList[TREE], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-7, 0, -7);
 	modelStack.Scale(10, 10, 10);
 	RenderMesh(meshList[TREE], true);
 	modelStack.PopMatrix();
