@@ -17,7 +17,7 @@
 # Folders
 .vs/
 Release/
-Application/Debug/
+*/Application/Debug/
 
 # Executables
 *.exe
@@ -29,3 +29,4 @@ Application/Debug/
 *.tlog
 *.pdb
 *.idb
+*.ilk
