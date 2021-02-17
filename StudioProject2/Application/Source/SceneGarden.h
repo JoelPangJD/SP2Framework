@@ -6,7 +6,9 @@
 #include "Light.h"
 #include "MatrixStack.h"
 #include "Entity.h"
+#include "InteractableObject.h"
 #include <iostream>
+#include <vector>
 #include <sstream>
 #include <math.h>
 
@@ -113,6 +115,8 @@ private:
 
 	float movex = 0, movez = 0;
 	float scale = 1;
+
+	std::vector<Entity*> Entitylist;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();

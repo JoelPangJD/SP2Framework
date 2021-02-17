@@ -1,1 +1,5 @@
+<<<<<<< Updated upstream
 ﻿
+=======
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\Microsoft.Common.CurrentVersion.targets(5341,5): error MSB3541: Files has invalid value "<<<<<<< HEAD". Illegal characters in path.
+>>>>>>> Stashed changes
