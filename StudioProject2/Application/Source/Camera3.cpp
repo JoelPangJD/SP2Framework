@@ -75,9 +75,12 @@ To be called every frame. Camera3 will get user inputs and update its position a
 /******************************************************************************/
 void Camera3::Update(double dt)
 {
-	static const float speed = 20.f;
+	static float speed = 20.f;
 	static const float sensitivity = 0.1f; 
-
+	if (Application::IsKeyPressed(VK_LSHIFT))
+		speed = 50.f;
+	else
+		speed = 20.f;
 	
 
 	if (Application::IsKeyPressed('W')) {
