@@ -144,7 +144,7 @@ void Application::Run()
 	Scene* scene3 = new SceneMarinaBay();
 	Scene* scene4 = new SceneGarden();
 
-	Scene* scene = scene1;
+	Scene* scene = scene4;
 	scene0->Init();
 	scene1->Init();
 	scene2->Init();
