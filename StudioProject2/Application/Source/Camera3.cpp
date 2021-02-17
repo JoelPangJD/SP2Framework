@@ -75,7 +75,7 @@ To be called every frame. Camera3 will get user inputs and update its position a
 /******************************************************************************/
 void Camera3::Update(double dt)
 {
-	static const float speed = 20.f;
+	static const float speed = 50.f;
 	static const float sensitivity = 0.1f; 
 
 	
@@ -116,12 +116,12 @@ void Camera3::Update(double dt)
 	{
 		//set scenery view
 	}
-	//if (Application::IsKeyPressed('Q')) {
-	//	position.y += speed * dt;
-	//}
-	//if (Application::IsKeyPressed('E')) {
-	//	position.y -= speed * dt;
-	//}
+	if (Application::IsKeyPressed(VK_SPACE)) {
+		position.y += speed * dt;
+	}
+	if (Application::IsKeyPressed(VK_CONTROL)) {
+		position.y -= speed * dt;
+	}
 
 	//4 is the distance that the target is away from the position
 	target = position + Vector3(4 * cos(phi * 3.141592 / 180) * cos(theta * 3.141592 / 180), 4 * sin(phi * 3.141592 / 180), 4 * cos(phi * 3.141592 / 180) * sin(theta * 3.141592 / 180));

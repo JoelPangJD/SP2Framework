@@ -1,6 +1,42 @@
-﻿  Application.cpp
+﻿  Camera3.cpp
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(49,98): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(50,54): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(87,44): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(88,30): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(95,31): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(101,30): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(108,45): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(109,31): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(120,27): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(123,27): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(127,152): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(127,93): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(127,60): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(135,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(136,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(140,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(141,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(142,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(143,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(157,38): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(158,19): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(159,38): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(170,19): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(172,19): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(174,131): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(174,83): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\Camera3.cpp(174,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  SceneChangi.cpp
 S:\SP2\SP2Framework\StudioProject2\Application\Source\Material.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
 S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
 S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(15,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 S:\SP2\SP2Framework\StudioProject2\Application\Source\Light.h(16,16): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(29,35): warning C4305: 'argument': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(122,22): warning C4305: '=': truncation from 'double' to 'float'
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(195,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(421,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(421,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(422,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+S:\SP2\SP2Framework\StudioProject2\Application\Source\SceneChangi.cpp(422,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Generating Code...
   Application.vcxproj -> S:\SP2\SP2Framework\StudioProject2\Debug\Application.exe

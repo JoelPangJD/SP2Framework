@@ -26,7 +26,8 @@ void SceneChangi::Init()
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
 	//==========================
-	camera.Init(Vector3(-189, 4.34, 0), Vector3(0, 3, 5), Vector3(0, 1, 0));
+	camera.Init(Vector3(-189, 4.34, 0), Vector3(0, 3, 0), Vector3(0, 1, 0));
+	
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 
@@ -182,7 +183,9 @@ void SceneChangi::Init()
 
 	//roadOBJ
 	meshList[GEO_STRAIGHT] = MeshBuilder::GenerateOBJMTL("roadStraight", "OBJ//Changi//straightRoad.obj", "OBJ//Changi//straightRoad.mtl");
+	meshList[GEO_ROADSPLIT] = MeshBuilder::GenerateOBJMTL("roadSplit", "OBJ//Changi//splitRoad.obj", "OBJ//Changi//splitRoad.mtl");
 	meshList[GEO_ROADL] = MeshBuilder::GenerateOBJMTL("roadL", "OBJ//Changi//roadL.obj", "OBJ//Changi//roadL.mtl");
+	meshList[GEO_ROADARROW] = MeshBuilder::GenerateOBJMTL("roadArrow", "OBJ//Changi//arrowRoad.obj", "OBJ//Changi//arrowRoad.mtl");
 }
 
 
@@ -209,10 +212,21 @@ void SceneChangi::Update(double dt)
 		light[0].type = Light::LIGHT_SPOT;
 		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
 	}
+	if (Application::IsKeyPressed('Z'))
+		lighton = false;						//to test whether colours and stuff are working properly
+	else if (Application::IsKeyPressed('X'))
+		lighton = true;
+
 	if (Application::IsKeyPressed('E'))
 		use = true;
 	else
 		use = false;
+	if (camera.position.x == -45 && camera.position.y == 40 && camera.position.z == 0)
+	{
+		onPlane = true;
+	}
+	else
+		onPlane = false;
 }
 
 void SceneChangi::RenderMesh(Mesh* mesh, bool enableLight)
@@ -467,9 +481,10 @@ void SceneChangi::Render()
 
 	//RenderMeshOnScreen(meshList[GEO_INVENTORY], 40, 20, 30, 30);
 	if (use == true) {
-		camera.position.x = -45;
-		camera.position.y = 40;
-		camera.position.z = 0;
+		/*camera.position.x = -10;
+		camera.position.y = 55;
+		camera.position.z = 0;*/
+		camera.Init(Vector3(-10, 55, 0), Vector3(-20, 55, 0), Vector3(0, 1, 0));
 	}
 	//Skybox
 	RenderSkybox();
@@ -529,18 +544,40 @@ void SceneChangi::Render()
 void SceneChangi::RenderRoad()
 {
 	modelStack.PushMatrix();
-	modelStack.Translate(0, 1, 50);
+	modelStack.Translate(-10, 1, 50);
 	modelStack.Scale(100, 100, 100);
 	modelStack.Rotate(-90, 0, 1, 0);
-	RenderMesh(meshList[GEO_STRAIGHT], true);
+	RenderMesh(meshList[GEO_ROADL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-200, 1, 50);
 	modelStack.Scale(100, 100, 100);
 	modelStack.Rotate(-90, 0, 1, 0);
-	RenderMesh(meshList[GEO_ROADL], true);
+	RenderMesh(meshList[GEO_STRAIGHT], true);
 	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-400, 1, 50);
+	modelStack.Scale(100, 100, 100);
+	modelStack.Rotate(-90, 0, 1, 0);
+	RenderMesh(meshList[GEO_ROADSPLIT], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-500, 1, 150);
+	modelStack.Scale(100, 100, 100);
+	RenderMesh(meshList[GEO_ROADARROW], true);//left
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-600, 1, -150);
+	modelStack.Rotate(-180, 0, 1, 0);
+	modelStack.Scale(100, 100, 100);
+	RenderMesh(meshList[GEO_ROADARROW], true);//right
+	modelStack.PopMatrix();
+
+
 }
 
 void SceneChangi::Exit()
