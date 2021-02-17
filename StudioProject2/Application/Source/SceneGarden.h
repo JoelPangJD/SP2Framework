@@ -39,6 +39,8 @@ class SceneGarden : public Scene
 		GEO_PONDBED,
 		GEO_PATH,
 		GEO_PATHT,
+		GEO_STICK,
+		GEO_FISH,
 		GEO_GAZEBO,
 		GEO_TREE1,
 		GEO_TREE2,

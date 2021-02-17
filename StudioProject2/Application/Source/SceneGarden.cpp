@@ -178,6 +178,9 @@ void SceneGarden::Init()
 	meshList[GEO_PATHT] = MeshBuilder::GenerateOBJMTL("path", "OBJ//garden//patht.obj", "OBJ//garden//path.mtl");
 	meshList[GEO_PATHT]->textureID = LoadTGA("Image//garden//pathtexture.tga");
 
+	meshList[GEO_STICK] = MeshBuilder::GenerateOBJMTL("path", "OBJ//garden//stick.obj", "OBJ//garden//stick.mtl");
+	meshList[GEO_STICK]->textureID = LoadTGA("Image//garden//stick.tga");
+
 	meshList[GEO_TREE1] = MeshBuilder::GenerateOBJMTL("tree1", "OBJ//garden//tree.obj", "OBJ//garden//tree.mtl");
 	meshList[GEO_TREE2] = MeshBuilder::GenerateOBJMTL("tree2", "OBJ//garden//tree_fat.obj", "OBJ//garden//tree.mtl");
 
@@ -546,7 +549,7 @@ void SceneGarden::Render()
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
-		modelStack.Translate(0, 0.1, -150);
+		modelStack.Translate(0, 0.01, -150);
 		modelStack.Rotate(90, 1, 0, 0);
 		modelStack.Scale(200, 200, 200);
 		glDisable(GL_CULL_FACE);
@@ -663,8 +666,9 @@ void SceneGarden::Render()
 		modelStack.PopMatrix();
 	}
 
+	//Path locations
 	{
-		for (int i = -200; i < 200; i += 18.0)
+		for (int i = -250; i <250; i += 18.0)
 		{
 			modelStack.PushMatrix();
 			if (i < 60 && i > 50)
@@ -691,29 +695,14 @@ void SceneGarden::Render()
 			}
 			modelStack.PopMatrix();
 		}
-		//modelStack.PushMatrix();
-		//modelStack.Translate(0, -2.29, 0);
-		//modelStack.Scale(2.3, 2.3, 2.3);
-		//RenderMesh(meshList[GEO_PATH], true);
-		//modelStack.PopMatrix();
-		//modelStack.PushMatrix();
-		//modelStack.Translate(18.4, -2.29, 0);
-		//modelStack.Scale(2.3, 2.3, 2.3);
-		//RenderMesh(meshList[GEO_PATH], true);
-		//modelStack.PopMatrix();
-
-		//modelStack.PushMatrix();
-		//modelStack.Translate(36.8, -2.29, -0.18);
-		//modelStack.Rotate(180,0,1,0);
-		//modelStack.Scale(2.3, 2.3, 2.3);
-		//RenderMesh(meshList[GEO_PATHT], true);
-		//modelStack.PopMatrix();
 	}
-	//modelStack.PushMatrix();
-	//modelStack.Translate(movex, -2, movez);
-	//modelStack.Scale(scale, scale, scale);
-	//RenderMesh(meshList[GEO_GAZEBO], true);
-	//modelStack.PopMatrix();
+
+
+	modelStack.PushMatrix();
+	modelStack.Translate(movex, 0, movez);
+	modelStack.Scale(scale, scale, scale);
+	RenderMesh(meshList[GEO_STICK], true);
+	modelStack.PopMatrix();
 
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();
