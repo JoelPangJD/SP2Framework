@@ -17,6 +17,10 @@ Inventory::Inventory()
 	clue1 = 0;
 }
 
+Inventory::~Inventory()
+{
+}
+
 
 int Inventory::get_key()
 {
@@ -26,6 +30,11 @@ int Inventory::get_key()
 int Inventory::get_clue()
 {
 	return clue1;
+}
+
+void Inventory::additem(Entity item)
+{
+	storage.push_back(item);
 }
 
 void Inventory::update_inventory()

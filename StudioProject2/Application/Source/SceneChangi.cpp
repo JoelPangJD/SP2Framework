@@ -181,6 +181,8 @@ void SceneChangi::Init()
 
 	meshList[GEO_PLANE] = MeshBuilder::GenerateOBJMTL("plane", "OBJ//Changi//plane.obj", "OBJ//Changi//plane.mtl");
 
+	meshList[GEO_STAIRCAR] = MeshBuilder::GenerateOBJMTL("staircar", "OBJ//Changi//stairCar.obj", "OBJ//Changi//stairCar.mtl");
+
 	//roadOBJ
 	meshList[GEO_STRAIGHT] = MeshBuilder::GenerateOBJMTL("roadStraight", "OBJ//Changi//straightRoad.obj", "OBJ//Changi//straightRoad.mtl");
 	meshList[GEO_ROADSPLIT] = MeshBuilder::GenerateOBJMTL("roadSplit", "OBJ//Changi//splitRoad.obj", "OBJ//Changi//splitRoad.mtl");
@@ -194,6 +196,7 @@ void SceneChangi::Update(double dt)
 {
 	fps = 1.f / dt;
 	camera.Update(dt);
+	static const float speed = 50.f;
 
 	if (Application::IsKeyPressed('5'))
 	{
@@ -218,15 +221,35 @@ void SceneChangi::Update(double dt)
 		lighton = true;
 
 	if (Application::IsKeyPressed('E'))
-		use = true;
-	else
-		use = false;
-	if (camera.position.x == -45 && camera.position.y == 40 && camera.position.z == 0)
 	{
-		onPlane = true;
+		use = true;
+		renderStairs = false;
 	}
-	else
-		onPlane = false;
+	else {
+		use = false;
+	}
+
+	if (Application::IsKeyPressed('I'))
+	{
+		movex -= 1;
+	}
+	if (Application::IsKeyPressed('K'))
+	{
+		if (camera.position.x <= 90 && camera.position.x >= 40 && camera.position.z > -25 && camera.position.z < 30) {
+
+		}
+		else
+			movex += 1;
+	}
+
+	if (Application::IsKeyPressed('J'))
+	{
+		rotateL += 0.5;
+	}
+	if (Application::IsKeyPressed('L'))
+	{
+		rotateR -= 0.5;
+	}
 }
 
 void SceneChangi::RenderMesh(Mesh* mesh, bool enableLight)
@@ -494,16 +517,14 @@ void SceneChangi::Render()
 
 	RenderMesh(meshList[GEO_AXES], false);
 
-
-
+	
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, 0);
-	modelStack.Translate(camera.position.x,0, camera.position.z);
+	modelStack.Translate(camera.position.x, 0, camera.position.z);
 	modelStack.Scale(1000, 1000, 1000);
 	modelStack.Rotate(-90, 1, 0, 0);
 	RenderMesh(meshList[GEO_QUAD], false);
 	modelStack.PopMatrix();
-
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-500, 0, 0);
@@ -518,12 +539,23 @@ void SceneChangi::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(10, 17, -6.5);
+	modelStack.Translate(10 + movex, 17, -6.5);
 	modelStack.Rotate(-90, 0, 1, 0);
+	modelStack.Rotate(rotateR, 0, 1, 0);
+	modelStack.Rotate(rotateL, 0, 1, 0);
 	modelStack.Scale(7, 7, 7);
 	RenderMesh(meshList[GEO_PLANE], true);
 	modelStack.PopMatrix();
 
+	if (renderStairs != false) {
+		modelStack.PushMatrix();
+		modelStack.Translate(-40, 2, 36);
+		//modelStack.Rotate(-90, 0, 1, 0);
+		modelStack.Scale(0.2, 0.2, 0.2);
+		RenderMesh(meshList[GEO_STAIRCAR], true);
+		modelStack.PopMatrix();
+	}
+	
 	RenderRoad();
 
 	std::stringstream ssX;

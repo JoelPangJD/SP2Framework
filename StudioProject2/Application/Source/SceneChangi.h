@@ -34,6 +34,7 @@ class SceneChangi : public Scene
 		GEO_BACK,
 		GEO_TOWER,
 		GEO_AIRPORT,
+		GEO_STAIRCAR,
 		GEO_STRAIGHT,
 		GEO_ROADL,
 		GEO_ROADSPLIT,
@@ -90,9 +91,14 @@ class SceneChangi : public Scene
 public:
 	Camera3 camera;
 	bool lighton = true;
-	bool use;
-	bool onPlane;
+	bool use ;
+	bool renderStairs = true;
 	float fps;
+
+	float rotateL;
+	float rotateR;
+	float movex;
+	float movez;
 
 	SceneChangi();
 	~SceneChangi();

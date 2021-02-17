@@ -24,7 +24,8 @@ void SceneMarinaBay::Init()
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
 	//==========================
-	camera.Init(Vector3(0, 8, 0), Vector3(0, 3, 5), Vector3(0, 1, 0));
+	//camera.Init(Vector3(0, 8, 0), Vector3(0, 8, 5), Vector3(0, 1, 0));
+	camera.Init(Vector3(0, 8, 280), Vector3(0, 8, 5), Vector3(0, 1, 0));
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 
@@ -116,9 +117,9 @@ void SceneMarinaBay::Init()
 
 	//==================Initialise light1===========
 	light[1].type = Light::LIGHT_DIRECTIONAL;
-	light[1].position.Set(10, 20, 0);
+	light[1].position.Set(-10, 20, 0);
 	light[1].color.Set(1, 1, 1);
-	light[1].power = 0.7f;
+	light[1].power = 1.3f;
 	light[1].kC = 1.5f;
 	light[1].kL = 0.01f;
 	light[1].kQ = 0.001f;
@@ -148,7 +149,7 @@ void SceneMarinaBay::Init()
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("Lightball", Color(1, 1, 1), 10, 10, 10);
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//font.tga");
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Marina//ExportedFont.tga");
 
 	meshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
 	meshList[GEO_INVENTORY]->textureID = LoadTGA("Image//inventory.tga");
@@ -167,14 +168,27 @@ void SceneMarinaBay::Init()
 	meshList[GEO_TOP]->textureID = LoadTGA("Image//top.tga");
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//bottom.tga");
+	//main boat
+	meshList[GEO_BOAT] = MeshBuilder::GenerateOBJMTL("boat", "OBJ//Marina//boat2.obj", "OBJ//Marina//boat.mtl");
 
-	meshList[GEO_BOAT] = MeshBuilder::GenerateOBJMTL("boat", "OBJ//Marina//boat.obj", "OBJ//Marina//boat.mtl");
-	//meshList[GEO_WATER]= MeshBuilder::GenerateOBJMTL("water", "OBJ//water1.obj", "OBJ//water1.mtl");
+	//environment
 	meshList[GEO_WATER] = MeshBuilder::GenerateQuad("quad", 1.0f, 1.0f, Color(1, 1, 1), 10);
 	meshList[GEO_WATER]->textureID = LoadTGA("Image//watertexture.tga");
+	meshList[GEO_WATER]->material.kAmbient.Set(0.3f, 0.3f, 0.3f);
+	meshList[GEO_WATER]->material.kDiffuse.Set(0.4f, 0.4f, 0.4f);
+	meshList[GEO_WATER]->material.kSpecular.Set(0.5f, 0.5f, 0.5f);
 	meshList[GEO_TREE] = MeshBuilder::GenerateOBJMTL("short tree", "OBJ//Marina//palm_tree_short.obj", "OBJ//Marina//palm_tree_short.mtl");
+	meshList[GEO_WATER]->material.kAmbient.Set(0.3f, 0.3f, 0.3f);
 	meshList[GEO_TALLTREE] = MeshBuilder::GenerateOBJMTL("tree", "OBJ//Marina//big_tree.obj", "OBJ//Marina//big_tree.mtl");
 	meshList[GEO_CHAIR] = MeshBuilder::GenerateOBJMTL("chair", "OBJ//Marina//modifiedchair.obj", "OBJ//Marina//modifiedchair.mtl");
+
+	//fight
+	meshList[GEO_LAYOUT] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
+	meshList[GEO_LAYOUT]->textureID = LoadTGA("Image//Marina//fight_layout.tga");
+	meshList[GEO_TEXTBOX] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
+	meshList[GEO_TEXTBOX]->textureID = LoadTGA("Image//Marina//textbox.tga");
+	meshList[GEO_HEALTH] = MeshBuilder::GenerateQuad("quad", Color(0, 1, 0), 1.f);
+	meshList[GEO_LOSTHEALTH] = MeshBuilder::GenerateQuad("quad", Color(1, 0, 0), 1.f);
 }
 
 
@@ -182,7 +196,8 @@ void SceneMarinaBay::Init()
 void SceneMarinaBay::Update(double dt)
 {
 	fps = 1.f / dt;
-	camera.Update(dt);
+	if (!fight)
+		camera.Update(dt);
 
 	if (Application::IsKeyPressed('5'))
 	{
@@ -225,6 +240,28 @@ void SceneMarinaBay::Update(double dt)
 		scale += 10*dt;
 	if (Application::IsKeyPressed('P'))
 		scale -= 10 * dt;
+	if (Application::IsKeyPressed('F'))
+	{
+		if (fight && !attackSelected)
+		{
+			switch (playerAction)
+			{
+			case (A_ATTACK):
+				fightSelected = true;
+				playerAction = A_ATTACK1;
+
+			case (A_ITEMS):
+				itemsSelected = true;
+				playerAction = A_ITEM1;
+			case (A_RUN):
+				fightDia = true;
+				fightDia = "He can probably shoot you before you try.";
+				break;
+			case (A_ATTACK1):
+				attackSelected = true;
+			}
+		}
+	}
 }
 
 void SceneMarinaBay::RenderMesh(Mesh* mesh, bool enableLight)
@@ -377,8 +414,8 @@ void SceneMarinaBay::RenderTextOnScreen(Mesh* mesh, std::string text, Color colo
 	viewStack.LoadIdentity(); //No need camera for ortho mode
 	modelStack.PushMatrix();
 	modelStack.LoadIdentity(); //Reset modelStack
-	modelStack.Scale(size, size, size);
 	modelStack.Translate(x, y, 0);
+	modelStack.Scale(size, size, size);
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
 	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
 	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
@@ -404,7 +441,7 @@ void SceneMarinaBay::RenderTextOnScreen(Mesh* mesh, std::string text, Color colo
 
 }
 
-void SceneMarinaBay::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
+void SceneMarinaBay::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -416,7 +453,7 @@ void SceneMarinaBay::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int
 	modelStack.PushMatrix();
 	modelStack.LoadIdentity();
 	modelStack.Translate(x, y, 0);
-	modelStack.Scale(sizex, sizey, 0);
+	modelStack.Scale(sizex, sizey, 1);
 	RenderMesh(mesh, false); //UI should not have light
 	projectionStack.PopMatrix();
 	viewStack.PopMatrix();
@@ -488,9 +525,9 @@ void SceneMarinaBay::Render()
 	
 	//infinity pool (to be changed to fix the need for face culling, maybe)
 	modelStack.PushMatrix();
-	modelStack.Translate(34, 0.0001, -66);
+	modelStack.Translate(47, 0.0001, z + 0);
 	modelStack.Rotate(90, 1, 0, 0);
-	modelStack.Scale(25, 175, 1);
+	modelStack.Scale(30, x + 317, 1);
 	glDisable(GL_CULL_FACE);
 	RenderMesh(meshList[GEO_WATER], true);
 	glEnable(GL_CULL_FACE);
@@ -499,7 +536,7 @@ void SceneMarinaBay::Render()
 	//boat
 	modelStack.PushMatrix();
 	modelStack.Translate(0, -27.7, 0);
-	modelStack.Scale(30, 25, 50);
+	modelStack.Scale(40, 25, 50);
 	RenderMesh(meshList[GEO_BOAT], true);
 	modelStack.PopMatrix();
 
@@ -510,7 +547,7 @@ void SceneMarinaBay::Render()
 	{
 		//trees
 		modelStack.PushMatrix();
-		modelStack.Translate(10, 0, z);
+		modelStack.Translate(23, 0, z);
 		modelStack.Scale(10, 20, 10);
 		RenderMesh(meshList[GEO_TREE], true);
 		modelStack.PopMatrix();
@@ -519,7 +556,7 @@ void SceneMarinaBay::Render()
 
 		//chair right after tree
 		modelStack.PushMatrix();
-		modelStack.Translate(10, 0, z + 5);
+		modelStack.Translate(23, 0, z + 5);
 		modelStack.Rotate(-90, 0, 1, 0);
 		modelStack.Scale(0.2, 0.2, 0.2);
 		RenderMesh(meshList[GEO_CHAIR], true);
@@ -527,7 +564,7 @@ void SceneMarinaBay::Render()
 
 		//chair in the middle of trees
 		modelStack.PushMatrix();
-		modelStack.Translate(10, 0, z + 15);
+		modelStack.Translate(23, 0, z + 15);
 		modelStack.Rotate(-90, 0, 1, 0);
 		modelStack.Scale(0.2, 0.2, 0.2);
 		RenderMesh(meshList[GEO_CHAIR], true);
@@ -535,7 +572,7 @@ void SceneMarinaBay::Render()
 
 		//chair directly before the tree
 		modelStack.PushMatrix();
-		modelStack.Translate(10, 0, z - 5);
+		modelStack.Translate(23, 0, z - 5);
 		modelStack.Rotate(-90, 0, 1, 0);
 		modelStack.Scale(0.2, 0.2, 0.2);
 		RenderMesh(meshList[GEO_CHAIR], true);
@@ -548,8 +585,33 @@ void SceneMarinaBay::Render()
 	RenderMesh(meshList[GEO_TALLTREE], true);
 	modelStack.PopMatrix();
 
-	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
-	RenderUI();
+	if (fight && !attackSelected)
+	{
+		//dragon
+		RenderTextOnScreen(meshList[GEO_TEXT], "Evil Guy", Color(0, 1, 0), 5, 0, 55);
+		RenderMeshOnScreen(meshList[GEO_HEALTH], 10, 53, 20, 2);
+		//RenderMeshOnScreen(meshList[GEO_LOSTHEALTH], 15, 53, 15, 2);
+		//MC
+		RenderTextOnScreen(meshList[GEO_TEXT], "You", Color(0, 1, 0), 5, 72, 30);
+		RenderMeshOnScreen(meshList[GEO_HEALTH], 72, 29, 15, 2);
+		//RenderMeshOnScreen(meshList[GEO_LOSTHEALTH], MCHealthPos, 29, MCHealth, 2);
+		//fighting layout
+		RenderMeshOnScreen(meshList[GEO_LAYOUT], 40, 15, 80, 30);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Attack", Color(0, 0, 0), 4, 4, 11);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Items", Color(0, 0, 0), 4, 4, 6);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Run", Color(0, 0, 0), 4, 4, 1);
+		//RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(0, 0, 0), 5, pointerPosX, pointerPosY);
+		if (fightSelected)
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT], "No Animation", Color(0, 0, 0), 5, 25, 8);	//attack1
+			RenderTextOnScreen(meshList[GEO_TEXT], "Chuck Sword", Color(0, 0, 0), 5, 25, 2);	//attack2
+		}
+	}
+	else if (!fight)
+	{
+		RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
+		RenderUI();
+	}
 }
 
 void SceneMarinaBay::Exit()

@@ -6,17 +6,19 @@ Entity::Entity()
 	scale = 1;
 	angle = 0;
 	radius = 0;
+	type = "";
 }
 
-Entity::Entity(Vector3 position, float scale, float angle, float radius)
+Entity::Entity(Vector3 position, float scale, float angle, float radius, string type)
 {
 	this->position = position;
 	this->scale = scale;
 	this->angle = angle;
 	this->radius = radius;
+	this->type = type;
 }
 
-Entity::Entity(Vector3 position, float scale, float angle, float height, float width)
+Entity::Entity(Vector3 position, float scale, float angle, float height, float width, string type)
 {
 	this->position = position;
 	this->scale = scale;
@@ -25,8 +27,9 @@ Entity::Entity(Vector3 position, float scale, float angle, float height, float w
 	this->height = height;
 	xwidth = width;
 	zwidth = width;
+	this->type = type;
 }
-Entity::Entity(Vector3 position, float scale, float angle, float height, float xwidth, float zwidth)
+Entity::Entity(Vector3 position, float scale, float angle, float height, float xwidth, float zwidth, string type)
 {
 	this->position = position;
 	this->scale = scale;
@@ -34,6 +37,7 @@ Entity::Entity(Vector3 position, float scale, float angle, float height, float x
 	this->height = height;
 	this->xwidth = xwidth;
 	this->zwidth = zwidth;
+	this->type = type;
 }
 
 Entity::~Entity()
@@ -74,6 +78,26 @@ void Entity::setangle(float angle)
 		angle += 360;
 }
 
+float Entity::getradius()
+{
+	return radius;
+}
+
+void Entity::setradius(float radius)
+{
+	this->radius = radius;
+}
+
+string Entity::gettype()
+{
+	return type;
+}
+
+void Entity::settype(string type)
+{
+	this->type = type;
+}
+
 void Entity::moveentity(int direction, float speed, double dt)
 {
 	speed = speed * dt;
@@ -101,6 +125,13 @@ bool Entity::spherecollider(Vector3 position)
 {
 	//distance between two points ( ( (x1-x2)^2 + (z1-z2)^2 )*0.5 )^2 + (y1-y2)^2 )^0.5) 
 	if(pow(pow(pow(pow((this->position.x - position.x), 2.f) + pow((this->position.z - position.z), 2.f), 0.5f),2.f) + pow((this-> position.y - position.y), 2.f),0.5f) < radius)
+		return true;
+	return false;
+}
+
+bool Entity::circlecollider(Vector3 position)
+{
+	if (pow(pow((this->position.x - position.x), 2.f) + pow((this->position.z - position.z), 2.f), 0.5f) < radius)
 		return true;
 	return false;
 }
