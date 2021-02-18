@@ -96,6 +96,7 @@ class SceneGarden : public Scene
 public:
 	Camera3 camera;
 	bool lighton = true;
+	bool hitboxshow = true;
 	float fps;
 
 	SceneGarden();
@@ -112,7 +113,7 @@ private:
 	unsigned m_vertexArrayID;
 	unsigned m_programID;
 	Mesh* meshList[NUM_GEOMETRY];
-	Light light[2];
+	Light light[2];	
 
 	float movex = 0, movez = 0;
 	float scale = 1;
