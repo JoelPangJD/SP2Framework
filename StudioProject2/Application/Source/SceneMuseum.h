@@ -9,6 +9,9 @@
 #include <iostream>
 #include <sstream>
 #include <math.h>
+#include "Entity.h"
+#include "Terrain.h"
+#include "InteractableObject.h"
 
 class SceneMuseum : public Scene
 {

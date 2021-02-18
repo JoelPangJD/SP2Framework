@@ -8,6 +8,7 @@
 #include <Mtx44.h>
 #include"MeshBuilder.h"
 
+
 SceneMuseum::SceneMuseum()
 {
 }
@@ -187,6 +188,16 @@ void SceneMuseum::Init()
 	meshList[GEO_RICKSHAW] = MeshBuilder::GenerateOBJ("rickshaw", "OBJ//Museum//18569_Human-Pulled Rickshaw_v1.obj");
 	meshList[GEO_WALLDOOR] = MeshBuilder::GenerateOBJMTL("Wall Door", "OBJ//Museum//wallDoor.obj", "OBJ//Museum//wallDoor.mtl");
 	meshList[GEO_WALLCORNER] = MeshBuilder::GenerateOBJMTL("Wall Corner", "OBJ//Museum//wallWoodCorner.obj", "OBJ//Museum//wallWoodCorner.mtl");
+
+	terrains.push_back(new Terrain(Vector3(54.5, 0, -113.507), 0,0,0, 3, 3, "Wall"));
+	terrains.push_back(new Terrain(Vector3(93.77, 0, -235.091),0,0,0, 3, 3, "Wall"));
+	terrains.push_back(new Terrain(Vector3(161.5, 0, -120.507),0,0,0, 3, 3, "Wall"));
+	terrains.push_back(new Terrain(Vector3(206.5, 0, -2), 0, 22, 10, 3, 3, "Wall"));
+	terrains.push_back(new Terrain(Vector3(-107.9315, 0, 82), 0, 22, 10, 3, 3, "Wall"));
+	terrains.push_back(new Terrain(Vector3(50, 0, 130), 0, 22, 10, 3, 3, "Wall"));
+	terrains.push_back(new Terrain(Vector3(97.606, 0, 216.3716), 0, 22, 10, 3, 3, "Wall"));
+	terrains.push_back(new Terrain(Vector3(242, 0, 80), 0, 22, 10, 3, 3, "Wall"));
+	terrains.push_back(new Terrain(Vector3(163, 0, 130), 0, 22, 10, 3, 3, "Wall"));
 
 
 
