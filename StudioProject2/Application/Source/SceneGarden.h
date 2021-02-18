@@ -21,14 +21,9 @@ class SceneGarden : public Scene
 		GEO_QUAD,
 		GEO_CUBE,
 		GEO_SPHERE,
-		GEO_HEMISPHERE,
-		GEO_TRUNCATEDHEMISPHERE,
-		GEO_PYRAMID,
 		GEO_LIGHTBALL,
-		GEO_RING,
-		GEO_CONE,
-		GEO_CYLINDER,
-		GEO_TORUS,
+		GEO_TORUS1,
+		GEO_TORUS2,
 		GEO_LEFT,
 		GEO_RIGHT,
 		GEO_TOP,
@@ -96,6 +91,10 @@ class SceneGarden : public Scene
 public:
 	Camera3 camera;
 	bool lighton = true;
+	bool hitboxshow = false;
+	int minigame = 0; //0 for no minigame, 1 for minigame one
+	float cooldown = 0; //cooldown time for actions
+	float circlescale1, circlescale2, circlespeed; //Circlescale1 is the size of the shrinking circle for the minigame1, circlescale2 is for the constant circle and circlespeed is the speed at which the circle gets smaller
 	float fps;
 
 	SceneGarden();
@@ -107,12 +106,13 @@ public:
 	virtual void Exit();
 
 private:
+	Camera3 prevcamera;
 	MS modelStack, viewStack, projectionStack; //The matrix stacks
 	unsigned m_parameters[U_TOTAL];
 	unsigned m_vertexArrayID;
 	unsigned m_programID;
 	Mesh* meshList[NUM_GEOMETRY];
-	Light light[2];
+	Light light[2];	
 
 	float movex = 0, movez = 0;
 	float scale = 1;
@@ -123,6 +123,7 @@ private:
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
 	void RenderUI();
+	void Renderminigame1();
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);

@@ -10,4 +10,5 @@ public:
 	InteractableObject(Vector3 pos, float angle, float scale, float radius, string type);
 	InteractableObject(Vector3 pos, float angle, float scale, float height, float xwidth, float zwidth, string type);
 	~InteractableObject();
+	void touch(Vector3 position);
 };

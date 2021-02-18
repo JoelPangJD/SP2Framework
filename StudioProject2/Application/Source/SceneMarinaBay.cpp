@@ -7,7 +7,6 @@
 #include "shader.hpp"
 #include <Mtx44.h>
 #include"MeshBuilder.h"
-//testing 12132132123
 
 SceneMarinaBay::SceneMarinaBay()
 {
@@ -19,13 +18,20 @@ SceneMarinaBay::~SceneMarinaBay()
 
 void SceneMarinaBay::Init()
 {
+	//======Initialising variables========
+	pointerX = 2;
+	pointerY = 11;
+	enemyHealthPos = 20.f;
+	playerHealthPos = 60.f;
+	enemyHealth = playerHealth = 0;
+
 	//======Matrix stack========
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
 	//==========================
 	//camera.Init(Vector3(0, 8, 0), Vector3(0, 8, 5), Vector3(0, 1, 0));
-	camera.Init(Vector3(0, 8, 280), Vector3(0, 8, 5), Vector3(0, 1, 0));
+	camera.Init(Vector3(90, 40, 240), Vector3(0, 8, 240), Vector3(0, 1, 0));
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 
@@ -189,6 +195,8 @@ void SceneMarinaBay::Init()
 	meshList[GEO_TEXTBOX]->textureID = LoadTGA("Image//Marina//textbox.tga");
 	meshList[GEO_HEALTH] = MeshBuilder::GenerateQuad("quad", Color(0, 1, 0), 1.f);
 	meshList[GEO_LOSTHEALTH] = MeshBuilder::GenerateQuad("quad", Color(1, 0, 0), 1.f);
+	meshList[GEO_MC] = MeshBuilder::GenerateOBJMTL("MC", "OBJ//Marina//advancedCharacter.obj", "OBJ//Marina//advancedCharacter.obj.mtl");
+	meshList[GEO_MC]->textureID = LoadTGA("Image//Marina//skin_adventurer.tga");
 }
 
 
@@ -206,13 +214,11 @@ void SceneMarinaBay::Update(double dt)
 	}
 	else if (Application::IsKeyPressed('6'))
 	{
-		//to do: switch light type to DIRECTIONAL and pass the information to shader
 		light[0].type = Light::LIGHT_DIRECTIONAL;
 		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
 	}
 	else if (Application::IsKeyPressed('7'))
 	{
-		//to do: switch light type to SPOT and pass the information to shader
 		light[0].type = Light::LIGHT_SPOT;
 		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
 	}
@@ -240,28 +246,129 @@ void SceneMarinaBay::Update(double dt)
 		scale += 10*dt;
 	if (Application::IsKeyPressed('P'))
 		scale -= 10 * dt;
-	if (Application::IsKeyPressed('F'))
+	if (Application::IsKeyPressed('H'))
 	{
-		if (fight && !attackSelected)
+		attackSelected = true;
+		playerAction = A_ATTACK1;
+	}
+	static bool bLButtonState = false;
+	if (!bLButtonState && Application::IsMousePressed(0))
+	{
+		bLButtonState = true;
+		std::cout << "LBUTTON DOWN" << std::endl;
+		double x, y;
+		Application::GetCursorPos(&x, &y);
+		int w = Application::GetWindowWidth();
+		int h = Application::GetWindowHeight();
+		float posX = x / 10; //convert (0,800) to (0,80)
+		float posY = 60 - (y / 10); //convert (600,0) to (0,60)
+		int BUTTON_LEFT = 70, BUTTON_RIGHT = 80, BUTTON_BOTTOM = 57, BUTTON_TOP = 60;
+		std::cout << "posX:" << posX << " , posY:" << posY << std::endl;
+		if (posX > BUTTON_LEFT && posX < BUTTON_RIGHT && posY > BUTTON_BOTTOM && posY < BUTTON_TOP)
 		{
-			switch (playerAction)
-			{
-			case (A_ATTACK):
-				fightSelected = true;
-				playerAction = A_ATTACK1;
+			std::cout << "Hit!" << std::endl;
+			//trigger user action or function
+		}
+		if (fight && !attackSelected && cooldownTimer <= 0)	//if in fight and attack is not playing
+		{
 
-			case (A_ITEMS):
-				itemsSelected = true;
-				playerAction = A_ITEM1;
-			case (A_RUN):
-				fightDia = true;
-				fightDia = "He can probably shoot you before you try.";
-				break;
-			case (A_ATTACK1):
-				attackSelected = true;
+			{
+				//keyboard support might get rid of it entirely depending
+				/*if (Application::IsKeyPressed('F'))
+				{
+					switch (playerAction)
+					{
+					case (A_ATTACK):
+						fightSelected = true;
+						playerAction = A_ATTACK1;
+						pointerX += 21;
+						pointerY -= 3;
+					case (A_ITEMS):
+						itemsSelected = true;
+						playerAction = A_ITEM1;
+					case (A_RUN):
+						fightDia = true;
+						fightDia = "He can probably shoot you before you try.";
+						break;
+					case (A_ATTACK1):
+						attackSelected = true;
+					}
+					cooldownTimer = 0.3f;
+				}*/
+				//else if (Application::IsKeyPressed(VK_UP))		//if up arrow is pressed while in the fight
+				//{
+				//	if (!fightSelected && !itemsSelected)	//when on the first 3 options
+				//	{
+				//		playerAction = static_cast<ACTION_TYPE>((playerAction + 1) % (A_RUN + 1));	//updates playerAction
+				//		pointerY = playerAction * 5 + 1;	//reads which action it is on and moves the pointer
+				//	}
+				//	else if (fightSelected)
+				//	{
+				//		playerAction = static_cast<ACTION_TYPE>((playerAction + 1) % (A_ATTACK4 + 1 - A_RUN));	//minuses the previous enum on the list
+				//		pointerY = (playerAction - A_RUN + 1) * 6 + 2;
+				//	}
+				//	else if (itemsSelected)
+				//	{
+				//		playerAction = static_cast<ACTION_TYPE>((playerAction + 1) % (A_ITEM4 + 1 - A_ATTACK4));
+				//		pointerY = (playerAction - A_ATTACK4 + 1) * 6 + 2;
+				//	}
+				//	cooldownTimer = 0.3f;
+				//}
 			}
 		}
 	}
+
+	if (attackSelected)
+	{
+		switch (playerAction)
+		{
+		case (A_ATTACK1):			//MC goes big
+			if (!attack1Hit)
+			{
+				if (attack1Scale < 5)		//go big
+					attack1Scale += 10 * dt;
+				else if (attack1Angle < 90)		//rotate onto enemy
+					attack1Angle += 300 * dt;
+				else
+					attack1Hit = true;		//has hit enemy
+			}
+			else
+			{
+				if (attack1Angle > 0)
+					attack1Angle -= 300 * dt;
+				else if (attack1Scale > 0.7)
+					attack1Scale -= 10 * dt;
+				else			//resolution of attack
+				{
+					enemyHealthLost = 35.f;
+					attack1Hit = false;
+					attackSelected = false;
+					playerTurn = false;
+				}
+			}
+			//case (A_ATTACK2):
+		}
+		
+	}
+
+
+	if (playerHealthLost > 0)
+	{	//health lost will be set to 100 so since the scaling is 20 the speed would be the same as health lost / 5
+		int speedOfHealthLost = 30.f;
+		playerHealthLost -= speedOfHealthLost * dt;
+		playerHealth += speedOfHealthLost * 0.2 * dt;
+		playerHealthPos -= speedOfHealthLost * 0.1 * dt;	//dependent on health's scaling
+	}
+	else if (enemyHealthLost > 0)
+	{
+		int speedOfHealthLost = 30.f;
+		enemyHealthLost -= speedOfHealthLost * dt;
+		enemyHealth += speedOfHealthLost * 0.2 * dt;
+		enemyHealthPos -= speedOfHealthLost * 0.1 * dt;	//dependent on health's scaling
+	}
+	//==================Updating timers===========
+	if (cooldownTimer > 0)
+		cooldownTimer -= dt;
 }
 
 void SceneMarinaBay::RenderMesh(Mesh* mesh, bool enableLight)
@@ -584,27 +691,48 @@ void SceneMarinaBay::Render()
 	modelStack.Scale(scale, 2*scale, scale);
 	RenderMesh(meshList[GEO_TALLTREE], true);
 	modelStack.PopMatrix();
+	
+	if (fight)
+	{
+		//mc
+		modelStack.PushMatrix();
+		modelStack.Translate(0, 0, 200);
+		if (playerAction!=A_ATTACK1)
+			modelStack.Scale(0.7f, 0.7f, 0.7f);
+		else
+		{
+			modelStack.Rotate(attack1Angle, 1, 0, 0);
+			modelStack.Scale(attack1Scale, attack1Scale, attack1Scale);
+		}
+		RenderMesh(meshList[GEO_MC], true);
+		modelStack.PopMatrix();
+	}
 
 	if (fight && !attackSelected)
 	{
 		//dragon
 		RenderTextOnScreen(meshList[GEO_TEXT], "Evil Guy", Color(0, 1, 0), 5, 0, 55);
 		RenderMeshOnScreen(meshList[GEO_HEALTH], 10, 53, 20, 2);
-		//RenderMeshOnScreen(meshList[GEO_LOSTHEALTH], 15, 53, 15, 2);
+		RenderMeshOnScreen(meshList[GEO_LOSTHEALTH], enemyHealthPos, 53, enemyHealth, 2);
 		//MC
-		RenderTextOnScreen(meshList[GEO_TEXT], "You", Color(0, 1, 0), 5, 72, 30);
-		RenderMeshOnScreen(meshList[GEO_HEALTH], 72, 29, 15, 2);
-		//RenderMeshOnScreen(meshList[GEO_LOSTHEALTH], MCHealthPos, 29, MCHealth, 2);
+		RenderTextOnScreen(meshList[GEO_TEXT], "You", Color(0, 1, 0), 5, 72, 55);
+		RenderMeshOnScreen(meshList[GEO_HEALTH], 70, 53, 20, 2);
+		RenderMeshOnScreen(meshList[GEO_LOSTHEALTH], playerHealthPos, 53, playerHealth, 2);
 		//fighting layout
 		RenderMeshOnScreen(meshList[GEO_LAYOUT], 40, 15, 80, 30);
 		RenderTextOnScreen(meshList[GEO_TEXT], "Attack", Color(0, 0, 0), 4, 4, 11);
 		RenderTextOnScreen(meshList[GEO_TEXT], "Items", Color(0, 0, 0), 4, 4, 6);
 		RenderTextOnScreen(meshList[GEO_TEXT], "Run", Color(0, 0, 0), 4, 4, 1);
-		//RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(0, 0, 0), 5, pointerPosX, pointerPosY);
+		RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(0, 0, 0), 4, pointerX, pointerY);
 		if (fightSelected)
 		{
-			RenderTextOnScreen(meshList[GEO_TEXT], "No Animation", Color(0, 0, 0), 5, 25, 8);	//attack1
-			RenderTextOnScreen(meshList[GEO_TEXT], "Chuck Sword", Color(0, 0, 0), 5, 25, 2);	//attack2
+			RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder", Color(0, 0, 0), 5, 25, 8);	//attack1
+			RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder2", Color(0, 0, 0), 5, 25, 2);	//attack2
+		}
+		else if (itemsSelected)
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder3", Color(0, 0, 0), 5, 25, 8);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder4", Color(0, 0, 0), 5, 25, 8);
 		}
 	}
 	else if (!fight)

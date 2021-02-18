@@ -9,6 +9,7 @@
 #include <iostream>
 #include <sstream>
 #include <math.h>
+#include "Button.h"
 
 class SceneMain : public Scene
 {
@@ -34,6 +35,7 @@ class SceneMain : public Scene
 		RoadCrossBarrier,
 		Museum,
 		Lamp,
+		Sprite,
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE
@@ -102,11 +104,14 @@ private:
 	Light light[2];
 
 	bool inFrontOfMuseum, inFrontOfChangi, InFrontofMarina, inFrontofGarden;
+	bool minigameMuseum;
+	
 
 	float CharWidth[256];
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
 	void RenderUI();
+	void RenderMinigame();
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);

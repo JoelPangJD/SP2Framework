@@ -9,6 +9,9 @@
 #include <iostream>
 #include <sstream>
 #include <math.h>
+#include "Entity.h"
+#include "Terrain.h"
+#include "InteractableObject.h"
 
 class SceneMuseum : public Scene
 {
@@ -43,6 +46,7 @@ class SceneMuseum : public Scene
 		GEO_WALL,
 		GEO_WALLDOOR,
 		GEO_WALLCURVED,
+		GEO_WALLCORNER,
 		GEO_GLASSTABLE,
 		GEO_GROUND,
 		NUM_GEOMETRY,
@@ -112,8 +116,12 @@ private:
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
 
+	std::vector<InteractableObject*> items;
+	std::vector<Terrain*> terrains;
+
 	float movex = 0;
 	float movez = 0;
+
 	float scale = 1;
 	float rotate = 0;
 

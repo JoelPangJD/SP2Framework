@@ -22,7 +22,7 @@ void SceneGarden::Init()
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
 	//==========================
-	camera.Init(Vector3(0, 3, 0), Vector3(0, 3, 5), Vector3(0, 1, 0));
+	camera.Init(Vector3(0, 5, 0), Vector3(0, 5, 5), Vector3(0, 1, 0));
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 
@@ -141,13 +141,16 @@ void SceneGarden::Init()
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.0f);
-	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.5f, 0.2f, 0.0f), 1);
+	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.5f, 0.5f, 0.5f), 1);
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(0.5, 0.5, 0.5), 10, 10, 1);
 	meshList[GEO_SPHERE]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
 	meshList[GEO_SPHERE]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
 	meshList[GEO_SPHERE]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[GEO_SPHERE]->material.kShininess = 1.f;
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("Lightball", Color(1, 1, 1), 10, 10, 10);
+
+	meshList[GEO_TORUS1] = MeshBuilder::GenerateTorus("torus1", Color(0.5, 0.5, 0.5), 30, 30, 5,0.1);
+	meshList[GEO_TORUS2] = MeshBuilder::GenerateTorus("torus2", Color(0.5, 1, 0.5), 30, 30, 5, 0.1);
 
 	meshList[GEO_GRASSFLOOR] = MeshBuilder::GenerateQuad("grassfloor",1,1,Color(1,1,1), 30);
 	meshList[GEO_GRASSFLOOR]->textureID = LoadTGA("Image//garden//grassfloor.tga");
@@ -160,7 +163,7 @@ void SceneGarden::Init()
 	meshList[GEO_POND]->textureID = LoadTGA("Image//watertexture.tga");
 	meshList[GEO_POND]->material.kAmbient.Set(0.3f, 0.3f, 0.3f);
 	meshList[GEO_POND]->material.kDiffuse.Set(0.4f, 0.4f, 0.4f);
-	meshList[GEO_POND]->material.kSpecular.Set(0.5f, 0.5f, 0.5f);
+	meshList[GEO_POND]->material.kSpecular.Set(0.2f, 0.2f, 0.2f);
 
 	meshList[GEO_PONDBED] = MeshBuilder::GenerateQuad("pondwater", 1, 1, Color(1, 1, 1), 10);
 	meshList[GEO_PONDBED]->textureID = LoadTGA("Image//garden//pondbed.tga");
@@ -222,37 +225,67 @@ void SceneGarden::Init()
 	terrains.push_back(new Terrain(Vector3(-120, 0, 32), 0, 14, 10, 3, 3, "tree2"));
 	terrains.push_back(new Terrain(Vector3(-123, 0, -42), 0, 21, 10, 3, 3, "tree2"));
 
+	terrains.push_back(new Terrain(Vector3(0, 0, -150), 0, 1, 1, 200, 200, "pond"));
+
+	terrains.push_back(new Terrain(Vector3(59, 0, 44), 0, 1, 5, 5, 2, "gazebo"));
+	terrains.push_back(new Terrain(Vector3(52, 0, 44), 0, 1, 5, 5, 2, "gazebo"));
+
+	terrains.push_back(new Terrain(Vector3(59, 0, 58), 0, 1, 5, 5, 2, "gazebo"));
+	terrains.push_back(new Terrain(Vector3(52, 0, 58), 0, 1, 5, 5, 2, "gazebo"));
+
+	terrains.push_back(new Terrain(Vector3(62, 0, 51), 0, 1, 5, 3.5, 14, "gazebo"));
+	terrains.push_back(new Terrain(Vector3(49, 0, 51), 0, 1, 5, 3.5, 14, "gazebo"));
+
 	items.push_back(new InteractableObject(Vector3(0, 2, 0), 0, 1, 2, "stick"));
 }
 
 void SceneGarden::Update(double dt)
 {
 	fps = 1.f / dt;
-	Vector3 prevpos = camera.position;
-	camera.Update(dt);
-	//Check collisions
+	if (cooldown > 0)
+		cooldown -= dt;
+	if (minigame == 0)
 	{
-		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+		camera.Update(dt);
+		//Check collisions
 		{
-			if ((*it)->gettype() == "stick")
+			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 			{
-				if ((*it)->spherecollider(camera.target)) // Checks if the target is within a radius of the stick
+				if ((*it)->gettype() == "stick")
 				{
-					std::cout << "touching stick" << std::endl;
-					RenderTextOnScreen(meshList[GEO_TEXT], "Stick", Color(1, 1, 0.6), 4, 40, 30);
-					if (Application::IsKeyPressed('E'))
+					if ((*it)->spherecollider(camera.target)) // Checks if the target is within a radius of the stick
 					{
-						//(*it)->pickup();
+						std::cout << "touching stick" << std::endl;
+						RenderTextOnScreen(meshList[GEO_TEXT], "Stick", Color(1, 1, 0.6), 5, 0, 0);
+						if (Application::IsKeyPressed('E'))
+						{
+							minigame = 1;
+						}
 					}
 				}
 			}
-		}
-		for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
-		{
-			(*it)->solidCollisionBox(camera.position);
+			for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
+			{
+				(*it)->solidCollisionBox(camera.position);
+			}
 		}
 	}
-
+	else if (minigame == 1)
+	{
+		circlescale1 -= circlespeed * dt;
+		if (Application::IsKeyPressed('E') && cooldown <= 0)
+		{
+			if (circlescale1 >= circlescale2 - 0.05 && circlescale1 <= circlescale2 + 0.05)
+			{
+				cout << "Good" << endl;
+				circlespeed += 0.2f;
+			}
+			else
+				cout << "Bad" << endl;
+			cooldown = 0.5;
+			circlescale1 = 3;
+		}
+	}
 	if (Application::IsKeyPressed('5'))
 	{
 		light[0].type = Light::LIGHT_POINT;
@@ -283,6 +316,21 @@ void SceneGarden::Update(double dt)
 	else if (Application::IsKeyPressed('X'))
 		lighton = true;
 
+	if (Application::IsKeyPressed('C') && minigame != 0) //exit minigame
+	{
+		camera = prevcamera;
+		minigame = 0;
+	}
+	else if (Application::IsKeyPressed('V') && minigame != 1) //Enter minigame
+	{
+		prevcamera = camera;
+		camera.Init(Vector3(0, 50, -150), Vector3(0, 0, -150), Vector3(0, 0, 1));
+		circlescale2 = 1;
+		circlescale1 = 3;
+		circlespeed = 0.5f;
+		minigame = 1;
+	}
+
 	if (Application::IsKeyPressed('I'))
 		movez += 10 * dt;
 	if (Application::IsKeyPressed('K'))
@@ -295,6 +343,7 @@ void SceneGarden::Update(double dt)
 		scale += 10 * dt;
 	if (Application::IsKeyPressed('O'))
 		scale -= 10 * dt;
+
 }
 
 void SceneGarden::RenderMesh(Mesh* mesh, bool enableLight)
@@ -391,10 +440,32 @@ void SceneGarden::RenderSkybox()
 void SceneGarden::RenderUI()
 {
 	modelStack.PushMatrix();
+	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	std::ostringstream ss;
 	ss << "FPS: " << fps;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 29);
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 58, 68);
 	modelStack.PopMatrix();
+}
+
+void SceneGarden::Renderminigame1()
+{
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 10, -150);
+	modelStack.Scale(1, 1, 1);
+	RenderMesh(meshList[GEO_TORUS1], false);
+	modelStack.PopMatrix();
+	if (circlescale1 > 0.1)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(0, 10, -150);
+		modelStack.Scale(circlescale1, circlescale1, circlescale1);
+		RenderMesh(meshList[GEO_TORUS2], false);
+		modelStack.PopMatrix();
+	}
+	else
+	{
+		circlescale1 = 3;
+	}
 }
 
 void SceneGarden::RenderText(Mesh* mesh, std::string text, Color color)
@@ -442,8 +513,8 @@ void SceneGarden::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, 
 	viewStack.LoadIdentity(); //No need camera for ortho mode
 	modelStack.PushMatrix();
 	modelStack.LoadIdentity(); //Reset modelStack
-	modelStack.Scale(size, size, size);
 	modelStack.Translate(x, y, 0);
+	modelStack.Scale(size, size, size);
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
 	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
 	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
@@ -605,108 +676,6 @@ void SceneGarden::Render()
 	RenderMesh(meshList[GEO_GRASSFLOOR], true);
 	modelStack.PopMatrix();
 
-	//modelStack.PushMatrix();
-	//modelStack.Translate(50, 0, 50);
-	//modelStack.Scale(0.15, 0.15, 0.15);
-	//RenderMesh(meshList[GEO_GAZEBO], true);
-	//modelStack.PopMatrix();
-
-	//Tree1 locations
-	/*{
-		modelStack.PushMatrix();
-		modelStack.Translate(70, 0, 64);
-		modelStack.Scale(22, 22, 22);
-		RenderMesh(meshList[GEO_TREE1], true);
-		modelStack.PopMatrix();
-
-		modelStack.PushMatrix();
-		modelStack.Translate(24, 0, 47);
-		modelStack.Scale(18, 18, 18);
-		RenderMesh(meshList[GEO_TREE1], true);
-		modelStack.PopMatrix();
-
-		modelStack.PushMatrix();
-		modelStack.Translate(-25, 0, 80);
-		modelStack.Scale(18, 18, 18);
-		RenderMesh(meshList[GEO_TREE1], true);
-		modelStack.PopMatrix();
-
-		modelStack.PushMatrix();
-		modelStack.Translate(-25, 0, 16);
-		modelStack.Scale(11, 11, 11);
-		RenderMesh(meshList[GEO_TREE1], true);
-		modelStack.PopMatrix();
-
-		modelStack.PushMatrix();
-		modelStack.Translate(-43, 0, 47);
-		modelStack.Scale(18, 18, 18);
-		RenderMesh(meshList[GEO_TREE1], true);
-		modelStack.PopMatrix();
-
-		modelStack.PushMatrix();
-		modelStack.Translate(-43, 0, -24);
-		modelStack.Scale(17, 17, 17);
-		RenderMesh(meshList[GEO_TREE1], true);
-		modelStack.PopMatrix();
-
-		modelStack.PushMatrix();
-		modelStack.Translate(88, 0, -17);
-		modelStack.Scale(13, 13, 13);
-		RenderMesh(meshList[GEO_TREE1], true);
-		modelStack.PopMatrix();
-
-		modelStack.PushMatrix();
-		modelStack.Translate(112, 0, -75);
-		modelStack.Scale(13, 13, 13);
-		RenderMesh(meshList[GEO_TREE1], true);
-		modelStack.PopMatrix();
-	}*/
-
-	//Tree2 locations
-	/*{
-		modelStack.PushMatrix();
-		modelStack.Translate(-47, 0, 76);
-		modelStack.Scale(13, 13, 13);
-		RenderMesh(meshList[GEO_TREE2], true);
-		modelStack.PopMatrix();
-
-		modelStack.PushMatrix();
-		modelStack.Translate(1, 0, 54);
-		modelStack.Scale(17, 17, 17);
-		RenderMesh(meshList[GEO_TREE2], true);
-		modelStack.PopMatrix();
-
-		modelStack.PushMatrix();
-		modelStack.Translate(130, 0, -60);
-		modelStack.Scale(17, 17, 17);
-		RenderMesh(meshList[GEO_TREE2], true);
-		modelStack.PopMatrix();
-
-		modelStack.PushMatrix();
-		modelStack.Translate(80, 0, 27);
-		modelStack.Scale(15, 15, 15);
-		RenderMesh(meshList[GEO_TREE2], true);
-		modelStack.PopMatrix();
-
-		modelStack.PushMatrix();
-		modelStack.Translate(-124, 0, -129);
-		modelStack.Scale(19, 19, 19);
-		RenderMesh(meshList[GEO_TREE2], true);
-		modelStack.PopMatrix();
-
-		modelStack.PushMatrix();
-		modelStack.Translate(-120, 0, 32);
-		modelStack.Scale(14, 14, 14);
-		RenderMesh(meshList[GEO_TREE2], true);
-		modelStack.PopMatrix();
-
-		modelStack.PushMatrix();
-		modelStack.Translate(-123, 0, -42);
-		modelStack.Scale(21, 21, 21);
-		RenderMesh(meshList[GEO_TREE2], true);
-		modelStack.PopMatrix();
-	}*/
-
 	//Path locations
 	{
 		for (int i = -250; i <250; i += 18.0)
@@ -749,8 +718,14 @@ void SceneGarden::Render()
 			if ((*it)->gettype() == "stick")
 			{
 				RenderMesh(meshList[GEO_STICK], true);
-				/*modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
-				RenderMesh(meshList[GEO_SPHERE], FALSE);*/
+				if (hitboxshow)
+				{
+					modelStack.PopMatrix();
+					modelStack.PushMatrix();
+					modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
+					modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
+					RenderMesh(meshList[GEO_SPHERE], FALSE);
+				}
 			}
 			modelStack.PopMatrix();
 		}
@@ -767,17 +742,27 @@ void SceneGarden::Render()
 				RenderMesh(meshList[GEO_TREE1], true);
 			else if ((*it)->gettype() == "tree2")
 				RenderMesh(meshList[GEO_TREE2], true);
+			if (hitboxshow)
+			{
+				modelStack.PopMatrix();
+				modelStack.PushMatrix();
+				modelStack.Translate((*it)->getposition().x, (*it)->getposition().y + (*it)->getheight()*0.5, (*it)->getposition().z);
+				modelStack.Scale((*it)->getxwidth(), (*it)->getheight(), (*it)->getzwidth());
+				RenderMesh(meshList[GEO_CUBE], false);
+			}
 			modelStack.PopMatrix();
 		}
 	}
 	//modelStack.PushMatrix();
-	//modelStack.Translate(camera.target.x, camera.target.y, camera.target.z);
-	//modelStack.Scale(1,1,1);
-	//RenderMesh(meshList[GEO_SPHERE], FALSE);
+	//modelStack.Translate(movex, 2, movez);
+	//modelStack.Scale(1,5,2);
+	//RenderMesh(meshList[GEO_CUBE], FALSE);
 	//modelStack.PopMatrix();
 
-	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
-	RenderUI();
+	if (minigame == 0)
+		RenderUI();
+	else if(minigame == 1)
+		Renderminigame1();
 }
 
 void SceneGarden::Exit()

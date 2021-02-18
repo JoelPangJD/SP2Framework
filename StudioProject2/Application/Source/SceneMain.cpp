@@ -189,6 +189,7 @@ void SceneMain::Init()
 	}
 	fin.close();
 	inFrontOfMuseum = false;
+	minigameMuseum = false;
 }
 
 
@@ -221,7 +222,8 @@ void SceneMain::Update(double dt)
 
 	if (Application::IsKeyPressed('E')) {
 		if (inFrontOfMuseum == true) {
-			//enter code to change scene to museum
+			minigameMuseum = true;
+			//Application::SwitchScene = 1;
 		}
 	
 	}
@@ -230,6 +232,18 @@ void SceneMain::Update(double dt)
 	}
 	else {
 		inFrontOfMuseum = false;
+	}
+	Button button(20.f, 11.f, 34.f, 3.f);
+	static bool bLButtonState = false;
+	//minigame for entering museum
+	if (minigameMuseum == true) {
+		Application::enableMouse = true;
+		button.updateButton();
+		if (button.isClickedOn() == true){
+			minigameMuseum = false;
+			Application::enableMouse = false;
+			Application::SwitchScene = 1;
+		}
 	}
 
 
@@ -339,6 +353,11 @@ void SceneMain::RenderUI()
 	ss.str("");
 	ss << "Pos: X: " << camera.position.x << " Z: " << camera.position.z;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(1, 0, 0), 4, 0, 50);
+}
+
+void SceneMain::RenderMinigame()
+{
+	RenderTextOnScreen(meshList[GEO_TEXT], "Click here to enter", Color(0, 0, 0), 6, 20, 10);
 }
 
 void SceneMain::RenderText(Mesh* mesh, std::string text, Color color)
@@ -643,6 +662,10 @@ void SceneMain::Render()
 	
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();
+
+	if (minigameMuseum == true) {
+		RenderMinigame();
+	}
 }
 
 void SceneMain::Exit()
