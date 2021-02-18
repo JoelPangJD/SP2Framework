@@ -1,6 +1,7 @@
 #pragma once
 #include<iostream>
 #include<string>
+#include "Inventory.h"
 #include "Vector3.h"
 using namespace std;
 class Entity
@@ -27,6 +28,12 @@ public:
 	void setangle(float x);
 	float getradius();
 	void setradius(float radius);
+	float getheight();
+	void setheight(float height);
+	float getxwidth();
+	void setxwidth(float xwidth);
+	float getzwidth();
+	void setzwidth(float zwidth);
 	string gettype();
 	void settype(string type);
 
