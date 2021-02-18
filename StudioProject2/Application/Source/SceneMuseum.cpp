@@ -23,7 +23,7 @@ void SceneMuseum::Init()
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
 	//==========================
-	camera.Init(Vector3(0, 10, 0), Vector3(-23.6913, 10.0408, -3.79726), Vector3(0, 1, 0));
+	camera.Init(Vector3(-220.713, 10, 242.881), Vector3(-220.717, 10, 241.881), Vector3(0, 1, 0));
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 
@@ -94,7 +94,7 @@ void SceneMuseum::Init()
 	m_parameters[U_TEXT_COLOR] = glGetUniformLocation(m_programID, "textColor");
 	//==================Initialise light0===========
 	light[0].type = Light::LIGHT_POINT;
-	light[0].position.Set(0, 0, 90);
+	light[0].position.Set(0, 500, 0);
 	light[0].color.Set(0.24725f, 0.1995f, 0.0745f);
 	light[0].power = 500;
 	light[0].kC = 1.f;
@@ -186,6 +186,7 @@ void SceneMuseum::Init()
 	meshList[GEO_WALLCURVED] = MeshBuilder::GenerateOBJMTL("Wall", "OBJ//Museum//wallWoodCurved.obj", "OBJ//Museum//wallWoodCurved.mtl");
 	meshList[GEO_RICKSHAW] = MeshBuilder::GenerateOBJ("rickshaw", "OBJ//Museum//18569_Human-Pulled Rickshaw_v1.obj");
 	meshList[GEO_WALLDOOR] = MeshBuilder::GenerateOBJMTL("Wall Door", "OBJ//Museum//wallDoor.obj", "OBJ//Museum//wallDoor.mtl");
+	meshList[GEO_WALLCORNER] = MeshBuilder::GenerateOBJMTL("Wall Corner", "OBJ//Museum//wallWoodCorner.obj", "OBJ//Museum//wallWoodCorner.mtl");
 
 
 
@@ -234,16 +235,17 @@ void SceneMuseum::Update(double dt)
 		std::cout << "Target position Z: " << camera.target.z << std::endl;
 	}
 
-	if (Application::IsKeyPressed('I'))
+	if (Application::IsKeyPressed('K'))
 	{
 		movez += 10 * dt;
 		std::cout << "Moved z: " << movez << std::endl;
 	}
-	if (Application::IsKeyPressed('K'))
+	if (Application::IsKeyPressed('I'))
 	{
 		movez -= 10 * dt;
 		std::cout << "Moved z: " << movez << std::endl;
 	}
+
 	if (Application::IsKeyPressed('J'))
 	{
 		movex += 10 * dt;
@@ -254,6 +256,7 @@ void SceneMuseum::Update(double dt)
 		movex -= 10 * dt;
 		std::cout << "Moved x: " << movex << std::endl;
 	}
+
 	if (Application::IsKeyPressed('O'))
 	{
 		scale += 10 * dt;
@@ -470,17 +473,88 @@ void SceneMuseum::RenderWalls()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
+	modelStack.Translate(-256.725, 0, -80);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(20, 80, 20);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-275.86 , 0, -80);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(20, 40, 20);
+	RenderMesh(meshList[GEO_WALLCORNER], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-275.77, 0, 85.866);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(20, 80, 312.079);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-275.86, 0, 251.47);
+	modelStack.Rotate(270, 0, 1, 0);
+	modelStack.Scale(20, 40, 20);
+	RenderMesh(meshList[GEO_WALLCORNER], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-226.94, 0, 269.39);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(20, 80, 80);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-177.61, 0, 166.13);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(20, 80, 186.80);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+
+	modelStack.PushMatrix();
 	modelStack.Translate(-255.54, 0, -51.028);
 	modelStack.Rotate(0, 0, 1, 0);
 	modelStack.Scale(20, 40.1209, 39);
 	RenderMesh(meshList[GEO_WALLDOOR], true);
-
 	modelStack.PopMatrix();
+
 	modelStack.PushMatrix();
 	modelStack.Translate(380.54, 0, 36.895);
 	modelStack.Rotate(180, 0, 1, 0);
-	modelStack.Scale(20, 40.1209, 39 + scale);
+	modelStack.Scale(20, 40.1209, 39);
 	RenderMesh(meshList[GEO_WALLDOOR], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(362.13, 0, 63.431);
+	modelStack.Rotate(0, 0, 1, 0);
+	modelStack.Scale(21, 40, 16.540);
+	RenderMesh(meshList[GEO_WALLCORNER], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(260.982, 0, -199.02);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(20, 80, 219.59);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(350.982, 0, 80);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(20, 80, 40);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(380.54, 0, -93.718);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(20, 80, 227.96);
+	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();

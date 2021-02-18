@@ -43,6 +43,7 @@ class SceneMuseum : public Scene
 		GEO_WALL,
 		GEO_WALLDOOR,
 		GEO_WALLCURVED,
+		GEO_WALLCORNER,
 		GEO_GLASSTABLE,
 		GEO_GROUND,
 		NUM_GEOMETRY,
@@ -114,6 +115,7 @@ private:
 
 	float movex = 0;
 	float movez = 0;
+
 	float scale = 1;
 	float rotate = 0;
 
