@@ -149,8 +149,8 @@ void SceneGarden::Init()
 	meshList[GEO_SPHERE]->material.kShininess = 1.f;
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("Lightball", Color(1, 1, 1), 10, 10, 10);
 
-	meshList[GEO_TORUS1] = MeshBuilder::GenerateTorus("torus1", Color(0.5, 0.5, 0.5), 30, 30, 10,0.1);
-	meshList[GEO_TORUS2] = MeshBuilder::GenerateTorus("torus2", Color(0.5, 1, 0.5), 30, 30, 10, 0.1);
+	meshList[GEO_TORUS1] = MeshBuilder::GenerateTorus("torus1", Color(0.5, 0.5, 0.5), 30, 30, 5,0.1);
+	meshList[GEO_TORUS2] = MeshBuilder::GenerateTorus("torus2", Color(0.5, 1, 0.5), 30, 30, 5, 0.1);
 
 	meshList[GEO_GRASSFLOOR] = MeshBuilder::GenerateQuad("grassfloor",1,1,Color(1,1,1), 30);
 	meshList[GEO_GRASSFLOOR]->textureID = LoadTGA("Image//garden//grassfloor.tga");
@@ -242,6 +242,8 @@ void SceneGarden::Init()
 void SceneGarden::Update(double dt)
 {
 	fps = 1.f / dt;
+	if (cooldown > 0)
+		cooldown -= dt;
 	if (minigame == 0)
 	{
 		camera.Update(dt);
@@ -268,7 +270,22 @@ void SceneGarden::Update(double dt)
 			}
 		}
 	}
-
+	else if (minigame == 1)
+	{
+		circlescale1 -= circlespeed * dt;
+		if (Application::IsKeyPressed('E') && cooldown <= 0)
+		{
+			if (circlescale1 >= circlescale2 - 0.05 && circlescale1 <= circlescale2 + 0.05)
+			{
+				cout << "Good" << endl;
+				circlespeed += 0.2f;
+			}
+			else
+				cout << "Bad" << endl;
+			cooldown = 0.5;
+			circlescale1 = 3;
+		}
+	}
 	if (Application::IsKeyPressed('5'))
 	{
 		light[0].type = Light::LIGHT_POINT;
@@ -308,6 +325,9 @@ void SceneGarden::Update(double dt)
 	{
 		prevcamera = camera;
 		camera.Init(Vector3(0, 50, -150), Vector3(0, 0, -150), Vector3(0, 0, 1));
+		circlescale2 = 1;
+		circlescale1 = 3;
+		circlespeed = 0.5f;
 		minigame = 1;
 	}
 
@@ -420,10 +440,32 @@ void SceneGarden::RenderSkybox()
 void SceneGarden::RenderUI()
 {
 	modelStack.PushMatrix();
+	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	std::ostringstream ss;
 	ss << "FPS: " << fps;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 58, 68);
 	modelStack.PopMatrix();
+}
+
+void SceneGarden::Renderminigame1()
+{
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 10, -150);
+	modelStack.Scale(1, 1, 1);
+	RenderMesh(meshList[GEO_TORUS1], false);
+	modelStack.PopMatrix();
+	if (circlescale1 > 0.1)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(0, 10, -150);
+		modelStack.Scale(circlescale1, circlescale1, circlescale1);
+		RenderMesh(meshList[GEO_TORUS2], false);
+		modelStack.PopMatrix();
+	}
+	else
+	{
+		circlescale1 = 3;
+	}
 }
 
 void SceneGarden::RenderText(Mesh* mesh, std::string text, Color color)
@@ -717,17 +759,10 @@ void SceneGarden::Render()
 	//RenderMesh(meshList[GEO_CUBE], FALSE);
 	//modelStack.PopMatrix();
 
-	if (minigame == 1)
-	{
-		modelStack.PushMatrix();
-		modelStack.Translate(0,10,-150);
-		modelStack.Scale(1,1,1);
-		RenderMesh(meshList[GEO_TORUS1], false);
-		modelStack.PopMatrix();
-	}
-
-	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
-	RenderUI();
+	if (minigame == 0)
+		RenderUI();
+	else if(minigame == 1)
+		Renderminigame1();
 }
 
 void SceneGarden::Exit()
