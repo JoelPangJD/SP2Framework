@@ -18,20 +18,14 @@ InteractableObject::InteractableObject(Vector3 pos, float angle, float scale, fl
 
 InteractableObject::InteractableObject(Vector3 pos, float angle, float scale, float height, float xwidth, float zwidth, string type)
 {
-	setposition(pos);
-	setangle(angle);
-	setscale(scale);
-	setheight(height);
-	setxwidth(xwidth);
-	setzwidth(zwidth);
-
+	this->setposition(pos);
+	this->setangle(angle);
+	this->setscale(scale);
+	this->setheight(height);
+	this->setxwidth(xwidth);
+	this->setzwidth(zwidth);
 }
 
 InteractableObject::~InteractableObject()
 {
-}
-
-void InteractableObject::pickup(Inventory inventory)
-{
-	inventory.additem(*this);
 }

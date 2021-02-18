@@ -7,6 +7,7 @@
 #include "MatrixStack.h"
 #include "Entity.h"
 #include "InteractableObject.h"
+#include "Terrain.h"
 #include <iostream>
 #include <vector>
 #include <sstream>

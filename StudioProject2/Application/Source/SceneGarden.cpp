@@ -189,7 +189,6 @@ void SceneGarden::Init()
 
 	meshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
 	meshList[GEO_INVENTORY]->textureID = LoadTGA("Image//inventory.tga");
-	Inventory inventory;
 
 	//Skybox quads
 	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.0f);
@@ -206,22 +205,22 @@ void SceneGarden::Init()
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//garden//gardenbottom.tga");
 
 	//Creating entities in the Entity list
-	Entitylist.push_back(new Entity(Vector3(70, 0, 64), 22, 0, 10, 3, 3, "tree1"));
-	Entitylist.push_back(new Entity(Vector3(24, 0, 47), 18, 0, 10, 3, 3, "tree1"));
-	Entitylist.push_back(new Entity(Vector3(-25, 0, 80), 18, 0, 10, 3, 3, "tree1"));
-	Entitylist.push_back(new Entity(Vector3(-25, 0, 16), 11, 0, 10, 3, 3, "tree1"));
-	Entitylist.push_back(new Entity(Vector3(-43, 0, 47), 18, 0, 10, 3, 3, "tree1"));
-	Entitylist.push_back(new Entity(Vector3(-43, 0, -24), 17, 0, 10, 3, 3, "tree1"));
-	Entitylist.push_back(new Entity(Vector3(88, 0, -17), 13, 0, 10, 3, 3, "tree1"));
-	Entitylist.push_back(new Entity(Vector3(112, 0, -75), 13, 0, 10, 3, 3, "tree1"));
+	Entitylist.push_back(new Terrain(Vector3(70, 0, 64), 22, 0, 10, 3, 3, "tree1"));
+	Entitylist.push_back(new Terrain(Vector3(24, 0, 47), 18, 0, 10, 3, 3, "tree1"));
+	Entitylist.push_back(new Terrain(Vector3(-25, 0, 80), 18, 0, 10, 3, 3, "tree1"));
+	Entitylist.push_back(new Terrain(Vector3(-25, 0, 16), 11, 0, 10, 3, 3, "tree1"));
+	Entitylist.push_back(new Terrain(Vector3(-43, 0, 47), 18, 0, 10, 3, 3, "tree1"));
+	Entitylist.push_back(new Terrain(Vector3(-43, 0, -24), 17, 0, 10, 3, 3, "tree1"));
+	Entitylist.push_back(new Terrain(Vector3(88, 0, -17), 13, 0, 10, 3, 3, "tree1"));
+	Entitylist.push_back(new Terrain(Vector3(112, 0, -75), 13, 0, 10, 3, 3, "tree1"));
 
-	Entitylist.push_back(new Entity(Vector3(-47, 0, 76), 13, 0, 10, 3, 3, "tree2"));
-	Entitylist.push_back(new Entity(Vector3(1, 0, 54), 17, 0, 10, 3, 3, "tree2"));
-	Entitylist.push_back(new Entity(Vector3(130, 0, -60), 17, 0, 10, 3, 3, "tree2"));
-	Entitylist.push_back(new Entity(Vector3(80, 0, 27), 15, 0, 10, 3, 3, "tree2"));
-	Entitylist.push_back(new Entity(Vector3(-124, 0, -129), 19, 0, 10, 3, 3, "tree2"));
-	Entitylist.push_back(new Entity(Vector3(-120, 0, 32), 14, 0, 10, 3, 3, "tree2"));
-	Entitylist.push_back(new Entity(Vector3(-123, 0, -42), 21, 0, 10, 3, 3, "tree2"));
+	Entitylist.push_back(new Terrain(Vector3(-47, 0, 76), 13, 0, 10, 3, 3, "tree2"));
+	Entitylist.push_back(new Terrain(Vector3(1, 0, 54), 17, 0, 10, 3, 3, "tree2"));
+	Entitylist.push_back(new Terrain(Vector3(130, 0, -60), 17, 0, 10, 3, 3, "tree2"));
+	Entitylist.push_back(new Terrain(Vector3(80, 0, 27), 15, 0, 10, 3, 3, "tree2"));
+	Entitylist.push_back(new Terrain(Vector3(-124, 0, -129), 19, 0, 10, 3, 3, "tree2"));
+	Entitylist.push_back(new Terrain(Vector3(-120, 0, 32), 14, 0, 10, 3, 3, "tree2"));
+	Entitylist.push_back(new Terrain(Vector3(-123, 0, -42), 21, 0, 10, 3, 3, "tree2"));
 
 	Entitylist.push_back(new InteractableObject(Vector3(0, 2, 0), 0, 1, 2, "stick"));
 }
@@ -240,9 +239,10 @@ void SceneGarden::Update(double dt)
 				if ((*it)->spherecollider(camera.target)) // Checks if the target is within a radius of the stick
 				{
 					std::cout << "touching stick" << std::endl;
+					RenderTextOnScreen(meshList[GEO_TEXT], "Stick", Color(1, 1, 0.6), 4, 40, 30);
 					if (Application::IsKeyPressed('E'))
 					{
-
+						//(*it)->pickup();
 					}
 				}
 			}
@@ -753,8 +753,8 @@ void SceneGarden::Render()
 			if ((*it)->gettype() == "stick")
 			{
 				RenderMesh(meshList[GEO_STICK], true);
-				modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
-				RenderMesh(meshList[GEO_SPHERE], FALSE);
+				/*modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
+				RenderMesh(meshList[GEO_SPHERE], FALSE);*/
 			}
 			else if ((*it)->gettype() == "tree1")
 				RenderMesh(meshList[GEO_TREE1], true);

@@ -162,6 +162,7 @@
     <ClCompile Include="Source\SceneMain.cpp" />
     <ClCompile Include="Source\SceneMuseum.cpp" />
     <ClCompile Include="Source\shader.cpp" />
+    <ClCompile Include="Source\Terrain.cpp" />
     <ClCompile Include="Source\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -179,6 +180,7 @@
     <ClInclude Include="Source\SceneMarinaBay.h" />
     <ClInclude Include="Source\SceneMain.h" />
     <ClInclude Include="Source\SceneMuseum.h" />
+    <ClInclude Include="Source\Terrain.h" />
     <ClInclude Include="Source\Utility.h" />
     <ClInclude Include="Source\Vertex.h" />
     <ClInclude Include="Source\Mesh.h" />

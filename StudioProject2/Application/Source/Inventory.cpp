@@ -2,7 +2,6 @@
 #include "SceneMain.h"
 #include "GL\glew.h"
 #include "Application.h"
-
 #include "LoadTGA.h"
 #include "Utility.h"
 #include "shader.hpp"
@@ -32,7 +31,7 @@ int Inventory::get_clue()
 	return clue1;
 }
 
-void Inventory::additem(Entity item)
+void Inventory::additem(InteractableObject item)
 {
 	storage.push_back(item);
 }
