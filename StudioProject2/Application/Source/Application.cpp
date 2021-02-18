@@ -48,6 +48,7 @@ Application::~Application()
 {
 }
 int Application::SwitchScene = 0;
+bool Application::enableMouse = false;//enable cursor to show or not to show
 
 unsigned Application::m_width;
 unsigned Application::m_height;
@@ -186,6 +187,13 @@ void Application::Run()
 			case(4): {
 				scene = scene4; break;
 			}
+		}
+
+		if (enableMouse == false) {
+			glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		}
+		else if (enableMouse == true) {
+			glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
 
 		scene->Update(m_timer.getElapsedTime());
