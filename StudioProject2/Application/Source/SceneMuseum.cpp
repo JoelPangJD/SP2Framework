@@ -7,7 +7,6 @@
 #include "shader.hpp"
 #include <Mtx44.h>
 #include"MeshBuilder.h"
-//testing 12132132123
 
 SceneMuseum::SceneMuseum()
 {
@@ -97,7 +96,7 @@ void SceneMuseum::Init()
 	light[0].type = Light::LIGHT_POINT;
 	light[0].position.Set(0, 0, 90);
 	light[0].color.Set(0.24725f, 0.1995f, 0.0745f);
-	light[0].power = 200;
+	light[0].power = 500;
 	light[0].kC = 1.f;
 	light[0].kL = 0.01f;
 	light[0].kQ = 0.001f;
@@ -186,6 +185,8 @@ void SceneMuseum::Init()
 	meshList[GEO_WALL] = MeshBuilder::GenerateOBJMTL("Wall", "OBJ//Museum//wallWoodHalf.obj", "OBJ//Museum//wallWoodHalf.mtl");
 	meshList[GEO_WALLCURVED] = MeshBuilder::GenerateOBJMTL("Wall", "OBJ//Museum//wallWoodCurved.obj", "OBJ//Museum//wallWoodCurved.mtl");
 	meshList[GEO_RICKSHAW] = MeshBuilder::GenerateOBJ("rickshaw", "OBJ//Museum//18569_Human-Pulled Rickshaw_v1.obj");
+	meshList[GEO_WALLDOOR] = MeshBuilder::GenerateOBJMTL("Wall Door", "OBJ//Museum//wallDoor.obj", "OBJ//Museum//wallDoor.mtl");
+
 
 
 	//Ground mesh
@@ -382,19 +383,6 @@ void SceneMuseum::RenderSkybox()
 
 void SceneMuseum::RenderWalls()
 {
-	modelStack.PushMatrix();
-	modelStack.Translate(0, 0, -2);
-	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(20, 20, 90);
-	RenderMesh(meshList[GEO_WALL], true);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(0, 0, -2);
-	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(20, 80, 90);
-	RenderMesh(meshList[GEO_WALL], true);
-	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(54.5, 0, -113.507);
@@ -458,6 +446,41 @@ void SceneMuseum::RenderWalls()
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(20, 80, 115);
 	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-100.273, 0, -2.2017);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(20, 80, 293.69);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-237.153, 0, -21.76082);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(20, 80, 20);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-237.153, 0,-80);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(20, 80, 20);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-255.54, 0, -51.028);
+	modelStack.Rotate(0, 0, 1, 0);
+	modelStack.Scale(20, 40.1209, 39);
+	RenderMesh(meshList[GEO_WALLDOOR], true);
+
+	modelStack.PopMatrix();
+	modelStack.PushMatrix();
+	modelStack.Translate(380.54, 0, 36.895);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(20, 40.1209, 39 + scale);
+	RenderMesh(meshList[GEO_WALLDOOR], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
@@ -691,11 +714,12 @@ void SceneMuseum::Render()
 	RenderWalls();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(100, 5, 10);
+	modelStack.Translate(167.2672, 0, -4.8068);
 	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(10, 10, 10);
+	modelStack.Scale(15, 15, 15);
 	RenderMesh(meshList[GEO_GLASSTABLE], true);
 	modelStack.PopMatrix();
+
 
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();

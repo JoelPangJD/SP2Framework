@@ -149,6 +149,7 @@
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Camera3.cpp" />
     <ClCompile Include="Source\Entity.cpp" />
+    <ClCompile Include="Source\InteractableObject.cpp" />
     <ClCompile Include="Source\Inventory.cpp" />
     <ClCompile Include="Source\LoadOBJ.cpp" />
     <ClCompile Include="Source\LoadTGA.cpp" />
@@ -161,12 +162,14 @@
     <ClCompile Include="Source\SceneMain.cpp" />
     <ClCompile Include="Source\SceneMuseum.cpp" />
     <ClCompile Include="Source\shader.cpp" />
+    <ClCompile Include="Source\Terrain.cpp" />
     <ClCompile Include="Source\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h" />
     <ClInclude Include="Source\Camera3.h" />
     <ClInclude Include="Source\Entity.h" />
+    <ClInclude Include="Source\InteractableObject.h" />
     <ClInclude Include="Source\Inventory.h" />
     <ClInclude Include="Source\Light.h" />
     <ClInclude Include="Source\LoadOBJ.h" />
@@ -177,6 +180,7 @@
     <ClInclude Include="Source\SceneMarinaBay.h" />
     <ClInclude Include="Source\SceneMain.h" />
     <ClInclude Include="Source\SceneMuseum.h" />
+    <ClInclude Include="Source\Terrain.h" />
     <ClInclude Include="Source\Utility.h" />
     <ClInclude Include="Source\Vertex.h" />
     <ClInclude Include="Source\Mesh.h" />

@@ -6,7 +6,10 @@
 #include "Light.h"
 #include "MatrixStack.h"
 #include "Entity.h"
+#include "InteractableObject.h"
+#include "Terrain.h"
 #include <iostream>
+#include <vector>
 #include <sstream>
 #include <math.h>
 
@@ -39,6 +42,8 @@ class SceneGarden : public Scene
 		GEO_PONDBED,
 		GEO_PATH,
 		GEO_PATHT,
+		GEO_STICK,
+		GEO_FISH,
 		GEO_GAZEBO,
 		GEO_TREE1,
 		GEO_TREE2,
@@ -111,6 +116,9 @@ private:
 
 	float movex = 0, movez = 0;
 	float scale = 1;
+
+	std::vector<InteractableObject*> items;
+	std::vector<Terrain*> terrains;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();

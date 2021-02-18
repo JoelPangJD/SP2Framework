@@ -41,6 +41,7 @@ class SceneMuseum : public Scene
 		GEO_PAINTING2,
 		GEO_RICKSHAW,
 		GEO_WALL,
+		GEO_WALLDOOR,
 		GEO_WALLCURVED,
 		GEO_GLASSTABLE,
 		GEO_GROUND,
@@ -111,7 +112,8 @@ private:
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
 
-	float movex = 0, movez = 0;
+	float movex = 0;
+	float movez = 0;
 	float scale = 1;
 	float rotate = 0;
 

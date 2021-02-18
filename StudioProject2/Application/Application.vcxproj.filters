@@ -63,6 +63,12 @@
     <ClCompile Include="Source\SceneMuseum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\InteractableObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Terrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -120,6 +126,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\SceneMuseum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\InteractableObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Terrain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

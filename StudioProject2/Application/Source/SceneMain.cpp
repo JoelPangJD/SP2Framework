@@ -219,12 +219,20 @@ void SceneMain::Update(double dt)
 		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
 	}
 
+	if (Application::IsKeyPressed('E')) {
+		if (inFrontOfMuseum == true) {
+			//enter code to change scene to museum
+		}
+	
+	}
 	if ((camera.position.x >= 18) && (camera.position.x <= 27.5) && (camera.position.z >= -3) && (camera.position.z <= 3)) {
 		inFrontOfMuseum = true;
 	}
 	else {
 		inFrontOfMuseum = false;
 	}
+
+
 }
 
 void SceneMain::RenderMesh(Mesh* mesh, bool enableLight)
@@ -569,6 +577,13 @@ void SceneMain::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
+	modelStack.Translate(-27.4, 9, 2.5);
+	modelStack.Scale(2, 2, 2);
+	modelStack.Rotate(90, 0, 1, 0);
+	RenderText(meshList[GEO_TEXT], "MarinaBay", Color(0, 0, 0));
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, -17.5);
 	modelStack.Scale(5, 5, 20);
 	modelStack.Rotate(90, 0, 1, 0);
@@ -577,6 +592,12 @@ void SceneMain::Render()
 	modelStack.Rotate(90, 0, 1, 0);
 	RenderMesh(meshList[RoadStraightBarrier], true);
 	modelStack.PopMatrix();
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-2.5, 9, -27.4);
+	modelStack.Scale(2, 2, 2);
+	RenderText(meshList[GEO_TEXT], "Botanic Garden", Color(0, 0, 0));
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
