@@ -75,7 +75,7 @@ To be called every frame. Camera3 will get user inputs and update its position a
 /******************************************************************************/
 void Camera3::Update(double dt)
 {
-	static const float speed = 25.f;
+	static const float speed = 45.f;
 	static const float sensitivity = 0.1f; 
 
 
