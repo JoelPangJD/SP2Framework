@@ -45,6 +45,7 @@ class SceneMarinaBay : public Scene
 		GEO_LAYOUT,
 		GEO_HEALTH,
 		GEO_LOSTHEALTH,
+		GEO_MC,
 
 		//text 
 		GEO_TEXTBOX,
@@ -135,6 +136,7 @@ private:
 	std::string fightText, dialogueText;
 	bool fight=true, fightDia, playerTurn, enemyTurn, fightSelected, itemsSelected, backSelected, attackSelected;
 	float cooldownTimer;
+	float pointerX, pointerY, playerHealth, playerHealthPos, enemyHealth, enemyHealthPos;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();

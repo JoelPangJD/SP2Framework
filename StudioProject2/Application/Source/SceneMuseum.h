@@ -9,6 +9,9 @@
 #include <iostream>
 #include <sstream>
 #include <math.h>
+#include "Entity.h"
+#include "Terrain.h"
+#include "InteractableObject.h"
 
 class SceneMuseum : public Scene
 {
@@ -112,6 +115,9 @@ private:
 	unsigned m_programID;
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
+
+	std::vector<InteractableObject*> items;
+	std::vector<Terrain*> terrains;
 
 	float movex = 0;
 	float movez = 0;
