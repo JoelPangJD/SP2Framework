@@ -21,14 +21,9 @@ class SceneGarden : public Scene
 		GEO_QUAD,
 		GEO_CUBE,
 		GEO_SPHERE,
-		GEO_HEMISPHERE,
-		GEO_TRUNCATEDHEMISPHERE,
-		GEO_PYRAMID,
 		GEO_LIGHTBALL,
-		GEO_RING,
-		GEO_CONE,
-		GEO_CYLINDER,
-		GEO_TORUS,
+		GEO_TORUS1,
+		GEO_TORUS2,
 		GEO_LEFT,
 		GEO_RIGHT,
 		GEO_TOP,
@@ -96,7 +91,10 @@ class SceneGarden : public Scene
 public:
 	Camera3 camera;
 	bool lighton = true;
-	bool hitboxshow = true;
+	bool hitboxshow = false;
+	int minigame = 0; //0 for no minigame, 1 for minigame one
+	float minigamescale1;
+	float minigamescale2;
 	float fps;
 
 	SceneGarden();
@@ -108,6 +106,7 @@ public:
 	virtual void Exit();
 
 private:
+	Camera3 prevcamera;
 	MS modelStack, viewStack, projectionStack; //The matrix stacks
 	unsigned m_parameters[U_TOTAL];
 	unsigned m_vertexArrayID;

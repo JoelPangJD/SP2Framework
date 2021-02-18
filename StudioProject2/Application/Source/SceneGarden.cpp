@@ -149,6 +149,9 @@ void SceneGarden::Init()
 	meshList[GEO_SPHERE]->material.kShininess = 1.f;
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("Lightball", Color(1, 1, 1), 10, 10, 10);
 
+	meshList[GEO_TORUS1] = MeshBuilder::GenerateTorus("torus1", Color(0.5, 0.5, 0.5), 30, 30, 10,0.1);
+	meshList[GEO_TORUS2] = MeshBuilder::GenerateTorus("torus2", Color(0.5, 1, 0.5), 30, 30, 10, 0.1);
+
 	meshList[GEO_GRASSFLOOR] = MeshBuilder::GenerateQuad("grassfloor",1,1,Color(1,1,1), 30);
 	meshList[GEO_GRASSFLOOR]->textureID = LoadTGA("Image//garden//grassfloor.tga");
 	meshList[GEO_GRASSFLOOR]->material.kAmbient.Set(0.2f, 0.2f, 0.2f);
@@ -160,7 +163,7 @@ void SceneGarden::Init()
 	meshList[GEO_POND]->textureID = LoadTGA("Image//watertexture.tga");
 	meshList[GEO_POND]->material.kAmbient.Set(0.3f, 0.3f, 0.3f);
 	meshList[GEO_POND]->material.kDiffuse.Set(0.4f, 0.4f, 0.4f);
-	meshList[GEO_POND]->material.kSpecular.Set(0.5f, 0.5f, 0.5f);
+	meshList[GEO_POND]->material.kSpecular.Set(0.2f, 0.2f, 0.2f);
 
 	meshList[GEO_PONDBED] = MeshBuilder::GenerateQuad("pondwater", 1, 1, Color(1, 1, 1), 10);
 	meshList[GEO_PONDBED]->textureID = LoadTGA("Image//garden//pondbed.tga");
@@ -239,28 +242,30 @@ void SceneGarden::Init()
 void SceneGarden::Update(double dt)
 {
 	fps = 1.f / dt;
-	Vector3 prevpos = camera.position;
-	camera.Update(dt);
-	//Check collisions
+	if (minigame == 0)
 	{
-		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+		camera.Update(dt);
+		//Check collisions
 		{
-			if ((*it)->gettype() == "stick")
+			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 			{
-				if ((*it)->spherecollider(camera.target)) // Checks if the target is within a radius of the stick
+				if ((*it)->gettype() == "stick")
 				{
-					std::cout << "touching stick" << std::endl;
-					RenderTextOnScreen(meshList[GEO_TEXT], "Stick", Color(1, 1, 0.6), 4, 40, 30);
-					if (Application::IsKeyPressed('E'))
+					if ((*it)->spherecollider(camera.target)) // Checks if the target is within a radius of the stick
 					{
-						//(*it)->pickup();
+						std::cout << "touching stick" << std::endl;
+						RenderTextOnScreen(meshList[GEO_TEXT], "Stick", Color(1, 1, 0.6), 5, 0, 0);
+						if (Application::IsKeyPressed('E'))
+						{
+							minigame = 1;
+						}
 					}
 				}
 			}
-		}
-		for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
-		{
-			(*it)->solidCollisionBox(camera.position);
+			for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
+			{
+				(*it)->solidCollisionBox(camera.position);
+			}
 		}
 	}
 
@@ -294,6 +299,18 @@ void SceneGarden::Update(double dt)
 	else if (Application::IsKeyPressed('X'))
 		lighton = true;
 
+	if (Application::IsKeyPressed('C') && minigame != 0) //exit minigame
+	{
+		camera = prevcamera;
+		minigame = 0;
+	}
+	else if (Application::IsKeyPressed('V') && minigame != 1) //Enter minigame
+	{
+		prevcamera = camera;
+		camera.Init(Vector3(0, 50, -150), Vector3(0, 0, -150), Vector3(0, 0, 1));
+		minigame = 1;
+	}
+
 	if (Application::IsKeyPressed('I'))
 		movez += 10 * dt;
 	if (Application::IsKeyPressed('K'))
@@ -306,6 +323,7 @@ void SceneGarden::Update(double dt)
 		scale += 10 * dt;
 	if (Application::IsKeyPressed('O'))
 		scale -= 10 * dt;
+
 }
 
 void SceneGarden::RenderMesh(Mesh* mesh, bool enableLight)
@@ -693,11 +711,20 @@ void SceneGarden::Render()
 			modelStack.PopMatrix();
 		}
 	}
-	modelStack.PushMatrix();
-	modelStack.Translate(movex, 2, movez);
-	modelStack.Scale(1,5,2);
-	RenderMesh(meshList[GEO_CUBE], FALSE);
-	modelStack.PopMatrix();
+	//modelStack.PushMatrix();
+	//modelStack.Translate(movex, 2, movez);
+	//modelStack.Scale(1,5,2);
+	//RenderMesh(meshList[GEO_CUBE], FALSE);
+	//modelStack.PopMatrix();
+
+	if (minigame == 1)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(0,10,-150);
+		modelStack.Scale(1,1,1);
+		RenderMesh(meshList[GEO_TORUS1], false);
+		modelStack.PopMatrix();
+	}
 
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();

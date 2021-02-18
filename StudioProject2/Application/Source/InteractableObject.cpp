@@ -29,3 +29,8 @@ InteractableObject::InteractableObject(Vector3 pos, float angle, float scale, fl
 InteractableObject::~InteractableObject()
 {
 }
+
+void InteractableObject::touch(Vector3 position)
+{
+
+}
