@@ -93,8 +93,8 @@ public:
 	bool lighton = true;
 	bool hitboxshow = false;
 	int minigame = 0; //0 for no minigame, 1 for minigame one
-	float minigamescale1;
-	float minigamescale2;
+	float cooldown = 0; //cooldown time for actions
+	float circlescale1, circlescale2, circlespeed; //Circlescale1 is the size of the shrinking circle for the minigame1, circlescale2 is for the constant circle and circlespeed is the speed at which the circle gets smaller
 	float fps;
 
 	SceneGarden();
@@ -123,6 +123,7 @@ private:
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
 	void RenderUI();
+	void Renderminigame1();
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);

@@ -26,7 +26,7 @@ void SceneChangi::Init()
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
 	//==========================
-	camera.Init(Vector3(-189, 4.34, 0), Vector3(-190, 4.34, 0), Vector3(0, 1, 0));
+	camera.Init(Vector3(-204, 10.3, 60), Vector3(0, 4.34, 0), Vector3(0, 1, 0));
 	
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
@@ -119,7 +119,7 @@ void SceneChangi::Init()
 	light[1].type = Light::LIGHT_DIRECTIONAL;
 	light[1].position.Set(10, 20, 0);
 	light[1].color.Set(1, 1, 1);
-	light[1].power = 1.3;
+	light[1].power = 0;//1.3;
 	light[1].kC = 1.5f;
 	light[1].kL = 0.01f;
 	light[1].kQ = 0.001f;
@@ -183,6 +183,14 @@ void SceneChangi::Init()
 
 	meshList[GEO_STAIRCAR] = MeshBuilder::GenerateOBJMTL("staircar", "OBJ//Changi//stairCar.obj", "OBJ//Changi//stairCar.mtl");
 
+	meshList[GEO_AMBULANCE] = MeshBuilder::GenerateOBJMTL("ambulance", "OBJ//Changi//ambulance.obj", "OBJ//Changi//ambulance.mtl");
+
+	meshList[GEO_FIRETRUCK] = MeshBuilder::GenerateOBJMTL("firetruck", "OBJ//Changi//firetruck.obj", "OBJ//Changi//firetruck.mtl");
+
+	meshList[GEO_POLICE] = MeshBuilder::GenerateOBJMTL("police", "OBJ//Changi//police.obj", "OBJ//Changi//police.mtl");
+
+	meshList[GEO_DOORMAN] = MeshBuilder::GenerateOBJ("doorman", "OBJ//Changi//doorman.obj");
+	meshList[GEO_DOORMAN]->textureID = LoadTGA("Image//doorman.tga");
 	//roadOBJ
 	meshList[GEO_STRAIGHT] = MeshBuilder::GenerateOBJMTL("roadStraight", "OBJ//Changi//straightRoad.obj", "OBJ//Changi//straightRoad.mtl");
 	meshList[GEO_ROADSPLIT] = MeshBuilder::GenerateOBJMTL("roadSplit", "OBJ//Changi//splitRoad.obj", "OBJ//Changi//splitRoad.mtl");
@@ -220,13 +228,21 @@ void SceneChangi::Update(double dt)
 	else if (Application::IsKeyPressed('X'))
 		lighton = true;
 
-	if (Application::IsKeyPressed('E'))
-	{
-		use = true;
-		renderStairs = false;
+	if (camera.position.x <= -30 && camera.position.x >= -50 && camera.position.z > 60 && camera.position.z < 75) {
+		atStairs = true;
+
+		if (Application::IsKeyPressed('E'))
+		{
+			use = true;
+			renderStairs = false;
+		}
+		else {
+			use = false;
+		}
 	}
-	else {
-		use = false;
+	else
+	{
+		atStairs = false;
 	}
 
 	if (Application::IsKeyPressed('I'))
@@ -249,6 +265,14 @@ void SceneChangi::Update(double dt)
 	if (Application::IsKeyPressed('L'))
 	{
 		rotateR -= 0.5;
+	}
+
+	if (camera.position.x >= -108 && camera.position.x <= -98 && camera.position.y >= 0 && camera.position.y <= 13 && camera.position.z >= 55 && camera.position.z <= 63) {
+		welcome = true;
+	}
+	else
+	{
+		welcome = false;
 	}
 }
 
@@ -346,6 +370,81 @@ void SceneChangi::RenderSkybox()
 	modelStack.PopMatrix();
 
 	modelStack.PopMatrix();
+}
+
+void SceneChangi::RenderGroundMesh()
+{
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 0, 0);
+	//modelStack.Translate(camera.position.x, 0, camera.position.z);
+	modelStack.Scale(5000, 5000, 5000);
+	modelStack.Rotate(-90, 1, 0, 0);
+	RenderMesh(meshList[GEO_QUAD], false);
+	modelStack.PopMatrix();
+}
+
+void SceneChangi::RenderEntity()
+{
+	modelStack.PushMatrix();
+	modelStack.Translate(-500, 0, 0);
+	modelStack.Scale(20, 20, 20);
+	RenderMesh(meshList[GEO_TOWER], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, -10, 0);
+	modelStack.Scale(10, 30, 30);
+	RenderMesh(meshList[GEO_AIRPORT], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(10 + movex, 17, -6.5);
+	modelStack.Rotate(-90, 0, 1, 0);
+	modelStack.Rotate(rotateR, 0, 1, 0);
+	modelStack.Rotate(rotateL, 0, 1, 0);
+	modelStack.Scale(7, 7, 7);
+	RenderMesh(meshList[GEO_PLANE], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(10, 0, 343);
+	modelStack.Rotate(-90, 0, 1, 0);
+	modelStack.Scale(30,30,30);
+	RenderMesh(meshList[GEO_AMBULANCE], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(10, 0, 291);
+	modelStack.Rotate(-90, 0, 1, 0);
+	modelStack.Scale(30, 30, 30);
+	RenderMesh(meshList[GEO_FIRETRUCK], true);
+	modelStack.PopMatrix();
+
+
+	modelStack.PushMatrix();
+	modelStack.Translate(10, 0, 393);
+	modelStack.Rotate(-90, 0, 1, 0);
+	modelStack.Scale(30, 30, 30);
+	RenderMesh(meshList[GEO_POLICE], true);
+	modelStack.PopMatrix();
+
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-100, 0, 60);
+	modelStack.Rotate(-90, 0, 1, 0);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[GEO_DOORMAN], true);
+	modelStack.PopMatrix();
+
+	if (renderStairs != false) {
+		modelStack.PushMatrix();
+		modelStack.Translate(-40, 2, 36);
+		//modelStack.Rotate(-90, 0, 1, 0);
+		modelStack.Scale(0.2, 0.2, 0.2);
+		RenderMesh(meshList[GEO_STAIRCAR], true);
+		modelStack.PopMatrix();
+	}
 }
 
 void SceneChangi::RenderUI()
@@ -516,58 +615,11 @@ void SceneChangi::Render()
 	modelStack.LoadIdentity();
 
 	RenderMesh(meshList[GEO_AXES], false);
-
-	
-	modelStack.PushMatrix();
-	modelStack.Translate(0, 0, 0);
-	modelStack.Translate(camera.position.x, 0, camera.position.z);
-	modelStack.Scale(1000, 1000, 1000);
-	modelStack.Rotate(-90, 1, 0, 0);
-	RenderMesh(meshList[GEO_QUAD], false);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(-500, 0, 0);
-	modelStack.Scale(20, 20, 20);
-	RenderMesh(meshList[GEO_TOWER], true);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(0, -10, 0);
-	modelStack.Scale(10 ,30, 30);
-	RenderMesh(meshList[GEO_AIRPORT], true);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(10 + movex, 17, -6.5);
-	modelStack.Rotate(-90, 0, 1, 0);
-	modelStack.Rotate(rotateR, 0, 1, 0);
-	modelStack.Rotate(rotateL, 0, 1, 0);
-	modelStack.Scale(7, 7, 7);
-	RenderMesh(meshList[GEO_PLANE], true);
-	modelStack.PopMatrix();
-
-	if (renderStairs != false) {
-		modelStack.PushMatrix();
-		modelStack.Translate(-40, 2, 36);
-		//modelStack.Rotate(-90, 0, 1, 0);
-		modelStack.Scale(0.2, 0.2, 0.2);
-		RenderMesh(meshList[GEO_STAIRCAR], true);
-		modelStack.PopMatrix();
-	}
 	
 	RenderRoad();
-
-	std::stringstream ssX;
-	std::stringstream ssZ;
-	ssX.precision(3);	
-	ssX << "X: " << camera.position.x;
-	ssZ.precision(3);
-	ssZ << "Z: " << camera.position.z;
-	modelStack.PushMatrix();
-	modelStack.Scale(5, 5, 5);
-	RenderTextOnScreen(meshList[GEO_TEXT], ssX.str() + ssZ.str(), Color(0, 1, 0), 4, 0, 13);
-	modelStack.PopMatrix();
+	RenderGroundMesh();
+	RenderEntity();
+	RenderWords();
 
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();
@@ -610,6 +662,33 @@ void SceneChangi::RenderRoad()
 	modelStack.PopMatrix();
 
 
+}
+
+void SceneChangi::RenderWords()
+{
+
+	std::stringstream ssX;
+	std::stringstream ssY;
+	std::stringstream ssZ;
+	ssX.precision(3);
+	ssX << "X: " << camera.position.x;
+	ssY.precision(3);
+	ssY << "Y: " << camera.position.y;
+	ssZ.precision(3);
+	ssZ << "Z: " << camera.position.z;
+	modelStack.PushMatrix();
+	modelStack.Scale(5, 5, 5);
+	RenderTextOnScreen(meshList[GEO_TEXT], ssX.str() + ssY.str() + ssZ.str(), Color(0, 1, 0), 4, 0, 13);
+	modelStack.PopMatrix();
+
+	if (welcome == true) {
+		RenderTextOnScreen(meshList[GEO_TEXT], "Welcome to Changi airport! ", Color(1, 0, 0), 4 , 4, 7);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Board the plane for a flight expirence. ", Color(1, 0, 0), 3, 5, 6);
+	}
+
+	if (atStairs == true) {
+		RenderTextOnScreen(meshList[GEO_TEXT], "Press E to board the plane! ", Color(1, 0, 0), 4, 3, 7);
+	}
 }
 
 void SceneChangi::Exit()

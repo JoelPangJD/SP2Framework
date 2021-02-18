@@ -9,6 +9,7 @@
 #include <iostream>
 #include <sstream>
 #include <math.h>
+#include "Button.h"
 
 class SceneMain : public Scene
 {
@@ -104,6 +105,7 @@ private:
 
 	bool inFrontOfMuseum, inFrontOfChangi, InFrontofMarina, inFrontofGarden;
 	bool minigameMuseum;
+	
 
 	float CharWidth[256];
 	void RenderMesh(Mesh* mesh, bool enableLight);

@@ -233,30 +233,16 @@ void SceneMain::Update(double dt)
 	else {
 		inFrontOfMuseum = false;
 	}
-
+	Button button(20.f, 11.f, 34.f, 3.f);
 	static bool bLButtonState = false;
 	//minigame for entering museum
 	if (minigameMuseum == true) {
 		Application::enableMouse = true;
-		if (!bLButtonState && Application::IsMousePressed(0))
-		{
-			bLButtonState = true;
-
-			double x, y;
-			Application::GetCursorPos(&x, &y);
-			unsigned w = Application::GetWindowWidth();
-			unsigned h = Application::GetWindowHeight();
-			float posX = x / 10;
-			float posY = 60 - y / 10;
-			if (posX > 20 && posX < 54 && posY > 11 && posY < 14){
-				minigameMuseum = false;
-				Application::enableMouse = false;
-				Application::SwitchScene = 1;
-			}
-		}
-		else if (bLButtonState && !Application::IsMousePressed(0))
-		{
-			bLButtonState = false;
+		button.updateButton();
+		if (button.isClickedOn() == true){
+			minigameMuseum = false;
+			Application::enableMouse = false;
+			Application::SwitchScene = 1;
 		}
 	}
 
