@@ -16,6 +16,7 @@ public:
 	static int GetWindowHeight();
 	static unsigned m_width;
 	static unsigned m_height;
+	static bool enableMouse;
 	static int SwitchScene; 
 	static void SetSwitchScene();
 	void Init();
