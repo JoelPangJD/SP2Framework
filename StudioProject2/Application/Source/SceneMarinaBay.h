@@ -136,7 +136,8 @@ private:
 	std::string fightText, dialogueText;
 	bool fight=true, fightDia, playerTurn, enemyTurn, fightSelected, itemsSelected, backSelected, attackSelected;
 	float cooldownTimer;
-	float pointerX, pointerY, playerHealth, playerHealthPos, enemyHealth, enemyHealthPos;
+	float pointerX, pointerY, playerHealth, playerHealthPos, playerHealthLost, enemyHealth, enemyHealthPos, enemyHealthLost;
+	float attack1Scale, attack1Angle, attack1Hit;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();

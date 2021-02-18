@@ -246,6 +246,11 @@ void SceneMarinaBay::Update(double dt)
 		scale += 10*dt;
 	if (Application::IsKeyPressed('P'))
 		scale -= 10 * dt;
+	if (Application::IsKeyPressed('H'))
+	{
+		attackSelected = true;
+		playerAction = A_ATTACK1;
+	}
 	static bool bLButtonState = false;
 	if (!bLButtonState && Application::IsMousePressed(0))
 	{
@@ -267,51 +272,100 @@ void SceneMarinaBay::Update(double dt)
 		if (fight && !attackSelected && cooldownTimer <= 0)	//if in fight and attack is not playing
 		{
 
-			//keyboard support might get rid of it entirely depending
-			/*if (Application::IsKeyPressed('F'))
 			{
-				switch (playerAction)
+				//keyboard support might get rid of it entirely depending
+				/*if (Application::IsKeyPressed('F'))
 				{
-				case (A_ATTACK):
-					fightSelected = true;
-					playerAction = A_ATTACK1;
-					pointerX += 21;
-					pointerY -= 3;
-				case (A_ITEMS):
-					itemsSelected = true;
-					playerAction = A_ITEM1;
-				case (A_RUN):
-					fightDia = true;
-					fightDia = "He can probably shoot you before you try.";
-					break;
-				case (A_ATTACK1):
-					attackSelected = true;
-				}
-				cooldownTimer = 0.3f;
-			}*/
-			//else if (Application::IsKeyPressed(VK_UP))		//if up arrow is pressed while in the fight
-			//{
-			//	if (!fightSelected && !itemsSelected)	//when on the first 3 options
-			//	{
-			//		playerAction = static_cast<ACTION_TYPE>((playerAction + 1) % (A_RUN + 1));	//updates playerAction
-			//		pointerY = playerAction * 5 + 1;	//reads which action it is on and moves the pointer
-			//	}
-			//	else if (fightSelected)
-			//	{
-			//		playerAction = static_cast<ACTION_TYPE>((playerAction + 1) % (A_ATTACK4 + 1 - A_RUN));	//minuses the previous enum on the list
-			//		pointerY = (playerAction - A_RUN + 1) * 6 + 2;
-			//	}
-			//	else if (itemsSelected)
-			//	{
-			//		playerAction = static_cast<ACTION_TYPE>((playerAction + 1) % (A_ITEM4 + 1 - A_ATTACK4));
-			//		pointerY = (playerAction - A_ATTACK4 + 1) * 6 + 2;
-			//	}
-			//	cooldownTimer = 0.3f;
-			//}
-
+					switch (playerAction)
+					{
+					case (A_ATTACK):
+						fightSelected = true;
+						playerAction = A_ATTACK1;
+						pointerX += 21;
+						pointerY -= 3;
+					case (A_ITEMS):
+						itemsSelected = true;
+						playerAction = A_ITEM1;
+					case (A_RUN):
+						fightDia = true;
+						fightDia = "He can probably shoot you before you try.";
+						break;
+					case (A_ATTACK1):
+						attackSelected = true;
+					}
+					cooldownTimer = 0.3f;
+				}*/
+				//else if (Application::IsKeyPressed(VK_UP))		//if up arrow is pressed while in the fight
+				//{
+				//	if (!fightSelected && !itemsSelected)	//when on the first 3 options
+				//	{
+				//		playerAction = static_cast<ACTION_TYPE>((playerAction + 1) % (A_RUN + 1));	//updates playerAction
+				//		pointerY = playerAction * 5 + 1;	//reads which action it is on and moves the pointer
+				//	}
+				//	else if (fightSelected)
+				//	{
+				//		playerAction = static_cast<ACTION_TYPE>((playerAction + 1) % (A_ATTACK4 + 1 - A_RUN));	//minuses the previous enum on the list
+				//		pointerY = (playerAction - A_RUN + 1) * 6 + 2;
+				//	}
+				//	else if (itemsSelected)
+				//	{
+				//		playerAction = static_cast<ACTION_TYPE>((playerAction + 1) % (A_ITEM4 + 1 - A_ATTACK4));
+				//		pointerY = (playerAction - A_ATTACK4 + 1) * 6 + 2;
+				//	}
+				//	cooldownTimer = 0.3f;
+				//}
+			}
 		}
 	}
 
+	if (attackSelected)
+	{
+		switch (playerAction)
+		{
+		case (A_ATTACK1):			//MC goes big
+			if (!attack1Hit)
+			{
+				if (attack1Scale < 5)		//go big
+					attack1Scale += 10 * dt;
+				else if (attack1Angle < 90)		//rotate onto enemy
+					attack1Angle += 300 * dt;
+				else
+					attack1Hit = true;		//has hit enemy
+			}
+			else
+			{
+				if (attack1Angle > 0)
+					attack1Angle -= 300 * dt;
+				else if (attack1Scale > 0.7)
+					attack1Scale -= 10 * dt;
+				else			//resolution of attack
+				{
+					enemyHealthLost = 35.f;
+					attack1Hit = false;
+					attackSelected = false;
+					playerTurn = false;
+				}
+			}
+			//case (A_ATTACK2):
+		}
+		
+	}
+
+
+	if (playerHealthLost > 0)
+	{	//health lost will be set to 100 so since the scaling is 20 the speed would be the same as health lost / 5
+		int speedOfHealthLost = 30.f;
+		playerHealthLost -= speedOfHealthLost * dt;
+		playerHealth += speedOfHealthLost * 0.2 * dt;
+		playerHealthPos -= speedOfHealthLost * 0.1 * dt;	//dependent on health's scaling
+	}
+	else if (enemyHealthLost > 0)
+	{
+		int speedOfHealthLost = 30.f;
+		enemyHealthLost -= speedOfHealthLost * dt;
+		enemyHealth += speedOfHealthLost * 0.2 * dt;
+		enemyHealthPos -= speedOfHealthLost * 0.1 * dt;	//dependent on health's scaling
+	}
 	//==================Updating timers===========
 	if (cooldownTimer > 0)
 		cooldownTimer -= dt;
@@ -642,8 +696,14 @@ void SceneMarinaBay::Render()
 	{
 		//mc
 		modelStack.PushMatrix();
-		modelStack.Translate(0+x, 0, 200+z);
-		modelStack.Scale(0.7f, 0.7f, 0.7f);
+		modelStack.Translate(0, 0, 200);
+		if (playerAction!=A_ATTACK1)
+			modelStack.Scale(0.7f, 0.7f, 0.7f);
+		else
+		{
+			modelStack.Rotate(attack1Angle, 1, 0, 0);
+			modelStack.Scale(attack1Scale, attack1Scale, attack1Scale);
+		}
 		RenderMesh(meshList[GEO_MC], true);
 		modelStack.PopMatrix();
 	}
