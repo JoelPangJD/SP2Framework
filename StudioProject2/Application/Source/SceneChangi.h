@@ -35,6 +35,10 @@ class SceneChangi : public Scene
 		GEO_TOWER,
 		GEO_AIRPORT,
 		GEO_STAIRCAR,
+		GEO_AMBULANCE,
+		GEO_FIRETRUCK,
+		GEO_POLICE,
+		GEO_DOORMAN,
 		GEO_STRAIGHT,
 		GEO_ROADL,
 		GEO_ROADSPLIT,
@@ -93,6 +97,8 @@ public:
 	bool lighton = true;
 	bool use ;
 	bool renderStairs = true;
+	bool welcome;
+	bool atStairs;
 	float fps;
 
 	float rotateL;
@@ -118,8 +124,11 @@ private:
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
+	void RenderGroundMesh();
+	void RenderEntity();
 	void RenderUI();
 	void RenderRoad();
+	void RenderWords();
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
