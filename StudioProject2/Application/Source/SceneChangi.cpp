@@ -26,7 +26,7 @@ void SceneChangi::Init()
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
 	//==========================
-	camera.Init(Vector3(-189, 4.34, 0), Vector3(0, 3, 0), Vector3(0, 1, 0));
+	camera.Init(Vector3(-189, 4.34, 0), Vector3(-190, 4.34, 0), Vector3(0, 1, 0));
 	
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
@@ -504,10 +504,10 @@ void SceneChangi::Render()
 
 	//RenderMeshOnScreen(meshList[GEO_INVENTORY], 40, 20, 30, 30);
 	if (use == true) {
-		/*camera.position.x = -10;
-		camera.position.y = 55;
-		camera.position.z = 0;*/
-		camera.Init(Vector3(-10, 55, 0), Vector3(-20, 55, 0), Vector3(0, 1, 0));
+		camera.position.x = -18;
+		camera.position.y = 51;
+		camera.position.z = 0;
+		camera.theta = 180;
 	}
 	//Skybox
 	RenderSkybox();

@@ -47,7 +47,7 @@ Application::Application()
 Application::~Application()
 {
 }
-bool Application::SwitchScene = false;
+int Application::SwitchScene = 0;
 
 unsigned Application::m_width;
 unsigned Application::m_height;
@@ -132,7 +132,7 @@ void Application::Init()
 
 void Application::SetSwitchScene()
 {
-	SwitchScene = true;
+	//SwitchScene = true;
 }
 
 void Application::Run()
@@ -154,17 +154,40 @@ void Application::Run()
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
 	{
-		if (IsKeyPressed(VK_F1))
-			scene = scene1;
-		else if (IsKeyPressed(VK_F2))
-			scene = scene2;
-		else if (IsKeyPressed(VK_F3))
-			scene = scene3;
-		else if (IsKeyPressed(VK_F4))
-			scene = scene4;
-		else if (IsKeyPressed(VK_RETURN)) {
-			scene = scene0;
+		if (IsKeyPressed(VK_F1)) {
+			SwitchScene = 1;
 		}
+		else if (IsKeyPressed(VK_F2)) {
+			SwitchScene = 2;
+		}
+		else if (IsKeyPressed(VK_F3)) {
+			SwitchScene = 3;
+		}
+		else if (IsKeyPressed(VK_F4)) {
+			SwitchScene = 4;
+		}
+		else if (IsKeyPressed(VK_RETURN)) {
+			SwitchScene = 0;
+		}
+
+		switch (SwitchScene) {
+			case(0): {
+				scene = scene0; break;
+			}
+			case(1): {
+				scene = scene1; break;
+			}
+			case(2): {
+				scene = scene2; break;
+			}
+			case(3): {
+				scene = scene3; break;
+			}
+			case(4): {
+				scene = scene4; break;
+			}
+		}
+
 		scene->Update(m_timer.getElapsedTime());
 		scene->Render();
 		//Swap buffers

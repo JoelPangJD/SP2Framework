@@ -205,24 +205,24 @@ void SceneGarden::Init()
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//garden//gardenbottom.tga");
 
 	//Creating entities in the Entity list
-	Entitylist.push_back(new Terrain(Vector3(70, 0, 64), 22, 0, 10, 3, 3, "tree1"));
-	Entitylist.push_back(new Terrain(Vector3(24, 0, 47), 18, 0, 10, 3, 3, "tree1"));
-	Entitylist.push_back(new Terrain(Vector3(-25, 0, 80), 18, 0, 10, 3, 3, "tree1"));
-	Entitylist.push_back(new Terrain(Vector3(-25, 0, 16), 11, 0, 10, 3, 3, "tree1"));
-	Entitylist.push_back(new Terrain(Vector3(-43, 0, 47), 18, 0, 10, 3, 3, "tree1"));
-	Entitylist.push_back(new Terrain(Vector3(-43, 0, -24), 17, 0, 10, 3, 3, "tree1"));
-	Entitylist.push_back(new Terrain(Vector3(88, 0, -17), 13, 0, 10, 3, 3, "tree1"));
-	Entitylist.push_back(new Terrain(Vector3(112, 0, -75), 13, 0, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(70, 0, 64), 0, 22, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(24, 0, 47), 0, 18, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(-25, 0, 80), 0, 18, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(-25, 0, 16), 0, 11, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(-43, 0, 47), 0, 18, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(-43, 0, -24), 0, 17, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(88, 0, -17), 0, 13, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(112, 0, -75), 0, 13, 10, 3, 3, "tree1"));
 
-	Entitylist.push_back(new Terrain(Vector3(-47, 0, 76), 13, 0, 10, 3, 3, "tree2"));
-	Entitylist.push_back(new Terrain(Vector3(1, 0, 54), 17, 0, 10, 3, 3, "tree2"));
-	Entitylist.push_back(new Terrain(Vector3(130, 0, -60), 17, 0, 10, 3, 3, "tree2"));
-	Entitylist.push_back(new Terrain(Vector3(80, 0, 27), 15, 0, 10, 3, 3, "tree2"));
-	Entitylist.push_back(new Terrain(Vector3(-124, 0, -129), 19, 0, 10, 3, 3, "tree2"));
-	Entitylist.push_back(new Terrain(Vector3(-120, 0, 32), 14, 0, 10, 3, 3, "tree2"));
-	Entitylist.push_back(new Terrain(Vector3(-123, 0, -42), 21, 0, 10, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(-47, 0, 76), 0, 13, 10, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(1, 0, 54), 0, 17, 13, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(130, 0, -60), 0, 17, 10, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(80, 0, 27), 0, 15, 10, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(-124, 0, -129), 0, 19, 10, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(-120, 0, 32), 0, 14, 10, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(-123, 0, -42), 0, 21, 10, 3, 3, "tree2"));
 
-	Entitylist.push_back(new InteractableObject(Vector3(0, 2, 0), 0, 1, 2, "stick"));
+	items.push_back(new InteractableObject(Vector3(0, 2, 0), 0, 1, 2, "stick"));
 }
 
 void SceneGarden::Update(double dt)
@@ -232,7 +232,7 @@ void SceneGarden::Update(double dt)
 	camera.Update(dt);
 	//Check collisions
 	{
-		for (std::vector<Entity*>::iterator it = Entitylist.begin(); it != Entitylist.end(); it++)
+		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 		{
 			if ((*it)->gettype() == "stick")
 			{
@@ -246,14 +246,10 @@ void SceneGarden::Update(double dt)
 					}
 				}
 			}
-			else if ((*it)->gettype() == "tree1" || (*it)->gettype() == "tree2")
-			{
-				if ((*it)->boxcollider(camera.position))
-				{
-					std::cout << "hit tree" << std::endl;
-					camera.position = prevpos;
-				}
-			}
+		}
+		for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
+		{
+			(*it)->solidCollisionBox(camera.position);
 		}
 	}
 
@@ -742,9 +738,9 @@ void SceneGarden::Render()
 		}
 	}
 
-	//Render entitites in the entitylist
+	//Render interactable items
 	{
-		for (std::vector<Entity*>::iterator it = Entitylist.begin(); it != Entitylist.end(); it++)
+		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 		{
 			modelStack.PushMatrix();
 			modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
@@ -756,7 +752,18 @@ void SceneGarden::Render()
 				/*modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
 				RenderMesh(meshList[GEO_SPHERE], FALSE);*/
 			}
-			else if ((*it)->gettype() == "tree1")
+			modelStack.PopMatrix();
+		}
+	}
+	//Render terrain entities
+	{
+		for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
+			modelStack.Rotate((*it)->getangle(), 0, 1, 0);
+			modelStack.Scale((*it)->getscale(), (*it)->getscale(), (*it)->getscale());
+			if ((*it)->gettype() == "tree1")
 				RenderMesh(meshList[GEO_TREE1], true);
 			else if ((*it)->gettype() == "tree2")
 				RenderMesh(meshList[GEO_TREE2], true);

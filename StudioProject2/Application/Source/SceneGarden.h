@@ -117,7 +117,8 @@ private:
 	float movex = 0, movez = 0;
 	float scale = 1;
 
-	std::vector<Entity*> Entitylist;
+	std::vector<InteractableObject*> items;
+	std::vector<Terrain*> terrains;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
