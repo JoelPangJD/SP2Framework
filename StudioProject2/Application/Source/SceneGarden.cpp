@@ -763,11 +763,11 @@ void SceneGarden::Render()
 			modelStack.PopMatrix();
 		}
 	}
-	modelStack.PushMatrix();
-	modelStack.Translate(camera.target.x, camera.target.y, camera.target.z);
-	modelStack.Scale(1,1,1);
-	RenderMesh(meshList[GEO_SPHERE], FALSE);
-	modelStack.PopMatrix();
+	//modelStack.PushMatrix();
+	//modelStack.Translate(camera.target.x, camera.target.y, camera.target.z);
+	//modelStack.Scale(1,1,1);
+	//RenderMesh(meshList[GEO_SPHERE], FALSE);
+	//modelStack.PopMatrix();
 
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	RenderUI();

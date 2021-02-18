@@ -21,9 +21,9 @@ InteractableObject::InteractableObject(Vector3 pos, float angle, float scale, fl
 	setposition(pos);
 	setangle(angle);
 	setscale(scale);
-	//this.setheight(height);
-	//this->xwidth = xwidth;
-	//this->zwidth = zwidth;
+	setheight(height);
+	setxwidth(xwidth);
+	setzwidth(zwidth);
 
 }
 

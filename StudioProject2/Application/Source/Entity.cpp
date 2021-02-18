@@ -88,6 +88,36 @@ void Entity::setradius(float radius)
 	this->radius = radius;
 }
 
+float Entity::getheight()
+{
+	return height;
+}
+
+void Entity::setheight(float height)
+{
+	this->height = height;
+}
+
+float Entity::getxwidth()
+{
+	return xwidth;
+}
+
+void Entity::setxwidth(float xwidth)
+{
+	this->xwidth = xwidth;
+}
+
+float Entity::getzwidth()
+{
+	return zwidth;
+}
+
+void Entity::setzwidth(float zwidth)
+{
+	this->zwidth = zwidth;
+}
+
 string Entity::gettype()
 {
 	return type;
