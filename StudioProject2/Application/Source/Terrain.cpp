@@ -58,19 +58,9 @@ void Terrain::solidCollisionBox(Vector3 &position)
 			zdist = this->getposition().z - (this->getzwidth() * 0.5) - position.z;
 
 		if (abs(xdist) < abs(zdist))
-		{
-			if (position.x > this->getposition().x)
-				position.x += xdist;
-			else
-				position.x += xdist;
-		}
+			position.x += xdist;
 		else
-		{
-			if (position.z > this->getposition().z)
-				position.z += zdist;
-			else
-				position.z += zdist;
-		}
+			position.z += zdist;
 	}
 }
 
