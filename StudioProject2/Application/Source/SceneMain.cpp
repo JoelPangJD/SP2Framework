@@ -221,7 +221,7 @@ void SceneMain::Update(double dt)
 
 	if (Application::IsKeyPressed('E')) {
 		if (inFrontOfMuseum == true) {
-			//enter code to change scene to museum
+			Application::SwitchScene = 1;
 		}
 	
 	}
