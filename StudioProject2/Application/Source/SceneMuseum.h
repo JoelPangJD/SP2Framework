@@ -116,6 +116,9 @@ private:
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
 
+	std::vector<InteractableObject*> items;
+	std::vector<Terrain*> terrains;
+
 	float movex = 0;
 	float movez = 0;
 
