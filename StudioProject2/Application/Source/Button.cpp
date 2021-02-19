@@ -21,7 +21,6 @@ bool Button::isClickedOn()
 
 void Button::updateButton()
 {
-
 	static bool bLButtonState = false;
 	if (!bLButtonState && Application::IsMousePressed(0))
 	{

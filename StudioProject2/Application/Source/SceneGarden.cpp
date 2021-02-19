@@ -314,7 +314,7 @@ void SceneGarden::Update(double dt)
 						interacttext << "[E]Stick";
 						if (Application::IsKeyPressed('E'))
 						{
-							//pickup;
+							(*it)->interact();
 						}
 						break;
 					}

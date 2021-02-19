@@ -30,7 +30,36 @@ InteractableObject::~InteractableObject()
 {
 }
 
-void InteractableObject::touch(Vector3 position)
+void InteractableObject::interact()
 {
-	
+	if (Application::IsMousePressed('F'))//Look at (read the description from text file based on object type)
+	{
+		std::string line;
+		fstream file("Itemdescriptions.txt");
+		while (getline(file, line));
+		{
+			size_t instance = line.find('|');
+			if (this->gettype() == line.substr(0, instance)) //If found item description based on item type in the text file
+			{
+				size_t instance2 = line.find('|',instance);
+				size_t instance3 = line.find('|', instance2);
+				size_t instance4 = line.find('|', instance3);
+				cout << line.substr(instance2,(instance3-1)) << endl;
+			}
+		}
+
+	}
+	else if (Application::IsMousePressed('G')) //Pick up
+	{
+
+	}
+	else if (Application::IsMousePressed('R')) //use
+	{
+
+	}
+	else if (Application::IsMousePressed('T'))//Talk to 
+	{
+
+	}
 }
+
