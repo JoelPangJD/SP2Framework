@@ -139,8 +139,12 @@ void SceneMain::Init()
 
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
-	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", 1, 1, Color(1, 1, 1), 100);
-	meshList[GEO_QUAD]->textureID = LoadTGA("Image//CityCenter//brick.tga");
+	meshList[GroundMesh] = MeshBuilder::GenerateQuad("quad", 1, 1, Color(1, 1, 1), 100);
+	meshList[GroundMesh]->textureID = LoadTGA("Image//CityCenter//brick.tga");
+	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
+	meshList[SecurityPanel] = MeshBuilder::GenerateQuad("securitypanel", Color(1, 1, 1), 10.f);
+	meshList[SecurityPanel]->textureID = LoadTGA("Image//CityCenter//SecurityPanel.tga");
+	meshList[Red] = MeshBuilder::GenerateQuad("red", Color(1, 0, 0), 1.f);
 	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.5f, 0.2f, 0.0f), 1);
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(0.5, 0.5, 0.5), 10, 10, 10);
 	meshList[GEO_SPHERE]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
@@ -190,6 +194,7 @@ void SceneMain::Init()
 	fin.close();
 	inFrontOfMuseum = false;
 	minigameMuseum = false;
+
 }
 
 
@@ -357,7 +362,14 @@ void SceneMain::RenderUI()
 
 void SceneMain::RenderMinigame()
 {
+	RenderMeshOnScreen(meshList[SecurityPanel], 40, 30, 7, 5);
 	RenderTextOnScreen(meshList[GEO_TEXT], "Click here to enter", Color(0, 0, 0), 6, 20, 10);
+
+
+
+
+
+
 }
 
 void SceneMain::RenderText(Mesh* mesh, std::string text, Color color)
@@ -527,7 +539,7 @@ void SceneMain::Render()
 	modelStack.PushMatrix();
 	modelStack.Scale(1000, 1000, 1000);
 	modelStack.Rotate(-90, 1, 0, 0);
-	RenderMesh(meshList[GEO_QUAD], true);
+	RenderMesh(meshList[GroundMesh], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
