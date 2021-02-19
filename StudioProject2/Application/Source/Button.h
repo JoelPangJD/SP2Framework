@@ -13,5 +13,9 @@ public:
 	bool isClickedOn();//returns value of whether its clicked on
 	void updateButton();//checks whether its clicked on; meant to be put in update function
 
+	float getPosX();
+	float getPosY();
+	float getWidth();
+	float getHeight();
 };
 
