@@ -1,6 +1,7 @@
 #ifndef SCENE_CHANGI_H
 #define SCENE_CHANGI_H
 #include "Camera3.h"
+#include "Vector3.h"
 #include "Scene.h"
 #include "Mesh.h"
 #include "Light.h"
@@ -94,6 +95,8 @@ class SceneChangi : public Scene
 
 public:
 	Camera3 camera;
+	Vector3 pos;
+
 	bool lighton = true;
 	bool use ;
 	bool renderStairs = true;
@@ -105,6 +108,8 @@ public:
 	float rotateR;
 	float movex;
 	float movez;
+	float wordY = 0;
+	float gravity = 1;
 
 	SceneChangi();
 	~SceneChangi();
@@ -129,6 +134,7 @@ private:
 	void RenderUI();
 	void RenderRoad();
 	void RenderWords();
+	//void RenderPlane();//testing
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);

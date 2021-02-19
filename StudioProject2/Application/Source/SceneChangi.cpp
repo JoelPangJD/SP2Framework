@@ -196,6 +196,7 @@ void SceneChangi::Init()
 	meshList[GEO_ROADSPLIT] = MeshBuilder::GenerateOBJMTL("roadSplit", "OBJ//Changi//splitRoad.obj", "OBJ//Changi//splitRoad.mtl");
 	meshList[GEO_ROADL] = MeshBuilder::GenerateOBJMTL("roadL", "OBJ//Changi//roadL.obj", "OBJ//Changi//roadL.mtl");
 	meshList[GEO_ROADARROW] = MeshBuilder::GenerateOBJMTL("roadArrow", "OBJ//Changi//arrowRoad.obj", "OBJ//Changi//arrowRoad.mtl");
+
 }
 
 
@@ -236,13 +237,12 @@ void SceneChangi::Update(double dt)
 			use = true;
 			renderStairs = false;
 		}
-		else {
-			use = false;
-		}
+	
 	}
 	else
 	{
 		atStairs = false;
+		use = false;
 	}
 
 	if (Application::IsKeyPressed('I'))
@@ -257,7 +257,14 @@ void SceneChangi::Update(double dt)
 		else
 			movex += 1;
 	}
-
+	if (Application::IsKeyPressed('I') || Application::IsKeyPressed('K') && Application::IsKeyPressed('L'))
+	{
+		movez -= 1.5;
+	}
+	if (Application::IsKeyPressed('I') || Application::IsKeyPressed('K') && Application::IsKeyPressed('J'))
+	{
+		movez += 1.5;
+	}
 	if (Application::IsKeyPressed('J'))
 	{
 		rotateL += 0.5;
@@ -267,13 +274,24 @@ void SceneChangi::Update(double dt)
 		rotateR -= 0.5;
 	}
 
-	if (camera.position.x >= -108 && camera.position.x <= -98 && camera.position.y >= 0 && camera.position.y <= 13 && camera.position.z >= 55 && camera.position.z <= 63) {
+	if (camera.position.x >= -115 && camera.position.x <= -98 && camera.position.y >= 0 && camera.position.y <= 13 && camera.position.z >= 50 && camera.position.z <= 65) {
 		welcome = true;
 	}
 	else
 	{
 		welcome = false;
 	}
+
+	wordY += (float)(8 * gravity * dt);
+	if (wordY > 3)
+	{
+		gravity = -1;
+	}
+	if (wordY < 0)
+	{
+		gravity = 1;
+	}
+
 }
 
 void SceneChangi::RenderMesh(Mesh* mesh, bool enableLight)
@@ -399,10 +417,8 @@ void SceneChangi::RenderEntity()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(10 + movex, 17, -6.5);
-	modelStack.Rotate(-90, 0, 1, 0);
-	modelStack.Rotate(rotateR, 0, 1, 0);
-	modelStack.Rotate(rotateL, 0, 1, 0);
+	modelStack.Translate(10 + movex, 17, -6.5 + movez);
+	modelStack.Rotate(-90 + rotateL + rotateR, 0, 1, 0);
 	modelStack.Scale(7, 7, 7);
 	RenderMesh(meshList[GEO_PLANE], true);
 	modelStack.PopMatrix();
@@ -607,6 +623,7 @@ void SceneChangi::Render()
 		camera.position.y = 51;
 		camera.position.z = 0;
 		camera.theta = 180;
+
 	}
 	//Skybox
 	RenderSkybox();
@@ -679,6 +696,13 @@ void SceneChangi::RenderWords()
 	modelStack.PushMatrix();
 	modelStack.Scale(5, 5, 5);
 	RenderTextOnScreen(meshList[GEO_TEXT], ssX.str() + ssY.str() + ssZ.str(), Color(0, 1, 0), 4, 0, 13);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-100, 14 + wordY, 53);
+	modelStack.Rotate(-90, 0, 1, 0);
+	modelStack.Scale(2, 2, 2);
+	RenderText(meshList[GEO_TEXT], "Touch me", Color(1, 0, 0));
 	modelStack.PopMatrix();
 
 	if (welcome == true) {
