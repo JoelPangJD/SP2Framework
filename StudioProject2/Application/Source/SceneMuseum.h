@@ -57,6 +57,7 @@ class SceneMuseum : public Scene
 		GEO_MINIPIC1,
 		GEO_COLORBLINDPIC1,
 		GEO_MINIPIC2,
+		GEO_SELECTION,
 		//GROUND MESH
 		GEO_GROUND,
 		NUM_GEOMETRY,
@@ -136,9 +137,12 @@ private:
 	float scale = 1;
 	float rotate = 0;
 
-	bool ActivateGame1 = false;
+	bool ShowPreview = false;
+	bool QuitGame1 = true;
 	bool RenderingMesh = false;
 	bool RenderingText = true;
+	bool WhenEisPressed = false;
+	bool WhenRisPressed = false;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
@@ -147,6 +151,8 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
+
+	void StartGame1();
 
 };
 

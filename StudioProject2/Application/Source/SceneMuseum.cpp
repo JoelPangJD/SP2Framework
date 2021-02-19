@@ -208,6 +208,12 @@ void SceneMuseum::Init()
 	meshList[GEO_COLORBLINDPIC1]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
 	meshList[GEO_COLORBLINDPIC1]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[GEO_COLORBLINDPIC1]->material.kShininess = 1.f;
+	meshList[GEO_SELECTION] = MeshBuilder::GenerateQuad("Answer for color blind photo", Color(1, 1, 1), 1.0f);
+	meshList[GEO_SELECTION]->textureID = LoadTGA("Image//Museum//selection.tga");
+	meshList[GEO_SELECTION]->material.kAmbient.Set(0.8f, 0.8f, 0.8f);
+	meshList[GEO_SELECTION]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
+	meshList[GEO_SELECTION]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
+	meshList[GEO_SELECTION]->material.kShininess = 1.f;
 
 	terrains.push_back(new Terrain(Vector3(45, 0, -119.707), 0,0,0, 3, 220.66, "Wall"));
 	terrains.push_back(new Terrain(Vector3(93.77, 0, -243.091),0,0,0, 70.626, 3, "Wall"));
@@ -218,7 +224,6 @@ void SceneMuseum::Init()
 	terrains.push_back(new Terrain(Vector3(97.606, 0, 206.3716), 0, 22, 10, 100, 3, "Wall"));
 	terrains.push_back(new Terrain(Vector3(260, 0, 71.5), 0, 22, 10, 221.105, 3, "Wall"));
 	terrains.push_back(new Terrain(Vector3(153.5, 0, 130), 0, 22, 10, 3, 125, "Wall"));
-	
 	terrains.push_back(new Terrain(Vector3(-101.273, 0, -10.2017), 0, 22, 10, 295.839, 3, "Wall"));
 	terrains.push_back(new Terrain(Vector3(-246.153, 0, -20.2017), 0, 22, 10, 3, 21.1293, "Wall"));
 	terrains.push_back(new Terrain(Vector3(-246.153, 0, -80.2017), 0, 22, 10, 3, 19.1293, "Wall"));
@@ -229,7 +234,8 @@ void SceneMuseum::Init()
 	terrains.push_back(new Terrain(Vector3(371.538, 0, -100.3729), 0, 22, 10, 3, 223.8275, "Wall"));
 	terrains.push_back(new Terrain(Vector3(371.538, 0, 62.02704), 0, 22, 10, 3, 20, "Wall"));
 	terrains.push_back(new Terrain(Vector3(261.7488, 0, -205.3159), 0, 22, 10, 218.204, 3, "Wall"));
-
+	//Door hitbox 
+	terrains.push_back(new Terrain(Vector3(-272.215, 0, 73.66698), 0, 22, 10, 218.204, 3, "Wall")); //+19
 
 	//Ground mesh
 	meshList[GEO_GROUND] = MeshBuilder::GenerateQuad("ground", Color(1, 1, 1), 1.0f);
@@ -243,7 +249,7 @@ void SceneMuseum::Update(double dt)
 {
 	fps = 1.f / dt;
 
-	if (ActivateGame1 == false)
+	if (ShowPreview == false || WhenRisPressed == true)
 	{
 		camera.Update(dt);
 		//check for wall detection
@@ -251,14 +257,6 @@ void SceneMuseum::Update(double dt)
 		{
 			(*it)->solidCollisionBox(camera.position);
 		}
-	}
-
-	else if (ActivateGame1 == true)
-	{
-		GameCam1 = camera;
-		//Goes to some orange background to view image
-		camera.Init(Vector3(-220.713, 10, 242.881), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
-		RenderingMesh = true;
 	}
 
 	if (Application::IsKeyPressed('5'))
@@ -341,11 +339,17 @@ void SceneMuseum::Update(double dt)
 
 	if (camera.position.z > 90 && camera.position.z < 120)
 	{
-		std::cout << "YOURE HERE" << std::endl;
 		if (Application::IsKeyPressed('E'))
-			ActivateGame1 = true;
-		if (Application::IsKeyPressed('R'))
-			ActivateGame1 = false;
+		{
+			WhenEisPressed = true;
+			ShowPreview = true;
+		}
+		if (ShowPreview == true && Application::IsKeyPressed('R'))
+		{
+			WhenRisPressed = true;
+			terrains.erase(terrains.begin() + 19);
+			ShowPreview = false;
+		}
 	}
 
 }
@@ -590,6 +594,12 @@ void SceneMuseum::RenderWalls()
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	modelStack.Translate(-272.215, 0, 82.023);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(20, 40.1209, 29.7171);
+	RenderMesh(meshList[GEO_WALLDOOR], true);
+	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-255.54, 0, -51.028);
@@ -660,6 +670,20 @@ void SceneMuseum::RenderWalls()
 	modelStack.Scale(25, 40, 30);
 	RenderMesh(meshList[GEO_WALLCURVED], true);
 	modelStack.PopMatrix();
+}
+
+void SceneMuseum::StartGame1()
+{
+	if (ShowPreview == true)
+	{
+		GameCam1 = camera;
+		RenderingText = true;
+		//Goes to some orange background to view image
+		camera.Init(Vector3(-220.713, 10, 110), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
+		RenderMeshOnScreen(meshList[GEO_MINIPIC1], 10, 30, 20, 10);
+		RenderMeshOnScreen(meshList[GEO_COLORBLINDPIC1], 50, 30, 20, 10);
+	}
+
 }
 
 void SceneMuseum::RenderUI()
@@ -886,17 +910,20 @@ void SceneMuseum::Render()
 	RenderMesh(meshList[GEO_COLORBLINDPIC1], true);
 	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	modelStack.Translate(-283.869, 16.0715, 102.1478);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(35, 35, 35);
+	RenderMesh(meshList[GEO_SELECTION], true);
+	modelStack.PopMatrix();
 
-	if (RenderingMesh == true)
-	{
-		RenderMeshOnScreen(meshList[GEO_MINIPIC1], 10, 30, 20, 10);
-		RenderMeshOnScreen(meshList[GEO_COLORBLINDPIC1], 50, 30, 20, 10);
-	}
+	//modelStack.PushMatrix();
+	//modelStack.Translate(-217.385, 16.0715, 75.3848);
+	//modelStack.Scale(10, 10, 10);
+	//RenderMesh(meshList[GEO_COLORBLINDPIC1], true);
+	//modelStack.PopMatrix();
 
-	if (RenderingText == true)
-	{
-		RenderTextOnScreen(meshList[GEO_TEXT], "PRESS E ", Color(0, 1, 0), 2, 0, 54);
-	}
+
 	RenderUI();
 }
 
