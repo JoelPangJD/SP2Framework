@@ -43,5 +43,6 @@ void Button::updateButton()
 	else if (bLButtonState && !Application::IsMousePressed(0))
 	{
 		bLButtonState = false;
+		clickedOn = false;
 	}
 }
