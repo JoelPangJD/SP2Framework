@@ -137,6 +137,7 @@ private:
 	vector<Button*> buttonList;
 	ACTION_TYPE playerAction, enemyAction;
 	std::string fightText, dialogueText;
+	bool NPCDia;
 	bool fight, fightDia, playerTurn, enemyTurn, fightSelected, itemsSelected, backSelected, attackSelected, actionSelected, attack1Hit;
 	float cooldownTimer;
 	float pointerX, pointerY, playerHealth, playerHealthPos, playerHealthLost, enemyHealth, enemyHealthPos, enemyHealthLost;
@@ -148,6 +149,7 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey);
+	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 
 };
 

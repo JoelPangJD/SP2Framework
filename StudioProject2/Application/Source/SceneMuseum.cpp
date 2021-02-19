@@ -196,18 +196,6 @@ void SceneMuseum::Init()
 	meshList[GEO_MINIPIC1]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
 	meshList[GEO_MINIPIC1]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[GEO_MINIPIC1]->material.kShininess = 1.f;
-	meshList[GEO_MINIPIC2] = MeshBuilder::GenerateQuad("Answer for color blind photo", Color(1, 1, 1), 1.0f);
-	meshList[GEO_MINIPIC2]->textureID = LoadTGA("Image//Museum//photomain.tga");
-	meshList[GEO_MINIPIC2]->material.kAmbient.Set(0.8f, 0.8f, 0.8f);
-	meshList[GEO_MINIPIC2]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
-	meshList[GEO_MINIPIC2]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
-	meshList[GEO_MINIPIC2]->material.kShininess = 1.f;
-	meshList[GEO_COLORBLINDPIC1] = MeshBuilder::GenerateQuad("Answer for color blind photo", Color(1, 1, 1), 1.0f);
-	meshList[GEO_COLORBLINDPIC1]->textureID = LoadTGA("Image//Museum//4colorblindmain.tga");
-	meshList[GEO_COLORBLINDPIC1]->material.kAmbient.Set(0.8f, 0.8f, 0.8f);
-	meshList[GEO_COLORBLINDPIC1]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
-	meshList[GEO_COLORBLINDPIC1]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
-	meshList[GEO_COLORBLINDPIC1]->material.kShininess = 1.f;
 	meshList[GEO_SELECTION] = MeshBuilder::GenerateQuad("Answer for color blind photo", Color(1, 1, 1), 1.0f);
 	meshList[GEO_SELECTION]->textureID = LoadTGA("Image//Museum//selection.tga");
 	meshList[GEO_SELECTION]->material.kAmbient.Set(0.8f, 0.8f, 0.8f);
@@ -249,7 +237,7 @@ void SceneMuseum::Update(double dt)
 {
 	fps = 1.f / dt;
 
-	if (ShowPreview == false || WhenRisPressed == true)
+	if (ShowPreview == false || CorrectAnswer == true)
 	{
 		camera.Update(dt);
 		//check for wall detection
@@ -257,6 +245,54 @@ void SceneMuseum::Update(double dt)
 		{
 			(*it)->solidCollisionBox(camera.position);
 		}
+	}
+
+	//Mouse Inputs
+	static bool bLButtonState = false;
+	int BUTTON_LEFT = 10.6;
+	int BUTTON_RIGHT = 21.5;
+	int BUTTON_BOTTOM = 20.8;
+	int BUTTON_TOP = 2.2;
+	if (!bLButtonState && Application::IsMousePressed(0))
+	{
+		bLButtonState = true;
+		std::cout << "LBUTTON DOWN" << std::endl;
+		//Converting Viewport space to UI space
+		double x, y;
+		Application::GetCursorPos(&x, &y);
+		unsigned w = Application::GetWindowWidth();
+		unsigned h = Application::GetWindowHeight();
+		float posX = x / 10; //convert (0,800) to (0,80)
+		float posY = y / 10; //convert (600,0) to (0,60)
+		std::cout << "posX:" << posX << " , posY:" << posY << std::endl;
+		if (posX > BUTTON_LEFT && posX < BUTTON_RIGHT && posY > BUTTON_BOTTOM && posY < BUTTON_TOP)
+		{
+			Application::enableMouse = false;
+			CorrectAnswer = true;
+			terrains.erase(terrains.begin() + 19);
+			std::cout << "Hit!" << std::endl;
+			//trigger user action or function
+		}
+		else
+		{
+			std::cout << "Miss!" << std::endl;
+		}
+	}
+	else if (bLButtonState && !Application::IsMousePressed(0))
+	{
+		bLButtonState = false;
+		std::cout << "LBUTTON UP" << std::endl;
+	}
+	static bool bRButtonState = false;
+	if (!bRButtonState && Application::IsMousePressed(1))
+	{
+		bRButtonState = true;
+		std::cout << "RBUTTON DOWN" << std::endl;
+	}
+	else if (bRButtonState && !Application::IsMousePressed(1))
+	{
+		bRButtonState = false;
+		std::cout << "RBUTTON UP" << std::endl;
 	}
 
 	if (Application::IsKeyPressed('5'))
@@ -337,20 +373,20 @@ void SceneMuseum::Update(double dt)
 
 	}
 
-	if (camera.position.z > 90 && camera.position.z < 120)
-	{
-		if (Application::IsKeyPressed('E'))
-		{
-			WhenEisPressed = true;
-			ShowPreview = true;
-		}
-		if (ShowPreview == true && Application::IsKeyPressed('R'))
-		{
-			WhenRisPressed = true;
-			terrains.erase(terrains.begin() + 19);
-			ShowPreview = false;
-		}
-	}
+	//if (camera.position.x < -192.129 && camera.position.x > -225 && camera.position.z > 90 && camera.position.z < 100)
+	//{
+	//	if (Application::IsKeyPressed('E'))
+	//	{
+	//		WhenEisPressed = true;
+	//		ShowPreview = true;
+	//	}
+	//	if (ShowPreview == true && Application::IsKeyPressed('R'))
+	//	{
+	//		WhenRisPressed = true;
+	//		terrains.erase(terrains.begin() + 19);
+	//		ShowPreview = false;
+	//	}
+	//}
 
 }
 
@@ -674,14 +710,51 @@ void SceneMuseum::RenderWalls()
 
 void SceneMuseum::StartGame1()
 {
+	if (camera.position.x < -192.129 && camera.position.x > -225 && camera.position.z > 90 && camera.position.z < 100)
+	{
+		//std::cout << "YOURE HERE" << std::endl;
+		RenderInteractableText();
+		if (Application::IsKeyPressed('E'))
+		{
+			WhenEisPressed = true;
+			ShowPreview = true;
+		}
+		if (ShowPreview == true && Application::IsKeyPressed('R'))
+		{
+			WhenRisPressed = true;
+			terrains.erase(terrains.begin() + 19);
+			ShowPreview = false;
+		}
+	}
+	if (camera.position.x < -262 && camera.position.x > -280 && camera.position.z > 90 && camera.position.z < 116)
+	{
+		//std::cout << "YOURE HERE" << std::endl;
+		RenderInteractableText();
+		if (Application::IsKeyPressed('E'))
+		{
+			ShowFirstGame = true;
+			GameEisPressed = true;
+		}
+	}
+
 	if (ShowPreview == true)
 	{
 		GameCam1 = camera;
 		RenderingText = true;
+		Application::enableMouse = true;
 		//Goes to some orange background to view image
-		camera.Init(Vector3(-220.713, 10, 110), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
-		RenderMeshOnScreen(meshList[GEO_MINIPIC1], 10, 30, 20, 10);
-		RenderMeshOnScreen(meshList[GEO_COLORBLINDPIC1], 50, 30, 20, 10);
+		camera.Init(Vector3(-220.713, 10, 95), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
+		RenderMeshOnScreen(meshList[GEO_MINIPIC1], 40, 30, 20, 10);
+	}
+
+	if (ShowFirstGame == true)
+	{
+		GameCam1 = camera;
+		RenderingText = true;
+		Application::enableMouse = true;
+		//Goes to some orange background to view image
+		camera.Init(Vector3(-270.713, 10, 100), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
+		RenderMeshOnScreen(meshList[GEO_SELECTION], 40, 30, 80, 70);
 	}
 
 }
@@ -786,6 +859,10 @@ void SceneMuseum::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int si
 	modelStack.PopMatrix();
 	glEnable(GL_DEPTH_TEST);
 }
+void SceneMuseum::RenderInteractableText()
+{
+	RenderTextOnScreen(meshList[GEO_TEXT], "Interable object! Press 'E'", Color(0, 1, 0), 2, 0, 29);
+}
 
 void SceneMuseum::Render()
 {
@@ -842,11 +919,9 @@ void SceneMuseum::Render()
 	//Skybox
 	RenderSkybox();
 
-
 	RenderMesh(meshList[GEO_AXES], false);
 
 	RenderWalls();
-
 
 	//GROUND MESH
 	modelStack.PushMatrix();
@@ -899,21 +974,16 @@ void SceneMuseum::Render()
 
 	//Minigame1 OBJ
 	modelStack.PushMatrix();
-	modelStack.Translate(-194.785, 16.0715, 75.3848);
-	modelStack.Scale(10, 10, 10);
+	modelStack.Translate(-210.785, 16.0715, 75.3848);
+	modelStack.Scale(20, 20, 20);
 	RenderMesh(meshList[GEO_MINIPIC1], true);
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	modelStack.Translate(-217.385, 16.0715, 75.3848);
-	modelStack.Scale(10, 10, 10);
-	RenderMesh(meshList[GEO_COLORBLINDPIC1], true);
-	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-283.869, 16.0715, 102.1478);
+	modelStack.Translate(-283.869, 16.0715, 95.1478);
 	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(35, 35, 35);
+	modelStack.Scale(35, 35, 45);
 	RenderMesh(meshList[GEO_SELECTION], true);
 	modelStack.PopMatrix();
 
@@ -923,7 +993,7 @@ void SceneMuseum::Render()
 	//RenderMesh(meshList[GEO_COLORBLINDPIC1], true);
 	//modelStack.PopMatrix();
 
-
+	StartGame1();
 	RenderUI();
 }
 

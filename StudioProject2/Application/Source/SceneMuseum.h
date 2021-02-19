@@ -138,11 +138,15 @@ private:
 	float rotate = 0;
 
 	bool ShowPreview = false;
+	bool ShowFirstGame = false;
+	bool GameEisPressed = false;
 	bool QuitGame1 = true;
 	bool RenderingMesh = false;
 	bool RenderingText = true;
 	bool WhenEisPressed = false;
 	bool WhenRisPressed = false;
+	bool testing = false;
+	bool CorrectAnswer = false;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
@@ -153,6 +157,7 @@ private:
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
 
 	void StartGame1();
+	void RenderInteractableText();
 
 };
 
