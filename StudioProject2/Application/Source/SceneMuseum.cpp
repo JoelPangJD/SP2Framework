@@ -251,8 +251,8 @@ void SceneMuseum::Update(double dt)
 	static bool bLButtonState = false;
 	int BUTTON_LEFT = 10.6;
 	int BUTTON_RIGHT = 21.5;
-	int BUTTON_BOTTOM = 20.8;
-	int BUTTON_TOP = 2.2;
+	int BUTTON_BOTTOM = 39.3;
+	int BUTTON_TOP = 57.9;
 	if (!bLButtonState && Application::IsMousePressed(0))
 	{
 		bLButtonState = true;
@@ -263,13 +263,13 @@ void SceneMuseum::Update(double dt)
 		unsigned w = Application::GetWindowWidth();
 		unsigned h = Application::GetWindowHeight();
 		float posX = x / 10; //convert (0,800) to (0,80)
-		float posY = y / 10; //convert (600,0) to (0,60)
+		float posY = 60 - y / 10;//convert (600,0) to (0,60)
 		std::cout << "posX:" << posX << " , posY:" << posY << std::endl;
 		if (posX > BUTTON_LEFT && posX < BUTTON_RIGHT && posY > BUTTON_BOTTOM && posY < BUTTON_TOP)
 		{
 			Application::enableMouse = false;
 			CorrectAnswer = true;
-			terrains.erase(terrains.begin() + 19);
+			//terrains.erase(terrains.begin() + 19);
 			std::cout << "Hit!" << std::endl;
 			//trigger user action or function
 		}
