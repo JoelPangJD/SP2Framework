@@ -1,6 +1,13 @@
 #include "Button.h"
 #include "Application.h"
 
+Button::Button()
+{
+	positionX = positionY = width = height = 0;
+	clickedOn = active = false;
+	bLButtonState = true;
+}
+
 Button::Button(float positionX, float positionY, float width, float height)
 {
 	this->positionX = positionX;
@@ -8,6 +15,8 @@ Button::Button(float positionX, float positionY, float width, float height)
 	this->width = width;
 	this->height = height;
 	clickedOn = false;
+	bLButtonState = true;
+	active = false;
 }
 
 Button::~Button()
@@ -21,47 +30,27 @@ bool Button::isClickedOn()
 
 void Button::updateButton()
 {
-	static bool bLButtonState = false;
-	if (!bLButtonState && Application::IsMousePressed(0))
-	{
-		bLButtonState = true;
-
-		double x, y;
-		Application::GetCursorPos(&x, &y);
-		unsigned w = Application::GetWindowWidth();
-		unsigned h = Application::GetWindowHeight();
-		float posX = x / 10;
-		float posY = 60 - y / 10;
-		if (posX > positionX && posX < (positionX + width) && posY > positionY && posY < (positionY + height)) {
-			clickedOn = true;
+	if (active) {
+		if (Application::IsMousePressed(0) && (bLButtonState))
+		{
+			double x, y;
+			Application::GetCursorPos(&x, &y);
+			unsigned w = Application::GetWindowWidth();
+			unsigned h = Application::GetWindowHeight();
+			float posX = x / 10;
+			float posY = 60 - y / 10;
+			if (posX > positionX && posX < (positionX + width) && posY > positionY && posY < (positionY + height)) {
+				clickedOn = true;
+			}
+			bLButtonState = false;
 		}
-		else {
+		else if (Application::IsMousePressed(0) && (!bLButtonState)) {
 			clickedOn = false;
 		}
+		else if (!Application::IsMousePressed(0) && !bLButtonState)
+		{
+			clickedOn = false;
+			bLButtonState = true;
+		}
 	}
-	else if (bLButtonState && !Application::IsMousePressed(0))
-	{
-		bLButtonState = false;
-		clickedOn = false;
-	}
-}
-
-float Button::getPosX()
-{
-	return positionX;
-}
-
-float Button::getPosY()
-{
-	return positionY;
-}
-
-float Button::getWidth()
-{
-	return width;
-}
-
-float Button::getHeight()
-{
-	return height;
 }

@@ -37,7 +37,7 @@ class SceneMain : public Scene
 		Lamp,
 		Sprite,
 		GroundMesh,
-		SecurityPanel,
+		Panel,
 		Red,
 		NUM_GEOMETRY,
 	};
@@ -105,9 +105,11 @@ private:
 	unsigned m_programID;
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
+	Vector3 redPos;
 
 	bool inFrontOfMuseum, inFrontOfChangi, InFrontofMarina, inFrontofGarden;
 	bool minigameMuseum;
+	Button yes, no, enter;
 	
 
 	float CharWidth[256];
@@ -119,6 +121,7 @@ private:
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
 
+	void updateMinigame(double dt);
 };
 
 #endif
