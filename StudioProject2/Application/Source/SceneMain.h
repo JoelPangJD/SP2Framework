@@ -36,6 +36,9 @@ class SceneMain : public Scene
 		Museum,
 		Lamp,
 		Sprite,
+		GroundMesh,
+		SecurityPanel,
+		Red,
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE
