@@ -3,7 +3,7 @@
 
 newmtl lambert1
 Kd 0.4 0.4 0.4
-Ka 0 0 0
+Ka 0.3 0.3 0.3
 Ke 0 0 0
 d 1
 illum 1

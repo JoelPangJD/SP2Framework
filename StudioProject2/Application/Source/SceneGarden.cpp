@@ -137,17 +137,33 @@ void SceneGarden::Init()
 	glUniform1f(m_parameters[U_LIGHT1_COSINNER], light[1].cosInner);
 	glUniform1f(m_parameters[U_LIGHT1_EXPONENT], light[1].exponent);
 
+	materialList[M_PUPIL].kAmbient.Set(0.0f, 0.0f, 0.0f);
+	materialList[M_PUPIL].kDiffuse.Set(0.0f, 0.0f, 0.0f);
+	materialList[M_PUPIL].kSpecular.Set(0.4f, 0.4f, 0.4f);
+	materialList[M_PUPIL].kShininess = 20.f;
 
+	materialList[M_FISH1].kAmbient.Set(0.26f, 0.37f, 0.41f);
+	materialList[M_FISH1].kDiffuse.Set(0.26f, 0.37f, 0.41f);
+	materialList[M_FISH1].kSpecular.Set(0.1f, 0.1f, 0.1f);
+	materialList[M_FISH1].kShininess = 10.f;
+
+	materialList[M_FISH2].kAmbient.Set(0.12f, 0.12f, 0.17f);
+	materialList[M_FISH2].kDiffuse.Set(0.12f, 0.12f, 0.17f);
+	materialList[M_FISH2].kSpecular.Set(0.1f, 0.1f, 0.1f);
+	materialList[M_FISH2].kShininess = 10.f;
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.0f);
 	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.5f, 0.5f, 0.5f), 1);
-	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(0.5, 0.5, 0.5), 10, 10, 1);
+	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1, 1, 1), 30, 30, 1);
 	meshList[GEO_SPHERE]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
 	meshList[GEO_SPHERE]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
 	meshList[GEO_SPHERE]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[GEO_SPHERE]->material.kShininess = 1.f;
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("Lightball", Color(1, 1, 1), 10, 10, 10);
+
+	meshList[GEO_HEMISPHERE] = MeshBuilder::GenerateHemisphere("hemisphere", Color(1, 1, 1), 30, 30, 1);
+	meshList[GEO_CONE] = MeshBuilder::GenerateCone("cone", 1, 20, 30, Color(1, 1, 1));
 
 	meshList[GEO_TORUS1] = MeshBuilder::GenerateTorus("torus1", Color(0.5, 0.5, 0.5), 30, 30, 5,0.1);
 	meshList[GEO_TORUS2] = MeshBuilder::GenerateTorus("torus2", Color(0.5, 1, 0.5), 30, 30, 5, 0.1);
@@ -187,6 +203,9 @@ void SceneGarden::Init()
 	meshList[GEO_TREE1] = MeshBuilder::GenerateOBJMTL("tree1", "OBJ//garden//tree.obj", "OBJ//garden//tree.mtl");
 	meshList[GEO_TREE2] = MeshBuilder::GenerateOBJMTL("tree2", "OBJ//garden//tree_fat.obj", "OBJ//garden//tree.mtl");
 
+	meshList[GEO_CAT] = MeshBuilder::GenerateOBJMTL("cat", "OBJ//garden//cat.obj", "OBJ//garden//cat.mtl");
+	meshList[GEO_CAT]->textureID = LoadTGA("Image//garden//cat.tga");
+
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//font.tga");
 
@@ -207,7 +226,7 @@ void SceneGarden::Init()
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//garden//gardenbottom.tga");
 
-	//Creating entities in the Entity list
+	//Creating terrains in the terrains vector
 	terrains.push_back(new Terrain(Vector3(70, 0, 64), 0, 22, 10, 3, 3, "tree1"));
 	terrains.push_back(new Terrain(Vector3(24, 0, 47), 0, 18, 10, 3, 3, "tree1"));
 	terrains.push_back(new Terrain(Vector3(-25, 0, 80), 0, 18, 10, 3, 3, "tree1"));
@@ -225,7 +244,12 @@ void SceneGarden::Init()
 	terrains.push_back(new Terrain(Vector3(-120, 0, 32), 0, 14, 10, 3, 3, "tree2"));
 	terrains.push_back(new Terrain(Vector3(-123, 0, -42), 0, 21, 10, 3, 3, "tree2"));
 
-	terrains.push_back(new Terrain(Vector3(0, 0, -150), 0, 1, 1, 200, 200, "pond"));
+	//modelStack.Translate(0, -2.5, -247.50);
+
+	terrains.push_back(new Terrain(Vector3(0, -2.5, -247.50), 0, 1, 5, 200, 5, "pond"));
+	terrains.push_back(new Terrain(Vector3(0, -2.5, -52.50), 0, 1, 5, 200, 5, "pond"));
+	terrains.push_back(new Terrain(Vector3(-97.5, -2.5, -150), 0, 1, 51, 5, 200, "pond"));
+	terrains.push_back(new Terrain(Vector3(97.5, -2.5, -150), 0, 1, 5, 5, 200, "pond"));
 
 	terrains.push_back(new Terrain(Vector3(59, 0, 44), 0, 1, 5, 5, 2, "gazebo"));
 	terrains.push_back(new Terrain(Vector3(52, 0, 44), 0, 1, 5, 5, 2, "gazebo"));
@@ -236,7 +260,14 @@ void SceneGarden::Init()
 	terrains.push_back(new Terrain(Vector3(62, 0, 51), 0, 1, 5, 3.5, 14, "gazebo"));
 	terrains.push_back(new Terrain(Vector3(49, 0, 51), 0, 1, 5, 3.5, 14, "gazebo"));
 
-	items.push_back(new InteractableObject(Vector3(0, 2, 0), 0, 1, 2, "stick"));
+	items.push_back(new InteractableObject(Vector3(0, 4, 0), 0, 2, 2, "stick"));
+	items.push_back(new InteractableObject(Vector3(55, 0, 54), 180, 0.1, 7, "cat"));
+	items.push_back(new InteractableObject(Vector3(0, -3, -150), 0, 0.5, 2, "fish"));
+	items.push_back(new InteractableObject(Vector3(10, -3, -140), 90, 0.5, 2, "fish"));
+	items.push_back(new InteractableObject(Vector3(-10, -3, -150), -60, 0.5, 2, "fish"));
+	items.push_back(new InteractableObject(Vector3(-20, -3, -120), 60, 0.5, 2, "fish"));
+	items.push_back(new InteractableObject(Vector3(-30, -3, -150), 30, 0.5, 2, "fish"));
+	items.push_back(new InteractableObject(Vector3(20, -3, -140), -30, 0.5, 2, "fish"));
 }
 
 void SceneGarden::Update(double dt)
@@ -244,6 +275,29 @@ void SceneGarden::Update(double dt)
 	fps = 1.f / dt;
 	if (cooldown > 0)
 		cooldown -= dt;
+	//Fish movements
+	for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+	{
+		if ((*it)->gettype() == "fish")
+		{
+			if ((*it)->getposition().x < 95 && (*it)->getposition().x > -95
+			 && (*it)->getposition().z < -55 && (*it)->getposition().z > -245)
+			{
+				(*it)->moveentity(1, 10, dt);
+				(*it)->setangle((*it)->getangle() + (rand() % 120 - double(50)) * dt);
+			}
+			else
+			{
+				(*it)->setangle((*it)->getangle() + 90 * dt);
+				(*it)->moveentity(1, 5, dt);
+				for (std::vector<Terrain*>::iterator it2 = terrains.begin(); it2 != terrains.end(); it2++)
+				{
+					(*it2)->solidCollisionBox((*it)->position);
+				}
+			}
+		}
+	}
+
 	if (minigame == 0)
 	{
 		camera.Update(dt);
@@ -251,16 +305,29 @@ void SceneGarden::Update(double dt)
 		{
 			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 			{
-				if ((*it)->gettype() == "stick")
+				if ((*it)->spherecollider(camera.target)) // Checks if the target is within a radius of the stick
 				{
-					if ((*it)->spherecollider(camera.target)) // Checks if the target is within a radius of the stick
+					if ((*it)->gettype() == "stick")
 					{
 						std::cout << "touching stick" << std::endl;
-						RenderTextOnScreen(meshList[GEO_TEXT], "Stick", Color(1, 1, 0.6), 5, 0, 0);
+						if (interacttext.str() == "");
+						interacttext << "[E]Stick";
 						if (Application::IsKeyPressed('E'))
 						{
-							minigame = 1;
+							//pickup;
 						}
+						break;
+					}
+					if ((*it)->gettype() == "cat")
+					{
+						std::cout << "touching cat" << std::endl;
+						if (interacttext.str() == "");
+						interacttext << "[E]Cat";
+						if (Application::IsKeyPressed('E'))
+						{
+							//talk to;
+						}
+						break;
 					}
 				}
 			}
@@ -344,6 +411,21 @@ void SceneGarden::Update(double dt)
 	if (Application::IsKeyPressed('O'))
 		scale -= 10 * dt;
 
+	//Fish animations
+	{
+		if (fishright)
+		{
+			fishAngle += 40 * dt;
+			if (fishAngle > 20)
+				fishright = false;
+		}
+		else
+		{
+			fishAngle -= 40 * dt;
+			if (fishAngle < -20)
+				fishright = true;
+		}
+	}
 }
 
 void SceneGarden::RenderMesh(Mesh* mesh, bool enableLight)
@@ -444,6 +526,8 @@ void SceneGarden::RenderUI()
 	std::ostringstream ss;
 	ss << "FPS: " << fps;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 58, 68);
+	RenderTextOnScreen(meshList[GEO_TEXT], interacttext.str(), Color(0.5, 0.5, 0.5), 5, 40 - (interacttext.str().length()), 30);
+	interacttext.str("");
 	modelStack.PopMatrix();
 }
 
@@ -466,6 +550,77 @@ void SceneGarden::Renderminigame1()
 	{
 		circlescale1 = 3;
 	}
+}
+
+void SceneGarden::Renderfish()
+{
+	modelStack.Rotate(90, 1, 0, 0);
+	modelStack.PushMatrix();//Fish body
+	modelStack.PushMatrix();
+	//modelStack.Rotate(rotateAngle, 0, 0, 1); //Fish middle joint angle
+	//Fish eyes
+	modelStack.PushMatrix();
+	meshList[GEO_SPHERE]->material = materialList[M_PUPIL];
+	modelStack.PushMatrix();
+	modelStack.Translate(0.25, 1.5, -0.2);
+	modelStack.PushMatrix();
+	modelStack.Scale(0.15, 0.15, 0.15);
+	RenderMesh(meshList[GEO_SPHERE], true);
+	modelStack.PopMatrix();
+	modelStack.Translate(-0.5, 0, 0);
+	modelStack.PushMatrix();
+	modelStack.Scale(0.15, 0.15, 0.15);
+	RenderMesh(meshList[GEO_SPHERE], true);
+	modelStack.PopMatrix();
+	modelStack.PopMatrix();
+	modelStack.PopMatrix();
+	//Fish eyes end
+
+	meshList[GEO_HEMISPHERE]->material = materialList[M_FISH1];
+	modelStack.Scale(0.5, 2, 1);
+	RenderMesh(meshList[GEO_HEMISPHERE], true);
+	meshList[GEO_HEMISPHERE]->material = materialList[M_FISH2];
+	modelStack.Scale(0.5, 0.7, 1.3);
+	RenderMesh(meshList[GEO_HEMISPHERE], true);
+	modelStack.PopMatrix();
+
+	modelStack.Rotate(fishAngle, 0, 0, 1); //Fish middle joint angle
+	modelStack.PushMatrix();  //Add spheres to cover joint
+	meshList[GEO_SPHERE]->material = materialList[M_FISH1];
+	modelStack.Scale(0.5, 0.5, 1);
+	RenderMesh(meshList[GEO_SPHERE], true);
+	meshList[GEO_SPHERE]->material = materialList[M_FISH2];
+	modelStack.Scale(0.5, 0.5, 1.3);
+	RenderMesh(meshList[GEO_SPHERE], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Rotate(180, 0, 0, 1);
+	meshList[GEO_HEMISPHERE]->material = materialList[M_FISH1];
+	modelStack.Scale(0.5, 2, 1);
+	RenderMesh(meshList[GEO_HEMISPHERE], true);
+	meshList[GEO_HEMISPHERE]->material = materialList[M_FISH2];
+	modelStack.Scale(0.5, 1, 1.3);
+	RenderMesh(meshList[GEO_HEMISPHERE], true);
+	modelStack.PopMatrix();
+
+	modelStack.Translate(0, -1.8, 0);
+	modelStack.PushMatrix();//Fish tail start
+	meshList[GEO_CONE]->material = materialList[M_FISH2];
+	modelStack.Rotate(130, 1, 0, 0);
+	modelStack.PushMatrix();
+	modelStack.Scale(0.1, 0.1, 0.5);
+	RenderMesh(meshList[GEO_CONE], true);
+	modelStack.PopMatrix();
+	modelStack.Rotate(100, 1, 0, 0);
+	modelStack.PushMatrix();
+	modelStack.Scale(0.1, 0.1, 0.5);
+	RenderMesh(meshList[GEO_CONE], true);
+	modelStack.PopMatrix();
+	modelStack.PopMatrix();//Fish tail end
+
+	modelStack.PopMatrix();//Fish body end
+
 }
 
 void SceneGarden::RenderText(Mesh* mesh, std::string text, Color color)
@@ -620,6 +775,56 @@ void SceneGarden::Render()
 	modelStack.LoadIdentity();
 
 	RenderMesh(meshList[GEO_AXES], false);
+
+	//Render interactable items
+	{
+		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
+			modelStack.Rotate((*it)->getangle(), 0, 1, 0);
+			modelStack.Scale((*it)->getscale(), (*it)->getscale(), (*it)->getscale());
+			if ((*it)->gettype() == "stick")
+			{
+				RenderMesh(meshList[GEO_STICK], true);
+				if (hitboxshow)
+				{
+					modelStack.PopMatrix();
+					modelStack.PushMatrix();
+					modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
+					modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
+					RenderMesh(meshList[GEO_SPHERE], FALSE);
+				}
+			}
+			if ((*it)->gettype() == "cat")
+			{
+				modelStack.Rotate(-90, 1, 0, 0);
+				RenderMesh(meshList[GEO_CAT], true);
+				if (hitboxshow)
+				{
+					modelStack.PopMatrix();
+					modelStack.PushMatrix();
+					modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
+					modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
+					RenderMesh(meshList[GEO_SPHERE], FALSE);
+				}
+			}
+			if ((*it)->gettype() == "fish")
+			{
+				Renderfish();
+				if (hitboxshow)
+				{
+					modelStack.PopMatrix();
+					modelStack.PushMatrix();
+					modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
+					modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
+					RenderMesh(meshList[GEO_SPHERE], FALSE);
+				}
+			}
+			modelStack.PopMatrix();
+		}
+	}
+
 	//entire pond
 	{
 		modelStack.PushMatrix();
@@ -707,29 +912,6 @@ void SceneGarden::Render()
 		}
 	}
 
-	//Render interactable items
-	{
-		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
-		{
-			modelStack.PushMatrix();
-			modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
-			modelStack.Rotate((*it)->getangle(),0,1,0);
-			modelStack.Scale((*it)->getscale(), (*it)->getscale(), (*it)->getscale());
-			if ((*it)->gettype() == "stick")
-			{
-				RenderMesh(meshList[GEO_STICK], true);
-				if (hitboxshow)
-				{
-					modelStack.PopMatrix();
-					modelStack.PushMatrix();
-					modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
-					modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
-					RenderMesh(meshList[GEO_SPHERE], FALSE);
-				}
-			}
-			modelStack.PopMatrix();
-		}
-	}
 	//Render terrain entities
 	{
 		for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
@@ -753,12 +935,15 @@ void SceneGarden::Render()
 			modelStack.PopMatrix();
 		}
 	}
-	//modelStack.PushMatrix();
-	//modelStack.Translate(movex, 2, movez);
-	//modelStack.Scale(1,5,2);
-	//RenderMesh(meshList[GEO_CUBE], FALSE);
-	//modelStack.PopMatrix();
+	modelStack.PushMatrix();
+	modelStack.Translate(movex, 0, movez);
+	//modelStack.Rotate(0, 0, 1, 0);
+	modelStack.Scale(scale,scale,scale);
+	Renderfish();
+	//RenderMesh(meshList[GEO_FISH], true);
+	modelStack.PopMatrix();
 
+	//Renderfish();
 	if (minigame == 0)
 		RenderUI();
 	else if(minigame == 1)

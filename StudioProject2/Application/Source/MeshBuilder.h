@@ -26,6 +26,7 @@ public:
 	static Mesh* GenerateCylinder(const std::string& meshName, Color color, unsigned numStack, unsigned numSlice, float radius = 1.f, float height = 1.f);
 	static Mesh* GenerateBody(const std::string& meshName, Color color, unsigned numStack, unsigned numSlice, float radius = 1.f, float height = 1.f);
 	static Mesh* GenerateCone(const std::string& meshName, Color color, unsigned numStack, unsigned numSlice, float radius = 1.f, float height = 1.f);
+	static Mesh* GenerateCone(const std::string& meshName, float radius, float heigth, unsigned numSlice, Color color);
 	static Mesh* GenerateOBJ(const std::string& meshName, const std::string& file_path);
 	static Mesh* GenerateText(const std::string& meshName, unsigned numRow, unsigned numCol);
 	static Mesh* GenerateOBJMTL(const std::string& meshName, const std::string& file_path, const std::string& mtl_path);
