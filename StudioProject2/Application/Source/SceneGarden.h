@@ -20,6 +20,9 @@ class SceneGarden : public Scene
 		GEO_AXES = 0,
 		GEO_QUAD,
 		GEO_CUBE,
+		GEO_HEMISPHERE,
+		GEO_CONE,
+		GEO_PYRAMID,
 		GEO_SPHERE,
 		GEO_LIGHTBALL,
 		GEO_TORUS1,
@@ -33,6 +36,7 @@ class SceneGarden : public Scene
 		GEO_INVENTORY,
 		GEO_TEXT,
 		GEO_GRASSFLOOR,
+		GEO_CAT,
 		GEO_POND,
 		GEO_PONDBED,
 		GEO_PATH,
@@ -43,6 +47,14 @@ class SceneGarden : public Scene
 		GEO_TREE1,
 		GEO_TREE2,
 		NUM_GEOMETRY,
+	};
+
+	enum MATERIALS_TYPE
+	{
+		M_PUPIL,
+		M_FISH1,
+		M_FISH2,
+		M_TOTAL
 	};
 	enum UNIFORM_TYPE
 	{
@@ -113,6 +125,9 @@ private:
 	unsigned m_programID;
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];	
+	Material materialList[M_TOTAL];
+
+	std::ostringstream interacttext;
 
 	float movex = 0, movez = 0;
 	float scale = 1;
@@ -124,6 +139,9 @@ private:
 	void RenderSkybox();
 	void RenderUI();
 	void Renderminigame1();
+	void Renderfish();
+	bool fishright = true;
+	float fishAngle = 0;
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
