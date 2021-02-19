@@ -14,6 +14,19 @@ InteractableObject::InteractableObject(Vector3 pos, float angle, float scale, fl
 	this->setscale(scale);
 	this->setradius(radius);
 	this->settype(type);
+
+	std::string line;
+	fstream file("Itemdescriptions.txt");
+	while (getline(file, line))
+	{
+		int instance = line.find('|');
+		if (this->gettype() == line.substr(0, instance)) //If found item description based on item type in the text file
+		{
+			int instance2 = line.find('|', instance + 1);
+			lookat = line.substr(instance + 1, instance2 - 1 - instance);
+			cout << lookat << endl;
+		}
+	}
 }
 
 InteractableObject::InteractableObject(Vector3 pos, float angle, float scale, float height, float xwidth, float zwidth, string type)
@@ -32,32 +45,19 @@ InteractableObject::~InteractableObject()
 
 void InteractableObject::interact()
 {
-	if (Application::IsMousePressed('F'))//Look at (read the description from text file based on object type)
+	if (Application::IsKeyPressed('F'))//Look at (read the description from text file based on object type)
 	{
-		std::string line;
-		fstream file("Itemdescriptions.txt");
-		while (getline(file, line));
-		{
-			size_t instance = line.find('|');
-			if (this->gettype() == line.substr(0, instance)) //If found item description based on item type in the text file
-			{
-				size_t instance2 = line.find('|',instance);
-				size_t instance3 = line.find('|', instance2);
-				size_t instance4 = line.find('|', instance3);
-				cout << line.substr(instance2,(instance3-1)) << endl;
-			}
-		}
-
+		cout << lookat << endl;
 	}
-	else if (Application::IsMousePressed('G')) //Pick up
+	else if (Application::IsKeyPressed('G')) //Pick up
 	{
 
 	}
-	else if (Application::IsMousePressed('R')) //use
+	else if (Application::IsKeyPressed('R')) //use
 	{
 
 	}
-	else if (Application::IsMousePressed('T'))//Talk to 
+	else if (Application::IsKeyPressed('T'))//Talk to 
 	{
 
 	}
