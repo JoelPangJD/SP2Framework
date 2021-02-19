@@ -27,7 +27,8 @@ void SceneMarinaBay::Init()
 	enemyHealthPos = 20.f;
 	playerHealthPos = 60.f;
 	enemyHealth = playerHealth = 0;
-	fight = true;
+	fight = false;
+	NPCDia = true;
 
 	//======Matrix stack========
 	Mtx44 projection;
@@ -158,8 +159,6 @@ void SceneMarinaBay::Init()
 	meshList[GEO_SPHERE]->material.kShininess = 1.f;
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("Lightball", Color(1, 1, 1), 10, 10, 10);
 
-	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Marina//ExportedFont.tga");
 
 	meshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
 	meshList[GEO_INVENTORY]->textureID = LoadTGA("Image//inventory.tga");
@@ -203,6 +202,12 @@ void SceneMarinaBay::Init()
 	meshList[GEO_MC]->textureID = LoadTGA("Image//Marina//skin_adventurer.tga");
 	meshList[GEO_ARM]= MeshBuilder::GenerateOBJMTL("MC", "OBJ//Marina//character_arm.obj", "OBJ//Marina//advancedCharacter.obj.mtl");
 	meshList[GEO_ARM]->textureID = LoadTGA("Image//Marina//skin_adventurer.tga");
+
+	//text
+	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Marina//ExportedFont.tga");
+	meshList[GEO_HEADER] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
+	meshList[GEO_HEADER]->textureID = LoadTGA("Image//Marina//header.tga");
 }
 
 
@@ -218,11 +223,7 @@ void SceneMarinaBay::Update(double dt)
 		for (auto it = buttonList.begin(); it != buttonList.end(); ++it)
 		{
 			Application::enableMouse = true;	//temp soln
-			bool test2 = false;
-			if (Application::IsMousePressed(0))
-				test2 = true;
 			(*it)->updateButton();
-			bool test = (*it)->isClickedOn();
 			if ((*it)->isClickedOn())
 			{
 				playerAction = static_cast<ACTION_TYPE>(count);	//makes player action = the button number
@@ -381,13 +382,14 @@ void SceneMarinaBay::Update(double dt)
 				}
 			}
 		//case (A_ATTACK2):
+			
 		}
 		
 	}
 
 
 	if (playerHealthLost > 0)
-	{	//health lost will be set to 100 so since the scaling is 20 the speed would be the same as health lost / 5
+	{	//health lost will be set to 100 so since the scaling of health is 20 the speed would be the same as health lost / 5
 		int speedOfHealthLost = 30.f;
 		playerHealthLost -= speedOfHealthLost * dt;
 		playerHealth += speedOfHealthLost * 0.2 * dt;
@@ -604,6 +606,32 @@ void SceneMarinaBay::RenderMeshOnScreen(Mesh* mesh, float x, float y, float size
 	glEnable(GL_DEPTH_TEST);
 }
 
+void SceneMarinaBay::RenderNPCDialogue(std::string NPCText, std::string headerText)
+{
+	//float headerTextPos = 4.f;
+	RenderMeshOnScreen(meshList[GEO_HEADER], 14.75, 19.25, 30, 6);
+	//headerText.size()
+	RenderTextOnScreen(meshList[GEO_TEXT], headerText, Color(0, 0, 0), 4, x + 14.5 - (headerText.size()), 17);	//header text
+	RenderMeshOnScreen(meshList[GEO_TEXTBOX], 40, 8.75, 80, 17.5);
+	string word;																	//automating text
+	int wordpos = 0, ypos = 13, last = NPCText.find_last_of(" ");
+	float xpos = 2.f;
+	while (true)
+	{
+		word = NPCText.substr(wordpos, NPCText.find(" ", wordpos + 1) - wordpos);
+		if (xpos + word.length() * 1.5 + 1 > 80)		//if new word will exceed screensize
+		{
+			ypos -= 3;
+			xpos = 2;
+		}
+		RenderTextOnScreen(meshList[GEO_TEXT], word, Color(0, 0, 0), 3, xpos, ypos);
+		if (wordpos > last)
+			break;
+		wordpos += word.length() + 1;
+		xpos += 1.5 * word.length() + 1;
+	}
+}
+
 void SceneMarinaBay::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -747,6 +775,10 @@ void SceneMarinaBay::Render()
 		modelStack.Translate(0, 0, 200);
 		if (playerAction != A_ATTACK1)
 			modelStack.Scale(0.7f, 0.7f, 0.7f);
+		else if (playerAction == A_ATTACK2)
+		{
+
+		}
 		else
 		{
 			modelStack.Rotate(attackAngle, 1, 0, 0);
@@ -757,7 +789,7 @@ void SceneMarinaBay::Render()
 		modelStack.PopMatrix();
 	}
 
-
+	
 	
 
 	if (fight && !attackSelected)
@@ -786,8 +818,26 @@ void SceneMarinaBay::Render()
 			RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder3", Color(0, 0, 0), 4, 25, 8);
 			RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder4", Color(0, 0, 0), 4, 25, 8);
 		}
-		for (auto it = buttonList.begin(); it != buttonList.end(); ++it)
-			RenderMeshOnScreen(meshList[GEO_QUAD], (*it)->getPosX() + (*it)->getWidth() * 0.5, (*it)->getPosY() + (*it)->getHeight() * 0.5, (*it)->getWidth(), (*it)->getHeight());
+		//for (auto it = buttonList.begin(); it != buttonList.end(); ++it)
+			//RenderMeshOnScreen(meshList[GEO_QUAD], (*it)->getPosX() + (*it)->getWidth() * 0.5, (*it)->getPosY() + (*it)->getHeight() * 0.5, (*it)->getWidth(), (*it)->getHeight());
+		
+
+		double x, y;
+		Application::GetCursorPos(&x, &y);
+		unsigned w = Application::GetWindowWidth();
+		unsigned h = Application::GetWindowHeight();
+		float posX = x / 10;
+		float posY = 60 - y / 10;
+		std::ostringstream ss;
+		ss << "x: " << posX;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 29);
+		ss.str("");
+		ss << "y: " << posY;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 27);
+	}
+	else if (NPCDia && !fight)	//im working on making this condition checking btr
+	{
+		RenderNPCDialogue("My name is Yoshikage Kira. I'm 33 years old. My house is in the northeast section of Morioh, where all the villas are, and I am not married. I work as an employee for the Kame Yu department stores, and I get home every day by 8 PM at the latest. I don't smoke, but I occasionally drink.", "FEHAN");
 	}
 	else if (!fight)
 	{
