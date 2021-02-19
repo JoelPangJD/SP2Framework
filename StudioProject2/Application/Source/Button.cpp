@@ -8,7 +8,6 @@ Button::Button(float positionX, float positionY, float width, float height)
 	this->width = width;
 	this->height = height;
 	clickedOn = false;
-	text = "";
 }
 
 Button::~Button()
@@ -18,11 +17,6 @@ Button::~Button()
 bool Button::isClickedOn()
 {
 	return clickedOn;
-}
-
-void Button::renderButton()
-{
-	
 }
 
 void Button::updateButton()
