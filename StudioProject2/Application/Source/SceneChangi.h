@@ -98,10 +98,13 @@ public:
 	Vector3 pos;
 
 	bool lighton = true;
-	bool use ;
+	bool use;
 	bool renderStairs = true;
+	bool renderDoorman = true;
 	bool welcome;
 	bool atStairs;
+	bool gameStart;
+	bool takeFlight;
 	float fps;
 
 	float rotateL;

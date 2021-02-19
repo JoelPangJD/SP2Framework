@@ -231,11 +231,11 @@ void SceneChangi::Update(double dt)
 
 	if (camera.position.x <= -30 && camera.position.x >= -50 && camera.position.z > 60 && camera.position.z < 75) {
 		atStairs = true;
-
 		if (Application::IsKeyPressed('E'))
 		{
 			use = true;
 			renderStairs = false;
+			renderDoorman = false;
 		}
 	
 	}
@@ -245,33 +245,31 @@ void SceneChangi::Update(double dt)
 		use = false;
 	}
 
+	if (camera.position.x == -18 && camera.position.y == 51 && camera.position.z == 0) {
+		gameStart = true;
+	}
+	else
+	{
+		gameStart = false;
+	}
+
+
 	if (Application::IsKeyPressed('I'))
 	{
 		movex -= 1;
 	}
 	if (Application::IsKeyPressed('K'))
 	{
-		if (camera.position.x <= 90 && camera.position.x >= 40 && camera.position.z > -25 && camera.position.z < 30) {
-
-		}
-		else
-			movex += 1;
+		movex += 1;
 	}
-	if (Application::IsKeyPressed('I') || Application::IsKeyPressed('K') && Application::IsKeyPressed('L'))
-	{
-		movez -= 1.5;
-	}
-	if (Application::IsKeyPressed('I') || Application::IsKeyPressed('K') && Application::IsKeyPressed('J'))
+		
+	if (Application::IsKeyPressed('J'))
 	{
 		movez += 1.5;
 	}
-	if (Application::IsKeyPressed('J'))
-	{
-		rotateL += 0.5;
-	}
 	if (Application::IsKeyPressed('L'))
 	{
-		rotateR -= 0.5;
+		movez -= 1.5;
 	}
 
 	if (camera.position.x >= -115 && camera.position.x <= -98 && camera.position.y >= 0 && camera.position.y <= 13 && camera.position.z >= 50 && camera.position.z <= 65) {
@@ -396,7 +394,7 @@ void SceneChangi::RenderGroundMesh()
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, 0);
 	//modelStack.Translate(camera.position.x, 0, camera.position.z);
-	modelStack.Scale(5000, 5000, 5000);
+	modelStack.Scale(1000, 1000, 1000);
 	modelStack.Rotate(-90, 1, 0, 0);
 	RenderMesh(meshList[GEO_QUAD], false);
 	modelStack.PopMatrix();
@@ -417,11 +415,20 @@ void SceneChangi::RenderEntity()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(10 + movex, 17, -6.5 + movez);
-	modelStack.Rotate(-90 + rotateL + rotateR, 0, 1, 0);
+	modelStack.Translate(10 , 17, -6.5 );
+	modelStack.Rotate(-90, 0, 1, 0);
 	modelStack.Scale(7, 7, 7);
 	RenderMesh(meshList[GEO_PLANE], true);
 	modelStack.PopMatrix();
+
+	if (takeFlight == true) {
+		modelStack.PushMatrix();
+		modelStack.Translate(10 + movex, 17, -6.5 + movez);
+		modelStack.Rotate(-90, 0, 1, 0);
+		modelStack.Scale(7, 7, 7);
+		RenderMesh(meshList[GEO_PLANE], true);
+		modelStack.PopMatrix();
+	}
 
 	modelStack.PushMatrix();
 	modelStack.Translate(10, 0, 343);
@@ -445,13 +452,15 @@ void SceneChangi::RenderEntity()
 	RenderMesh(meshList[GEO_POLICE], true);
 	modelStack.PopMatrix();
 
+	if (renderDoorman != false) {
 
-	modelStack.PushMatrix();
-	modelStack.Translate(-100, 0, 60);
-	modelStack.Rotate(-90, 0, 1, 0);
-	modelStack.Scale(2, 2, 2);
-	RenderMesh(meshList[GEO_DOORMAN], true);
-	modelStack.PopMatrix();
+		modelStack.PushMatrix();
+		modelStack.Translate(-100, 0, 60);
+		modelStack.Rotate(-90, 0, 1, 0);
+		modelStack.Scale(2, 2, 2);
+		RenderMesh(meshList[GEO_DOORMAN], true);
+		modelStack.PopMatrix();
+	}
 
 	if (renderStairs != false) {
 		modelStack.PushMatrix();
@@ -460,6 +469,11 @@ void SceneChangi::RenderEntity()
 		modelStack.Scale(0.2, 0.2, 0.2);
 		RenderMesh(meshList[GEO_STAIRCAR], true);
 		modelStack.PopMatrix();
+
+		if (atStairs == true) {
+			RenderTextOnScreen(meshList[GEO_TEXT], "Press E to board the plane! ", Color(1, 0, 0), 4, 3, 7);
+		}
+
 	}
 }
 
@@ -623,8 +637,9 @@ void SceneChangi::Render()
 		camera.position.y = 51;
 		camera.position.z = 0;
 		camera.theta = 180;
-
 	}
+
+	
 	//Skybox
 	RenderSkybox();
 
@@ -660,25 +675,10 @@ void SceneChangi::RenderRoad()
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-400, 1, 50);
-	modelStack.Scale(100, 100, 100);
+	modelStack.Scale(50, 100, 100);
 	modelStack.Rotate(-90, 0, 1, 0);
-	RenderMesh(meshList[GEO_ROADSPLIT], true);
+	RenderMesh(meshList[GEO_ROADL], true);
 	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(-500, 1, 150);
-	modelStack.Scale(100, 100, 100);
-	RenderMesh(meshList[GEO_ROADARROW], true);//left
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(-600, 1, -150);
-	modelStack.Rotate(-180, 0, 1, 0);
-	modelStack.Scale(100, 100, 100);
-	RenderMesh(meshList[GEO_ROADARROW], true);//right
-	modelStack.PopMatrix();
-
-
 }
 
 void SceneChangi::RenderWords()
@@ -710,8 +710,20 @@ void SceneChangi::RenderWords()
 		RenderTextOnScreen(meshList[GEO_TEXT], "Board the plane for a flight expirence. ", Color(1, 0, 0), 3, 5, 6);
 	}
 
-	if (atStairs == true) {
-		RenderTextOnScreen(meshList[GEO_TEXT], "Press E to board the plane! ", Color(1, 0, 0), 4, 3, 7);
+	//if (atStairs == true) {
+	//	RenderTextOnScreen(meshList[GEO_TEXT], "Press E to board the plane! ", Color(1, 0, 0), 4, 3, 7);
+	//}
+
+	if (gameStart == true) {
+		RenderTextOnScreen(meshList[GEO_TEXT], "WARNING!!! ", Color(1, 0, 0), 8, 3, 6);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Unidentified aircraft has been detected", Color(1, 0, 0), 3.5, 2, 12);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Send Help :<", Color(1, 0, 0), 8, 2, 4.2);
+		RenderTextOnScreen(meshList[GEO_TEXT], "[F] to take flight ", Color(1, 0, 0), 5, 3.3, 2);
+		if (Application::IsKeyPressed('F') )
+		{
+			takeFlight = true;
+		}
+	
 	}
 }
 

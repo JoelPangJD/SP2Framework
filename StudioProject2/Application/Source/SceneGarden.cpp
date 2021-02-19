@@ -307,26 +307,17 @@ void SceneGarden::Update(double dt)
 			{
 				if ((*it)->spherecollider(camera.target)) // Checks if the target is within a radius of the stick
 				{
+					(*it)->interact();
 					if ((*it)->gettype() == "stick")
 					{
-						std::cout << "touching stick" << std::endl;
 						if (interacttext.str() == "");
-						interacttext << "[E]Stick";
-						if (Application::IsKeyPressed('E'))
-						{
-							//pickup;
-						}
+						interacttext << "Stick";
 						break;
 					}
 					if ((*it)->gettype() == "cat")
 					{
-						std::cout << "touching cat" << std::endl;
 						if (interacttext.str() == "");
-						interacttext << "[E]Cat";
-						if (Application::IsKeyPressed('E'))
-						{
-							//talk to;
-						}
+						interacttext << "Cat";
 						break;
 					}
 				}
