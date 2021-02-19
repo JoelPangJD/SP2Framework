@@ -189,16 +189,26 @@ void SceneMuseum::Init()
 	meshList[GEO_WALLDOOR] = MeshBuilder::GenerateOBJMTL("Wall Door", "OBJ//Museum//wallDoor.obj", "OBJ//Museum//wallDoor.mtl");
 	meshList[GEO_WALLCORNER] = MeshBuilder::GenerateOBJMTL("Wall Corner", "OBJ//Museum//wallWoodCorner.obj", "OBJ//Museum//wallWoodCorner.mtl");
 
-	terrains.push_back(new Terrain(Vector3(45, 0, -113.507), 0, 0, 0, 2, -230.66, "Wall"));
-	terrains.push_back(new Terrain(Vector3(93.77, 0, -235.091), 0, 0, 0, 3, 3, "Wall"));
-	terrains.push_back(new Terrain(Vector3(161.5, 0, -120.507), 0, 0, 0, 3, 3, "Wall"));
-	terrains.push_back(new Terrain(Vector3(206.5, 0, -2), 0, 22, 10, 3, 3, "Wall"));
-	terrains.push_back(new Terrain(Vector3(-107.9315, 0, 82), 0, 22, 10, 3, 3, "Wall"));
-	terrains.push_back(new Terrain(Vector3(50, 0, 130), 0, 22, 10, 3, 3, "Wall"));
-	terrains.push_back(new Terrain(Vector3(97.606, 0, 216.3716), 0, 22, 10, 3, 3, "Wall"));
-	terrains.push_back(new Terrain(Vector3(242, 0, 80), 0, 22, 10, 3, 3, "Wall"));
-	terrains.push_back(new Terrain(Vector3(163, 0, 130), 0, 22, 10, 3, 3, "Wall"));
-
+	terrains.push_back(new Terrain(Vector3(45, 0, -119.707), 0,0,0, 3, 220.66, "Wall"));
+	terrains.push_back(new Terrain(Vector3(93.77, 0, -243.091),0,0,0, 70.626, 3, "Wall"));
+	terrains.push_back(new Terrain(Vector3(152.5, 0, -120.507),0,0,0, 3, 220.430, "Wall"));
+	terrains.push_back(new Terrain(Vector3(206.5, 0, -12), 0, 0, 0, 110.721, 3, "Wall"));
+	terrains.push_back(new Terrain(Vector3(-107.9315, 0, 72), 0, 22, 10, 300.9754, 4.5, "Wall"));
+	terrains.push_back(new Terrain(Vector3(42, 0, 130), 0, 22, 10, 3, 115.732, "Wall"));
+	terrains.push_back(new Terrain(Vector3(97.606, 0, 206.3716), 0, 22, 10, 100, 3, "Wall"));
+	terrains.push_back(new Terrain(Vector3(260, 0, 71.5), 0, 22, 10, 221.105, 3, "Wall"));
+	terrains.push_back(new Terrain(Vector3(153.5, 0, 130), 0, 22, 10, 3, 125, "Wall"));
+	
+	terrains.push_back(new Terrain(Vector3(-101.273, 0, -10.2017), 0, 22, 10, 295.839, 3, "Wall"));
+	terrains.push_back(new Terrain(Vector3(-246.153, 0, -20.2017), 0, 22, 10, 3, 21.1293, "Wall"));
+	terrains.push_back(new Terrain(Vector3(-246.153, 0, -80.2017), 0, 22, 10, 3, 19.1293, "Wall"));
+	terrains.push_back(new Terrain(Vector3(-265.3887, 0, -89.354), 0, 22, 10, 39.725, 3, "Wall"));
+	terrains.push_back(new Terrain(Vector3(-284.3725, 0, 84.472), 0, 22, 10, 3, 351.252, "Wall"));
+	terrains.push_back(new Terrain(Vector3(-236.308, 0, 260.323), 0, 22, 10, 98.564, 3, "Wall"));
+	terrains.push_back(new Terrain(Vector3(-186.628, 0, 168.187), 0, 22, 10, 3, 190.936, "Wall"));
+	terrains.push_back(new Terrain(Vector3(371.538, 0, -100.3729), 0, 22, 10, 3, 223.8275, "Wall"));
+	terrains.push_back(new Terrain(Vector3(371.538, 0, 62.02704), 0, 22, 10, 3, 20, "Wall"));
+	terrains.push_back(new Terrain(Vector3(261.7488, 0, -205.3159), 0, 22, 10, 218.204, 3, "Wall"));
 
 
 	//Ground mesh
@@ -215,10 +225,10 @@ void SceneMuseum::Update(double dt)
 	camera.Update(dt);
 
 	//check for wall detection
-	for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
-	{
-		(*it)->solidCollisionBox(camera.position);
-	}
+	//for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
+	//{
+	//	(*it)->solidCollisionBox(camera.position);
+	//}
 
 	if (Application::IsKeyPressed('5'))
 	{
@@ -406,8 +416,8 @@ void SceneMuseum::RenderWalls()
 	for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate((*it)->getposition().x, (*it)->getposition().y + (*it)->getheight() * 0.5, (*it)->getposition().z);
-		modelStack.Scale((*it)->getxwidth(), (*it)->getheight() + 5, (*it)->getzwidth());
+		modelStack.Translate((*it)->getposition().x + movex, (*it)->getposition().y + (*it)->getheight() * 0.5, (*it)->getposition().z + movez);
+		modelStack.Scale((*it)->getxwidth(), (*it)->getheight() + 100, (*it)->getzwidth());
 		RenderMesh(meshList[GEO_CUBE], false);
 		modelStack.PopMatrix();
 	}
@@ -490,7 +500,7 @@ void SceneMuseum::RenderWalls()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-237.153, 0, -80);
+	modelStack.Translate(-237.153, 0,-80);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(20, 80, 20);
 	RenderMesh(meshList[GEO_WALL], true);
@@ -504,7 +514,7 @@ void SceneMuseum::RenderWalls()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-275.86, 0, -80);
+	modelStack.Translate(-275.86 , 0, -80);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(20, 40, 20);
 	RenderMesh(meshList[GEO_WALLCORNER], true);
