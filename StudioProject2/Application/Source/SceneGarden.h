@@ -142,6 +142,7 @@ private:
 	void Renderfish();
 	bool fishright = true;
 	float fishAngle = 0;
+	void updatefish();
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);

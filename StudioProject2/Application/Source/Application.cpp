@@ -143,14 +143,14 @@ void Application::Run()
 	Scene* scene1 = new SceneMuseum();
 	//Scene* scene2 = new SceneChangi();
 	//Scene* scene3 = new SceneMarinaBay();
-	//Scene* scene4 = new SceneGarden();
+	Scene* scene4 = new SceneGarden();
 
 	Scene* scene = scene0;
 	scene1->Init();
 	scene0->Init();
 	//scene2->Init();
 	//scene3->Init();
-	//scene4->Init();
+	scene4->Init();
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
@@ -164,9 +164,9 @@ void Application::Run()
 		//else if (IsKeyPressed(VK_F3)) {
 		//	SwitchScene = 3;
 		//}
-		//else if (IsKeyPressed(VK_F4)) {
-		//	SwitchScene = 4;
-		//}
+		else if (IsKeyPressed(VK_F4)) {
+			SwitchScene = 4;
+		}
 		else if (IsKeyPressed(VK_RETURN)) {
 			SwitchScene = 0;
 		}
@@ -185,9 +185,12 @@ void Application::Run()
 			//case(3): {
 			//	scene = scene3; break;
 			//}
-			//case(4): {
-			//	scene = scene4; break;
-			//}
+			case(4): {
+				scene = scene4; break;
+			}
+			default:{
+				break;
+			}
 		}
 
 		if (enableMouse == false) {
@@ -215,7 +218,7 @@ void Application::Run()
 	delete scene1;
 	//delete scene2;
 	//delete scene3;
-	//delete scene4;
+	delete scene4;
 }
 
 void Application::Exit()

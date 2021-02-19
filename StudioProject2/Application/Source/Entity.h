@@ -7,13 +7,13 @@ class Entity
 {
 private:
 	string type;
-	Vector3 position;
+	//Vector3 position;
 	float scale;
 	float angle;
 	float radius; //radius of the circle collider
 	float height, xwidth, zwidth;	//scaling of hitbox
 public:
-
+	Vector3 position;
 	Entity();
 	~Entity();
 	Entity(Vector3 position, float scale, float angle, float radius, string type);
