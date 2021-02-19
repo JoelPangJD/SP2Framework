@@ -32,5 +32,5 @@ InteractableObject::~InteractableObject()
 
 void InteractableObject::touch(Vector3 position)
 {
-
+	
 }

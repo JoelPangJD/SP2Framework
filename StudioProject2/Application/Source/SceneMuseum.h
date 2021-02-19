@@ -18,6 +18,7 @@ class SceneMuseum : public Scene
 	enum GEOMETRY_TYPE
 	{
 		GEO_AXES = 0,
+		//BASIC GEOMETRY
 		GEO_QUAD,
 		GEO_CUBE,
 		GEO_SPHERE,
@@ -29,6 +30,7 @@ class SceneMuseum : public Scene
 		GEO_CONE,
 		GEO_CYLINDER,
 		GEO_TORUS,
+		//FOR SKYBOX
 		GEO_LEFT,
 		GEO_RIGHT,
 		GEO_TOP,
@@ -37,17 +39,26 @@ class SceneMuseum : public Scene
 		GEO_BACK,
 		GEO_INVENTORY,
 		GEO_TEXT,
+		//BASIC OBJ FOR DECORATION
 		GEO_ELEPHANT,
 		GEO_STATUE1,
 		GEO_STATUE2,
 		GEO_PAINTING,
 		GEO_PAINTING2,
 		GEO_RICKSHAW,
+		GEO_GLASSTABLE,
+		//FOR WALLS
 		GEO_WALL,
 		GEO_WALLDOOR,
 		GEO_WALLCURVED,
 		GEO_WALLCORNER,
-		GEO_GLASSTABLE,
+		//MINIGAME 1 PHOTO
+		GEO_PICTURE3,
+		GEO_MINIPIC1,
+		GEO_COLORBLINDPIC1,
+		GEO_MINIPIC2,
+		GEO_SELECTION,
+		//GROUND MESH
 		GEO_GROUND,
 		NUM_GEOMETRY,
 	};
@@ -109,6 +120,7 @@ public:
 	virtual void Exit();
 
 private:
+	Camera3 GameCam1;
 	MS modelStack, viewStack, projectionStack; //The matrix stacks
 	unsigned m_parameters[U_TOTAL];
 	unsigned m_vertexArrayID;
@@ -125,6 +137,13 @@ private:
 	float scale = 1;
 	float rotate = 0;
 
+	bool ShowPreview = false;
+	bool QuitGame1 = true;
+	bool RenderingMesh = false;
+	bool RenderingText = true;
+	bool WhenEisPressed = false;
+	bool WhenRisPressed = false;
+
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
 	void RenderWalls();
@@ -132,6 +151,8 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
+
+	void StartGame1();
 
 };
 

@@ -18,12 +18,16 @@ SceneMarinaBay::~SceneMarinaBay()
 
 void SceneMarinaBay::Init()
 {
+	buttonList.push_back(new Button(0, 11, 20, 5.5));	//attack
+	buttonList.push_back(new Button(0, 5.5, 20, 5.5));	//items
+	buttonList.push_back(new Button(0, 0, 20, 5.5));	//run
 	//======Initialising variables========
 	pointerX = 2;
 	pointerY = 11;
 	enemyHealthPos = 20.f;
 	playerHealthPos = 60.f;
 	enemyHealth = playerHealth = 0;
+	fight = true;
 
 	//======Matrix stack========
 	Mtx44 projection;
@@ -195,8 +199,10 @@ void SceneMarinaBay::Init()
 	meshList[GEO_TEXTBOX]->textureID = LoadTGA("Image//Marina//textbox.tga");
 	meshList[GEO_HEALTH] = MeshBuilder::GenerateQuad("quad", Color(0, 1, 0), 1.f);
 	meshList[GEO_LOSTHEALTH] = MeshBuilder::GenerateQuad("quad", Color(1, 0, 0), 1.f);
-	meshList[GEO_MC] = MeshBuilder::GenerateOBJMTL("MC", "OBJ//Marina//advancedCharacter.obj", "OBJ//Marina//advancedCharacter.obj.mtl");
+	meshList[GEO_MC] = MeshBuilder::GenerateOBJMTL("MC", "OBJ//Marina//character.obj", "OBJ//Marina//advancedCharacter.obj.mtl");
 	meshList[GEO_MC]->textureID = LoadTGA("Image//Marina//skin_adventurer.tga");
+	meshList[GEO_ARM]= MeshBuilder::GenerateOBJMTL("MC", "OBJ//Marina//character_arm.obj", "OBJ//Marina//advancedCharacter.obj.mtl");
+	meshList[GEO_ARM]->textureID = LoadTGA("Image//Marina//skin_adventurer.tga");
 }
 
 
@@ -206,7 +212,25 @@ void SceneMarinaBay::Update(double dt)
 	fps = 1.f / dt;
 	if (!fight)
 		camera.Update(dt);
-
+	else
+	{
+		int count = 0;
+		for (auto it = buttonList.begin(); it != buttonList.end(); ++it)
+		{
+			Application::enableMouse = true;	//temp soln
+			bool test2 = false;
+			if (Application::IsMousePressed(0))
+				test2 = true;
+			(*it)->updateButton();
+			bool test = (*it)->isClickedOn();
+			if ((*it)->isClickedOn())
+			{
+				playerAction = static_cast<ACTION_TYPE>(count);	//makes player action = the button number
+				actionSelected = true;
+			}
+			++count;
+		}
+	}
 	if (Application::IsKeyPressed('5'))
 	{
 		light[0].type = Light::LIGHT_POINT;
@@ -251,93 +275,103 @@ void SceneMarinaBay::Update(double dt)
 		attackSelected = true;
 		playerAction = A_ATTACK1;
 	}
-	static bool bLButtonState = false;
-	if (!bLButtonState && Application::IsMousePressed(0))
+	if (actionSelected && fight && !attackSelected && cooldownTimer <= 0)	//if action was selected and in fight and attack is not playing
 	{
-		bLButtonState = true;
-		std::cout << "LBUTTON DOWN" << std::endl;
-		double x, y;
-		Application::GetCursorPos(&x, &y);
-		int w = Application::GetWindowWidth();
-		int h = Application::GetWindowHeight();
-		float posX = x / 10; //convert (0,800) to (0,80)
-		float posY = 60 - (y / 10); //convert (600,0) to (0,60)
-		int BUTTON_LEFT = 70, BUTTON_RIGHT = 80, BUTTON_BOTTOM = 57, BUTTON_TOP = 60;
-		std::cout << "posX:" << posX << " , posY:" << posY << std::endl;
-		if (posX > BUTTON_LEFT && posX < BUTTON_RIGHT && posY > BUTTON_BOTTOM && posY < BUTTON_TOP)
+		switch (playerAction)
 		{
-			std::cout << "Hit!" << std::endl;
-			//trigger user action or function
+		case (A_ATTACK1):
+			attackSelected = true;
+			break;
+		case (A_ATTACK2):
+			attackSelected = true;
+			break;
+		case (A_ATTACK3):
+			attackSelected = true;
+			break;
+		case (A_ATTACK4):
+			attackSelected = true;
+			break;
+		case (A_ATTACK):
+			while (buttonList.size() != 3)	//removes items buttons if rendered
+				buttonList.pop_back();
+			buttonList.push_back(new Button(21, 8.25, 30, 8.25));	//attack1
+			buttonList.push_back(new Button(21, 0, 30, 8.25));	//attack1
+			fightSelected = true;
+			break;
+		case (A_ITEMS):
+			itemsSelected = true;
+			break;
+		case (A_RUN):
+			fightDia = true;
+			fightText = "Placeholder :D";
+			break;
 		}
-		if (fight && !attackSelected && cooldownTimer <= 0)	//if in fight and attack is not playing
+		actionSelected = false;
 		{
-
+			//keyboard support might get rid of it entirely depending
+			/*if (Application::IsKeyPressed('F'))
 			{
-				//keyboard support might get rid of it entirely depending
-				/*if (Application::IsKeyPressed('F'))
+				switch (playerAction)
 				{
-					switch (playerAction)
-					{
-					case (A_ATTACK):
-						fightSelected = true;
-						playerAction = A_ATTACK1;
-						pointerX += 21;
-						pointerY -= 3;
-					case (A_ITEMS):
-						itemsSelected = true;
-						playerAction = A_ITEM1;
-					case (A_RUN):
-						fightDia = true;
-						fightDia = "He can probably shoot you before you try.";
-						break;
-					case (A_ATTACK1):
-						attackSelected = true;
-					}
-					cooldownTimer = 0.3f;
-				}*/
-				//else if (Application::IsKeyPressed(VK_UP))		//if up arrow is pressed while in the fight
-				//{
-				//	if (!fightSelected && !itemsSelected)	//when on the first 3 options
-				//	{
-				//		playerAction = static_cast<ACTION_TYPE>((playerAction + 1) % (A_RUN + 1));	//updates playerAction
-				//		pointerY = playerAction * 5 + 1;	//reads which action it is on and moves the pointer
-				//	}
-				//	else if (fightSelected)
-				//	{
-				//		playerAction = static_cast<ACTION_TYPE>((playerAction + 1) % (A_ATTACK4 + 1 - A_RUN));	//minuses the previous enum on the list
-				//		pointerY = (playerAction - A_RUN + 1) * 6 + 2;
-				//	}
-				//	else if (itemsSelected)
-				//	{
-				//		playerAction = static_cast<ACTION_TYPE>((playerAction + 1) % (A_ITEM4 + 1 - A_ATTACK4));
-				//		pointerY = (playerAction - A_ATTACK4 + 1) * 6 + 2;
-				//	}
-				//	cooldownTimer = 0.3f;
-				//}
-			}
+				case (A_ATTACK):
+					fightSelected = true;
+					playerAction = A_ATTACK1;
+					pointerX += 21;
+					pointerY -= 3;
+				case (A_ITEMS):
+					itemsSelected = true;
+					playerAction = A_ITEM1;
+				case (A_RUN):
+					fightDia = true;
+					fightDia = "He can probably shoot you before you try.";
+					break;
+				case (A_ATTACK1):
+					attackSelected = true;
+				}
+				cooldownTimer = 0.3f;
+			}*/
+			//else if (Application::IsKeyPressed(VK_UP))		//if up arrow is pressed while in the fight
+			//{
+			//	if (!fightSelected && !itemsSelected)	//when on the first 3 options
+			//	{
+			//		playerAction = static_cast<ACTION_TYPE>((playerAction + 1) % (A_RUN + 1));	//updates playerAction
+			//		pointerY = playerAction * 5 + 1;	//reads which action it is on and moves the pointer
+			//	}
+			//	else if (fightSelected)
+			//	{
+			//		playerAction = static_cast<ACTION_TYPE>((playerAction + 1) % (A_ATTACK4 + 1 - A_RUN));	//minuses the previous enum on the list
+			//		pointerY = (playerAction - A_RUN + 1) * 6 + 2;
+			//	}
+			//	else if (itemsSelected)
+			//	{
+			//		playerAction = static_cast<ACTION_TYPE>((playerAction + 1) % (A_ITEM4 + 1 - A_ATTACK4));
+			//		pointerY = (playerAction - A_ATTACK4 + 1) * 6 + 2;
+			//	}
+			//	cooldownTimer = 0.3f;
+			//}
 		}
 	}
 
-	if (attackSelected)
+	if (attackSelected)		//handles the attacks 
 	{
 		switch (playerAction)
 		{
 		case (A_ATTACK1):			//MC goes big
 			if (!attack1Hit)
 			{
-				if (attack1Scale < 5)		//go big
-					attack1Scale += 10 * dt;
-				else if (attack1Angle < 90)		//rotate onto enemy
-					attack1Angle += 300 * dt;
+				if (attackScale < 5)		//go big
+					attackScale += 10 * dt;
+				else if (attackAngle < 90)		//rotate onto enemy
+					attackAngle += 300 * dt;
 				else
 					attack1Hit = true;		//has hit enemy
 			}
 			else
 			{
-				if (attack1Angle > 0)
-					attack1Angle -= 300 * dt;
-				else if (attack1Scale > 0.7)
-					attack1Scale -= 10 * dt;
+				if (attackAngle > 0)
+					attackAngle -= 300 * dt;
+				else if (attackScale > 0.7)
+					attackScale -= 10 * dt;
 				else			//resolution of attack
 				{
 					enemyHealthLost = 35.f;
@@ -346,7 +380,7 @@ void SceneMarinaBay::Update(double dt)
 					playerTurn = false;
 				}
 			}
-			//case (A_ATTACK2):
+		//case (A_ATTACK2):
 		}
 		
 	}
@@ -366,6 +400,8 @@ void SceneMarinaBay::Update(double dt)
 		enemyHealth += speedOfHealthLost * 0.2 * dt;
 		enemyHealthPos -= speedOfHealthLost * 0.1 * dt;	//dependent on health's scaling
 	}
+
+	
 	//==================Updating timers===========
 	if (cooldownTimer > 0)
 		cooldownTimer -= dt;
@@ -701,16 +737,32 @@ void SceneMarinaBay::Render()
 			modelStack.Scale(0.7f, 0.7f, 0.7f);
 		else
 		{
-			modelStack.Rotate(attack1Angle, 1, 0, 0);
-			modelStack.Scale(attack1Scale, attack1Scale, attack1Scale);
+			modelStack.Rotate(attackAngle, 1, 0, 0);
+			modelStack.Scale(attackScale, attackScale, attackScale);
 		}
 		RenderMesh(meshList[GEO_MC], true);
 		modelStack.PopMatrix();
+													//still testing
+		modelStack.PushMatrix();
+		modelStack.Translate(0, 0, 200);
+		if (playerAction != A_ATTACK1)
+			modelStack.Scale(0.7f, 0.7f, 0.7f);
+		else
+		{
+			modelStack.Rotate(attackAngle, 1, 0, 0);
+			modelStack.Scale(attackScale, attackScale, attackScale);
+		}
+		modelStack.Scale(0.7f, 0.7f, 0.7f);
+		RenderMesh(meshList[GEO_ARM], true);
+		modelStack.PopMatrix();
 	}
+
+
+	
 
 	if (fight && !attackSelected)
 	{
-		//dragon
+		//enemy
 		RenderTextOnScreen(meshList[GEO_TEXT], "Evil Guy", Color(0, 1, 0), 5, 0, 55);
 		RenderMeshOnScreen(meshList[GEO_HEALTH], 10, 53, 20, 2);
 		RenderMeshOnScreen(meshList[GEO_LOSTHEALTH], enemyHealthPos, 53, enemyHealth, 2);
@@ -726,14 +778,16 @@ void SceneMarinaBay::Render()
 		RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(0, 0, 0), 4, pointerX, pointerY);
 		if (fightSelected)
 		{
-			RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder", Color(0, 0, 0), 5, 25, 8);	//attack1
-			RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder2", Color(0, 0, 0), 5, 25, 2);	//attack2
+			RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder", Color(0, 0, 0), 4, 25, 9.5);	//attack1
+			RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder2", Color(0, 0, 0), 4, 25, 2.5);	//attack2
 		}
 		else if (itemsSelected)
 		{
-			RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder3", Color(0, 0, 0), 5, 25, 8);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder4", Color(0, 0, 0), 5, 25, 8);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder3", Color(0, 0, 0), 4, 25, 8);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder4", Color(0, 0, 0), 4, 25, 8);
 		}
+		for (auto it = buttonList.begin(); it != buttonList.end(); ++it)
+			RenderMeshOnScreen(meshList[GEO_QUAD], (*it)->getPosX() + (*it)->getWidth() * 0.5, (*it)->getPosY() + (*it)->getHeight() * 0.5, (*it)->getWidth(), (*it)->getHeight());
 	}
 	else if (!fight)
 	{
@@ -744,6 +798,10 @@ void SceneMarinaBay::Render()
 
 void SceneMarinaBay::Exit()
 {
+	//clearing the vector pointers
+	for (auto it = buttonList.begin(); it != buttonList.end(); ++it)
+		delete (*it);
+	buttonList.clear();
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 	glDeleteProgram(m_programID);
 }
