@@ -6,6 +6,7 @@
 #include "Light.h"
 #include "MatrixStack.h"
 #include "Entity.h"
+#include "Button.h"
 #include <iostream>
 #include <sstream>
 #include <math.h>
@@ -46,6 +47,7 @@ class SceneMarinaBay : public Scene
 		GEO_HEALTH,
 		GEO_LOSTHEALTH,
 		GEO_MC,
+		GEO_ARM,
 
 		//text 
 		GEO_TEXTBOX,
@@ -132,12 +134,13 @@ private:
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
 	float x, z, scale=1.f;
+	vector<Button*> buttonList;
 	ACTION_TYPE playerAction, enemyAction;
 	std::string fightText, dialogueText;
-	bool fight=true, fightDia, playerTurn, enemyTurn, fightSelected, itemsSelected, backSelected, attackSelected;
+	bool fight, fightDia, playerTurn, enemyTurn, fightSelected, itemsSelected, backSelected, attackSelected, actionSelected, attack1Hit;
 	float cooldownTimer;
 	float pointerX, pointerY, playerHealth, playerHealthPos, playerHealthLost, enemyHealth, enemyHealthPos, enemyHealthLost;
-	float attack1Scale, attack1Angle, attack1Hit;
+	float attackScale, attackAngle, attackTranslate;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();

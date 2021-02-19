@@ -666,6 +666,66 @@ Mesh* MeshBuilder::GenerateCone(const std::string& meshName, Color color, unsign
 	return mesh;
 }
 
+//Additional Cylinder code
+float cylinderX(float degrees)
+{
+	return cos(degrees * 3.141592 / 180);
+}
+float cylinderZ(float degrees)
+{
+	return sin(degrees * 3.141592 / 180);
+}
+
+Mesh* MeshBuilder::GenerateCone(const std::string& meshName, float radius, float height, unsigned numSlice, Color color)
+{
+	Vertex v;
+	std::vector<Vertex> vertex_buffer_data;
+	std::vector<unsigned> index_buffer_data;
+	int count = 0;
+	float degreeperslice = 360.f / numSlice;
+
+	for (float theta = 0; theta <= 360; theta += degreeperslice) //Bottom circle
+	{
+		v.pos.Set(0, 0, 0);
+		v.color = color;
+		v.normal.Set(0, -1, 0);
+		vertex_buffer_data.push_back(v);
+		v.pos.Set(radius * cylinderX(theta), 0, radius * cylinderZ(theta));
+		v.color = color;
+		v.normal.Set(0, -1, 0);
+		vertex_buffer_data.push_back(v);
+		index_buffer_data.push_back(count++);
+		index_buffer_data.push_back(count++);
+	}
+
+	for (float theta = 0; theta <= 360; theta += degreeperslice)
+	{
+		v.pos.Set(radius * cylinderX(theta), 0, radius * cylinderZ(theta));
+		v.color = color;
+		v.normal.Set(height * cylinderX(theta), radius, height * cylinderZ(theta));
+		v.normal.Normalize();
+		vertex_buffer_data.push_back(v);
+
+		v.pos.Set(0, height, 0);
+		v.color = color;
+		v.normal.Set(height * cylinderX(theta), radius, height * cylinderZ(theta));
+		v.normal.Normalize();
+		vertex_buffer_data.push_back(v);
+
+		index_buffer_data.push_back(count++);
+		index_buffer_data.push_back(count++);
+	}
+
+	Mesh* mesh = new Mesh(meshName);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+	mesh->mode = Mesh::DRAW_TRIANGLE_STRIP;
+	mesh->indexSize = index_buffer_data.size();
+	return mesh;
+}
+
 Mesh* MeshBuilder::GenerateOBJ(const std::string& meshName, const std::string& file_path)
 {
 	//Read vertices, texcoords & normals from OBJ
