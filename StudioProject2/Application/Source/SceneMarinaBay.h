@@ -113,6 +113,11 @@ class SceneMarinaBay : public Scene
 		A_ITEM4,
 		NUM_ACTION,
 	};
+	enum ATTACK
+	{
+		BIG,
+		ROCKET_PUNCH,
+	};
 public:
 	Camera3 camera;
 	bool lighton = true;
@@ -135,6 +140,7 @@ private:
 	Light light[2];
 	float x, z, scale=1.f;
 	vector<Button*> buttonList;
+	vector<ATTACK> attacksUnlocked;
 	ACTION_TYPE playerAction, enemyAction;
 	std::string fightText, dialogueText;
 	bool NPCDia;

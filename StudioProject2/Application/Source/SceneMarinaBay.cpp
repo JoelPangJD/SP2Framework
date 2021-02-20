@@ -18,17 +18,23 @@ SceneMarinaBay::~SceneMarinaBay()
 
 void SceneMarinaBay::Init()
 {
-	buttonList.push_back(new Button(0, 11, 20, 5.5));	//attack
-	buttonList.push_back(new Button(0, 5.5, 20, 5.5));	//items
-	buttonList.push_back(new Button(0, 0, 20, 5.5));	//run
+	buttonList.push_back(new Button(0, 11, 20, 5.5, true));	//attack
+	buttonList.push_back(new Button(0, 5.5, 20, 5.5, true));	//items
+	buttonList.push_back(new Button(0, 0, 20, 5.5, true));	//run
+	buttonList.push_back(new Button(21, 8.25, 30, 8.25));	//attack1
+	buttonList.push_back(new Button(21, 0, 30, 8.25));	//attack2
+
+	//temp storage of attacks, will change for future minigame purposes
+	attacksUnlocked.push_back(BIG);
+	attacksUnlocked.push_back(ROCKET_PUNCH);
 	//======Initialising variables========
 	pointerX = 2;
 	pointerY = 11;
 	enemyHealthPos = 20.f;
 	playerHealthPos = 60.f;
 	enemyHealth = playerHealth = 0;
-	fight = false;
-	NPCDia = true;
+	fight = true;
+	NPCDia = false;
 
 	//======Matrix stack========
 	Mtx44 projection;
@@ -37,177 +43,179 @@ void SceneMarinaBay::Init()
 	//==========================
 	//camera.Init(Vector3(0, 8, 0), Vector3(0, 8, 5), Vector3(0, 1, 0));
 	camera.Init(Vector3(90, 40, 240), Vector3(0, 8, 240), Vector3(0, 1, 0));
-	// Enable depth test
-	glEnable(GL_DEPTH_TEST);
+	// Enable depth test		//just so i have to scroll less
+	{
+		glEnable(GL_DEPTH_TEST);
 
-	// Enable blending
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		// Enable blending
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	// Enable face culling
-	glEnable(GL_CULL_FACE);
+		// Enable face culling
+		glEnable(GL_CULL_FACE);
 
-	// Set background color to dark blue
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+		// Set background color to dark blue
+		glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-	// Generate a default VAO for now
-	glGenVertexArrays(1, &m_vertexArrayID);
-	glBindVertexArray(m_vertexArrayID);
+		// Generate a default VAO for now
+		glGenVertexArrays(1, &m_vertexArrayID);
+		glBindVertexArray(m_vertexArrayID);
 
-	//=============================================================================================
-	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
-	m_parameters[U_COLOR_TEXTURE_ENABLED] = glGetUniformLocation(m_programID, "colorTextureEnabled");
-	m_parameters[U_COLOR_TEXTURE] = glGetUniformLocation(m_programID, "colorTexture");
-	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
-	m_parameters[U_MODELVIEW] = glGetUniformLocation(m_programID, "MV");
-	m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE] = glGetUniformLocation(m_programID, "MV_inverse_transpose");
-	m_parameters[U_MATERIAL_AMBIENT] = glGetUniformLocation(m_programID, "material.kAmbient");
-	m_parameters[U_MATERIAL_DIFFUSE] = glGetUniformLocation(m_programID, "material.kDiffuse");
-	m_parameters[U_MATERIAL_SPECULAR] = glGetUniformLocation(m_programID, "material.kSpecular");
-	m_parameters[U_MATERIAL_SHININESS] = glGetUniformLocation(m_programID, "material.kShininess");
-	m_parameters[U_LIGHT0_POSITION] = glGetUniformLocation(m_programID, "lights[0].position_cameraspace");
-	m_parameters[U_LIGHT0_COLOR] = glGetUniformLocation(m_programID, "lights[0].color");
-	m_parameters[U_LIGHT0_POWER] = glGetUniformLocation(m_programID, "lights[0].power");
-	m_parameters[U_LIGHT0_KC] = glGetUniformLocation(m_programID, "lights[0].kC");
-	m_parameters[U_LIGHT0_KL] = glGetUniformLocation(m_programID, "lights[0].kL");
-	m_parameters[U_LIGHT0_KQ] = glGetUniformLocation(m_programID, "lights[0].kQ");
-	m_parameters[U_LIGHTENABLED] = glGetUniformLocation(m_programID, "lightEnabled");
-	m_parameters[U_LIGHT0_TYPE] = glGetUniformLocation(m_programID, "lights[0].type");
-	m_parameters[U_LIGHT0_SPOTDIRECTION] = glGetUniformLocation(m_programID, "lights[0].spotDirection");
-	m_parameters[U_LIGHT0_COSCUTOFF] = glGetUniformLocation(m_programID, "lights[0].cosCutoff");
-	m_parameters[U_LIGHT0_COSINNER] = glGetUniformLocation(m_programID, "lights[0].cosInner");
-	m_parameters[U_LIGHT0_EXPONENT] = glGetUniformLocation(m_programID, "lights[0].exponent");
+		//=============================================================================================
+		m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
+		m_parameters[U_COLOR_TEXTURE_ENABLED] = glGetUniformLocation(m_programID, "colorTextureEnabled");
+		m_parameters[U_COLOR_TEXTURE] = glGetUniformLocation(m_programID, "colorTexture");
+		m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
+		m_parameters[U_MODELVIEW] = glGetUniformLocation(m_programID, "MV");
+		m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE] = glGetUniformLocation(m_programID, "MV_inverse_transpose");
+		m_parameters[U_MATERIAL_AMBIENT] = glGetUniformLocation(m_programID, "material.kAmbient");
+		m_parameters[U_MATERIAL_DIFFUSE] = glGetUniformLocation(m_programID, "material.kDiffuse");
+		m_parameters[U_MATERIAL_SPECULAR] = glGetUniformLocation(m_programID, "material.kSpecular");
+		m_parameters[U_MATERIAL_SHININESS] = glGetUniformLocation(m_programID, "material.kShininess");
+		m_parameters[U_LIGHT0_POSITION] = glGetUniformLocation(m_programID, "lights[0].position_cameraspace");
+		m_parameters[U_LIGHT0_COLOR] = glGetUniformLocation(m_programID, "lights[0].color");
+		m_parameters[U_LIGHT0_POWER] = glGetUniformLocation(m_programID, "lights[0].power");
+		m_parameters[U_LIGHT0_KC] = glGetUniformLocation(m_programID, "lights[0].kC");
+		m_parameters[U_LIGHT0_KL] = glGetUniformLocation(m_programID, "lights[0].kL");
+		m_parameters[U_LIGHT0_KQ] = glGetUniformLocation(m_programID, "lights[0].kQ");
+		m_parameters[U_LIGHTENABLED] = glGetUniformLocation(m_programID, "lightEnabled");
+		m_parameters[U_LIGHT0_TYPE] = glGetUniformLocation(m_programID, "lights[0].type");
+		m_parameters[U_LIGHT0_SPOTDIRECTION] = glGetUniformLocation(m_programID, "lights[0].spotDirection");
+		m_parameters[U_LIGHT0_COSCUTOFF] = glGetUniformLocation(m_programID, "lights[0].cosCutoff");
+		m_parameters[U_LIGHT0_COSINNER] = glGetUniformLocation(m_programID, "lights[0].cosInner");
+		m_parameters[U_LIGHT0_EXPONENT] = glGetUniformLocation(m_programID, "lights[0].exponent");
 
-	m_parameters[U_LIGHT1_POSITION] = glGetUniformLocation(m_programID, "lights[1].position_cameraspace");
-	m_parameters[U_LIGHT1_COLOR] = glGetUniformLocation(m_programID, "lights[1].color");
-	m_parameters[U_LIGHT1_POWER] = glGetUniformLocation(m_programID, "lights[1].power");
-	m_parameters[U_LIGHT1_KC] = glGetUniformLocation(m_programID, "lights[1].kC");
-	m_parameters[U_LIGHT1_KL] = glGetUniformLocation(m_programID, "lights[1].kL");
-	m_parameters[U_LIGHT1_KQ] = glGetUniformLocation(m_programID, "lights[1].kQ");
-	m_parameters[U_LIGHT1_TYPE] = glGetUniformLocation(m_programID, "lights[1].type");
-	m_parameters[U_LIGHT1_SPOTDIRECTION] = glGetUniformLocation(m_programID, "lights[1].spotDirection");
-	m_parameters[U_LIGHT1_COSCUTOFF] = glGetUniformLocation(m_programID, "lights[1].cosCutoff");
-	m_parameters[U_LIGHT1_COSINNER] = glGetUniformLocation(m_programID, "lights[1].cosInner");
-	m_parameters[U_LIGHT1_EXPONENT] = glGetUniformLocation(m_programID, "lights[1].exponent");
+		m_parameters[U_LIGHT1_POSITION] = glGetUniformLocation(m_programID, "lights[1].position_cameraspace");
+		m_parameters[U_LIGHT1_COLOR] = glGetUniformLocation(m_programID, "lights[1].color");
+		m_parameters[U_LIGHT1_POWER] = glGetUniformLocation(m_programID, "lights[1].power");
+		m_parameters[U_LIGHT1_KC] = glGetUniformLocation(m_programID, "lights[1].kC");
+		m_parameters[U_LIGHT1_KL] = glGetUniformLocation(m_programID, "lights[1].kL");
+		m_parameters[U_LIGHT1_KQ] = glGetUniformLocation(m_programID, "lights[1].kQ");
+		m_parameters[U_LIGHT1_TYPE] = glGetUniformLocation(m_programID, "lights[1].type");
+		m_parameters[U_LIGHT1_SPOTDIRECTION] = glGetUniformLocation(m_programID, "lights[1].spotDirection");
+		m_parameters[U_LIGHT1_COSCUTOFF] = glGetUniformLocation(m_programID, "lights[1].cosCutoff");
+		m_parameters[U_LIGHT1_COSINNER] = glGetUniformLocation(m_programID, "lights[1].cosInner");
+		m_parameters[U_LIGHT1_EXPONENT] = glGetUniformLocation(m_programID, "lights[1].exponent");
 
-	m_parameters[U_NUMLIGHTS] = glGetUniformLocation(m_programID, "numLights");
+		m_parameters[U_NUMLIGHTS] = glGetUniformLocation(m_programID, "numLights");
 
-	glUseProgram(m_programID);
-	glUniform1i(m_parameters[U_NUMLIGHTS], 2);
+		glUseProgram(m_programID);
+		glUniform1i(m_parameters[U_NUMLIGHTS], 2);
 
-	Mesh::SetMaterialLoc(m_parameters[U_MATERIAL_AMBIENT],
-		m_parameters[U_MATERIAL_DIFFUSE],
-		m_parameters[U_MATERIAL_SPECULAR],
-		m_parameters[U_MATERIAL_SHININESS]);
+		Mesh::SetMaterialLoc(m_parameters[U_MATERIAL_AMBIENT],
+			m_parameters[U_MATERIAL_DIFFUSE],
+			m_parameters[U_MATERIAL_SPECULAR],
+			m_parameters[U_MATERIAL_SHININESS]);
 
-	// Get a handle for our "textColor" uniform
-	m_parameters[U_TEXT_ENABLED] = glGetUniformLocation(m_programID, "textEnabled");
-	m_parameters[U_TEXT_COLOR] = glGetUniformLocation(m_programID, "textColor");
-	//==================Initialise light0===========
-	light[0].type = Light::LIGHT_POINT;
-	light[0].position.Set(0, 0, 90);
-	light[0].color.Set(0.24725f, 0.1995f, 0.0745f);
-	light[0].power = 0;
-	light[0].kC = 1.f;
-	light[0].kL = 0.01f;
-	light[0].kQ = 0.001f;
-	light[0].cosCutoff = cos(Math::DegreeToRadian(45));
-	light[0].cosInner = cos(Math::DegreeToRadian(30));
-	light[0].exponent = 3.f;
-	light[0].spotDirection.Set(0.5f, 1.f, 0.f);
+		// Get a handle for our "textColor" uniform
+		m_parameters[U_TEXT_ENABLED] = glGetUniformLocation(m_programID, "textEnabled");
+		m_parameters[U_TEXT_COLOR] = glGetUniformLocation(m_programID, "textColor");
+		//==================Initialise light0===========
+		light[0].type = Light::LIGHT_POINT;
+		light[0].position.Set(0, 0, 90);
+		light[0].color.Set(0.24725f, 0.1995f, 0.0745f);
+		light[0].power = 0;
+		light[0].kC = 1.f;
+		light[0].kL = 0.01f;
+		light[0].kQ = 0.001f;
+		light[0].cosCutoff = cos(Math::DegreeToRadian(45));
+		light[0].cosInner = cos(Math::DegreeToRadian(30));
+		light[0].exponent = 3.f;
+		light[0].spotDirection.Set(0.5f, 1.f, 0.f);
 
-	glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	glUniform3fv(m_parameters[U_LIGHT0_COLOR], 1, &light[0].color.r);
-	glUniform1f(m_parameters[U_LIGHT0_POWER], light[0].power);
-	glUniform1f(m_parameters[U_LIGHT0_KC], light[0].kC);
-	glUniform1f(m_parameters[U_LIGHT0_KL], light[0].kL);
-	glUniform1f(m_parameters[U_LIGHT0_KQ], light[0].kQ);
-	glUniform1f(m_parameters[U_LIGHT0_COSCUTOFF], light[0].cosCutoff);
-	glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
-	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
+		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
+		glUniform3fv(m_parameters[U_LIGHT0_COLOR], 1, &light[0].color.r);
+		glUniform1f(m_parameters[U_LIGHT0_POWER], light[0].power);
+		glUniform1f(m_parameters[U_LIGHT0_KC], light[0].kC);
+		glUniform1f(m_parameters[U_LIGHT0_KL], light[0].kL);
+		glUniform1f(m_parameters[U_LIGHT0_KQ], light[0].kQ);
+		glUniform1f(m_parameters[U_LIGHT0_COSCUTOFF], light[0].cosCutoff);
+		glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
+		glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
 
-	//==================Initialise light1===========
-	light[1].type = Light::LIGHT_DIRECTIONAL;
-	light[1].position.Set(-10, 20, 0);
-	light[1].color.Set(1, 1, 1);
-	light[1].power = 1.3f;
-	light[1].kC = 1.5f;
-	light[1].kL = 0.01f;
-	light[1].kQ = 0.001f;
-	light[1].cosCutoff = cos(Math::DegreeToRadian(45));
-	light[1].cosInner = cos(Math::DegreeToRadian(30));
-	light[1].exponent = 3.f;
-	light[1].spotDirection.Set(0.f, 1.f, 0.f);
+		//==================Initialise light1===========
+		light[1].type = Light::LIGHT_DIRECTIONAL;
+		light[1].position.Set(-10, 20, 0);
+		light[1].color.Set(1, 1, 1);
+		light[1].power = 1.3f;
+		light[1].kC = 1.5f;
+		light[1].kL = 0.01f;
+		light[1].kQ = 0.001f;
+		light[1].cosCutoff = cos(Math::DegreeToRadian(45));
+		light[1].cosInner = cos(Math::DegreeToRadian(30));
+		light[1].exponent = 3.f;
+		light[1].spotDirection.Set(0.f, 1.f, 0.f);
 
-	glUniform1i(m_parameters[U_LIGHT1_TYPE], light[1].type);
-	glUniform3fv(m_parameters[U_LIGHT1_COLOR], 1, &light[1].color.r);
-	glUniform1f(m_parameters[U_LIGHT1_POWER], light[1].power);
-	glUniform1f(m_parameters[U_LIGHT1_KC], light[1].kC);
-	glUniform1f(m_parameters[U_LIGHT1_KL], light[1].kL);
-	glUniform1f(m_parameters[U_LIGHT1_KQ], light[1].kQ);
-	glUniform1f(m_parameters[U_LIGHT1_COSCUTOFF], light[1].cosCutoff);
-	glUniform1f(m_parameters[U_LIGHT1_COSINNER], light[1].cosInner);
-	glUniform1f(m_parameters[U_LIGHT1_EXPONENT], light[1].exponent);
+		glUniform1i(m_parameters[U_LIGHT1_TYPE], light[1].type);
+		glUniform3fv(m_parameters[U_LIGHT1_COLOR], 1, &light[1].color.r);
+		glUniform1f(m_parameters[U_LIGHT1_POWER], light[1].power);
+		glUniform1f(m_parameters[U_LIGHT1_KC], light[1].kC);
+		glUniform1f(m_parameters[U_LIGHT1_KL], light[1].kL);
+		glUniform1f(m_parameters[U_LIGHT1_KQ], light[1].kQ);
+		glUniform1f(m_parameters[U_LIGHT1_COSCUTOFF], light[1].cosCutoff);
+		glUniform1f(m_parameters[U_LIGHT1_COSINNER], light[1].cosInner);
+		glUniform1f(m_parameters[U_LIGHT1_EXPONENT], light[1].exponent);
 
-	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
-	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.0f);
-	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.5f, 0.2f, 0.0f), 1);
-	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(0.5, 0.5, 0.5), 10, 10, 10);
-	meshList[GEO_SPHERE]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
-	meshList[GEO_SPHERE]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
-	meshList[GEO_SPHERE]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
-	meshList[GEO_SPHERE]->material.kShininess = 1.f;
-	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("Lightball", Color(1, 1, 1), 10, 10, 10);
-
-
-	meshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
-	meshList[GEO_INVENTORY]->textureID = LoadTGA("Image//inventory.tga");
+		meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
+		meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.0f);
+		meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.5f, 0.2f, 0.0f), 1);
+		meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(0.5, 0.5, 0.5), 10, 10, 10);
+		meshList[GEO_SPHERE]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+		meshList[GEO_SPHERE]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
+		meshList[GEO_SPHERE]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
+		meshList[GEO_SPHERE]->material.kShininess = 1.f;
+		meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("Lightball", Color(1, 1, 1), 10, 10, 10);
 
 
-	//Skybox quads
-	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.0f);
-	meshList[GEO_LEFT]->textureID = LoadTGA("Image//left.tga");
-	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.0f);
-	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//right.tga");
-	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.0f);
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//front.tga");
-	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.0f);
-	meshList[GEO_BACK]->textureID = LoadTGA("Image//back.tga");
-	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.0f);
-	meshList[GEO_TOP]->textureID = LoadTGA("Image//top.tga");
-	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
-	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//bottom.tga");
-	//main boat
-	meshList[GEO_BOAT] = MeshBuilder::GenerateOBJMTL("boat", "OBJ//Marina//boat2.obj", "OBJ//Marina//boat.mtl");
+		meshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
+		meshList[GEO_INVENTORY]->textureID = LoadTGA("Image//inventory.tga");
 
-	//environment
-	meshList[GEO_WATER] = MeshBuilder::GenerateQuad("quad", 1.0f, 1.0f, Color(1, 1, 1), 10);
-	meshList[GEO_WATER]->textureID = LoadTGA("Image//watertexture.tga");
-	meshList[GEO_WATER]->material.kAmbient.Set(0.3f, 0.3f, 0.3f);
-	meshList[GEO_WATER]->material.kDiffuse.Set(0.4f, 0.4f, 0.4f);
-	meshList[GEO_WATER]->material.kSpecular.Set(0.5f, 0.5f, 0.5f);
-	meshList[GEO_TREE] = MeshBuilder::GenerateOBJMTL("short tree", "OBJ//Marina//palm_tree_short.obj", "OBJ//Marina//palm_tree_short.mtl");
-	meshList[GEO_WATER]->material.kAmbient.Set(0.3f, 0.3f, 0.3f);
-	meshList[GEO_TALLTREE] = MeshBuilder::GenerateOBJMTL("tree", "OBJ//Marina//big_tree.obj", "OBJ//Marina//big_tree.mtl");
-	meshList[GEO_CHAIR] = MeshBuilder::GenerateOBJMTL("chair", "OBJ//Marina//modifiedchair.obj", "OBJ//Marina//modifiedchair.mtl");
 
-	//fight
-	meshList[GEO_LAYOUT] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
-	meshList[GEO_LAYOUT]->textureID = LoadTGA("Image//Marina//fight_layout.tga");
-	meshList[GEO_TEXTBOX] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
-	meshList[GEO_TEXTBOX]->textureID = LoadTGA("Image//Marina//textbox.tga");
-	meshList[GEO_HEALTH] = MeshBuilder::GenerateQuad("quad", Color(0, 1, 0), 1.f);
-	meshList[GEO_LOSTHEALTH] = MeshBuilder::GenerateQuad("quad", Color(1, 0, 0), 1.f);
-	meshList[GEO_MC] = MeshBuilder::GenerateOBJMTL("MC", "OBJ//Marina//character.obj", "OBJ//Marina//advancedCharacter.obj.mtl");
-	meshList[GEO_MC]->textureID = LoadTGA("Image//Marina//skin_adventurer.tga");
-	meshList[GEO_ARM]= MeshBuilder::GenerateOBJMTL("MC", "OBJ//Marina//character_arm.obj", "OBJ//Marina//advancedCharacter.obj.mtl");
-	meshList[GEO_ARM]->textureID = LoadTGA("Image//Marina//skin_adventurer.tga");
+		//Skybox quads
+		meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.0f);
+		meshList[GEO_LEFT]->textureID = LoadTGA("Image//left.tga");
+		meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.0f);
+		meshList[GEO_RIGHT]->textureID = LoadTGA("Image//right.tga");
+		meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.0f);
+		meshList[GEO_FRONT]->textureID = LoadTGA("Image//front.tga");
+		meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.0f);
+		meshList[GEO_BACK]->textureID = LoadTGA("Image//back.tga");
+		meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.0f);
+		meshList[GEO_TOP]->textureID = LoadTGA("Image//top.tga");
+		meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
+		meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//bottom.tga");
+		//main boat
+		meshList[GEO_BOAT] = MeshBuilder::GenerateOBJMTL("boat", "OBJ//Marina//boat2.obj", "OBJ//Marina//boat.mtl");
 
-	//text
-	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Marina//ExportedFont.tga");
-	meshList[GEO_HEADER] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
-	meshList[GEO_HEADER]->textureID = LoadTGA("Image//Marina//header.tga");
+		//environment
+		meshList[GEO_WATER] = MeshBuilder::GenerateQuad("quad", 1.0f, 1.0f, Color(1, 1, 1), 10);
+		meshList[GEO_WATER]->textureID = LoadTGA("Image//watertexture.tga");
+		meshList[GEO_WATER]->material.kAmbient.Set(0.3f, 0.3f, 0.3f);
+		meshList[GEO_WATER]->material.kDiffuse.Set(0.4f, 0.4f, 0.4f);
+		meshList[GEO_WATER]->material.kSpecular.Set(0.5f, 0.5f, 0.5f);
+		meshList[GEO_TREE] = MeshBuilder::GenerateOBJMTL("short tree", "OBJ//Marina//palm_tree_short.obj", "OBJ//Marina//palm_tree_short.mtl");
+		meshList[GEO_WATER]->material.kAmbient.Set(0.3f, 0.3f, 0.3f);
+		meshList[GEO_TALLTREE] = MeshBuilder::GenerateOBJMTL("tree", "OBJ//Marina//big_tree.obj", "OBJ//Marina//big_tree.mtl");
+		meshList[GEO_CHAIR] = MeshBuilder::GenerateOBJMTL("chair", "OBJ//Marina//modifiedchair.obj", "OBJ//Marina//modifiedchair.mtl");
+
+		//fight
+		meshList[GEO_LAYOUT] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
+		meshList[GEO_LAYOUT]->textureID = LoadTGA("Image//Marina//fight_layout.tga");
+		meshList[GEO_TEXTBOX] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
+		meshList[GEO_TEXTBOX]->textureID = LoadTGA("Image//Marina//textbox.tga");
+		meshList[GEO_HEALTH] = MeshBuilder::GenerateQuad("quad", Color(0, 1, 0), 1.f);
+		meshList[GEO_LOSTHEALTH] = MeshBuilder::GenerateQuad("quad", Color(1, 0, 0), 1.f);
+		meshList[GEO_MC] = MeshBuilder::GenerateOBJMTL("MC", "OBJ//Marina//character.obj", "OBJ//Marina//advancedCharacter.obj.mtl");
+		meshList[GEO_MC]->textureID = LoadTGA("Image//Marina//skin_adventurer.tga");
+		meshList[GEO_ARM] = MeshBuilder::GenerateOBJMTL("MC", "OBJ//Marina//character_arm.obj", "OBJ//Marina//advancedCharacter.obj.mtl");
+		meshList[GEO_ARM]->textureID = LoadTGA("Image//Marina//skin_adventurer.tga");
+
+		//text
+		meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
+		meshList[GEO_TEXT]->textureID = LoadTGA("Image//Marina//ExportedFont.tga");
+		meshList[GEO_HEADER] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
+		meshList[GEO_HEADER]->textureID = LoadTGA("Image//Marina//header.tga");
+	}
 }
 
 
@@ -220,14 +228,17 @@ void SceneMarinaBay::Update(double dt)
 	else
 	{
 		int count = 0;
+		Application::enableMouse = true;	//temp soln
 		for (auto it = buttonList.begin(); it != buttonList.end(); ++it)
 		{
-			Application::enableMouse = true;	//temp soln
-			(*it)->updateButton();
-			if ((*it)->isClickedOn())
+			if ((*it)->active)
 			{
-				playerAction = static_cast<ACTION_TYPE>(count);	//makes player action = the button number
-				actionSelected = true;
+				(*it)->updateButton();
+				if ((*it)->isClickedOn())
+				{
+					playerAction = static_cast<ACTION_TYPE>(count);	//makes player action = the button number
+					actionSelected = true;
+				}
 			}
 			++count;
 		}
@@ -259,7 +270,7 @@ void SceneMarinaBay::Update(double dt)
 		lighton = false;						//to test whether colours and stuff are working properly
 	else if (Application::IsKeyPressed('X'))
 		lighton = true;
-	if (Application::IsKeyPressed('I'))
+	if (Application::IsKeyPressed('I'))	//debug buttons
 		x -= 10 * dt;
 	if (Application::IsKeyPressed('K'))
 		x += 10 * dt;
@@ -271,7 +282,7 @@ void SceneMarinaBay::Update(double dt)
 		scale += 10*dt;
 	if (Application::IsKeyPressed('P'))
 		scale -= 10 * dt;
-	if (Application::IsKeyPressed('H'))
+	if (Application::IsKeyPressed('H'))	//test for attack button
 	{
 		attackSelected = true;
 		playerAction = A_ATTACK1;
@@ -293,11 +304,12 @@ void SceneMarinaBay::Update(double dt)
 			attackSelected = true;
 			break;
 		case (A_ATTACK):
-			while (buttonList.size() != 3)	//removes items buttons if rendered
-				buttonList.pop_back();
-			buttonList.push_back(new Button(21, 8.25, 30, 8.25));	//attack1
-			buttonList.push_back(new Button(21, 0, 30, 8.25));	//attack1
 			fightSelected = true;
+			//enables the buttons after fight is selected depending on what has been unlocked
+			for (unsigned int i = 0; i < attacksUnlocked.size(); ++i)	
+			{
+				buttonList[i + A_ATTACK1]->active = true;
+			}
 			break;
 		case (A_ITEMS):
 			itemsSelected = true;
@@ -306,6 +318,8 @@ void SceneMarinaBay::Update(double dt)
 			fightDia = true;
 			fightText = "Placeholder :D";
 			break;
+		default:
+			cout << "playeraction broke";
 		}
 		actionSelected = false;
 		{
@@ -353,7 +367,7 @@ void SceneMarinaBay::Update(double dt)
 		}
 	}
 
-	if (attackSelected)		//handles the attacks 
+	if (attackSelected)		//handles the attacks pushed to here for neatness
 	{
 		switch (playerAction)
 		{
@@ -382,22 +396,21 @@ void SceneMarinaBay::Update(double dt)
 				}
 			}
 		//case (A_ATTACK2):
-			
 		}
 		
 	}
 
 
 	if (playerHealthLost > 0)
-	{	//health lost will be set to 100 so since the scaling of health is 20 the speed would be the same as health lost / 5
-		int speedOfHealthLost = 30.f;
+	{	//health total will be as if it is equal to 100 so since the scaling of health is 20 the speed would be the same as health lost / 5
+		int speedOfHealthLost = 20.f;
 		playerHealthLost -= speedOfHealthLost * dt;
 		playerHealth += speedOfHealthLost * 0.2 * dt;
 		playerHealthPos -= speedOfHealthLost * 0.1 * dt;	//dependent on health's scaling
 	}
 	else if (enemyHealthLost > 0)
 	{
-		int speedOfHealthLost = 30.f;
+		int speedOfHealthLost = 20.f;
 		enemyHealthLost -= speedOfHealthLost * dt;
 		enemyHealth += speedOfHealthLost * 0.2 * dt;
 		enemyHealthPos -= speedOfHealthLost * 0.1 * dt;	//dependent on health's scaling
@@ -713,41 +726,44 @@ void SceneMarinaBay::Render()
 
 	
 
-	//infinity poolside
-	for (int z = 0; z > -170; z -= 30)
-	{
-		//trees
-		modelStack.PushMatrix();
-		modelStack.Translate(23, 0, z);
-		modelStack.Scale(10, 20, 10);
-		RenderMesh(meshList[GEO_TREE], true);
-		modelStack.PopMatrix();
+	
+	if (!fight)	//no need to be rendered while in fight
+	{	//infinity poolside
+		for (int z = 0; z > -170; z -= 30)
+		{
+			//trees
+			modelStack.PushMatrix();
+			modelStack.Translate(23, 0, z);
+			modelStack.Scale(10, 20, 10);
+			RenderMesh(meshList[GEO_TREE], true);
+			modelStack.PopMatrix();
 
-		//all the chairs
+			//all the chairs
 
-		//chair right after tree
-		modelStack.PushMatrix();
-		modelStack.Translate(23, 0, z + 5);
-		modelStack.Rotate(-90, 0, 1, 0);
-		modelStack.Scale(0.2, 0.2, 0.2);
-		RenderMesh(meshList[GEO_CHAIR], true);
-		modelStack.PopMatrix();
+			//chair right after tree
+			modelStack.PushMatrix();
+			modelStack.Translate(23, 0, z + 5);
+			modelStack.Rotate(-90, 0, 1, 0);
+			modelStack.Scale(0.2, 0.2, 0.2);
+			RenderMesh(meshList[GEO_CHAIR], true);
+			modelStack.PopMatrix();
 
-		//chair in the middle of trees
-		modelStack.PushMatrix();
-		modelStack.Translate(23, 0, z + 15);
-		modelStack.Rotate(-90, 0, 1, 0);
-		modelStack.Scale(0.2, 0.2, 0.2);
-		RenderMesh(meshList[GEO_CHAIR], true);
-		modelStack.PopMatrix();
+			//chair in the middle of trees
+			modelStack.PushMatrix();
+			modelStack.Translate(23, 0, z + 15);
+			modelStack.Rotate(-90, 0, 1, 0);
+			modelStack.Scale(0.2, 0.2, 0.2);
+			RenderMesh(meshList[GEO_CHAIR], true);
+			modelStack.PopMatrix();
 
-		//chair directly before the tree
-		modelStack.PushMatrix();
-		modelStack.Translate(23, 0, z - 5);
-		modelStack.Rotate(-90, 0, 1, 0);
-		modelStack.Scale(0.2, 0.2, 0.2);
-		RenderMesh(meshList[GEO_CHAIR], true);
-		modelStack.PopMatrix();
+			//chair directly before the tree
+			modelStack.PushMatrix();
+			modelStack.Translate(23, 0, z - 5);
+			modelStack.Rotate(-90, 0, 1, 0);
+			modelStack.Scale(0.2, 0.2, 0.2);
+			RenderMesh(meshList[GEO_CHAIR], true);
+			modelStack.PopMatrix();
+		}
 	}
 
 	modelStack.PushMatrix();
@@ -808,10 +824,10 @@ void SceneMarinaBay::Render()
 		RenderTextOnScreen(meshList[GEO_TEXT], "Items", Color(0, 0, 0), 4, 4, 6);
 		RenderTextOnScreen(meshList[GEO_TEXT], "Run", Color(0, 0, 0), 4, 4, 1);
 		RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(0, 0, 0), 4, pointerX, pointerY);
-		if (fightSelected)
+		if (fightSelected)	//not too sure how to make it automatic with attacks enum and based on size of attacksunlocked yet 
 		{
-			RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder", Color(0, 0, 0), 4, 25, 9.5);	//attack1
-			RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder2", Color(0, 0, 0), 4, 25, 2.5);	//attack2
+			RenderTextOnScreen(meshList[GEO_TEXT], "Big", Color(0, 0, 0), 4, 25, 9.5);	//attack1
+			RenderTextOnScreen(meshList[GEO_TEXT], "Rocket Punch", Color(0, 0, 0), 4, 25, 2.5);	//attack2
 		}
 		else if (itemsSelected)
 		{
@@ -822,7 +838,7 @@ void SceneMarinaBay::Render()
 			//RenderMeshOnScreen(meshList[GEO_QUAD], (*it)->getPosX() + (*it)->getWidth() * 0.5, (*it)->getPosY() + (*it)->getHeight() * 0.5, (*it)->getWidth(), (*it)->getHeight());
 		
 
-		double x, y;
+		/*double x, y;
 		Application::GetCursorPos(&x, &y);
 		unsigned w = Application::GetWindowWidth();
 		unsigned h = Application::GetWindowHeight();
@@ -833,7 +849,7 @@ void SceneMarinaBay::Render()
 		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 29);
 		ss.str("");
 		ss << "y: " << posY;
-		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 27);
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 27);*/
 	}
 	else if (NPCDia && !fight)	//im working on making this condition checking btr
 	{
