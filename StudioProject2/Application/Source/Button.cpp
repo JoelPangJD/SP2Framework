@@ -8,7 +8,7 @@ Button::Button()
 	bLButtonState = true;
 }
 
-Button::Button(float positionX, float positionY, float width, float height)
+Button::Button(float positionX, float positionY, float width, float height, bool isActive)
 {
 	this->positionX = positionX;
 	this->positionY = positionY;
@@ -16,7 +16,7 @@ Button::Button(float positionX, float positionY, float width, float height)
 	this->height = height;
 	clickedOn = false;
 	bLButtonState = true;
-	active = false;
+	active = isActive;
 }
 
 Button::~Button()
