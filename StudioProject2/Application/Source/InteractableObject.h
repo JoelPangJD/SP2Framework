@@ -9,6 +9,8 @@ using namespace std;
 
 class InteractableObject : public Entity
 {
+private:
+	void readfromfile(string filename, vector<string>& type);//private function for reading information from text files
 public:
 	vector<string> lookat;
 	vector<string> dialogue;

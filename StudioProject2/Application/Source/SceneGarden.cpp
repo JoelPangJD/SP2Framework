@@ -315,7 +315,13 @@ void SceneGarden::Update(double dt)
 					int interacttype = (*it)->interact();
 					if (interacttext.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
 					{
-						if (interacttype == 4)
+						if (interacttype == 1)// 1 is look at
+						{
+							dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
+							currentline = dialogue.begin(); //Currentline is set at the look at description
+							indialogue = true;//Set state to in dialogue
+						}
+						if (interacttype == 4) //4 is talk to
 						{
 							dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
 							currentline = dialogue.begin(); //Currentline iteratior as the first line of dialogue

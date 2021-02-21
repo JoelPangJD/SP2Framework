@@ -7,6 +7,26 @@ InteractableObject::InteractableObject()
 	this->setscale(1);
 }
 
+void InteractableObject::readfromfile(string filename, vector<string>& type)
+{
+	std::string line;
+	fstream file(filename);
+	while (getline(file, line))
+	{
+		int instance = line.find('|');
+		int instance2;
+		if (this->gettype() == line.substr(0, instance))
+		{
+			for (int i = std::count(line.begin(), line.end(), '|'); i > 0; i--) //Reads data from dialogue file and splits the data into a string vector
+			{
+				instance2 = line.find('|', instance + 1);
+				type.push_back(line.substr(instance + 1, instance2 - 1 - instance));
+				instance = instance2;
+			}
+		}
+	}
+}
+
 InteractableObject::InteractableObject(Vector3 pos, float angle, float scale, float radius, string type)
 {
 	this->setposition(pos);
@@ -14,33 +34,8 @@ InteractableObject::InteractableObject(Vector3 pos, float angle, float scale, fl
 	this->setscale(scale);
 	this->setradius(radius);
 	this->settype(type);
-
-	std::string line;
-	fstream descriptionfile("Itemdescriptions.txt");
-	while (getline(descriptionfile, line))
-	{
-		int instance = line.find('|');
-		if (this->gettype() == line.substr(0, instance)) //If found item description based on item type in the text file
-		{
-			int instance2 = line.find('|', instance + 1);
-			lookat.push_back(line.substr(instance + 1, instance2 - 1 - instance));
-		}
-	}
-	fstream dialoguefile("Itemdialogue.txt");
-	while (getline(dialoguefile, line))
-	{
-		int instance = line.find('|');
-		int instance2;
-		if (this->gettype() == line.substr(0, instance))
-		{
-			for (int i = std::count(line.begin(), line.end(), '|'); i > 0; i--) //Reads dialogue from dialogue file and splits the dialogue into a string vector
-			{
-				instance2 = line.find('|', instance + 1);
-				dialogue.push_back(line.substr(instance + 1, instance2 - 1 - instance));
-				instance = instance2;
-			}
-		}
-	}
+	readfromfile("Itemdescriptions.txt", lookat);
+	readfromfile("Itemdialogue.txt", dialogue);
 }
 
 InteractableObject::InteractableObject(Vector3 pos, float angle, float scale, float height, float xwidth, float zwidth, string type)
