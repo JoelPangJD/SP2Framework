@@ -33,7 +33,6 @@ void SceneMarinaBay::Init()
 	enemyHealthPos = 20.f;
 	playerHealthPos = 60.f;
 	enemyHealth = playerHealth = 0;
-	fight = true;
 	NPCDia = false;
 	attackScale = 1.f;
 	playerAttack = NO_ATTACK;
@@ -160,14 +159,63 @@ void SceneMarinaBay::Init()
 
 		meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 		meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.0f);
-		meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.5f, 0.2f, 0.0f), 1);
-		meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(0.5, 0.5, 0.5), 10, 10, 10);
-		meshList[GEO_SPHERE]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
-		meshList[GEO_SPHERE]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
-		meshList[GEO_SPHERE]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
-		meshList[GEO_SPHERE]->material.kShininess = 1.f;
+
+		meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(1.f, 1.f, 1.0f), 1);
+		meshList[GEO_CUBE]->material.kAmbient.Set(0.921, 0.808, 0.616);
+		meshList[GEO_CUBE]->material.kDiffuse.Set(0.921, 0.808, 0.616);
+		meshList[GEO_CUBE]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
+		meshList[GEO_CUBE]->material.kShininess = 0.4f;
+
+		meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(1.0, 1.0, 1.0), 10, 10);
+		meshList[GEO_SPHERE]->material.kAmbient.Set(0.917, 0.835, 0.635);
+		meshList[GEO_SPHERE]->material.kDiffuse.Set(0.917, 0.835, 0.635);
+		meshList[GEO_SPHERE]->material.kSpecular.Set(0.2f, 0.2f, 0.2f);
+		meshList[GEO_SPHERE]->material.kShininess = 0.4f;
 		meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("Lightball", Color(1, 1, 1), 10, 10, 10);
 
+		meshList[GEO_SLOPE] = MeshBuilder::GenerateTriangle("slope", Color(1, 1, 1), 1, 1, 1);
+		meshList[GEO_SLOPE]->material.kAmbient.Set(0.886, 0.788, 0.569);
+		meshList[GEO_SLOPE]->material.kDiffuse.Set(0.886, 0.788, 0.569);
+		meshList[GEO_SLOPE]->material.kSpecular.Set(0.2f, 0.2f, 0.2f);
+		meshList[GEO_SLOPE]->material.kShininess = 0.4f;
+
+		meshList[GEO_TRIANGLE] = MeshBuilder::Generate2dTriangle("2d triangle", Color(1, 1, 1), 1, 1);
+		meshList[GEO_TRIANGLE]->material.kAmbient.Set(0.886, 0.788, 0.569);
+		meshList[GEO_TRIANGLE]->material.kDiffuse.Set(0.886, 0.788, 0.569);
+		meshList[GEO_TRIANGLE]->material.kSpecular.Set(0.2f, 0.2f, 0.2f);
+		meshList[GEO_TRIANGLE]->material.kShininess = 0.4f;
+
+		meshList[GEO_TRIANGLEBACK] = MeshBuilder::Generate2dTriangle("2d triangle back", Color(1, 1, 1), 1, 1, true);
+		meshList[GEO_TRIANGLEBACK]->material.kAmbient.Set(0.886, 0.788, 0.569);
+		meshList[GEO_TRIANGLEBACK]->material.kDiffuse.Set(0.886, 0.788, 0.569);
+		meshList[GEO_TRIANGLEBACK]->material.kSpecular.Set(0.2f, 0.2f, 0.2f);
+		meshList[GEO_TRIANGLEBACK]->material.kShininess = 0.4f;
+
+		meshList[GEO_CRESCENT] = MeshBuilder::GenerateCrescent("crescent", Color(1, 1, 1), 1);
+
+		meshList[GEO_FRUSTUM] = MeshBuilder::GenerateFrustum("frustum", Color(1, 1, 1), 1, 1, 0.65, 1, 1);
+		meshList[GEO_FRUSTUM]->material.kAmbient.Set(0.917, 0.835, 0.635);
+		meshList[GEO_FRUSTUM]->material.kDiffuse.Set(0.917, 0.835, 0.635);
+		meshList[GEO_FRUSTUM]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
+		meshList[GEO_FRUSTUM]->material.kShininess = 0.4f;
+
+		meshList[GEO_CYLINDER] = MeshBuilder::GenerateCylinder("cylinder", Color(1, 1, 1), 1, 36, 1, 1);
+		meshList[GEO_CYLINDER]->material.kAmbient.Set(0.278, 0.345, 0.212);
+		meshList[GEO_CYLINDER]->material.kDiffuse.Set(0.278, 0.345, 0.212);
+		meshList[GEO_CYLINDER]->material.kSpecular.Set(0.2f, 0.2f, 0.2f);
+		meshList[GEO_CYLINDER]->material.kShininess = 0.4f;
+
+		meshList[GEO_CONE] = MeshBuilder::GenerateCone("cone", Color(1, 1, 1), 1, 20);
+		meshList[GEO_CONE]->material.kAmbient.Set(0.647, 0.525, 0.462);
+		meshList[GEO_CONE]->material.kDiffuse.Set(0.647, 0.525, 0.462);
+		meshList[GEO_CONE]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
+		meshList[GEO_CONE]->material.kShininess = 0.1f;
+
+		meshList[GEO_HEMISPHERE] = MeshBuilder::GenerateHemisphere("hemisphere", Color(1, 1, 1), 18, 36, 1);
+		meshList[GEO_HEMISPHERE]->material.kAmbient.Set(0.278, 0.345, 0.212);
+		meshList[GEO_HEMISPHERE]->material.kDiffuse.Set(0.278, 0.345, 0.212);
+		meshList[GEO_HEMISPHERE]->material.kSpecular.Set(0.2f, 0.2f, 0.2f);
+		meshList[GEO_HEMISPHERE]->material.kShininess = 0.4f;
 
 		meshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
 		meshList[GEO_INVENTORY]->textureID = LoadTGA("Image//inventory.tga");
@@ -263,7 +311,7 @@ void SceneMarinaBay::Update(double dt)
 	if (Application::IsKeyPressed('1'))
 		glEnable(GL_CULL_FACE);
 	else if (Application::IsKeyPressed('2'))
-		glDisable(GL_CULL_FACE);
+ 		glDisable(GL_CULL_FACE);
 	else if (Application::IsKeyPressed('3'))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //default fill mode
 	else if (Application::IsKeyPressed('4'))
@@ -369,6 +417,7 @@ void SceneMarinaBay::Update(double dt)
 		}
 	}
 
+	//player attack animations
 	if (attackSelected)		//handles the attacks pushed to here for neatness
 	{	//gets attack player is trying to execute
 		playerAttack = attacksList[playerAction - A_ATTACK1];
@@ -377,8 +426,8 @@ void SceneMarinaBay::Update(double dt)
 		case (BIG):			//MC goes big
 			if (!attackHit)	//when attack hasnt hit enemy yet
 			{
-				if (attackScale < 5)		//go big
-					attackScale += 5 * dt;
+				if (attackScale < 7)		//go big
+					attackScale += 7 * dt;
 				else if (attackAngle < 90)		//rotate onto enemy
 					attackAngle += 600 * dt;
 				else
@@ -388,8 +437,10 @@ void SceneMarinaBay::Update(double dt)
 			{
 				if (attackAngle > 0)
 					attackAngle -= 600 * dt;
+				else if (attackAngle < 0)	//so that the rotation doesnt go too far back
+					attackAngle = 0.f;
 				else if (attackScale > 1.f)
-					attackScale -= 5 * dt;
+					attackScale -= 7 * dt;
 				else			//resolution of attack
 				{
 					enemyHealthLost = 35.f;
@@ -404,26 +455,26 @@ void SceneMarinaBay::Update(double dt)
 			if (!attackHit)
 			{
 				if (attackTranslateY < 5)
-					attackTranslateY += 15 * dt;
+					attackTranslateY += 15 * dt;	//goes up so it doesn't sink to the floor
 				else if (attackAngle < 90)
 					attackAngle += 100 * dt;
 				else if (attackTranslateZ < 150)
-					attackTranslateZ += 300 * dt;
+					attackTranslateZ += 300 * dt;	//goes fast towards enemy
 				else
 				{
 					attackHit = true;
 					attackTranslateZ = 0.f;
-					attackTranslateY = 300.f;
+					attackTranslateY = 300.f;		//spawns it high above player
 					attackAngle = 0.f;
 				}
 			}
 			else
 			{
 				if (attackTranslateY > 0)
-					attackTranslateY -= 150 * dt;
+					attackTranslateY -= 150 * dt;	//rapidly descends towards player
 				else
 				{
-					attackTranslateY = 0.f;
+					attackTranslateY = 0.f;			//resets value of arm and resolves attack
 					enemyHealthLost = 25.f;
 					attackHit = false;
 					attackSelected = false;
@@ -432,6 +483,110 @@ void SceneMarinaBay::Update(double dt)
 				}
 			}
 			break;
+		}
+	}
+	
+	//dragon animations
+	{
+		if (idle == true)
+		{
+			idleBounce += idleBounceDir * 10 * dt;
+			idleBreath += idleBreathDir * 0.1 * dt;
+			idleHands += idleHandsDir * 20 * dt;
+			idleMouth += idleMouthDir * 10 * dt;
+			idleNeck += idleNeckDir * 0.1 * dt;
+			idleHead += idleHeadDir * 10 * dt;
+
+			if (idleBounce > 10)
+				idleBounceDir = -1;
+			else if (idleBounce < 0)
+				idleBounceDir = 1;
+
+			if (idleBreath > 1.1)
+				idleBreathDir = -1;
+			else if (idleBreath < 1)
+				idleBreathDir = 1;
+
+			if (idleHands > 20)
+				idleHandsDir = -1;
+			else if (idleHands < 0)
+				idleHandsDir = 1;
+
+			if (idleMouth > 10)
+				idleMouthDir = -1;
+			else if (idleMouth < 0)
+				idleMouthDir = 1;
+
+			if (idleNeck > 0)
+				idleNeckDir = -1;
+			else if (idleNeck < -0.1)
+				idleNeckDir = 1;
+
+			if (idleHead > 10)
+				idleHeadDir = -1;
+			else if (idleHead < 0)
+				idleHeadDir = 1;
+		}
+		else if (movement == true)
+		{
+			if (goneDown == false)
+			{
+				if (move > -100)
+				{
+					move -= 50 * dt;
+					moveAngle += 45 * dt;
+				}
+				else
+				{
+					goneDown = true;
+					moveAngle = 45;
+				}
+			}
+			else	//after it has gone down
+			{
+				if (timer < 15)	//timer before going up
+					timer += 10 * dt;
+				else if (move < 0)
+					move += 30 * dt;
+				else
+					moveAngle -= 70 * dt;
+				if (moveAngle <= 0)
+				{
+					movement = false;
+					goneDown = false;
+					idle = true;
+					timer = moveAngle = move = 0;
+				}
+			}
+		}
+		else if (attack == true)
+		{
+			if (revert == true)	//goes to initial position
+			{
+				enemyAttackAngle -= 20 * dt;
+				enemyAttackMove -= 20 * dt;
+				enemyAttackScale = 1;
+				if (enemyAttackAngle <= 0 && enemyAttackMove <= 0)
+				{
+					attack = false;
+					revert = false;
+					idle = true;
+				}
+			}
+			else {
+				if (enemyAttackMove < 45)	//leans forward
+				{
+					enemyAttackAngle -= 50 * dt;
+					enemyAttackMove += 50 * dt;
+				}
+				else if (enemyAttackAngle < 45)	//sweeps
+				{
+					enemyAttackAngle += 500 * dt;
+					enemyAttackScale += 200 * dt;
+				}
+				else
+					revert = true;
+			}
 		}
 	}
 
@@ -746,9 +901,9 @@ void SceneMarinaBay::Render()
 	modelStack.Translate(47, 0.0001, 0);
 	modelStack.Rotate(90, 1, 0, 0);
 	modelStack.Scale(30, 317, 1);
-	glDisable(GL_CULL_FACE);
+	//glDisable(GL_CULL_FACE);
 	RenderMesh(meshList[GEO_WATER], true);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	modelStack.PopMatrix();
 
 	//boat
@@ -807,13 +962,14 @@ void SceneMarinaBay::Render()
 	RenderMesh(meshList[GEO_TALLTREE], true);
 	modelStack.PopMatrix();*/
 	
-	if (fight)
+	if (!fight)
 	{
+		//mc
 		modelStack.PushMatrix();
 		modelStack.Translate(0, 0, 200);
 		modelStack.Scale(0.7f, 0.7f, 0.7f);
 		{
-			//mc
+			//mc body
 			modelStack.PushMatrix();
 			//modelStack.Translate(0, 0, 200);
 			if (playerAttack == BIG)
@@ -840,6 +996,550 @@ void SceneMarinaBay::Render()
 			modelStack.PopMatrix();
 		}
 		modelStack.PopMatrix();
+
+		//dragon
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(0, 0, 250);
+			modelStack.Rotate(90, 0, 1, 0);
+			{
+				//bottom body joint
+				modelStack.PushMatrix();
+				modelStack.Translate(0, 0, 0);
+				if (idle == true)
+				{
+					modelStack.Rotate(idleBounce, 0, 0, 1);
+				}
+				else if (movement == true)
+				{
+					modelStack.Translate(0, move, 0);
+					modelStack.Rotate(-moveAngle, 0, 0, 1);
+				}
+				else if (attack == true)
+				{
+					modelStack.Rotate(-enemyAttackMove, 0, 0, 1);
+				}
+				modelStack.Rotate(0, 0, 0, 1);
+				modelStack.Scale(10, 10, 10);
+				meshList[GEO_SPHERE]->material.kAmbient.Set(0.886, 0.788, 0.569);
+				meshList[GEO_SPHERE]->material.kDiffuse.Set(0.886, 0.788, 0.569);
+				RenderMesh(meshList[GEO_SPHERE], true);
+				{
+					//bottom connecting body
+					{
+						//stomach
+						modelStack.PushMatrix();
+						modelStack.Translate(-1.5, 1.5, 0);
+						modelStack.Rotate(45, 0, 0, 1);
+						modelStack.Scale(0.96, 4.6, 0.96);
+						meshList[GEO_FRUSTUM]->material.kAmbient.Set(0.886, 0.788, 0.569);
+						meshList[GEO_FRUSTUM]->material.kDiffuse.Set(0.886, 0.788, 0.569);
+						RenderMesh(meshList[GEO_FRUSTUM], true);
+						modelStack.PopMatrix();
+					}
+
+					//middle joint
+					modelStack.PushMatrix();
+					modelStack.Translate(-1.45, 1.4, 0);
+					if (movement == true)
+						modelStack.Rotate(moveAngle * 1.5, 0, 0, 1);
+					modelStack.Rotate(0, 0, 0, 1);
+					modelStack.Scale(0.6, 0.6, 0.6);
+					RenderMesh(meshList[GEO_SPHERE], true);
+					{
+						//middle spine
+						modelStack.PushMatrix();
+						modelStack.Translate(0.34, 0.8, 0);
+						modelStack.Rotate(-22, 0, 0, 1);
+						if (idle == true)
+						{
+							modelStack.Scale(idleBreath, 1, idleBreath);
+						}
+						modelStack.Scale(1., 2., 1.);
+						meshList[GEO_CYLINDER]->material.kAmbient.Set(0.886, 0.788, 0.569);
+						meshList[GEO_CYLINDER]->material.kDiffuse.Set(0.886, 0.788, 0.569);
+						RenderMesh(meshList[GEO_CYLINDER], true);
+						modelStack.PopMatrix();
+
+
+						//middle upper joint
+						modelStack.PushMatrix();
+						modelStack.Translate(0.7, 1.7, 0);
+						if (idle == true)
+						{
+							modelStack.Rotate(-idleBounce, 0, 0, 1);
+						}
+						else if (movement == true)
+							modelStack.Rotate(1.25 * moveAngle, 0, 0, 1);
+						modelStack.Rotate(0, 0, 0, 1);
+						RenderMesh(meshList[GEO_SPHERE], true);
+						{
+							int arms = 1;
+							for (int i = 0; i < 2; ++i)
+							{
+								//upper upperarm	(name'll probably be changed at some point)
+								modelStack.PushMatrix();
+								modelStack.Translate(0, 0, arms * 1.2);
+								if (movement == true)
+									modelStack.Rotate(-moveAngle, 0, 0, 1);
+								modelStack.Rotate(arms * -30, 1, 0, 0);
+								modelStack.Scale(0.5, 0.8, 0.5);
+								RenderMesh(meshList[GEO_SPHERE], true);
+								{
+									//lower upperarm
+									modelStack.PushMatrix();
+									modelStack.Translate(0, -1.5, 0);
+									modelStack.Rotate(90, 1, 1, 0);
+									modelStack.Scale(0.8, 0.7, 0.8);
+									RenderMesh(meshList[GEO_SPHERE], true);
+									modelStack.PopMatrix();
+
+									//elbow joint
+									modelStack.PushMatrix();
+									modelStack.Translate(0, -2.5, 0);
+									if (idle == true)
+									{
+										modelStack.Rotate(idleHands, 0, 0, 1);
+									}
+									modelStack.Scale(1, 0.625, 1);
+									modelStack.Scale(0.5, 0.5, 0.5);
+									RenderMesh(meshList[GEO_SPHERE], true);
+									{
+										//forearm
+										modelStack.PushMatrix();
+										modelStack.Translate(2, -1.0, 0);
+										modelStack.Rotate(60, 0, 0, 1);
+										modelStack.Scale(1.1, 2.5, 1.1);
+										RenderMesh(meshList[GEO_SPHERE], true);
+										modelStack.PopMatrix();
+
+										//knuckle
+										modelStack.PushMatrix();
+										modelStack.Translate(3.7, -2.0, 0);
+										modelStack.Rotate(120, 0, 0, 1);
+										modelStack.Scale(0.8, 0.8, 0.8);
+										RenderMesh(meshList[GEO_SPHERE], true);
+										{
+											//hand
+											modelStack.PushMatrix();
+											modelStack.Translate(-1.0, -1.0, 0);
+											modelStack.Scale(2.5, 1, 2.5);
+											meshList[GEO_CUBE]->material.kAmbient.Set(0.921, 0.808, 0.616);
+											meshList[GEO_CUBE]->material.kDiffuse.Set(0.921, 0.808, 0.616);
+											RenderMesh(meshList[GEO_CUBE], true);
+											{
+												//first finger
+												modelStack.PushMatrix();
+												modelStack.Translate(-.5, .0, 0);
+												modelStack.Rotate(90, 0, 0, 1);
+												modelStack.Scale(0.5, 0.5, 0.1);
+												RenderMesh(meshList[GEO_CYLINDER], true);
+												modelStack.PopMatrix();
+
+												modelStack.PushMatrix();
+												modelStack.Translate(-.5, .0, 0.4);
+												modelStack.Rotate(90, 0, 0, 1);
+												modelStack.Scale(0.5, 0.5, 0.1);
+												RenderMesh(meshList[GEO_CYLINDER], true);
+												modelStack.PopMatrix();
+
+												modelStack.PushMatrix();
+												modelStack.Translate(-.5, .0, -0.4);
+												modelStack.Rotate(90, 0, 0, 1);
+												modelStack.Scale(0.5, 0.5, 0.1);
+												RenderMesh(meshList[GEO_CYLINDER], true);
+												modelStack.PopMatrix();
+											}
+											modelStack.PopMatrix();
+										}
+										modelStack.PopMatrix();
+									}
+									modelStack.PopMatrix();
+								}
+								modelStack.PopMatrix();
+								arms = -1;
+							}
+
+							//neck
+							modelStack.PushMatrix();
+							modelStack.Translate(1.57, 0.49, 0);
+							if (idle == true)
+								modelStack.Translate(idleNeck, idleNeck, idleNeck);
+							modelStack.Rotate(-73, 0, 0, 1);
+							modelStack.Scale(1., 3.5, 1.);
+							RenderMesh(meshList[GEO_FRUSTUM], true);
+							modelStack.PopMatrix();
+
+							//neck joint
+							modelStack.PushMatrix();
+							modelStack.Translate(1.7, 0.5, 0);
+							if (idle == true)
+							{
+								modelStack.Translate(idleNeck, idleNeck, idleNeck);
+								modelStack.Rotate(idleHead, 0, 0, 1);
+							}
+							else if (movement == true)
+								modelStack.Rotate(moveAngle * 1.5, 0, 0, 1);
+							else if (attack == true)
+							{
+								modelStack.Rotate(enemyAttackMove, 0, 0, 1);
+								modelStack.Rotate(enemyAttackAngle, 0, 1, 0);
+							}
+							modelStack.Rotate(0, 0, 0, 1);
+							modelStack.Scale(.7, .7, .7);
+							RenderMesh(meshList[GEO_SPHERE], true);
+							{
+								//head
+								modelStack.PushMatrix();
+								modelStack.Translate(1, 0, 0);
+								modelStack.Scale(1.4, 1.4, 1.4);
+								{
+									if (attack == true)
+									{
+										//spear
+										modelStack.PushMatrix();
+										modelStack.Translate(1.6, -1.3, 0);
+										modelStack.Rotate(-125, 0, 0, 1);
+										modelStack.Scale(0.1, 3.5, 0.1);
+										meshList[GEO_CYLINDER]->material.kAmbient.Set(0.53, 0.36, 0.24);
+										meshList[GEO_CYLINDER]->material.kDiffuse.Set(0.53, 0.36, 0.24);
+										RenderMesh(meshList[GEO_CYLINDER], true);
+										{
+											//connecting cone/spear head depending
+											modelStack.PushMatrix();
+											modelStack.Translate(0, 0.56, 0);
+											modelStack.Rotate(0, 0, 0, 1);
+											modelStack.Scale(1, 0.142, 1);
+											meshList[GEO_CONE]->material.kAmbient.Set(0.77, 0.78, 0.78);
+											meshList[GEO_CONE]->material.kDiffuse.Set(0.77, 0.78, 0.78);
+											RenderMesh(meshList[GEO_CONE], true);
+											modelStack.PopMatrix();
+										}
+										modelStack.PopMatrix();
+									}
+
+									//lower jaw
+									{
+										modelStack.PushMatrix();
+										modelStack.Translate(0, 0.1, 0);
+										if (idle == true)
+										{
+											modelStack.Rotate(-idleMouth, 0, 0, 1);
+										}
+										modelStack.Rotate(-30, 0, 0, 1);
+										modelStack.Scale(1, 0.6, 0.8);
+										meshList[GEO_CUBE]->material.kAmbient.Set(0.835, 0.682, 0.529);
+										meshList[GEO_CUBE]->material.kDiffuse.Set(0.835, 0.682, 0.529);
+										RenderMesh(meshList[GEO_CUBE], true);
+										{
+											//middle lower lip
+											modelStack.PushMatrix();
+											modelStack.Translate(1., -0.6, 0);
+											modelStack.Rotate(-20, 0, 0, 1);
+											modelStack.Scale(2.5, 0.15, 0.3);
+											RenderMesh(meshList[GEO_CUBE], true);
+											{
+												//tongue
+												modelStack.PushMatrix();
+												modelStack.Translate(0, 0.1, 0);
+												modelStack.Scale(0.2, 1, 1);
+												meshList[GEO_HEMISPHERE]->material.kAmbient.Set(0.380, 0.278, 0.314);
+												meshList[GEO_HEMISPHERE]->material.kDiffuse.Set(0.380, 0.278, 0.314);
+												RenderMesh(meshList[GEO_HEMISPHERE], true);
+												modelStack.PopMatrix();
+
+												//lower teeth
+												meshList[GEO_CONE]->material.kAmbient.Set(0.647, 0.525, 0.462);
+												meshList[GEO_CONE]->material.kDiffuse.Set(0.647, 0.525, 0.462);
+												for (int i = 0; i < 2; ++i) {
+													int teeth = 1;
+													if (i % 2 == 0)
+														teeth = -1;
+
+													modelStack.PushMatrix();
+													modelStack.Translate(0.1, 0.4, 0.9 * teeth);
+													modelStack.Scale(0.1, 0.1, 0.1);	//to make it really small
+													modelStack.Scale(0.5, 10, 1);
+													RenderMesh(meshList[GEO_CONE], true);	//back tooth
+													modelStack.PopMatrix();
+
+													modelStack.PushMatrix();
+													modelStack.Translate(0.15, 0.4, 0.8 * teeth);
+													modelStack.Scale(0.1, 0.1, 0.1);
+													modelStack.Scale(0.5, 5, 1);
+													RenderMesh(meshList[GEO_CONE], true);	//2nd back tooth
+													modelStack.PopMatrix();
+
+													modelStack.PushMatrix();
+													modelStack.Translate(0.4, 0.4, 0.4 * teeth);
+													modelStack.Scale(0.1, 0.1, 0.1);
+													modelStack.Scale(0.5, 5, 1);
+													RenderMesh(meshList[GEO_CONE], true);	//front tooth
+													modelStack.PopMatrix();
+												}
+											}
+											modelStack.PopMatrix();
+
+											//left lower lip(?)
+											modelStack.PushMatrix();
+											modelStack.Translate(1., -0.6, 0.2);
+											modelStack.Rotate(-20, 0, 0, 1);
+											modelStack.Rotate(10, 0, 1, 0);
+											modelStack.Scale(2.3, 0.15, 0.3);
+											RenderMesh(meshList[GEO_CUBE], true);
+											modelStack.PopMatrix();
+
+											//right lower lip(?)
+											modelStack.PushMatrix();
+											modelStack.Translate(1., -0.6, -0.2);
+											modelStack.Rotate(-20, 0, 0, 1);
+											modelStack.Rotate(-10, 0, 1, 0);
+											modelStack.Scale(2.3, 0.15, 0.3);
+											RenderMesh(meshList[GEO_CUBE], true);
+											modelStack.PopMatrix();
+										}
+										modelStack.PopMatrix();
+									}
+
+									//sides of lower jaw
+									for (int i = 0; i < 2; ++i)
+									{
+										int sides = 1;
+										if (i % 2 == 0)
+											sides = -1;
+										modelStack.PushMatrix();
+										modelStack.Translate(0, 0.1, sides * 0.35);
+										modelStack.Rotate(-30, 0, 0, 1);
+										modelStack.Rotate(sides * 10, 0, 1, 0);
+										modelStack.Scale(1, 0.6, 0.4);
+										RenderMesh(meshList[GEO_CUBE], true);
+										modelStack.PopMatrix();
+									}
+
+									//upper jaw
+									{
+										modelStack.PushMatrix();
+										modelStack.Translate(-0.03, 0.185, 0);
+										modelStack.Rotate(-35, 0, 0, 1);
+										modelStack.Scale(1.3, 0.6, 1);
+										meshList[GEO_CUBE]->material.kAmbient.Set(0.886, 0.788, 0.569);	//making it the top shiny colour
+										meshList[GEO_CUBE]->material.kDiffuse.Set(0.886, 0.788, 0.569);
+										RenderMesh(meshList[GEO_CUBE], true);
+										{
+											modelStack.PushMatrix();
+											modelStack.Scale(0.769, 1, 1);	//making everything smaller
+											//eyes and mouth
+											{
+												//eyes
+												for (int i = 0; i < 2; ++i)
+												{
+													int eyes = 1;
+													if (i % 2 == 0)
+														eyes = -1;
+													modelStack.PushMatrix();
+													modelStack.Translate(0.1, 0, eyes * 0.57);
+													modelStack.Rotate(35, 0, 0, 1);
+													modelStack.Scale(0.15, 0.2, 0.15);
+													meshList[GEO_SPHERE]->material.kAmbient.Set(0.984, 0.827, 0.494);
+													meshList[GEO_SPHERE]->material.kDiffuse.Set(0.984, 0.827, 0.494);
+													RenderMesh(meshList[GEO_SPHERE], true);
+													modelStack.PopMatrix();
+												}
+
+												//middle upper lip
+												modelStack.PushMatrix();
+												modelStack.Translate(1., -0.2, 0);
+												modelStack.Scale(2.7, 0.15, 0.4);
+												RenderMesh(meshList[GEO_CUBE], true);
+
+												//upper teeth
+												{
+													meshList[GEO_CONE]->material.kAmbient.Set(0.921, 0.808, 0.616);
+													meshList[GEO_CONE]->material.kDiffuse.Set(0.921, 0.808, 0.616);
+													for (int i = 0; i < 2; ++i)
+													{
+														int teeth = 1;
+														if (i % 2 == 0)
+															teeth = -1;
+														modelStack.PushMatrix();
+														modelStack.Translate(0.15, -0.72, 0.8 * teeth);
+														modelStack.Rotate(180, 1, 0, 0);
+														modelStack.Scale(0.1, 0.5, 0.1);
+														modelStack.Scale(0.5, 5, 2);
+														RenderMesh(meshList[GEO_CONE], true);	//front tooth
+														modelStack.PopMatrix();
+
+														modelStack.PushMatrix();
+														modelStack.Translate(0.05, -1.1, 0.9 * teeth);
+														modelStack.Rotate(180, 1, 0, 0);
+														modelStack.Scale(0.1, 0.5, 0.1);
+														modelStack.Scale(1, 7, 2);
+														RenderMesh(meshList[GEO_CONE], true);	//large back tooth
+														modelStack.PopMatrix();
+
+														modelStack.PushMatrix();
+														modelStack.Translate(0.02, -0.72, 1.05 * teeth);
+														modelStack.Rotate(180, 1, 0, 0);
+														modelStack.Scale(0.1, 0.5, 0.1);
+														modelStack.Scale(0.7, 5, 2);
+														RenderMesh(meshList[GEO_CONE], true);	//back tooth
+														modelStack.PopMatrix();
+													}
+												}
+
+
+												//upper spikes
+												{
+													for (int i = 0; i < 2; ++i)
+													{
+														int spikes = 1;
+														if (i % 2 == 0)
+															spikes = -1;
+														modelStack.PushMatrix();
+														modelStack.Translate(-0.2, -2.5, 1.3 * spikes);
+														modelStack.Rotate(180, 1, 0, 0);
+														modelStack.Scale(0.1, 0.5, 0.1);
+														modelStack.Scale(0.5, 5, 1.15);
+														RenderMesh(meshList[GEO_CONE], true);	//front bottom spike
+														modelStack.PopMatrix();
+
+														modelStack.PushMatrix();
+														modelStack.Translate(-0.3, -2.5, 1.4 * spikes);
+														modelStack.Rotate(180, 1, 0, 0);
+														modelStack.Scale(0.1, 0.5, 0.1);
+														modelStack.Scale(0.6, 5, 1.2);
+														RenderMesh(meshList[GEO_CONE], true);	//front mid bottom spike
+														modelStack.PopMatrix();
+
+														modelStack.PushMatrix();
+														modelStack.Translate(-0.4, -2.5, 1.55 * spikes);
+														modelStack.Rotate(180, 1, 0, 0);
+														modelStack.Scale(0.1, 0.5, 0.1);
+														modelStack.Scale(0.6, 5, 1.25);
+														RenderMesh(meshList[GEO_CONE], true);	//back mid bottom spike
+														modelStack.PopMatrix();
+
+														modelStack.PushMatrix();
+														modelStack.Translate(-0.5, -2.5, 1.65 * spikes);
+														modelStack.Rotate(180, 1, 0, 0);
+														modelStack.Scale(0.1, 0.5, 0.1);
+														modelStack.Scale(0.6, 5, 1.3);
+														RenderMesh(meshList[GEO_CONE], true);	//back bottom spike
+														modelStack.PopMatrix();
+
+														modelStack.PushMatrix();
+														modelStack.Translate(-0.7, -1.5, 1.55 * spikes);
+														modelStack.Rotate(90, 0, 0, 1);
+														modelStack.Scale(0.1, 0.5, 0.1);
+														modelStack.Scale(8, 0.5, 3);
+														RenderMesh(meshList[GEO_CONE], true);	//bottom back spike
+														modelStack.PopMatrix();
+
+														modelStack.PushMatrix();
+														modelStack.Translate(-0.8, 3.1, 1.35 * spikes);
+														modelStack.Rotate(90, 0, 0, 1);
+														modelStack.Scale(0.1, 0.5, 0.1);
+														modelStack.Scale(15, 1.1, 5);
+														RenderMesh(meshList[GEO_CONE], true);	//top back spike
+														modelStack.PopMatrix();
+													}
+												}
+
+												modelStack.PopMatrix();
+
+												//sides of upper lip
+												for (int i = 0; i < 2; ++i)
+												{
+													int sides = 1;
+													if (i % 2 == 0)
+														sides = -1;
+													modelStack.PushMatrix();
+													modelStack.Translate(0.8, -0.2, sides * 0.31);
+													modelStack.Rotate(sides * 10, 0, 1, 0);
+													modelStack.Scale(2.7, 0.15, 0.4);
+													RenderMesh(meshList[GEO_CUBE], true);
+													modelStack.PopMatrix();
+												}
+											}
+
+											//upper sloped part of face
+											modelStack.PushMatrix();
+											modelStack.Translate(1.4, 0.15, 0);
+											modelStack.Scale(1.8, 0.6, 0.35);
+											RenderMesh(meshList[GEO_SLOPE], true);
+											modelStack.PopMatrix();
+
+											//sides of sloped part of face
+											for (int i = 0; i < 2; ++i)
+											{
+												int sides = 1;
+												if (i % 2 == 0)
+												{
+													sides = -1;
+												}
+												modelStack.PushMatrix();
+												modelStack.Translate(1.42, -0.13, sides * 0.36);
+												modelStack.Rotate(-18, 0, 0, 1);
+												modelStack.Rotate(sides * -35, 1, 0, 0);
+												modelStack.Scale(1.8, 0.7, 1);
+												if (i == 0)
+													RenderMesh(meshList[GEO_TRIANGLEBACK], true);
+												else
+													RenderMesh(meshList[GEO_TRIANGLE], true);
+												modelStack.PopMatrix();
+											}
+											modelStack.PopMatrix();
+										}
+										modelStack.PopMatrix();
+									}
+
+									//sides of upper jaw
+									for (int i = 0; i < 2; ++i)
+									{
+										int sides = 1;
+										if (i % 2 == 0)
+											sides = -1;
+										modelStack.PushMatrix();
+										modelStack.Translate(-0.05, 0.2, sides * 0.36);
+										modelStack.Rotate(-35, 0, 0, 1);
+										modelStack.Rotate(sides * 10, 0, 1, 0);
+										modelStack.Scale(1.3, 0.6, 0.6);
+										RenderMesh(meshList[GEO_CUBE], true);
+										modelStack.PopMatrix();
+									}
+								}
+								modelStack.PopMatrix();
+							}
+							modelStack.PopMatrix();
+						}
+						modelStack.PopMatrix();
+					}
+					modelStack.PopMatrix();
+				}
+				modelStack.PopMatrix();
+
+				//swipe effect
+				if (attackScale > 1)
+				{
+					modelStack.PushMatrix();
+					modelStack.Translate(23, 1, 0);
+					modelStack.Rotate(45, 0, 1, 0);
+					modelStack.Scale(attackScale, attackScale, attackScale);
+					RenderMesh(meshList[GEO_CRESCENT], false);
+					modelStack.PopMatrix();
+				}
+				//circle for his position
+				/*else if (finale == true)
+				{
+					modelStack.PushMatrix();
+					modelStack.Translate(camera.position.x, 1, camera.position.z);
+					modelStack.Scale(4, 1, 4);
+					RenderMesh(meshList[GEO_CIRCLE], false);
+					modelStack.PopMatrix();
+				}*/
+			}
+			modelStack.PopMatrix();
+		}
 	}
 
 	
