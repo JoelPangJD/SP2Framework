@@ -194,6 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Itemdescriptions.txt" />
+    <Text Include="Itemdialogue.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

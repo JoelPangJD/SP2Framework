@@ -208,6 +208,10 @@ void SceneGarden::Init()
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//font.tga");
+	meshList[GEO_TEXTBOX] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
+	meshList[GEO_TEXTBOX]->textureID = LoadTGA("Image//Marina//textbox.tga");
+	meshList[GEO_HEADER] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
+	meshList[GEO_HEADER]->textureID = LoadTGA("Image//Marina//header.tga");
 
 	meshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
 	meshList[GEO_INVENTORY]->textureID = LoadTGA("Image//inventory.tga");
@@ -300,25 +304,34 @@ void SceneGarden::Update(double dt)
 
 	if (minigame == 0)
 	{
-		camera.Update(dt);
+		if(!indialogue)//Don't move while in a dialogue
+			camera.Update(dt);
 		//Check collisions
 		{
 			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 			{
 				if ((*it)->spherecollider(camera.target)) // Checks if the target is within a radius of the stick
 				{
-					(*it)->interact();
-					if ((*it)->gettype() == "stick")
+					int interacttype = (*it)->interact();
+					if (interacttext.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
 					{
-						if (interacttext.str() == "");
-						interacttext << "Stick";
-						break;
-					}
-					if ((*it)->gettype() == "cat")
-					{
-						if (interacttext.str() == "");
-						interacttext << "Cat";
-						break;
+						if (interacttype == 4)
+						{
+							dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
+							currentline = dialogue.begin(); //Currentline iteratior as the first line of dialogue
+							name = (*it)->gettype(); //Set the name of the npc the player talks to
+							indialogue = true;//Set state to in dialogue
+						}
+						if ((*it)->gettype() == "stick")
+						{
+							interacttext << "Stick";
+							break;
+						}
+						if ((*it)->gettype() == "cat")
+						{
+							interacttext << "Cat";
+							break;
+						}
 					}
 				}
 			}
@@ -331,7 +344,7 @@ void SceneGarden::Update(double dt)
 	else if (minigame == 1)
 	{
 		circlescale1 -= circlespeed * dt;
-		if (Application::IsKeyPressed('E') && cooldown <= 0)
+		if (Application::IsKeyPressed('E') && cooldown <= 0) //Cooldown added to prevent spamming
 		{
 			if (circlescale1 >= circlescale2 - 0.05 && circlescale1 <= circlescale2 + 0.05)
 			{
@@ -512,14 +525,38 @@ void SceneGarden::RenderSkybox()
 
 void SceneGarden::RenderUI()
 {
-	modelStack.PushMatrix();
-	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
-	std::ostringstream ss;
-	ss << "FPS: " << fps;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 58, 68);
-	RenderTextOnScreen(meshList[GEO_TEXT], interacttext.str(), Color(0.5, 0.5, 0.5), 5, 40 - (interacttext.str().length()), 30);
-	interacttext.str("");
-	modelStack.PopMatrix();
+	if (indialogue)
+	{
+		string dialoguetext = (*currentline);
+		string currentname;
+		if (dialoguetext[0] == '1')
+			currentname = "Player name";
+		else if (dialoguetext[0] == '2')
+			currentname = name;
+		dialoguetext = dialoguetext.substr(1);
+		RenderNPCDialogue(dialoguetext, currentname);
+		if (cooldown <= 0 && Application::IsKeyPressed('E')) //Cooldown added to prevent spamming to pass the dialogues too fast
+		{
+			cooldown = 1;
+			currentline++;
+			if(currentline == dialogue.end())
+			{
+				indialogue = false;
+				dialogue.clear();
+			}
+		}
+	}
+	else
+	{
+		modelStack.PushMatrix();
+		RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
+		std::ostringstream ss;
+		ss << "FPS: " << fps;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 58, 68);
+		RenderTextOnScreen(meshList[GEO_TEXT], interacttext.str(), Color(0.5, 0.5, 0.5), 5, 40 - (interacttext.str().length()), 30);
+		interacttext.str("");
+		modelStack.PopMatrix();
+	}
 }
 
 void SceneGarden::Renderminigame1()
@@ -704,6 +741,32 @@ void SceneGarden::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int si
 	viewStack.PopMatrix();
 	modelStack.PopMatrix();
 	glEnable(GL_DEPTH_TEST);
+}
+
+void SceneGarden::RenderNPCDialogue(std::string NPCText, std::string headerText)
+{
+	//float headerTextPos = 4.f;
+	RenderMeshOnScreen(meshList[GEO_HEADER], 14.75, 19.25, 30, 6);
+	//headerText.size()
+	RenderTextOnScreen(meshList[GEO_TEXT], headerText, Color(0, 0, 0), 4, 14.5 - (headerText.size()), 17);	//header text
+	RenderMeshOnScreen(meshList[GEO_TEXTBOX], 40, 8.75, 80, 17.5);
+	string word;																	//automating text
+	int wordpos = 0, ypos = 13, last = NPCText.find_last_of(" ");
+	float xpos = 2.f;
+	while (true)
+	{
+		word = NPCText.substr(wordpos, NPCText.find(" ", wordpos + 1) - wordpos);
+		if (xpos + word.length() * 1.5 + 1 > 80)		//if new word will exceed screensize
+		{
+			ypos -= 3;
+			xpos = 2;
+		}
+		RenderTextOnScreen(meshList[GEO_TEXT], word, Color(0, 0, 0), 3, xpos, ypos);
+		if (wordpos > last)
+			break;
+		wordpos += word.length() + 1;
+		xpos += 1.5 * word.length() + 1;
+	}
 }
 
 void SceneGarden::Render()
@@ -926,13 +989,12 @@ void SceneGarden::Render()
 			modelStack.PopMatrix();
 		}
 	}
-	modelStack.PushMatrix();
-	modelStack.Translate(movex, 0, movez);
-	//modelStack.Rotate(0, 0, 1, 0);
-	modelStack.Scale(scale,scale,scale);
-	Renderfish();
-	//RenderMesh(meshList[GEO_FISH], true);
-	modelStack.PopMatrix();
+	//modelStack.PushMatrix();
+	//modelStack.Translate(movex, 0, movez);
+	////modelStack.Rotate(0, 0, 1, 0);
+	//modelStack.Scale(scale,scale,scale);
+	//Renderfish();
+	//modelStack.PopMatrix();
 
 	//Renderfish();
 	if (minigame == 0)

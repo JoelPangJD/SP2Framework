@@ -151,5 +151,8 @@
     <Text Include="Itemdescriptions.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="Itemdialogue.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

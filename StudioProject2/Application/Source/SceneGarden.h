@@ -27,14 +27,24 @@ class SceneGarden : public Scene
 		GEO_LIGHTBALL,
 		GEO_TORUS1,
 		GEO_TORUS2,
+
+		//Skybox
 		GEO_LEFT,
 		GEO_RIGHT,
 		GEO_TOP,
 		GEO_BOTTOM,
 		GEO_FRONT,
 		GEO_BACK,
+
+		//UI
 		GEO_INVENTORY,
+
+		//text 
 		GEO_TEXT,
+		GEO_TEXTBOX,
+		GEO_HEADER,
+
+		//Objs
 		GEO_GRASSFLOOR,
 		GEO_CAT,
 		GEO_POND,
@@ -127,7 +137,13 @@ private:
 	Light light[2];	
 	Material materialList[M_TOTAL];
 
+	//Variables for text
 	std::ostringstream interacttext;
+	bool indialogue;
+	vector<string> dialogue;
+	vector<string>::iterator currentline;
+	string name;
+
 
 	float movex = 0, movez = 0;
 	float scale = 1;
@@ -142,10 +158,10 @@ private:
 	void Renderfish();
 	bool fishright = true;
 	float fishAngle = 0;
-	void updatefish();
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
+	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 };
 
 #endif
