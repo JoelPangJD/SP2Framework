@@ -125,6 +125,12 @@ class SceneMarinaBay : public Scene
 		ROCKET_PUNCH,
 		NO_ATTACK,
 	};
+	enum ENEMY_ATTACKS
+	{
+		SPEAR,
+		DIG,
+		NUM_EATTACKS,
+	};
 public:
 	Camera3 camera;
 	bool lighton = true;
@@ -150,9 +156,10 @@ private:
 	vector<ATTACK> attacksList;		//players current attacksList 
 	ACTION_TYPE playerAction, enemyAction;
 	ATTACK playerAttack;
+	ENEMY_ATTACKS enemyAttack;
 	std::string fightText, dialogueText;
 	bool NPCDia;
-	bool fight = false, fightDia, playerTurn, enemyTurn, fightSelected, itemsSelected, backSelected, attackSelected, actionSelected, attackHit;
+	bool fight = true, fightDia, playerTurn, enemyTurn, fightSelected, itemsSelected, backSelected, attackSelected, actionSelected, attackHit;
 	float cooldownTimer;
 	float pointerX, pointerY, playerHealth, playerHealthPos, playerHealthLost, enemyHealth, enemyHealthPos, enemyHealthLost;
 	//player's

@@ -35,8 +35,15 @@ void SceneMarinaBay::Init()
 	enemyHealth = playerHealth = 0;
 	NPCDia = false;
 	attackScale = 1.f;
+	playerTurn = true;
 	playerAttack = NO_ATTACK;
-
+	//dragon animations
+	movement = goneDown = attack = false, idle = true;
+	move = moveAngle = timer = 0;
+	idleMouth = idleHands = idleBounce = idleNeck = idleHead = 0;
+	enemyAttackAngle = enemyAttackMove = 0;
+	idleBreath = enemyAttackScale = 1;
+	idleHandsDir = idleBounceDir = idleMouthDir = idleBreathDir = idleNeckDir = idleHeadDir = 1;
 	//======Matrix stack========
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
@@ -337,6 +344,16 @@ void SceneMarinaBay::Update(double dt)
 		attackSelected = true;
 		playerAction = A_ATTACK2;
 	}
+	else if (Application::IsKeyPressed('G'))	//test for dragon attack
+	{
+		movement = goneDown = false, idle = false;
+		movement = true;
+		move = moveAngle = timer = 0;
+		idleMouth = idleHands = idleBounce = idleNeck = idleHead = 0;
+		enemyAttackAngle = enemyAttackMove = 0;
+		idleBreath = enemyAttackScale = 1;
+		idleHandsDir = idleBounceDir = idleMouthDir = idleBreathDir = idleNeckDir = idleHeadDir = 1;
+	}
 	if (actionSelected && fight && !attackSelected && cooldownTimer <= 0)	//if action was selected and in fight and attack is not playing
 	{
 		switch (playerAction)
@@ -418,7 +435,7 @@ void SceneMarinaBay::Update(double dt)
 	}
 
 	//player attack animations
-	if (attackSelected)		//handles the attacks pushed to here for neatness
+	if (attackSelected && playerTurn)		//handles the attacks pushed to here for neatness
 	{	//gets attack player is trying to execute
 		playerAttack = attacksList[playerAction - A_ATTACK1];
 		switch (playerAttack)
@@ -445,8 +462,9 @@ void SceneMarinaBay::Update(double dt)
 				{
 					enemyHealthLost = 35.f;
 					attackHit = false;
-					attackSelected = false;
 					playerTurn = false;
+					enemyTurn = true;
+					attackSelected = false;
 					playerAttack = NO_ATTACK;
 				}
 			}
@@ -477,12 +495,40 @@ void SceneMarinaBay::Update(double dt)
 					attackTranslateY = 0.f;			//resets value of arm and resolves attack
 					enemyHealthLost = 25.f;
 					attackHit = false;
-					attackSelected = false;
 					playerTurn = false;
+					enemyTurn = true;
+					attackSelected = false;
 					playerAttack = NO_ATTACK;
 				}
 			}
 			break;
+		}
+
+	}
+	//enemy turn actions
+	else if (enemyTurn && enemyHealthLost<=0)	//if health not still decreasing
+	{
+		switch (enemyAttack)	//handles enemy attacks
+		{
+		case (SPEAR):
+			idle = false;
+			attack = true;
+			if (attackHit)
+				playerHealthLost = 30.f;
+			break;
+		case (DIG):
+			movement = true;
+			idle = false;
+			playerHealthLost = 40.f;
+			break;
+		}
+		if (attackHit)	//ends enemy's turn and switches enemy's next attack
+		{
+			enemyAttack = static_cast<ENEMY_ATTACKS>((enemyAttack + 1) % NUM_EATTACKS);	//moves to the next attack
+			attackSelected = false;
+			playerTurn = true;
+			enemyTurn = false;
+			attackHit = false;
 		}
 	}
 	
@@ -585,7 +631,10 @@ void SceneMarinaBay::Update(double dt)
 					enemyAttackScale += 200 * dt;
 				}
 				else
+				{
 					revert = true;
+					attackHit = true;
+				}
 			}
 		}
 	}
@@ -595,7 +644,7 @@ void SceneMarinaBay::Update(double dt)
 		int speedOfHealthLost = 20.f;
 		playerHealthLost -= speedOfHealthLost * dt;
 		playerHealth += speedOfHealthLost * 0.2 * dt;
-		playerHealthPos -= speedOfHealthLost * 0.1 * dt;	//dependent on health's scaling
+		playerHealthPos += speedOfHealthLost * 0.1 * dt;	//dependent on health's scaling
 	}
 	else if (enemyHealthLost > 0)
 	{
@@ -962,7 +1011,7 @@ void SceneMarinaBay::Render()
 	RenderMesh(meshList[GEO_TALLTREE], true);
 	modelStack.PopMatrix();*/
 	
-	if (!fight)
+	if (fight)
 	{
 		//mc
 		modelStack.PushMatrix();
@@ -1000,7 +1049,7 @@ void SceneMarinaBay::Render()
 		//dragon
 		{
 			modelStack.PushMatrix();
-			modelStack.Translate(0, 0, 250);
+			modelStack.Translate(0, 0, 271);
 			modelStack.Rotate(90, 0, 1, 0);
 			{
 				//bottom body joint
@@ -1519,12 +1568,12 @@ void SceneMarinaBay::Render()
 				modelStack.PopMatrix();
 
 				//swipe effect
-				if (attackScale > 1)
+				if (enemyAttackScale > 1)
 				{
 					modelStack.PushMatrix();
 					modelStack.Translate(23, 1, 0);
 					modelStack.Rotate(45, 0, 1, 0);
-					modelStack.Scale(attackScale, attackScale, attackScale);
+					modelStack.Scale(enemyAttackScale, enemyAttackScale, enemyAttackScale);
 					RenderMesh(meshList[GEO_CRESCENT], false);
 					modelStack.PopMatrix();
 				}
@@ -1555,21 +1604,24 @@ void SceneMarinaBay::Render()
 		RenderTextOnScreen(meshList[GEO_TEXT], "You", Color(0, 1, 0), 5, 72, 55);
 		RenderMeshOnScreen(meshList[GEO_HEALTH], 70, 53, 20, 2);
 		RenderMeshOnScreen(meshList[GEO_LOSTHEALTH], playerHealthPos, 53, playerHealth, 2);
-		//fighting layout
-		RenderMeshOnScreen(meshList[GEO_LAYOUT], 40, 15, 80, 30);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Attack", Color(0, 0, 0), 4, 4, 11);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Items", Color(0, 0, 0), 4, 4, 6);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Run", Color(0, 0, 0), 4, 4, 1);
-		RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(0, 0, 0), 4, pointerX, pointerY);
-		if (fightSelected)	//not too sure how to make it automatic with attacks enum and based on size of attacksunlocked yet 
+		if (playerTurn)
 		{
-			RenderTextOnScreen(meshList[GEO_TEXT], "Big", Color(0, 0, 0), 4, 25, 9.5);	//attack1
-			RenderTextOnScreen(meshList[GEO_TEXT], "Rocket Punch", Color(0, 0, 0), 4, 25, 2.5);	//attack2
-		}
-		else if (itemsSelected)
-		{
-			RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder3", Color(0, 0, 0), 4, 25, 8);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder4", Color(0, 0, 0), 4, 25, 8);
+			//fighting layout
+			RenderMeshOnScreen(meshList[GEO_LAYOUT], 40, 15, 80, 30);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Attack", Color(0, 0, 0), 4, 4, 11);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Items", Color(0, 0, 0), 4, 4, 6);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Run", Color(0, 0, 0), 4, 4, 1);
+			RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(0, 0, 0), 4, pointerX, pointerY);
+			if (fightSelected)	//not too sure how to make it automatic with attacks enum and based on size of attacksunlocked yet 
+			{
+				RenderTextOnScreen(meshList[GEO_TEXT], "Big", Color(0, 0, 0), 4, 25, 9.5);	//attack1
+				RenderTextOnScreen(meshList[GEO_TEXT], "Rocket Punch", Color(0, 0, 0), 4, 25, 2.5);	//attack2
+			}
+			else if (itemsSelected)
+			{
+				RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder3", Color(0, 0, 0), 4, 25, 8);
+				RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder4", Color(0, 0, 0), 4, 25, 8);
+			}
 		}
 		//for (auto it = buttonList.begin(); it != buttonList.end(); ++it)
 			//RenderMeshOnScreen(meshList[GEO_QUAD], (*it)->getPosX() + (*it)->getWidth() * 0.5, (*it)->getPosY() + (*it)->getHeight() * 0.5, (*it)->getWidth(), (*it)->getHeight());
