@@ -27,6 +27,12 @@ class SceneMarinaBay : public Scene
 		GEO_CONE,
 		GEO_CYLINDER,
 		GEO_TORUS,
+		GEO_TRIANGLE,
+		GEO_TRIANGLEBACK,
+		GEO_SLOPE,
+		GEO_CRESCENT,
+		GEO_FRUSTUM,
+
 		GEO_LEFT,
 		GEO_RIGHT,
 		GEO_TOP,
@@ -34,7 +40,6 @@ class SceneMarinaBay : public Scene
 		GEO_FRONT,
 		GEO_BACK,
 		GEO_INVENTORY,
-		GEO_TEXT,
 
 		GEO_BOAT,
 		GEO_TREE,
@@ -51,6 +56,7 @@ class SceneMarinaBay : public Scene
 
 		//text 
 		GEO_TEXTBOX,
+		GEO_TEXT,
 		GEO_HEADER,
 
 		NUM_GEOMETRY,
@@ -119,6 +125,12 @@ class SceneMarinaBay : public Scene
 		ROCKET_PUNCH,
 		NO_ATTACK,
 	};
+	enum ENEMY_ATTACKS
+	{
+		SPEAR,
+		DIG,
+		NUM_EATTACKS,
+	};
 public:
 	Camera3 camera;
 	bool lighton = true;
@@ -144,12 +156,20 @@ private:
 	vector<ATTACK> attacksList;		//players current attacksList 
 	ACTION_TYPE playerAction, enemyAction;
 	ATTACK playerAttack;
+	ENEMY_ATTACKS enemyAttack;
 	std::string fightText, dialogueText;
 	bool NPCDia;
-	bool fight, fightDia, playerTurn, enemyTurn, fightSelected, itemsSelected, backSelected, attackSelected, actionSelected, attackHit;
+	bool fight = true, fightDia, playerTurn, enemyTurn, fightSelected, itemsSelected, backSelected, attackSelected, actionSelected, attackHit;
 	float cooldownTimer;
 	float pointerX, pointerY, playerHealth, playerHealthPos, playerHealthLost, enemyHealth, enemyHealthPos, enemyHealthLost;
+	//player's
 	float attackScale, attackAngle, attackTranslateY, attackTranslateZ;
+	//dragon enemy's 
+	float move, moveAngle, timer;
+	float idleHands, idleBounce, idleMouth, idleBreath, idleNeck, idleHead;
+	int idleHandsDir, idleBounceDir, idleMouthDir, idleBreathDir, idleNeckDir, idleHeadDir;
+	float enemyAttackAngle, enemyAttackMove, enemyAttackScale;
+	bool movement, goneDown, idle, attack, revert;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
