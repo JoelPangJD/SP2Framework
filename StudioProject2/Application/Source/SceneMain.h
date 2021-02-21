@@ -10,6 +10,7 @@
 #include <sstream>
 #include <math.h>
 #include "Button.h"
+#include "Terrain.h"
 
 class SceneMain : public Scene
 {
@@ -39,6 +40,7 @@ class SceneMain : public Scene
 		GroundMesh,
 		Panel,
 		Red,
+		Green,
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE
@@ -105,7 +107,6 @@ private:
 	unsigned m_programID;
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
-	Vector3 redPos;
 
 	bool inFrontOfMuseum, inFrontOfChangi, InFrontofMarina, inFrontofGarden;
 	bool minigameMuseum;
@@ -119,9 +120,11 @@ private:
 	void RenderMinigame();
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
+	void RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int sizey);
 
 	void updateMinigame(double dt);
+
+	std::vector<Vector3*> grids;
 };
 
 #endif
