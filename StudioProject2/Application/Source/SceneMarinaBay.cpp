@@ -25,8 +25,8 @@ void SceneMarinaBay::Init()
 	buttonList.push_back(new Button(21, 0, 30, 8.25));	//attack2
 
 	//temp storage of attacks, will change for future minigame purposes
-	attacksUnlocked.push_back(BIG);
-	attacksUnlocked.push_back(ROCKET_PUNCH);
+	attacksList.push_back(BIG);
+	attacksList.push_back(ROCKET_PUNCH);
 	//======Initialising variables========
 	pointerX = 2;
 	pointerY = 11;
@@ -35,6 +35,8 @@ void SceneMarinaBay::Init()
 	enemyHealth = playerHealth = 0;
 	fight = true;
 	NPCDia = false;
+	attackScale = 1.f;
+	playerAttack = NO_ATTACK;
 
 	//======Matrix stack========
 	Mtx44 projection;
@@ -285,7 +287,7 @@ void SceneMarinaBay::Update(double dt)
 	if (Application::IsKeyPressed('H'))	//test for attack button
 	{
 		attackSelected = true;
-		playerAction = A_ATTACK1;
+		playerAction = A_ATTACK2;
 	}
 	if (actionSelected && fight && !attackSelected && cooldownTimer <= 0)	//if action was selected and in fight and attack is not playing
 	{
@@ -306,7 +308,7 @@ void SceneMarinaBay::Update(double dt)
 		case (A_ATTACK):
 			fightSelected = true;
 			//enables the buttons after fight is selected depending on what has been unlocked
-			for (unsigned int i = 0; i < attacksUnlocked.size(); ++i)	
+			for (unsigned int i = 0; i < attacksList.size(); ++i)	
 			{
 				buttonList[i + A_ATTACK1]->active = true;
 			}
@@ -368,38 +370,70 @@ void SceneMarinaBay::Update(double dt)
 	}
 
 	if (attackSelected)		//handles the attacks pushed to here for neatness
-	{
-		switch (playerAction)
+	{	//gets attack player is trying to execute
+		playerAttack = attacksList[playerAction - A_ATTACK1];
+		switch (playerAttack)
 		{
-		case (A_ATTACK1):			//MC goes big
-			if (!attack1Hit)
+		case (BIG):			//MC goes big
+			if (!attackHit)	//when attack hasnt hit enemy yet
 			{
 				if (attackScale < 5)		//go big
-					attackScale += 10 * dt;
+					attackScale += 5 * dt;
 				else if (attackAngle < 90)		//rotate onto enemy
-					attackAngle += 300 * dt;
+					attackAngle += 600 * dt;
 				else
-					attack1Hit = true;		//has hit enemy
+					attackHit = true;		//has hit enemy
 			}
 			else
 			{
 				if (attackAngle > 0)
-					attackAngle -= 300 * dt;
-				else if (attackScale > 0.7)
-					attackScale -= 10 * dt;
+					attackAngle -= 600 * dt;
+				else if (attackScale > 1.f)
+					attackScale -= 5 * dt;
 				else			//resolution of attack
 				{
 					enemyHealthLost = 35.f;
-					attack1Hit = false;
+					attackHit = false;
 					attackSelected = false;
 					playerTurn = false;
+					playerAttack = NO_ATTACK;
 				}
 			}
-		//case (A_ATTACK2):
+			break;
+		case (ROCKET_PUNCH):
+			if (!attackHit)
+			{
+				if (attackTranslateY < 5)
+					attackTranslateY += 15 * dt;
+				else if (attackAngle < 90)
+					attackAngle += 100 * dt;
+				else if (attackTranslateZ < 150)
+					attackTranslateZ += 300 * dt;
+				else
+				{
+					attackHit = true;
+					attackTranslateZ = 0.f;
+					attackTranslateY = 300.f;
+					attackAngle = 0.f;
+				}
+			}
+			else
+			{
+				if (attackTranslateY > 0)
+					attackTranslateY -= 150 * dt;
+				else
+				{
+					attackTranslateY = 0.f;
+					enemyHealthLost = 25.f;
+					attackHit = false;
+					attackSelected = false;
+					playerTurn = false;
+					playerAttack = NO_ATTACK;
+				}
+			}
+			break;
 		}
-		
 	}
-
 
 	if (playerHealthLost > 0)
 	{	//health total will be as if it is equal to 100 so since the scaling of health is 20 the speed would be the same as health lost / 5
@@ -709,9 +743,9 @@ void SceneMarinaBay::Render()
 	
 	//infinity pool (to be changed to fix the need for face culling, maybe)
 	modelStack.PushMatrix();
-	modelStack.Translate(47, 0.0001, z + 0);
+	modelStack.Translate(47, 0.0001, 0);
 	modelStack.Rotate(90, 1, 0, 0);
-	modelStack.Scale(30, x + 317, 1);
+	modelStack.Scale(30, 317, 1);
 	glDisable(GL_CULL_FACE);
 	RenderMesh(meshList[GEO_WATER], true);
 	glEnable(GL_CULL_FACE);
@@ -766,42 +800,45 @@ void SceneMarinaBay::Render()
 		}
 	}
 
-	modelStack.PushMatrix();
+	//might just get rid of this
+	/*modelStack.PushMatrix();
 	modelStack.Translate(x, 0, z);
 	modelStack.Scale(scale, 2*scale, scale);
 	RenderMesh(meshList[GEO_TALLTREE], true);
-	modelStack.PopMatrix();
+	modelStack.PopMatrix();*/
 	
 	if (fight)
 	{
-		//mc
 		modelStack.PushMatrix();
 		modelStack.Translate(0, 0, 200);
-		if (playerAction!=A_ATTACK1)
-			modelStack.Scale(0.7f, 0.7f, 0.7f);
-		else
-		{
-			modelStack.Rotate(attackAngle, 1, 0, 0);
-			modelStack.Scale(attackScale, attackScale, attackScale);
-		}
-		RenderMesh(meshList[GEO_MC], true);
-		modelStack.PopMatrix();
-													//still testing
-		modelStack.PushMatrix();
-		modelStack.Translate(0, 0, 200);
-		if (playerAction != A_ATTACK1)
-			modelStack.Scale(0.7f, 0.7f, 0.7f);
-		else if (playerAction == A_ATTACK2)
-		{
-
-		}
-		else
-		{
-			modelStack.Rotate(attackAngle, 1, 0, 0);
-			modelStack.Scale(attackScale, attackScale, attackScale);
-		}
 		modelStack.Scale(0.7f, 0.7f, 0.7f);
-		RenderMesh(meshList[GEO_ARM], true);
+		{
+			//mc
+			modelStack.PushMatrix();
+			//modelStack.Translate(0, 0, 200);
+			if (playerAttack == BIG)
+			{
+				modelStack.Rotate(attackAngle, 1, 0, 0);
+				modelStack.Scale(attackScale, attackScale, attackScale);
+			}
+			RenderMesh(meshList[GEO_MC], true);
+			modelStack.PopMatrix();
+			//still testing
+			modelStack.PushMatrix();
+			//modelStack.Translate(2.7, 12.3, 0);
+			if (playerAttack == BIG)
+			{
+				modelStack.Rotate(attackAngle, 1, 0, 0);
+				modelStack.Scale(attackScale, attackScale, attackScale);
+			}
+			else if (playerAttack == ROCKET_PUNCH)
+			{
+				modelStack.Translate(0, attackTranslateY, attackTranslateZ);
+				modelStack.Rotate(-attackAngle, 1, 0, 0);
+			}
+			RenderMesh(meshList[GEO_ARM], true);
+			modelStack.PopMatrix();
+		}
 		modelStack.PopMatrix();
 	}
 

@@ -117,6 +117,7 @@ class SceneMarinaBay : public Scene
 	{
 		BIG,
 		ROCKET_PUNCH,
+		NO_ATTACK,
 	};
 public:
 	Camera3 camera;
@@ -140,14 +141,15 @@ private:
 	Light light[2];
 	float x, z, scale=1.f;
 	vector<Button*> buttonList;
-	vector<ATTACK> attacksUnlocked;
+	vector<ATTACK> attacksList;		//players current attacksList 
 	ACTION_TYPE playerAction, enemyAction;
+	ATTACK playerAttack;
 	std::string fightText, dialogueText;
 	bool NPCDia;
-	bool fight, fightDia, playerTurn, enemyTurn, fightSelected, itemsSelected, backSelected, attackSelected, actionSelected, attack1Hit;
+	bool fight, fightDia, playerTurn, enemyTurn, fightSelected, itemsSelected, backSelected, attackSelected, actionSelected, attackHit;
 	float cooldownTimer;
 	float pointerX, pointerY, playerHealth, playerHealthPos, playerHealthLost, enemyHealth, enemyHealthPos, enemyHealthLost;
-	float attackScale, attackAngle, attackTranslate;
+	float attackScale, attackAngle, attackTranslateY, attackTranslateZ;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
