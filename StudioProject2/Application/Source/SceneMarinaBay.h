@@ -157,7 +157,7 @@ private:
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
 	float x, z, scale=1.f;
-	vector<Button*> buttonList;
+	vector<Button*> buttonList;		//button list, button positions are the same as the action enums
 	vector<ATTACK> attacksList;		//players current attacksList 
 	ACTION_TYPE playerAction, enemyAction;
 	ATTACK playerAttack;
