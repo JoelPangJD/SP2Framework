@@ -33,14 +33,15 @@ class SceneMarinaBay : public Scene
 		GEO_CRESCENT,
 		GEO_FRUSTUM,
 
+		//skybox
 		GEO_LEFT,
 		GEO_RIGHT,
 		GEO_TOP,
 		GEO_BOTTOM,
 		GEO_FRONT,
 		GEO_BACK,
-		GEO_INVENTORY,
 
+		//environment
 		GEO_BOAT,
 		GEO_TREE,
 		GEO_TALLTREE,
@@ -53,11 +54,13 @@ class SceneMarinaBay : public Scene
 		GEO_LOSTHEALTH,
 		GEO_MC,
 		GEO_ARM,
+		GEO_SWORD,
 
-		//text 
+		//text/UI
 		GEO_TEXTBOX,
 		GEO_TEXT,
 		GEO_HEADER,
+		GEO_INVENTORY,
 
 		NUM_GEOMETRY,
 	};
@@ -123,6 +126,7 @@ class SceneMarinaBay : public Scene
 	{
 		BIG,
 		ROCKET_PUNCH,
+		MIND_POWERS,
 		NO_ATTACK,
 	};
 	enum ENEMY_ATTACKS
@@ -166,10 +170,11 @@ private:
 	//player's
 	float attackScale, attackAngle, attackTranslateY, attackTranslateZ;
 	//dragon enemy's 
+	bool enemyAttackHit;
 	//idle
 	float idleHands, idleBounce, idleMouth, idleBreath, idleNeck, idleHead;
 	int idleHandsDir, idleBounceDir, idleMouthDir, idleBreathDir, idleNeckDir, idleHeadDir;
-	//spear
+	//spear/bite
 	float enemyAttackAngle, enemyAttackMove, enemyAttackScale;
 	//going down thing
 	float move, moveAngle, timer, moveBack;
