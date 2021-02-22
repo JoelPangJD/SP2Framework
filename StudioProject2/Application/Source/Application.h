@@ -1,8 +1,8 @@
-
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
 #include "timer.h"
+#include "Inventory.h"
 
 class Application
 {

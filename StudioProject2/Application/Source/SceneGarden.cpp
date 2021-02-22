@@ -320,10 +320,14 @@ void SceneGarden::Update(double dt)
 
 	if (minigame == 0) //When not in minigame
 	{
+		//======================================
+		//         Interactions code
+		//======================================
 		if(!indialogue)//Don't move while in a dialogue
 			camera.Update(dt);
 		//Check collisions
 		{
+			int counter = 0;
 			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 			{
 				if ((*it)->spherecollider(camera.target)) // Checks if the target is within a radius of the stick
@@ -331,13 +335,21 @@ void SceneGarden::Update(double dt)
 					int interacttype = (*it)->interact();
 					if (interacttext.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
 					{
-						if (interacttype == 1)// 1 is look at
+						if (Application::IsKeyPressed('F'))// 1 is look at
 						{
 							dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
 							currentline = dialogue.begin(); //Currentline is set at the look at description
 							indialogue = true;//Set state to in dialogue
 						}
-						if (interacttype == 4) //4 is talk to
+						if (Application::IsKeyPressed('G'))
+						{
+							for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+							{
+								inventory.additem((*it));
+								items.erase(items.begin() + counter);
+							}
+						}
+						if (Application::IsKeyPressed('T')) //4 is talk to
 						{
 							dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
 							currentline = dialogue.begin(); //Currentline iteratior as the first line of dialogue
@@ -356,6 +368,7 @@ void SceneGarden::Update(double dt)
 						}
 					}
 				}
+				counter++;
 			}
 			for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
 			{
@@ -379,6 +392,7 @@ void SceneGarden::Update(double dt)
 				meshList[GEO_TORUSPLAYER]->material = materialList[M_TORUSBAD];
 				catching = 0;
 			}
+			int counter = 0;
 			switch (catching)
 			{
 			case 1:
@@ -407,7 +421,16 @@ void SceneGarden::Update(double dt)
 				break;
 			case 7: //If case 4, minigame is won
 				cout << "minigame complete!"<< endl;
-				//add fish to inventory
+				for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+				{
+					if ((*it)->gettype() == "fish")
+					{
+						inventory.additem((*it));
+						items.erase(items.begin()+counter);
+						break;
+					}
+					counter++;
+				}
 				camera = prevcamera;
 				minigame = 0;
 			default:
@@ -461,6 +484,7 @@ void SceneGarden::Update(double dt)
 	{
 		prevcamera = camera;
 		camera.Init(Vector3(0, 50, -150), Vector3(0, 0, -150), Vector3(0, 0, 1));
+		catching = 6;
 		minigame = 1;
 	}
 
@@ -612,6 +636,14 @@ void SceneGarden::RenderUI()
 	{
 		modelStack.PushMatrix();
 		RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
+		int ypos = 52;
+		vector<InteractableObject*> inventorycontent = inventory.getstorage();
+		for (std::vector<InteractableObject*>::iterator it = inventorycontent.begin(); it != inventorycontent.end(); it++)
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT], (*it)->gettype() , Color(0, 1, 0), 2, 2, ypos);
+			ypos -= 2;
+
+		}
 		std::ostringstream ss;
 		ss << "FPS: " << fps;
 		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 58, 68);
@@ -1086,7 +1118,7 @@ void SceneGarden::Render()
 		RenderUI();
 	else if (minigame == 1)
 	{
-		RenderMinigameScreen("Press the E when the rings overlap, do it sucessfully 3 times in a row to catch a fish", "Fishing", 6);
+		RenderMinigameScreen("Press the space when the rings overlap, do it sucessfully 8 times in a row to catch a fish", "Fishing", 6);
 		if (Application::IsKeyPressed('E')) //Press E to start the minigame
 		{
 			circlescale2 = 1;

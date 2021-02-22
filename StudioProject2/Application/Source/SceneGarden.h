@@ -8,6 +8,7 @@
 #include "Entity.h"
 #include "InteractableObject.h"
 #include "Terrain.h"
+#include "Inventory.h"
 #include <iostream>
 #include <vector>
 #include <sstream>
@@ -114,6 +115,7 @@ class SceneGarden : public Scene
 	};
 
 public:
+	Inventory inventory;
 	Camera3 camera;
 	bool lighton = true;
 	bool hitboxshow = false;
