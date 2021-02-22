@@ -109,10 +109,11 @@ public:
 
 	float rotateL;
 	float rotateR;
-	float movex;
+	float movex = 0;
+	float camMove = 0;
 	float movez;
 	float wordY = 0;
-	float gravity = 1;
+	float scale = 1;
 
 	SceneChangi();
 	~SceneChangi();

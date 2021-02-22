@@ -254,10 +254,10 @@ void SceneChangi::Update(double dt)
 	}
 
 
-	if (Application::IsKeyPressed('I'))
-	{
-		movex -= 1;
-	}
+	//if (Application::IsKeyPressed('I'))
+	//{
+	//	movex -= 1;
+	//}
 	if (Application::IsKeyPressed('K'))
 	{
 		movex += 1;
@@ -280,16 +280,35 @@ void SceneChangi::Update(double dt)
 		welcome = false;
 	}
 
-	wordY += (float)(8 * gravity * dt);
+	wordY += (float)(8 * scale * dt);
 	if (wordY > 3)
 	{
-		gravity = -1;
+		scale = -1;
 	}
 	if (wordY < 0)
 	{
-		gravity = 1;
+		scale = 1;
 	}
 
+	movex += (float)(80 * scale * dt);
+	if (movex > 300)
+	{
+		scale = -1;
+	}
+	if (movex < 0)
+	{
+		scale = 1;
+	}
+
+	camMove = 1.36;
+	//if (camMove > 300)
+	//{
+	//	scale = -1;
+	//}
+	//if (movex < 0)
+	//{
+	//	scale = 1;
+	//}
 }
 
 void SceneChangi::RenderMesh(Mesh* mesh, bool enableLight)
@@ -422,14 +441,19 @@ void SceneChangi::RenderEntity()
 	modelStack.PopMatrix();
 
 	if (takeFlight == true) {
+
+		camera.position.x = camera.position.x - camMove;
+
 		modelStack.PushMatrix();
 		modelStack.Translate(10 + movex, 17, -6.5 + movez);
 		modelStack.Rotate(-90, 0, 1, 0);
 		modelStack.Scale(7, 7, 7);
 		RenderMesh(meshList[GEO_PLANE], true);
 		modelStack.PopMatrix();
-	}
 
+
+	}
+	
 	modelStack.PushMatrix();
 	modelStack.Translate(10, 0, 343);
 	modelStack.Rotate(-90, 0, 1, 0);
@@ -719,11 +743,17 @@ void SceneChangi::RenderWords()
 		RenderTextOnScreen(meshList[GEO_TEXT], "Unidentified aircraft has been detected", Color(1, 0, 0), 3.5, 2, 12);
 		RenderTextOnScreen(meshList[GEO_TEXT], "Send Help :<", Color(1, 0, 0), 8, 2, 4.2);
 		RenderTextOnScreen(meshList[GEO_TEXT], "[F] to take flight ", Color(1, 0, 0), 5, 3.3, 2);
+		
 		if (Application::IsKeyPressed('F') )
 		{
+
+			camera.position.x = -18;
+			camera.position.y = 260;
+			camera.position.z = 0;
+			camera.phi = -90;
+
 			takeFlight = true;
 		}
-	
 	}
 }
 
