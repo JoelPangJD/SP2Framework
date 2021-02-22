@@ -41,6 +41,7 @@ class SceneMain : public Scene
 		Panel,
 		Red,
 		Green,
+		Teacher,
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE
