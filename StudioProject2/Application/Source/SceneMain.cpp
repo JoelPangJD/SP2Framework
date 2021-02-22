@@ -235,7 +235,7 @@ void SceneMain::Init()
 	}
 	pass = false;
 	
-	items.push_back(new InteractableObject(Vector3(-2, 2, 0), 0, 2, 4, "mrSazz"));
+	items.push_back(new InteractableObject(Vector3(-2, 2, 0), 0, 2, 4, "Mr.Sazz"));
 }
 
 
@@ -395,8 +395,6 @@ void SceneMain::RenderSkybox()
 
 void SceneMain::RenderUI()
 {
-
-
 	if (inDialogue)
 	{
 		string dialoguetext = (*currentLine);
@@ -527,7 +525,7 @@ void SceneMain::updateDialogue()
 						name = (*it)->gettype(); //Set the name of the npc the player talks to
 						inDialogue = true;//Set state to in dialogue
 					}
-					if ((*it)->gettype() == "mrSazz")
+					if ((*it)->gettype() == "Mr.Sazz")
 					{
 						interactText << "MrSazz";
 						break;
