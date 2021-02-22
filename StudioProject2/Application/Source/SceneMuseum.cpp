@@ -239,6 +239,7 @@ void SceneMuseum::Update(double dt)
 
 	if (ShowPreview == false || CorrectAnswer == true)
 	{
+		Application::enableMouse = false;
 		camera.Update(dt);
 		//check for wall detection
 		for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
@@ -249,10 +250,10 @@ void SceneMuseum::Update(double dt)
 
 	//Mouse Inputs
 	static bool bLButtonState = false;
-	int BUTTON_LEFT = 10.6;
-	int BUTTON_RIGHT = 21.5;
-	int BUTTON_BOTTOM = 20.8;
-	int BUTTON_TOP = 2.2;
+	int BUTTON_TOP = 52.9;
+	int BUTTON_BOTTOM = 34.4;
+	int BUTTON_LEFT = 40.7;
+	int BUTTON_RIGHT = 51.5;
 	if (!bLButtonState && Application::IsMousePressed(0))
 	{
 		bLButtonState = true;
@@ -263,13 +264,14 @@ void SceneMuseum::Update(double dt)
 		unsigned w = Application::GetWindowWidth();
 		unsigned h = Application::GetWindowHeight();
 		float posX = x / 10; //convert (0,800) to (0,80)
-		float posY = y / 10; //convert (600,0) to (0,60)
+		float posY = 60 - y / 10;//convert (600,0) to (0,60)
 		std::cout << "posX:" << posX << " , posY:" << posY << std::endl;
 		if (posX > BUTTON_LEFT && posX < BUTTON_RIGHT && posY > BUTTON_BOTTOM && posY < BUTTON_TOP)
 		{
 			Application::enableMouse = false;
 			CorrectAnswer = true;
 			terrains.erase(terrains.begin() + 19);
+			ShowFirstGame = false;
 			std::cout << "Hit!" << std::endl;
 			//trigger user action or function
 		}
@@ -716,13 +718,10 @@ void SceneMuseum::StartGame1()
 		RenderInteractableText();
 		if (Application::IsKeyPressed('E'))
 		{
-			WhenEisPressed = true;
 			ShowPreview = true;
 		}
 		if (ShowPreview == true && Application::IsKeyPressed('R'))
 		{
-			WhenRisPressed = true;
-			terrains.erase(terrains.begin() + 19);
 			ShowPreview = false;
 		}
 	}
@@ -754,7 +753,7 @@ void SceneMuseum::StartGame1()
 		Application::enableMouse = true;
 		//Goes to some orange background to view image
 		camera.Init(Vector3(-270.713, 10, 100), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
-		RenderMeshOnScreen(meshList[GEO_SELECTION], 40, 30, 80, 70);
+		RenderMeshOnScreen(meshList[GEO_SELECTION], 70, 25, 80, 70);
 	}
 
 }

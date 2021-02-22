@@ -145,6 +145,7 @@ void SceneMain::Init()
 	meshList[Panel] = MeshBuilder::GenerateQuad("securitypanel", Color(1, 1, 1), 10.f);
 	meshList[Panel]->textureID = LoadTGA("Image//CityCenter//SecurityPanel.tga");
 	meshList[Red] = MeshBuilder::GenerateQuad("red", Color(1, 0, 0), 1.f);
+	meshList[Green] = MeshBuilder::GenerateQuad("green", Color(0, 1, 0), 1.f);
 	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.5f, 0.2f, 0.0f), 1);
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(0.5, 0.5, 0.5), 10, 10, 10);
 	meshList[GEO_SPHERE]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
@@ -194,12 +195,39 @@ void SceneMain::Init()
 	fin.close();
 	inFrontOfMuseum = false;
 	minigameMuseum = false;
-	redPos.x = 15;
-	redPos.y = 45;
 
-	yes.positionX = 6; yes.positionY = 6; yes.width = yes.height = 33;
-	no.positionX = 41; no.positionY = 6; no.width = no.height = 33;
-	enter.positionX = 20; enter.positionY = 11; enter.width = 34; enter.height = 3;
+
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			Vector3* gridPos = new Vector3(33.5 + (16.5 * j), 13.5 + (16.5 * i), 0);
+			grids[(i * 3) + j] = gridPos;
+		}
+	}
+	int height, width;
+	height = width = 15;
+	for (int i = 0; i < 9; i++) {
+		if ((i == 3) || (i == 4) || (i == 5)) {
+			height = 16;
+		}
+		else {
+			height = 15;
+		}
+		if ((i == 1) || (i == 4) || (i == 7)) {
+			width = 16;
+		}
+		else {
+			width = 15;
+		}
+		gridButton[i].positionX = grids[i]->x - width/2;
+		gridButton[i].positionY = grids[i]->y - height / 2;
+		gridButton[i].width = width;
+		gridButton[i].height = height;
+		gridButton[i].active = true;
+		colorGrid[i] = "Red";
+	}
+	pass = false;
+	
+	
 }
 
 
@@ -246,13 +274,10 @@ void SceneMain::Update(double dt)
 	//minigame for entering museum
 	if (minigameMuseum == true) {
 		Application::enableMouse = true;
-		enter.active = true;
-		enter.updateButton();
-		if (enter.isClickedOn() == true){
+		if (pass == true){
 			minigameMuseum = false;
 			Application::enableMouse = false;
 			Application::SwitchScene = 1;
-			enter.active = yes.active = no.active = false;
 		}
 		updateMinigame(dt);
 	}
@@ -369,53 +394,75 @@ void SceneMain::RenderUI()
 void SceneMain::RenderMinigame()
 {
 	RenderMeshOnScreen(meshList[Panel], 40, 30, 7, 5);
-	RenderTextOnScreen(meshList[GEO_TEXT], "Click here to enter", Color(0, 0, 0), 6, 20, 10);
-	RenderMeshOnScreen(meshList[Red], redPos.x, redPos.y, 2, 2);
+	int width, height;
+	width = height = 15;
+	RenderTextOnScreen(meshList[GEO_TEXT], "Turn all squares", Color(0, 0, 0), 3, 8, 50);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Green to enter", Color(0, 0, 0), 3, 8, 46);
+	RenderTextOnScreen(meshList[GEO_TEXT], "the museum.", Color(0, 0, 0), 3, 8, 42);
+	for (int i = 0; i < 9; i++) {
+
+		if ((i == 3) || (i == 4) || (i == 5)) {
+			height = 16;
+		}
+		else {
+			height = 15;
+		}
+		if ((i == 1) || (i == 4) || (i == 7)) {
+			width = 16;
+		}
+		else {
+			width = 15;
+		}
+		if (colorGrid[i] == "Red") {
+			RenderMeshOnScreen(meshList[Red], grids[i]->x, grids[i]->y, width, height);
+		}
+		else if (colorGrid[i] == "Green") {
+			RenderMeshOnScreen(meshList[Green], grids[i]->x, grids[i]->y, width, height);
+		}
+	}
 
 }
 
 void SceneMain::updateMinigame(double dt)
 {
-	if (Application::IsKeyPressed('W')) {
-		redPos.y += 10 * (float)dt;
+	for (int i = 0; i < 9; i++) {
+		gridButton[i].updateButton();
+		if (gridButton[i].isClickedOn()) {
+			if (colorGrid[i] == "Red") {
+				colorGrid[i] = "Green";
+			}
+			else {
+				colorGrid[i] = "Red";
+			}
+		}
 	}
-	if (Application::IsKeyPressed('A')) {
-		redPos.x -= 10 * (float)dt;
-	}
-	if (Application::IsKeyPressed('S')) {
-		redPos.y -= 10 * (float)dt;
-	}
-	if (Application::IsKeyPressed('D')) {
-		redPos.x += 10 * (float)dt;
-	}
-	yes.active = no.active = true;
-	yes.updateButton();
-	no.updateButton();
-	
 
-	if (yes.isClickedOn()) {
-		std::cout << "yes!" << "\n";
+	for (int i = 0; i < 9; i++) {
+		if (colorGrid[i] == "Red") {
+			break;
+		}
+		else if (i == 8) {
+			pass = true;
+		}
 	}
-	if (no.isClickedOn()) {
-		std::cout << "no!" << "\n";
-	}
-	//static bool bLButtonState1 = false;
-	//if (!bLButtonState1 && Application::IsMousePressed(0))
-	//{
-	//	bLButtonState1 = true;
 
-	//	double x, y;
-	//	Application::GetCursorPos(&x, &y);
-	//	unsigned w = Application::GetWindowWidth();
-	//	unsigned h = Application::GetWindowHeight();
-	//	float posX = x / 10;
-	//	float posY = 60 - y / 10;
-	//	std::cout << posX << " " << posY << "\n";
-	//}
-	//else if (bLButtonState1 && !Application::IsMousePressed(0))
-	//{
-	//	bLButtonState1 = false;
-	//}
+	/*static bool bLButtonState1 = false;
+	if (!bLButtonState1 && Application::IsMousePressed(0))
+	{
+		bLButtonState1 = true;
+
+		double x, y;
+		Application::GetCursorPos(&x, &y);
+		unsigned w = Application::GetWindowWidth();
+		unsigned h = Application::GetWindowHeight();
+		float posX = x / 10;
+		float posY = 60 - y / 10;
+		std::cout << posX << " " << posY << "\n";
+	}
+	else if (bLButtonState1 && !Application::IsMousePressed(0))
+	{
+		bLButtonState1 = false;
+	}*/
 }
 void SceneMain::RenderText(Mesh* mesh, std::string text, Color color)
 {
@@ -471,7 +518,6 @@ void SceneMain::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 
 
 	float totalspace = 0.5f;
-	float totalz = 0;
 
 
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
@@ -503,7 +549,7 @@ void SceneMain::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 	glEnable(GL_DEPTH_TEST);
 }
 
-void SceneMain::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
+void SceneMain::RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int sizey)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -671,11 +717,6 @@ void SceneMain::Render()
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	modelStack.Translate(-2.5, 9, -27.4);
-	modelStack.Scale(2, 2, 2);
-	RenderText(meshList[GEO_TEXT], "Botanic Garden", Color(0, 0, 0));
-	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Scale(5, 5, 5);
@@ -713,6 +754,30 @@ void SceneMain::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
+	modelStack.Translate(-7, 0, -30);
+	modelStack.Scale(10, 10, 10);
+	RenderMesh(meshList[TREE], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(7, 0, -33);
+	modelStack.Scale(10, 10, 10);
+	RenderMesh(meshList[TREE], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(1, 0, -38);
+	modelStack.Scale(10, 10, 10);
+	RenderMesh(meshList[TREE], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-2.5, 9, -27.4);
+	modelStack.Scale(2, 2, 2);
+	RenderText(meshList[GEO_TEXT], "Botanic Garden", Color(0, 0, 0));
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, 0);
 	modelStack.Scale(7, 7, 7);
 	RenderMesh(meshList[Lamp], true);
@@ -724,6 +789,7 @@ void SceneMain::Render()
 	if (minigameMuseum == true) {
 		RenderMinigame();
 	}
+
 }
 
 void SceneMain::Exit()

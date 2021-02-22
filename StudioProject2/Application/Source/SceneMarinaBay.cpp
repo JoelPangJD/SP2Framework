@@ -18,18 +18,32 @@ SceneMarinaBay::~SceneMarinaBay()
 
 void SceneMarinaBay::Init()
 {
-	buttonList.push_back(new Button(0, 11, 20, 5.5));	//attack
-	buttonList.push_back(new Button(0, 5.5, 20, 5.5));	//items
-	buttonList.push_back(new Button(0, 0, 20, 5.5));	//run
+	buttonList.push_back(new Button(0, 11, 20, 5.5, true));	//attack
+	buttonList.push_back(new Button(0, 5.5, 20, 5.5, true));	//items
+	buttonList.push_back(new Button(0, 0, 20, 5.5, true));	//run
+	buttonList.push_back(new Button(21, 8.25, 30, 8.25));	//attack1
+	buttonList.push_back(new Button(21, 0, 30, 8.25));	//attack2
+
+	//temp storage of attacks, will change for future minigame purposes
+	attacksList.push_back(BIG);
+	attacksList.push_back(ROCKET_PUNCH);
 	//======Initialising variables========
 	pointerX = 2;
 	pointerY = 11;
 	enemyHealthPos = 20.f;
 	playerHealthPos = 60.f;
 	enemyHealth = playerHealth = 0;
-	fight = false;
-	NPCDia = true;
-
+	NPCDia = false;
+	attackScale = 1.f;
+	playerTurn = true;
+	playerAttack = NO_ATTACK;
+	//dragon animations
+	movement = goneDown = attack = false, idle = true;
+	move = moveAngle = timer = 0;
+	idleMouth = idleHands = idleBounce = idleNeck = idleHead = 0;
+	enemyAttackAngle = enemyAttackMove = 0;
+	idleBreath = enemyAttackScale = 1;
+	idleHandsDir = idleBounceDir = idleMouthDir = idleBreathDir = idleNeckDir = idleHeadDir = 1;
 	//======Matrix stack========
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
@@ -37,177 +51,228 @@ void SceneMarinaBay::Init()
 	//==========================
 	//camera.Init(Vector3(0, 8, 0), Vector3(0, 8, 5), Vector3(0, 1, 0));
 	camera.Init(Vector3(90, 40, 240), Vector3(0, 8, 240), Vector3(0, 1, 0));
-	// Enable depth test
-	glEnable(GL_DEPTH_TEST);
+	// Enable depth test		//just so i have to scroll less
+	{
+		glEnable(GL_DEPTH_TEST);
 
-	// Enable blending
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		// Enable blending
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	// Enable face culling
-	glEnable(GL_CULL_FACE);
+		// Enable face culling
+		glEnable(GL_CULL_FACE);
 
-	// Set background color to dark blue
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+		// Set background color to dark blue
+		glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-	// Generate a default VAO for now
-	glGenVertexArrays(1, &m_vertexArrayID);
-	glBindVertexArray(m_vertexArrayID);
+		// Generate a default VAO for now
+		glGenVertexArrays(1, &m_vertexArrayID);
+		glBindVertexArray(m_vertexArrayID);
 
-	//=============================================================================================
-	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
-	m_parameters[U_COLOR_TEXTURE_ENABLED] = glGetUniformLocation(m_programID, "colorTextureEnabled");
-	m_parameters[U_COLOR_TEXTURE] = glGetUniformLocation(m_programID, "colorTexture");
-	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
-	m_parameters[U_MODELVIEW] = glGetUniformLocation(m_programID, "MV");
-	m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE] = glGetUniformLocation(m_programID, "MV_inverse_transpose");
-	m_parameters[U_MATERIAL_AMBIENT] = glGetUniformLocation(m_programID, "material.kAmbient");
-	m_parameters[U_MATERIAL_DIFFUSE] = glGetUniformLocation(m_programID, "material.kDiffuse");
-	m_parameters[U_MATERIAL_SPECULAR] = glGetUniformLocation(m_programID, "material.kSpecular");
-	m_parameters[U_MATERIAL_SHININESS] = glGetUniformLocation(m_programID, "material.kShininess");
-	m_parameters[U_LIGHT0_POSITION] = glGetUniformLocation(m_programID, "lights[0].position_cameraspace");
-	m_parameters[U_LIGHT0_COLOR] = glGetUniformLocation(m_programID, "lights[0].color");
-	m_parameters[U_LIGHT0_POWER] = glGetUniformLocation(m_programID, "lights[0].power");
-	m_parameters[U_LIGHT0_KC] = glGetUniformLocation(m_programID, "lights[0].kC");
-	m_parameters[U_LIGHT0_KL] = glGetUniformLocation(m_programID, "lights[0].kL");
-	m_parameters[U_LIGHT0_KQ] = glGetUniformLocation(m_programID, "lights[0].kQ");
-	m_parameters[U_LIGHTENABLED] = glGetUniformLocation(m_programID, "lightEnabled");
-	m_parameters[U_LIGHT0_TYPE] = glGetUniformLocation(m_programID, "lights[0].type");
-	m_parameters[U_LIGHT0_SPOTDIRECTION] = glGetUniformLocation(m_programID, "lights[0].spotDirection");
-	m_parameters[U_LIGHT0_COSCUTOFF] = glGetUniformLocation(m_programID, "lights[0].cosCutoff");
-	m_parameters[U_LIGHT0_COSINNER] = glGetUniformLocation(m_programID, "lights[0].cosInner");
-	m_parameters[U_LIGHT0_EXPONENT] = glGetUniformLocation(m_programID, "lights[0].exponent");
+		//=============================================================================================
+		m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
+		m_parameters[U_COLOR_TEXTURE_ENABLED] = glGetUniformLocation(m_programID, "colorTextureEnabled");
+		m_parameters[U_COLOR_TEXTURE] = glGetUniformLocation(m_programID, "colorTexture");
+		m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
+		m_parameters[U_MODELVIEW] = glGetUniformLocation(m_programID, "MV");
+		m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE] = glGetUniformLocation(m_programID, "MV_inverse_transpose");
+		m_parameters[U_MATERIAL_AMBIENT] = glGetUniformLocation(m_programID, "material.kAmbient");
+		m_parameters[U_MATERIAL_DIFFUSE] = glGetUniformLocation(m_programID, "material.kDiffuse");
+		m_parameters[U_MATERIAL_SPECULAR] = glGetUniformLocation(m_programID, "material.kSpecular");
+		m_parameters[U_MATERIAL_SHININESS] = glGetUniformLocation(m_programID, "material.kShininess");
+		m_parameters[U_LIGHT0_POSITION] = glGetUniformLocation(m_programID, "lights[0].position_cameraspace");
+		m_parameters[U_LIGHT0_COLOR] = glGetUniformLocation(m_programID, "lights[0].color");
+		m_parameters[U_LIGHT0_POWER] = glGetUniformLocation(m_programID, "lights[0].power");
+		m_parameters[U_LIGHT0_KC] = glGetUniformLocation(m_programID, "lights[0].kC");
+		m_parameters[U_LIGHT0_KL] = glGetUniformLocation(m_programID, "lights[0].kL");
+		m_parameters[U_LIGHT0_KQ] = glGetUniformLocation(m_programID, "lights[0].kQ");
+		m_parameters[U_LIGHTENABLED] = glGetUniformLocation(m_programID, "lightEnabled");
+		m_parameters[U_LIGHT0_TYPE] = glGetUniformLocation(m_programID, "lights[0].type");
+		m_parameters[U_LIGHT0_SPOTDIRECTION] = glGetUniformLocation(m_programID, "lights[0].spotDirection");
+		m_parameters[U_LIGHT0_COSCUTOFF] = glGetUniformLocation(m_programID, "lights[0].cosCutoff");
+		m_parameters[U_LIGHT0_COSINNER] = glGetUniformLocation(m_programID, "lights[0].cosInner");
+		m_parameters[U_LIGHT0_EXPONENT] = glGetUniformLocation(m_programID, "lights[0].exponent");
 
-	m_parameters[U_LIGHT1_POSITION] = glGetUniformLocation(m_programID, "lights[1].position_cameraspace");
-	m_parameters[U_LIGHT1_COLOR] = glGetUniformLocation(m_programID, "lights[1].color");
-	m_parameters[U_LIGHT1_POWER] = glGetUniformLocation(m_programID, "lights[1].power");
-	m_parameters[U_LIGHT1_KC] = glGetUniformLocation(m_programID, "lights[1].kC");
-	m_parameters[U_LIGHT1_KL] = glGetUniformLocation(m_programID, "lights[1].kL");
-	m_parameters[U_LIGHT1_KQ] = glGetUniformLocation(m_programID, "lights[1].kQ");
-	m_parameters[U_LIGHT1_TYPE] = glGetUniformLocation(m_programID, "lights[1].type");
-	m_parameters[U_LIGHT1_SPOTDIRECTION] = glGetUniformLocation(m_programID, "lights[1].spotDirection");
-	m_parameters[U_LIGHT1_COSCUTOFF] = glGetUniformLocation(m_programID, "lights[1].cosCutoff");
-	m_parameters[U_LIGHT1_COSINNER] = glGetUniformLocation(m_programID, "lights[1].cosInner");
-	m_parameters[U_LIGHT1_EXPONENT] = glGetUniformLocation(m_programID, "lights[1].exponent");
+		m_parameters[U_LIGHT1_POSITION] = glGetUniformLocation(m_programID, "lights[1].position_cameraspace");
+		m_parameters[U_LIGHT1_COLOR] = glGetUniformLocation(m_programID, "lights[1].color");
+		m_parameters[U_LIGHT1_POWER] = glGetUniformLocation(m_programID, "lights[1].power");
+		m_parameters[U_LIGHT1_KC] = glGetUniformLocation(m_programID, "lights[1].kC");
+		m_parameters[U_LIGHT1_KL] = glGetUniformLocation(m_programID, "lights[1].kL");
+		m_parameters[U_LIGHT1_KQ] = glGetUniformLocation(m_programID, "lights[1].kQ");
+		m_parameters[U_LIGHT1_TYPE] = glGetUniformLocation(m_programID, "lights[1].type");
+		m_parameters[U_LIGHT1_SPOTDIRECTION] = glGetUniformLocation(m_programID, "lights[1].spotDirection");
+		m_parameters[U_LIGHT1_COSCUTOFF] = glGetUniformLocation(m_programID, "lights[1].cosCutoff");
+		m_parameters[U_LIGHT1_COSINNER] = glGetUniformLocation(m_programID, "lights[1].cosInner");
+		m_parameters[U_LIGHT1_EXPONENT] = glGetUniformLocation(m_programID, "lights[1].exponent");
 
-	m_parameters[U_NUMLIGHTS] = glGetUniformLocation(m_programID, "numLights");
+		m_parameters[U_NUMLIGHTS] = glGetUniformLocation(m_programID, "numLights");
 
-	glUseProgram(m_programID);
-	glUniform1i(m_parameters[U_NUMLIGHTS], 2);
+		glUseProgram(m_programID);
+		glUniform1i(m_parameters[U_NUMLIGHTS], 2);
 
-	Mesh::SetMaterialLoc(m_parameters[U_MATERIAL_AMBIENT],
-		m_parameters[U_MATERIAL_DIFFUSE],
-		m_parameters[U_MATERIAL_SPECULAR],
-		m_parameters[U_MATERIAL_SHININESS]);
+		Mesh::SetMaterialLoc(m_parameters[U_MATERIAL_AMBIENT],
+			m_parameters[U_MATERIAL_DIFFUSE],
+			m_parameters[U_MATERIAL_SPECULAR],
+			m_parameters[U_MATERIAL_SHININESS]);
 
-	// Get a handle for our "textColor" uniform
-	m_parameters[U_TEXT_ENABLED] = glGetUniformLocation(m_programID, "textEnabled");
-	m_parameters[U_TEXT_COLOR] = glGetUniformLocation(m_programID, "textColor");
-	//==================Initialise light0===========
-	light[0].type = Light::LIGHT_POINT;
-	light[0].position.Set(0, 0, 90);
-	light[0].color.Set(0.24725f, 0.1995f, 0.0745f);
-	light[0].power = 0;
-	light[0].kC = 1.f;
-	light[0].kL = 0.01f;
-	light[0].kQ = 0.001f;
-	light[0].cosCutoff = cos(Math::DegreeToRadian(45));
-	light[0].cosInner = cos(Math::DegreeToRadian(30));
-	light[0].exponent = 3.f;
-	light[0].spotDirection.Set(0.5f, 1.f, 0.f);
+		// Get a handle for our "textColor" uniform
+		m_parameters[U_TEXT_ENABLED] = glGetUniformLocation(m_programID, "textEnabled");
+		m_parameters[U_TEXT_COLOR] = glGetUniformLocation(m_programID, "textColor");
+		//==================Initialise light0===========
+		light[0].type = Light::LIGHT_POINT;
+		light[0].position.Set(0, 0, 90);
+		light[0].color.Set(0.24725f, 0.1995f, 0.0745f);
+		light[0].power = 0;
+		light[0].kC = 1.f;
+		light[0].kL = 0.01f;
+		light[0].kQ = 0.001f;
+		light[0].cosCutoff = cos(Math::DegreeToRadian(45));
+		light[0].cosInner = cos(Math::DegreeToRadian(30));
+		light[0].exponent = 3.f;
+		light[0].spotDirection.Set(0.5f, 1.f, 0.f);
 
-	glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	glUniform3fv(m_parameters[U_LIGHT0_COLOR], 1, &light[0].color.r);
-	glUniform1f(m_parameters[U_LIGHT0_POWER], light[0].power);
-	glUniform1f(m_parameters[U_LIGHT0_KC], light[0].kC);
-	glUniform1f(m_parameters[U_LIGHT0_KL], light[0].kL);
-	glUniform1f(m_parameters[U_LIGHT0_KQ], light[0].kQ);
-	glUniform1f(m_parameters[U_LIGHT0_COSCUTOFF], light[0].cosCutoff);
-	glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
-	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
+		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
+		glUniform3fv(m_parameters[U_LIGHT0_COLOR], 1, &light[0].color.r);
+		glUniform1f(m_parameters[U_LIGHT0_POWER], light[0].power);
+		glUniform1f(m_parameters[U_LIGHT0_KC], light[0].kC);
+		glUniform1f(m_parameters[U_LIGHT0_KL], light[0].kL);
+		glUniform1f(m_parameters[U_LIGHT0_KQ], light[0].kQ);
+		glUniform1f(m_parameters[U_LIGHT0_COSCUTOFF], light[0].cosCutoff);
+		glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
+		glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
 
-	//==================Initialise light1===========
-	light[1].type = Light::LIGHT_DIRECTIONAL;
-	light[1].position.Set(-10, 20, 0);
-	light[1].color.Set(1, 1, 1);
-	light[1].power = 1.3f;
-	light[1].kC = 1.5f;
-	light[1].kL = 0.01f;
-	light[1].kQ = 0.001f;
-	light[1].cosCutoff = cos(Math::DegreeToRadian(45));
-	light[1].cosInner = cos(Math::DegreeToRadian(30));
-	light[1].exponent = 3.f;
-	light[1].spotDirection.Set(0.f, 1.f, 0.f);
+		//==================Initialise light1===========
+		light[1].type = Light::LIGHT_DIRECTIONAL;
+		light[1].position.Set(-10, 20, 0);
+		light[1].color.Set(1, 1, 1);
+		light[1].power = 1.3f;
+		light[1].kC = 1.5f;
+		light[1].kL = 0.01f;
+		light[1].kQ = 0.001f;
+		light[1].cosCutoff = cos(Math::DegreeToRadian(45));
+		light[1].cosInner = cos(Math::DegreeToRadian(30));
+		light[1].exponent = 3.f;
+		light[1].spotDirection.Set(0.f, 1.f, 0.f);
 
-	glUniform1i(m_parameters[U_LIGHT1_TYPE], light[1].type);
-	glUniform3fv(m_parameters[U_LIGHT1_COLOR], 1, &light[1].color.r);
-	glUniform1f(m_parameters[U_LIGHT1_POWER], light[1].power);
-	glUniform1f(m_parameters[U_LIGHT1_KC], light[1].kC);
-	glUniform1f(m_parameters[U_LIGHT1_KL], light[1].kL);
-	glUniform1f(m_parameters[U_LIGHT1_KQ], light[1].kQ);
-	glUniform1f(m_parameters[U_LIGHT1_COSCUTOFF], light[1].cosCutoff);
-	glUniform1f(m_parameters[U_LIGHT1_COSINNER], light[1].cosInner);
-	glUniform1f(m_parameters[U_LIGHT1_EXPONENT], light[1].exponent);
+		glUniform1i(m_parameters[U_LIGHT1_TYPE], light[1].type);
+		glUniform3fv(m_parameters[U_LIGHT1_COLOR], 1, &light[1].color.r);
+		glUniform1f(m_parameters[U_LIGHT1_POWER], light[1].power);
+		glUniform1f(m_parameters[U_LIGHT1_KC], light[1].kC);
+		glUniform1f(m_parameters[U_LIGHT1_KL], light[1].kL);
+		glUniform1f(m_parameters[U_LIGHT1_KQ], light[1].kQ);
+		glUniform1f(m_parameters[U_LIGHT1_COSCUTOFF], light[1].cosCutoff);
+		glUniform1f(m_parameters[U_LIGHT1_COSINNER], light[1].cosInner);
+		glUniform1f(m_parameters[U_LIGHT1_EXPONENT], light[1].exponent);
 
-	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
-	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.0f);
-	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.5f, 0.2f, 0.0f), 1);
-	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(0.5, 0.5, 0.5), 10, 10, 10);
-	meshList[GEO_SPHERE]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
-	meshList[GEO_SPHERE]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
-	meshList[GEO_SPHERE]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
-	meshList[GEO_SPHERE]->material.kShininess = 1.f;
-	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("Lightball", Color(1, 1, 1), 10, 10, 10);
+		meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
+		meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.0f);
+
+		meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(1.f, 1.f, 1.0f), 1);
+		meshList[GEO_CUBE]->material.kAmbient.Set(0.921, 0.808, 0.616);
+		meshList[GEO_CUBE]->material.kDiffuse.Set(0.921, 0.808, 0.616);
+		meshList[GEO_CUBE]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
+		meshList[GEO_CUBE]->material.kShininess = 0.4f;
+
+		meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(1.0, 1.0, 1.0), 10, 10);
+		meshList[GEO_SPHERE]->material.kAmbient.Set(0.917, 0.835, 0.635);
+		meshList[GEO_SPHERE]->material.kDiffuse.Set(0.917, 0.835, 0.635);
+		meshList[GEO_SPHERE]->material.kSpecular.Set(0.2f, 0.2f, 0.2f);
+		meshList[GEO_SPHERE]->material.kShininess = 0.4f;
+		meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("Lightball", Color(1, 1, 1), 10, 10, 10);
+
+		meshList[GEO_SLOPE] = MeshBuilder::GenerateTriangle("slope", Color(1, 1, 1), 1, 1, 1);
+		meshList[GEO_SLOPE]->material.kAmbient.Set(0.886, 0.788, 0.569);
+		meshList[GEO_SLOPE]->material.kDiffuse.Set(0.886, 0.788, 0.569);
+		meshList[GEO_SLOPE]->material.kSpecular.Set(0.2f, 0.2f, 0.2f);
+		meshList[GEO_SLOPE]->material.kShininess = 0.4f;
+
+		meshList[GEO_TRIANGLE] = MeshBuilder::Generate2dTriangle("2d triangle", Color(1, 1, 1), 1, 1);
+		meshList[GEO_TRIANGLE]->material.kAmbient.Set(0.886, 0.788, 0.569);
+		meshList[GEO_TRIANGLE]->material.kDiffuse.Set(0.886, 0.788, 0.569);
+		meshList[GEO_TRIANGLE]->material.kSpecular.Set(0.2f, 0.2f, 0.2f);
+		meshList[GEO_TRIANGLE]->material.kShininess = 0.4f;
+
+		meshList[GEO_TRIANGLEBACK] = MeshBuilder::Generate2dTriangle("2d triangle back", Color(1, 1, 1), 1, 1, true);
+		meshList[GEO_TRIANGLEBACK]->material.kAmbient.Set(0.886, 0.788, 0.569);
+		meshList[GEO_TRIANGLEBACK]->material.kDiffuse.Set(0.886, 0.788, 0.569);
+		meshList[GEO_TRIANGLEBACK]->material.kSpecular.Set(0.2f, 0.2f, 0.2f);
+		meshList[GEO_TRIANGLEBACK]->material.kShininess = 0.4f;
+
+		meshList[GEO_CRESCENT] = MeshBuilder::GenerateCrescent("crescent", Color(1, 1, 1), 1);
+
+		meshList[GEO_FRUSTUM] = MeshBuilder::GenerateFrustum("frustum", Color(1, 1, 1), 1, 1, 0.65, 1, 1);
+		meshList[GEO_FRUSTUM]->material.kAmbient.Set(0.917, 0.835, 0.635);
+		meshList[GEO_FRUSTUM]->material.kDiffuse.Set(0.917, 0.835, 0.635);
+		meshList[GEO_FRUSTUM]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
+		meshList[GEO_FRUSTUM]->material.kShininess = 0.4f;
+
+		meshList[GEO_CYLINDER] = MeshBuilder::GenerateCylinder("cylinder", Color(1, 1, 1), 1, 36, 1, 1);
+		meshList[GEO_CYLINDER]->material.kAmbient.Set(0.278, 0.345, 0.212);
+		meshList[GEO_CYLINDER]->material.kDiffuse.Set(0.278, 0.345, 0.212);
+		meshList[GEO_CYLINDER]->material.kSpecular.Set(0.2f, 0.2f, 0.2f);
+		meshList[GEO_CYLINDER]->material.kShininess = 0.4f;
+
+		meshList[GEO_CONE] = MeshBuilder::GenerateCone("cone", Color(1, 1, 1), 1, 20);
+		meshList[GEO_CONE]->material.kAmbient.Set(0.647, 0.525, 0.462);
+		meshList[GEO_CONE]->material.kDiffuse.Set(0.647, 0.525, 0.462);
+		meshList[GEO_CONE]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
+		meshList[GEO_CONE]->material.kShininess = 0.1f;
+
+		meshList[GEO_HEMISPHERE] = MeshBuilder::GenerateHemisphere("hemisphere", Color(1, 1, 1), 18, 36, 1);
+		meshList[GEO_HEMISPHERE]->material.kAmbient.Set(0.278, 0.345, 0.212);
+		meshList[GEO_HEMISPHERE]->material.kDiffuse.Set(0.278, 0.345, 0.212);
+		meshList[GEO_HEMISPHERE]->material.kSpecular.Set(0.2f, 0.2f, 0.2f);
+		meshList[GEO_HEMISPHERE]->material.kShininess = 0.4f;
+
+		meshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
+		meshList[GEO_INVENTORY]->textureID = LoadTGA("Image//inventory.tga");
 
 
-	meshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
-	meshList[GEO_INVENTORY]->textureID = LoadTGA("Image//inventory.tga");
+		//Skybox quads
+		meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.0f);
+		meshList[GEO_LEFT]->textureID = LoadTGA("Image//left.tga");
+		meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.0f);
+		meshList[GEO_RIGHT]->textureID = LoadTGA("Image//right.tga");
+		meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.0f);
+		meshList[GEO_FRONT]->textureID = LoadTGA("Image//front.tga");
+		meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.0f);
+		meshList[GEO_BACK]->textureID = LoadTGA("Image//back.tga");
+		meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.0f);
+		meshList[GEO_TOP]->textureID = LoadTGA("Image//top.tga");
+		meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
+		meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//bottom.tga");
+		//main boat
+		meshList[GEO_BOAT] = MeshBuilder::GenerateOBJMTL("boat", "OBJ//Marina//boat2.obj", "OBJ//Marina//boat.mtl");
 
+		//environment
+		meshList[GEO_WATER] = MeshBuilder::GenerateQuad("quad", 1.0f, 1.0f, Color(1, 1, 1), 10);
+		meshList[GEO_WATER]->textureID = LoadTGA("Image//watertexture.tga");
+		meshList[GEO_WATER]->material.kAmbient.Set(0.3f, 0.3f, 0.3f);
+		meshList[GEO_WATER]->material.kDiffuse.Set(0.4f, 0.4f, 0.4f);
+		meshList[GEO_WATER]->material.kSpecular.Set(0.5f, 0.5f, 0.5f);
+		meshList[GEO_TREE] = MeshBuilder::GenerateOBJMTL("short tree", "OBJ//Marina//palm_tree_short.obj", "OBJ//Marina//palm_tree_short.mtl");
+		meshList[GEO_WATER]->material.kAmbient.Set(0.3f, 0.3f, 0.3f);
+		meshList[GEO_TALLTREE] = MeshBuilder::GenerateOBJMTL("tree", "OBJ//Marina//big_tree.obj", "OBJ//Marina//big_tree.mtl");
+		meshList[GEO_CHAIR] = MeshBuilder::GenerateOBJMTL("chair", "OBJ//Marina//modifiedchair.obj", "OBJ//Marina//modifiedchair.mtl");
 
-	//Skybox quads
-	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.0f);
-	meshList[GEO_LEFT]->textureID = LoadTGA("Image//left.tga");
-	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.0f);
-	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//right.tga");
-	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.0f);
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//front.tga");
-	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.0f);
-	meshList[GEO_BACK]->textureID = LoadTGA("Image//back.tga");
-	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.0f);
-	meshList[GEO_TOP]->textureID = LoadTGA("Image//top.tga");
-	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
-	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//bottom.tga");
-	//main boat
-	meshList[GEO_BOAT] = MeshBuilder::GenerateOBJMTL("boat", "OBJ//Marina//boat2.obj", "OBJ//Marina//boat.mtl");
+		//fight
+		meshList[GEO_LAYOUT] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
+		meshList[GEO_LAYOUT]->textureID = LoadTGA("Image//Marina//fight_layout.tga");
+		meshList[GEO_TEXTBOX] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
+		meshList[GEO_TEXTBOX]->textureID = LoadTGA("Image//Marina//textbox.tga");
+		meshList[GEO_HEALTH] = MeshBuilder::GenerateQuad("quad", Color(0, 1, 0), 1.f);
+		meshList[GEO_LOSTHEALTH] = MeshBuilder::GenerateQuad("quad", Color(1, 0, 0), 1.f);
+		meshList[GEO_MC] = MeshBuilder::GenerateOBJMTL("MC", "OBJ//Marina//character.obj", "OBJ//Marina//advancedCharacter.obj.mtl");
+		meshList[GEO_MC]->textureID = LoadTGA("Image//Marina//skin_adventurer.tga");
+		meshList[GEO_ARM] = MeshBuilder::GenerateOBJMTL("MC", "OBJ//Marina//character_arm.obj", "OBJ//Marina//advancedCharacter.obj.mtl");
+		meshList[GEO_ARM]->textureID = LoadTGA("Image//Marina//skin_adventurer.tga");
 
-	//environment
-	meshList[GEO_WATER] = MeshBuilder::GenerateQuad("quad", 1.0f, 1.0f, Color(1, 1, 1), 10);
-	meshList[GEO_WATER]->textureID = LoadTGA("Image//watertexture.tga");
-	meshList[GEO_WATER]->material.kAmbient.Set(0.3f, 0.3f, 0.3f);
-	meshList[GEO_WATER]->material.kDiffuse.Set(0.4f, 0.4f, 0.4f);
-	meshList[GEO_WATER]->material.kSpecular.Set(0.5f, 0.5f, 0.5f);
-	meshList[GEO_TREE] = MeshBuilder::GenerateOBJMTL("short tree", "OBJ//Marina//palm_tree_short.obj", "OBJ//Marina//palm_tree_short.mtl");
-	meshList[GEO_WATER]->material.kAmbient.Set(0.3f, 0.3f, 0.3f);
-	meshList[GEO_TALLTREE] = MeshBuilder::GenerateOBJMTL("tree", "OBJ//Marina//big_tree.obj", "OBJ//Marina//big_tree.mtl");
-	meshList[GEO_CHAIR] = MeshBuilder::GenerateOBJMTL("chair", "OBJ//Marina//modifiedchair.obj", "OBJ//Marina//modifiedchair.mtl");
-
-	//fight
-	meshList[GEO_LAYOUT] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
-	meshList[GEO_LAYOUT]->textureID = LoadTGA("Image//Marina//fight_layout.tga");
-	meshList[GEO_TEXTBOX] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
-	meshList[GEO_TEXTBOX]->textureID = LoadTGA("Image//Marina//textbox.tga");
-	meshList[GEO_HEALTH] = MeshBuilder::GenerateQuad("quad", Color(0, 1, 0), 1.f);
-	meshList[GEO_LOSTHEALTH] = MeshBuilder::GenerateQuad("quad", Color(1, 0, 0), 1.f);
-	meshList[GEO_MC] = MeshBuilder::GenerateOBJMTL("MC", "OBJ//Marina//character.obj", "OBJ//Marina//advancedCharacter.obj.mtl");
-	meshList[GEO_MC]->textureID = LoadTGA("Image//Marina//skin_adventurer.tga");
-	meshList[GEO_ARM]= MeshBuilder::GenerateOBJMTL("MC", "OBJ//Marina//character_arm.obj", "OBJ//Marina//advancedCharacter.obj.mtl");
-	meshList[GEO_ARM]->textureID = LoadTGA("Image//Marina//skin_adventurer.tga");
-
-	//text
-	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Marina//ExportedFont.tga");
-	meshList[GEO_HEADER] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
-	meshList[GEO_HEADER]->textureID = LoadTGA("Image//Marina//header.tga");
+		//text
+		meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
+		meshList[GEO_TEXT]->textureID = LoadTGA("Image//Marina//ExportedFont.tga");
+		meshList[GEO_HEADER] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
+		meshList[GEO_HEADER]->textureID = LoadTGA("Image//Marina//header.tga");
+	}
 }
 
 
@@ -220,14 +285,17 @@ void SceneMarinaBay::Update(double dt)
 	else
 	{
 		int count = 0;
+		Application::enableMouse = true;	//temp soln
 		for (auto it = buttonList.begin(); it != buttonList.end(); ++it)
 		{
-			Application::enableMouse = true;	//temp soln
-			(*it)->updateButton();
-			if ((*it)->isClickedOn())
+			if ((*it)->active)
 			{
-				playerAction = static_cast<ACTION_TYPE>(count);	//makes player action = the button number
-				actionSelected = true;
+				(*it)->updateButton();
+				if ((*it)->isClickedOn())
+				{
+					playerAction = static_cast<ACTION_TYPE>(count);	//makes player action = the button number
+					actionSelected = true;
+				}
 			}
 			++count;
 		}
@@ -250,7 +318,7 @@ void SceneMarinaBay::Update(double dt)
 	if (Application::IsKeyPressed('1'))
 		glEnable(GL_CULL_FACE);
 	else if (Application::IsKeyPressed('2'))
-		glDisable(GL_CULL_FACE);
+ 		glDisable(GL_CULL_FACE);
 	else if (Application::IsKeyPressed('3'))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //default fill mode
 	else if (Application::IsKeyPressed('4'))
@@ -259,7 +327,7 @@ void SceneMarinaBay::Update(double dt)
 		lighton = false;						//to test whether colours and stuff are working properly
 	else if (Application::IsKeyPressed('X'))
 		lighton = true;
-	if (Application::IsKeyPressed('I'))
+	if (Application::IsKeyPressed('I'))	//debug buttons
 		x -= 10 * dt;
 	if (Application::IsKeyPressed('K'))
 		x += 10 * dt;
@@ -271,10 +339,20 @@ void SceneMarinaBay::Update(double dt)
 		scale += 10*dt;
 	if (Application::IsKeyPressed('P'))
 		scale -= 10 * dt;
-	if (Application::IsKeyPressed('H'))
+	if (Application::IsKeyPressed('H'))	//test for attack button
 	{
 		attackSelected = true;
-		playerAction = A_ATTACK1;
+		playerAction = A_ATTACK2;
+	}
+	else if (Application::IsKeyPressed('G'))	//test for dragon attack
+	{
+		movement = goneDown = false, idle = false;
+		movement = true;
+		move = moveAngle = timer = 0;
+		idleMouth = idleHands = idleBounce = idleNeck = idleHead = 0;
+		enemyAttackAngle = enemyAttackMove = 0;
+		idleBreath = enemyAttackScale = 1;
+		idleHandsDir = idleBounceDir = idleMouthDir = idleBreathDir = idleNeckDir = idleHeadDir = 1;
 	}
 	if (actionSelected && fight && !attackSelected && cooldownTimer <= 0)	//if action was selected and in fight and attack is not playing
 	{
@@ -293,11 +371,12 @@ void SceneMarinaBay::Update(double dt)
 			attackSelected = true;
 			break;
 		case (A_ATTACK):
-			while (buttonList.size() != 3)	//removes items buttons if rendered
-				buttonList.pop_back();
-			buttonList.push_back(new Button(21, 8.25, 30, 8.25));	//attack1
-			buttonList.push_back(new Button(21, 0, 30, 8.25));	//attack1
 			fightSelected = true;
+			//enables the buttons after fight is selected depending on what has been unlocked
+			for (unsigned int i = 0; i < attacksList.size(); ++i)	
+			{
+				buttonList[i + A_ATTACK1]->active = true;
+			}
 			break;
 		case (A_ITEMS):
 			itemsSelected = true;
@@ -306,6 +385,8 @@ void SceneMarinaBay::Update(double dt)
 			fightDia = true;
 			fightText = "Placeholder :D";
 			break;
+		default:
+			cout << "playeraction broke";
 		}
 		actionSelected = false;
 		{
@@ -353,51 +434,221 @@ void SceneMarinaBay::Update(double dt)
 		}
 	}
 
-	if (attackSelected)		//handles the attacks 
-	{
-		switch (playerAction)
+	//player attack animations
+	if (attackSelected && playerTurn)		//handles the attacks pushed to here for neatness
+	{	//gets attack player is trying to execute
+		playerAttack = attacksList[playerAction - A_ATTACK1];
+		switch (playerAttack)
 		{
-		case (A_ATTACK1):			//MC goes big
-			if (!attack1Hit)
+		case (BIG):			//MC goes big
+			if (!attackHit)	//when attack hasnt hit enemy yet
 			{
-				if (attackScale < 5)		//go big
-					attackScale += 10 * dt;
+				if (attackScale < 7)		//go big
+					attackScale += 7 * dt;
 				else if (attackAngle < 90)		//rotate onto enemy
-					attackAngle += 300 * dt;
+					attackAngle += 600 * dt;
 				else
-					attack1Hit = true;		//has hit enemy
+					attackHit = true;		//has hit enemy
 			}
 			else
 			{
 				if (attackAngle > 0)
-					attackAngle -= 300 * dt;
-				else if (attackScale > 0.7)
-					attackScale -= 10 * dt;
+					attackAngle -= 600 * dt;
+				else if (attackAngle < 0)	//so that the rotation doesnt go too far back
+					attackAngle = 0.f;
+				else if (attackScale > 1.f)
+					attackScale -= 7 * dt;
 				else			//resolution of attack
 				{
 					enemyHealthLost = 35.f;
-					attack1Hit = false;
-					attackSelected = false;
+					attackHit = false;
 					playerTurn = false;
+					enemyTurn = true;
+					attackSelected = false;
+					playerAttack = NO_ATTACK;
 				}
 			}
-		//case (A_ATTACK2):
-			
+			break;
+		case (ROCKET_PUNCH):
+			if (!attackHit)
+			{
+				if (attackTranslateY < 5)
+					attackTranslateY += 15 * dt;	//goes up so it doesn't sink to the floor
+				else if (attackAngle < 90)
+					attackAngle += 100 * dt;
+				else if (attackTranslateZ < 150)
+					attackTranslateZ += 300 * dt;	//goes fast towards enemy
+				else
+				{
+					attackHit = true;
+					attackTranslateZ = 0.f;
+					attackTranslateY = 300.f;		//spawns it high above player
+					attackAngle = 0.f;
+				}
+			}
+			else
+			{
+				if (attackTranslateY > 0)
+					attackTranslateY -= 150 * dt;	//rapidly descends towards player
+				else
+				{
+					attackTranslateY = 0.f;			//resets value of arm and resolves attack
+					enemyHealthLost = 25.f;
+					attackHit = false;
+					playerTurn = false;
+					enemyTurn = true;
+					attackSelected = false;
+					playerAttack = NO_ATTACK;
+				}
+			}
+			break;
 		}
-		
+
+	}
+	//enemy turn actions
+	else if (enemyTurn && enemyHealthLost<=0)	//if health not still decreasing
+	{
+		switch (enemyAttack)	//handles enemy attacks
+		{
+		case (SPEAR):
+			idle = false;
+			attack = true;
+			if (attackHit)
+				playerHealthLost = 30.f;
+			break;
+		case (DIG):
+			movement = true;
+			idle = false;
+			playerHealthLost = 40.f;
+			break;
+		}
+		if (attackHit)	//ends enemy's turn and switches enemy's next attack
+		{
+			enemyAttack = static_cast<ENEMY_ATTACKS>((enemyAttack + 1) % NUM_EATTACKS);	//moves to the next attack
+			attackSelected = false;
+			playerTurn = true;
+			enemyTurn = false;
+			attackHit = false;
+		}
+	}
+	
+	//dragon animations
+	{
+		if (idle == true)
+		{
+			idleBounce += idleBounceDir * 10 * dt;
+			idleBreath += idleBreathDir * 0.1 * dt;
+			idleHands += idleHandsDir * 20 * dt;
+			idleMouth += idleMouthDir * 10 * dt;
+			idleNeck += idleNeckDir * 0.1 * dt;
+			idleHead += idleHeadDir * 10 * dt;
+
+			if (idleBounce > 10)
+				idleBounceDir = -1;
+			else if (idleBounce < 0)
+				idleBounceDir = 1;
+
+			if (idleBreath > 1.1)
+				idleBreathDir = -1;
+			else if (idleBreath < 1)
+				idleBreathDir = 1;
+
+			if (idleHands > 20)
+				idleHandsDir = -1;
+			else if (idleHands < 0)
+				idleHandsDir = 1;
+
+			if (idleMouth > 10)
+				idleMouthDir = -1;
+			else if (idleMouth < 0)
+				idleMouthDir = 1;
+
+			if (idleNeck > 0)
+				idleNeckDir = -1;
+			else if (idleNeck < -0.1)
+				idleNeckDir = 1;
+
+			if (idleHead > 10)
+				idleHeadDir = -1;
+			else if (idleHead < 0)
+				idleHeadDir = 1;
+		}
+		else if (movement == true)
+		{
+			if (goneDown == false)
+			{
+				if (move > -100)
+				{
+					move -= 50 * dt;
+					moveAngle += 45 * dt;
+				}
+				else
+				{
+					goneDown = true;
+					moveAngle = 45;
+				}
+			}
+			else	//after it has gone down
+			{
+				if (timer < 15)	//timer before going up
+					timer += 10 * dt;
+				else if (move < 0)
+					move += 30 * dt;
+				else
+					moveAngle -= 70 * dt;
+				if (moveAngle <= 0)
+				{
+					movement = false;
+					goneDown = false;
+					idle = true;
+					timer = moveAngle = move = 0;
+				}
+			}
+		}
+		else if (attack == true)
+		{
+			if (revert == true)	//goes to initial position
+			{
+				enemyAttackAngle -= 20 * dt;
+				enemyAttackMove -= 20 * dt;
+				enemyAttackScale = 1;
+				if (enemyAttackAngle <= 0 && enemyAttackMove <= 0)
+				{
+					attack = false;
+					revert = false;
+					idle = true;
+				}
+			}
+			else {
+				if (enemyAttackMove < 45)	//leans forward
+				{
+					enemyAttackAngle -= 50 * dt;
+					enemyAttackMove += 50 * dt;
+				}
+				else if (enemyAttackAngle < 45)	//sweeps
+				{
+					enemyAttackAngle += 500 * dt;
+					enemyAttackScale += 200 * dt;
+				}
+				else
+				{
+					revert = true;
+					attackHit = true;
+				}
+			}
+		}
 	}
 
-
 	if (playerHealthLost > 0)
-	{	//health lost will be set to 100 so since the scaling of health is 20 the speed would be the same as health lost / 5
-		int speedOfHealthLost = 30.f;
+	{	//health total will be as if it is equal to 100 so since the scaling of health is 20 the speed would be the same as health lost / 5
+		int speedOfHealthLost = 20.f;
 		playerHealthLost -= speedOfHealthLost * dt;
 		playerHealth += speedOfHealthLost * 0.2 * dt;
-		playerHealthPos -= speedOfHealthLost * 0.1 * dt;	//dependent on health's scaling
+		playerHealthPos += speedOfHealthLost * 0.1 * dt;	//dependent on health's scaling
 	}
 	else if (enemyHealthLost > 0)
 	{
-		int speedOfHealthLost = 30.f;
+		int speedOfHealthLost = 20.f;
 		enemyHealthLost -= speedOfHealthLost * dt;
 		enemyHealth += speedOfHealthLost * 0.2 * dt;
 		enemyHealthPos -= speedOfHealthLost * 0.1 * dt;	//dependent on health's scaling
@@ -696,12 +947,12 @@ void SceneMarinaBay::Render()
 	
 	//infinity pool (to be changed to fix the need for face culling, maybe)
 	modelStack.PushMatrix();
-	modelStack.Translate(47, 0.0001, z + 0);
+	modelStack.Translate(47, 0.0001, 0);
 	modelStack.Rotate(90, 1, 0, 0);
-	modelStack.Scale(30, x + 317, 1);
-	glDisable(GL_CULL_FACE);
+	modelStack.Scale(30, 317, 1);
+	//glDisable(GL_CULL_FACE);
 	RenderMesh(meshList[GEO_WATER], true);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	modelStack.PopMatrix();
 
 	//boat
@@ -713,80 +964,631 @@ void SceneMarinaBay::Render()
 
 	
 
-	//infinity poolside
-	for (int z = 0; z > -170; z -= 30)
-	{
-		//trees
-		modelStack.PushMatrix();
-		modelStack.Translate(23, 0, z);
-		modelStack.Scale(10, 20, 10);
-		RenderMesh(meshList[GEO_TREE], true);
-		modelStack.PopMatrix();
+	
+	if (!fight)	//no need to be rendered while in fight
+	{	//infinity poolside
+		for (int z = 0; z > -170; z -= 30)
+		{
+			//trees
+			modelStack.PushMatrix();
+			modelStack.Translate(23, 0, z);
+			modelStack.Scale(10, 20, 10);
+			RenderMesh(meshList[GEO_TREE], true);
+			modelStack.PopMatrix();
 
-		//all the chairs
+			//all the chairs
 
-		//chair right after tree
-		modelStack.PushMatrix();
-		modelStack.Translate(23, 0, z + 5);
-		modelStack.Rotate(-90, 0, 1, 0);
-		modelStack.Scale(0.2, 0.2, 0.2);
-		RenderMesh(meshList[GEO_CHAIR], true);
-		modelStack.PopMatrix();
+			//chair right after tree
+			modelStack.PushMatrix();
+			modelStack.Translate(23, 0, z + 5);
+			modelStack.Rotate(-90, 0, 1, 0);
+			modelStack.Scale(0.2, 0.2, 0.2);
+			RenderMesh(meshList[GEO_CHAIR], true);
+			modelStack.PopMatrix();
 
-		//chair in the middle of trees
-		modelStack.PushMatrix();
-		modelStack.Translate(23, 0, z + 15);
-		modelStack.Rotate(-90, 0, 1, 0);
-		modelStack.Scale(0.2, 0.2, 0.2);
-		RenderMesh(meshList[GEO_CHAIR], true);
-		modelStack.PopMatrix();
+			//chair in the middle of trees
+			modelStack.PushMatrix();
+			modelStack.Translate(23, 0, z + 15);
+			modelStack.Rotate(-90, 0, 1, 0);
+			modelStack.Scale(0.2, 0.2, 0.2);
+			RenderMesh(meshList[GEO_CHAIR], true);
+			modelStack.PopMatrix();
 
-		//chair directly before the tree
-		modelStack.PushMatrix();
-		modelStack.Translate(23, 0, z - 5);
-		modelStack.Rotate(-90, 0, 1, 0);
-		modelStack.Scale(0.2, 0.2, 0.2);
-		RenderMesh(meshList[GEO_CHAIR], true);
-		modelStack.PopMatrix();
+			//chair directly before the tree
+			modelStack.PushMatrix();
+			modelStack.Translate(23, 0, z - 5);
+			modelStack.Rotate(-90, 0, 1, 0);
+			modelStack.Scale(0.2, 0.2, 0.2);
+			RenderMesh(meshList[GEO_CHAIR], true);
+			modelStack.PopMatrix();
+		}
 	}
 
-	modelStack.PushMatrix();
+	//might just get rid of this
+	/*modelStack.PushMatrix();
 	modelStack.Translate(x, 0, z);
 	modelStack.Scale(scale, 2*scale, scale);
 	RenderMesh(meshList[GEO_TALLTREE], true);
-	modelStack.PopMatrix();
+	modelStack.PopMatrix();*/
 	
 	if (fight)
 	{
 		//mc
 		modelStack.PushMatrix();
 		modelStack.Translate(0, 0, 200);
-		if (playerAction!=A_ATTACK1)
-			modelStack.Scale(0.7f, 0.7f, 0.7f);
-		else
-		{
-			modelStack.Rotate(attackAngle, 1, 0, 0);
-			modelStack.Scale(attackScale, attackScale, attackScale);
-		}
-		RenderMesh(meshList[GEO_MC], true);
-		modelStack.PopMatrix();
-													//still testing
-		modelStack.PushMatrix();
-		modelStack.Translate(0, 0, 200);
-		if (playerAction != A_ATTACK1)
-			modelStack.Scale(0.7f, 0.7f, 0.7f);
-		else if (playerAction == A_ATTACK2)
-		{
-
-		}
-		else
-		{
-			modelStack.Rotate(attackAngle, 1, 0, 0);
-			modelStack.Scale(attackScale, attackScale, attackScale);
-		}
 		modelStack.Scale(0.7f, 0.7f, 0.7f);
-		RenderMesh(meshList[GEO_ARM], true);
+		{
+			//mc body
+			modelStack.PushMatrix();
+			//modelStack.Translate(0, 0, 200);
+			if (playerAttack == BIG)
+			{
+				modelStack.Rotate(attackAngle, 1, 0, 0);
+				modelStack.Scale(attackScale, attackScale, attackScale);
+			}
+			RenderMesh(meshList[GEO_MC], true);
+			modelStack.PopMatrix();
+			//still testing
+			modelStack.PushMatrix();
+			//modelStack.Translate(2.7, 12.3, 0);
+			if (playerAttack == BIG)
+			{
+				modelStack.Rotate(attackAngle, 1, 0, 0);
+				modelStack.Scale(attackScale, attackScale, attackScale);
+			}
+			else if (playerAttack == ROCKET_PUNCH)
+			{
+				modelStack.Translate(0, attackTranslateY, attackTranslateZ);
+				modelStack.Rotate(-attackAngle, 1, 0, 0);
+			}
+			RenderMesh(meshList[GEO_ARM], true);
+			modelStack.PopMatrix();
+		}
 		modelStack.PopMatrix();
+
+		//dragon
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(0, 0, 271);
+			modelStack.Rotate(90, 0, 1, 0);
+			{
+				//bottom body joint
+				modelStack.PushMatrix();
+				modelStack.Translate(0, 0, 0);
+				if (idle == true)
+				{
+					modelStack.Rotate(idleBounce, 0, 0, 1);
+				}
+				else if (movement == true)
+				{
+					modelStack.Translate(0, move, 0);
+					modelStack.Rotate(-moveAngle, 0, 0, 1);
+				}
+				else if (attack == true)
+				{
+					modelStack.Rotate(-enemyAttackMove, 0, 0, 1);
+				}
+				modelStack.Rotate(0, 0, 0, 1);
+				modelStack.Scale(10, 10, 10);
+				meshList[GEO_SPHERE]->material.kAmbient.Set(0.886, 0.788, 0.569);
+				meshList[GEO_SPHERE]->material.kDiffuse.Set(0.886, 0.788, 0.569);
+				RenderMesh(meshList[GEO_SPHERE], true);
+				{
+					//bottom connecting body
+					{
+						//stomach
+						modelStack.PushMatrix();
+						modelStack.Translate(-1.5, 1.5, 0);
+						modelStack.Rotate(45, 0, 0, 1);
+						modelStack.Scale(0.96, 4.6, 0.96);
+						meshList[GEO_FRUSTUM]->material.kAmbient.Set(0.886, 0.788, 0.569);
+						meshList[GEO_FRUSTUM]->material.kDiffuse.Set(0.886, 0.788, 0.569);
+						RenderMesh(meshList[GEO_FRUSTUM], true);
+						modelStack.PopMatrix();
+					}
+
+					//middle joint
+					modelStack.PushMatrix();
+					modelStack.Translate(-1.45, 1.4, 0);
+					if (movement == true)
+						modelStack.Rotate(moveAngle * 1.5, 0, 0, 1);
+					modelStack.Rotate(0, 0, 0, 1);
+					modelStack.Scale(0.6, 0.6, 0.6);
+					RenderMesh(meshList[GEO_SPHERE], true);
+					{
+						//middle spine
+						modelStack.PushMatrix();
+						modelStack.Translate(0.34, 0.8, 0);
+						modelStack.Rotate(-22, 0, 0, 1);
+						if (idle == true)
+						{
+							modelStack.Scale(idleBreath, 1, idleBreath);
+						}
+						modelStack.Scale(1., 2., 1.);
+						meshList[GEO_CYLINDER]->material.kAmbient.Set(0.886, 0.788, 0.569);
+						meshList[GEO_CYLINDER]->material.kDiffuse.Set(0.886, 0.788, 0.569);
+						RenderMesh(meshList[GEO_CYLINDER], true);
+						modelStack.PopMatrix();
+
+
+						//middle upper joint
+						modelStack.PushMatrix();
+						modelStack.Translate(0.7, 1.7, 0);
+						if (idle == true)
+						{
+							modelStack.Rotate(-idleBounce, 0, 0, 1);
+						}
+						else if (movement == true)
+							modelStack.Rotate(1.25 * moveAngle, 0, 0, 1);
+						modelStack.Rotate(0, 0, 0, 1);
+						RenderMesh(meshList[GEO_SPHERE], true);
+						{
+							int arms = 1;
+							for (int i = 0; i < 2; ++i)
+							{
+								//upper upperarm	(name'll probably be changed at some point)
+								modelStack.PushMatrix();
+								modelStack.Translate(0, 0, arms * 1.2);
+								if (movement == true)
+									modelStack.Rotate(-moveAngle, 0, 0, 1);
+								modelStack.Rotate(arms * -30, 1, 0, 0);
+								modelStack.Scale(0.5, 0.8, 0.5);
+								RenderMesh(meshList[GEO_SPHERE], true);
+								{
+									//lower upperarm
+									modelStack.PushMatrix();
+									modelStack.Translate(0, -1.5, 0);
+									modelStack.Rotate(90, 1, 1, 0);
+									modelStack.Scale(0.8, 0.7, 0.8);
+									RenderMesh(meshList[GEO_SPHERE], true);
+									modelStack.PopMatrix();
+
+									//elbow joint
+									modelStack.PushMatrix();
+									modelStack.Translate(0, -2.5, 0);
+									if (idle == true)
+									{
+										modelStack.Rotate(idleHands, 0, 0, 1);
+									}
+									modelStack.Scale(1, 0.625, 1);
+									modelStack.Scale(0.5, 0.5, 0.5);
+									RenderMesh(meshList[GEO_SPHERE], true);
+									{
+										//forearm
+										modelStack.PushMatrix();
+										modelStack.Translate(2, -1.0, 0);
+										modelStack.Rotate(60, 0, 0, 1);
+										modelStack.Scale(1.1, 2.5, 1.1);
+										RenderMesh(meshList[GEO_SPHERE], true);
+										modelStack.PopMatrix();
+
+										//knuckle
+										modelStack.PushMatrix();
+										modelStack.Translate(3.7, -2.0, 0);
+										modelStack.Rotate(120, 0, 0, 1);
+										modelStack.Scale(0.8, 0.8, 0.8);
+										RenderMesh(meshList[GEO_SPHERE], true);
+										{
+											//hand
+											modelStack.PushMatrix();
+											modelStack.Translate(-1.0, -1.0, 0);
+											modelStack.Scale(2.5, 1, 2.5);
+											meshList[GEO_CUBE]->material.kAmbient.Set(0.921, 0.808, 0.616);
+											meshList[GEO_CUBE]->material.kDiffuse.Set(0.921, 0.808, 0.616);
+											RenderMesh(meshList[GEO_CUBE], true);
+											{
+												//first finger
+												modelStack.PushMatrix();
+												modelStack.Translate(-.5, .0, 0);
+												modelStack.Rotate(90, 0, 0, 1);
+												modelStack.Scale(0.5, 0.5, 0.1);
+												RenderMesh(meshList[GEO_CYLINDER], true);
+												modelStack.PopMatrix();
+
+												modelStack.PushMatrix();
+												modelStack.Translate(-.5, .0, 0.4);
+												modelStack.Rotate(90, 0, 0, 1);
+												modelStack.Scale(0.5, 0.5, 0.1);
+												RenderMesh(meshList[GEO_CYLINDER], true);
+												modelStack.PopMatrix();
+
+												modelStack.PushMatrix();
+												modelStack.Translate(-.5, .0, -0.4);
+												modelStack.Rotate(90, 0, 0, 1);
+												modelStack.Scale(0.5, 0.5, 0.1);
+												RenderMesh(meshList[GEO_CYLINDER], true);
+												modelStack.PopMatrix();
+											}
+											modelStack.PopMatrix();
+										}
+										modelStack.PopMatrix();
+									}
+									modelStack.PopMatrix();
+								}
+								modelStack.PopMatrix();
+								arms = -1;
+							}
+
+							//neck
+							modelStack.PushMatrix();
+							modelStack.Translate(1.57, 0.49, 0);
+							if (idle == true)
+								modelStack.Translate(idleNeck, idleNeck, idleNeck);
+							modelStack.Rotate(-73, 0, 0, 1);
+							modelStack.Scale(1., 3.5, 1.);
+							RenderMesh(meshList[GEO_FRUSTUM], true);
+							modelStack.PopMatrix();
+
+							//neck joint
+							modelStack.PushMatrix();
+							modelStack.Translate(1.7, 0.5, 0);
+							if (idle == true)
+							{
+								modelStack.Translate(idleNeck, idleNeck, idleNeck);
+								modelStack.Rotate(idleHead, 0, 0, 1);
+							}
+							else if (movement == true)
+								modelStack.Rotate(moveAngle * 1.5, 0, 0, 1);
+							else if (attack == true)
+							{
+								modelStack.Rotate(enemyAttackMove, 0, 0, 1);
+								modelStack.Rotate(enemyAttackAngle, 0, 1, 0);
+							}
+							modelStack.Rotate(0, 0, 0, 1);
+							modelStack.Scale(.7, .7, .7);
+							RenderMesh(meshList[GEO_SPHERE], true);
+							{
+								//head
+								modelStack.PushMatrix();
+								modelStack.Translate(1, 0, 0);
+								modelStack.Scale(1.4, 1.4, 1.4);
+								{
+									if (attack == true)
+									{
+										//spear
+										modelStack.PushMatrix();
+										modelStack.Translate(1.6, -1.3, 0);
+										modelStack.Rotate(-125, 0, 0, 1);
+										modelStack.Scale(0.1, 3.5, 0.1);
+										meshList[GEO_CYLINDER]->material.kAmbient.Set(0.53, 0.36, 0.24);
+										meshList[GEO_CYLINDER]->material.kDiffuse.Set(0.53, 0.36, 0.24);
+										RenderMesh(meshList[GEO_CYLINDER], true);
+										{
+											//connecting cone/spear head depending
+											modelStack.PushMatrix();
+											modelStack.Translate(0, 0.56, 0);
+											modelStack.Rotate(0, 0, 0, 1);
+											modelStack.Scale(1, 0.142, 1);
+											meshList[GEO_CONE]->material.kAmbient.Set(0.77, 0.78, 0.78);
+											meshList[GEO_CONE]->material.kDiffuse.Set(0.77, 0.78, 0.78);
+											RenderMesh(meshList[GEO_CONE], true);
+											modelStack.PopMatrix();
+										}
+										modelStack.PopMatrix();
+									}
+
+									//lower jaw
+									{
+										modelStack.PushMatrix();
+										modelStack.Translate(0, 0.1, 0);
+										if (idle == true)
+										{
+											modelStack.Rotate(-idleMouth, 0, 0, 1);
+										}
+										modelStack.Rotate(-30, 0, 0, 1);
+										modelStack.Scale(1, 0.6, 0.8);
+										meshList[GEO_CUBE]->material.kAmbient.Set(0.835, 0.682, 0.529);
+										meshList[GEO_CUBE]->material.kDiffuse.Set(0.835, 0.682, 0.529);
+										RenderMesh(meshList[GEO_CUBE], true);
+										{
+											//middle lower lip
+											modelStack.PushMatrix();
+											modelStack.Translate(1., -0.6, 0);
+											modelStack.Rotate(-20, 0, 0, 1);
+											modelStack.Scale(2.5, 0.15, 0.3);
+											RenderMesh(meshList[GEO_CUBE], true);
+											{
+												//tongue
+												modelStack.PushMatrix();
+												modelStack.Translate(0, 0.1, 0);
+												modelStack.Scale(0.2, 1, 1);
+												meshList[GEO_HEMISPHERE]->material.kAmbient.Set(0.380, 0.278, 0.314);
+												meshList[GEO_HEMISPHERE]->material.kDiffuse.Set(0.380, 0.278, 0.314);
+												RenderMesh(meshList[GEO_HEMISPHERE], true);
+												modelStack.PopMatrix();
+
+												//lower teeth
+												meshList[GEO_CONE]->material.kAmbient.Set(0.647, 0.525, 0.462);
+												meshList[GEO_CONE]->material.kDiffuse.Set(0.647, 0.525, 0.462);
+												for (int i = 0; i < 2; ++i) {
+													int teeth = 1;
+													if (i % 2 == 0)
+														teeth = -1;
+
+													modelStack.PushMatrix();
+													modelStack.Translate(0.1, 0.4, 0.9 * teeth);
+													modelStack.Scale(0.1, 0.1, 0.1);	//to make it really small
+													modelStack.Scale(0.5, 10, 1);
+													RenderMesh(meshList[GEO_CONE], true);	//back tooth
+													modelStack.PopMatrix();
+
+													modelStack.PushMatrix();
+													modelStack.Translate(0.15, 0.4, 0.8 * teeth);
+													modelStack.Scale(0.1, 0.1, 0.1);
+													modelStack.Scale(0.5, 5, 1);
+													RenderMesh(meshList[GEO_CONE], true);	//2nd back tooth
+													modelStack.PopMatrix();
+
+													modelStack.PushMatrix();
+													modelStack.Translate(0.4, 0.4, 0.4 * teeth);
+													modelStack.Scale(0.1, 0.1, 0.1);
+													modelStack.Scale(0.5, 5, 1);
+													RenderMesh(meshList[GEO_CONE], true);	//front tooth
+													modelStack.PopMatrix();
+												}
+											}
+											modelStack.PopMatrix();
+
+											//left lower lip(?)
+											modelStack.PushMatrix();
+											modelStack.Translate(1., -0.6, 0.2);
+											modelStack.Rotate(-20, 0, 0, 1);
+											modelStack.Rotate(10, 0, 1, 0);
+											modelStack.Scale(2.3, 0.15, 0.3);
+											RenderMesh(meshList[GEO_CUBE], true);
+											modelStack.PopMatrix();
+
+											//right lower lip(?)
+											modelStack.PushMatrix();
+											modelStack.Translate(1., -0.6, -0.2);
+											modelStack.Rotate(-20, 0, 0, 1);
+											modelStack.Rotate(-10, 0, 1, 0);
+											modelStack.Scale(2.3, 0.15, 0.3);
+											RenderMesh(meshList[GEO_CUBE], true);
+											modelStack.PopMatrix();
+										}
+										modelStack.PopMatrix();
+									}
+
+									//sides of lower jaw
+									for (int i = 0; i < 2; ++i)
+									{
+										int sides = 1;
+										if (i % 2 == 0)
+											sides = -1;
+										modelStack.PushMatrix();
+										modelStack.Translate(0, 0.1, sides * 0.35);
+										modelStack.Rotate(-30, 0, 0, 1);
+										modelStack.Rotate(sides * 10, 0, 1, 0);
+										modelStack.Scale(1, 0.6, 0.4);
+										RenderMesh(meshList[GEO_CUBE], true);
+										modelStack.PopMatrix();
+									}
+
+									//upper jaw
+									{
+										modelStack.PushMatrix();
+										modelStack.Translate(-0.03, 0.185, 0);
+										modelStack.Rotate(-35, 0, 0, 1);
+										modelStack.Scale(1.3, 0.6, 1);
+										meshList[GEO_CUBE]->material.kAmbient.Set(0.886, 0.788, 0.569);	//making it the top shiny colour
+										meshList[GEO_CUBE]->material.kDiffuse.Set(0.886, 0.788, 0.569);
+										RenderMesh(meshList[GEO_CUBE], true);
+										{
+											modelStack.PushMatrix();
+											modelStack.Scale(0.769, 1, 1);	//making everything smaller
+											//eyes and mouth
+											{
+												//eyes
+												for (int i = 0; i < 2; ++i)
+												{
+													int eyes = 1;
+													if (i % 2 == 0)
+														eyes = -1;
+													modelStack.PushMatrix();
+													modelStack.Translate(0.1, 0, eyes * 0.57);
+													modelStack.Rotate(35, 0, 0, 1);
+													modelStack.Scale(0.15, 0.2, 0.15);
+													meshList[GEO_SPHERE]->material.kAmbient.Set(0.984, 0.827, 0.494);
+													meshList[GEO_SPHERE]->material.kDiffuse.Set(0.984, 0.827, 0.494);
+													RenderMesh(meshList[GEO_SPHERE], true);
+													modelStack.PopMatrix();
+												}
+
+												//middle upper lip
+												modelStack.PushMatrix();
+												modelStack.Translate(1., -0.2, 0);
+												modelStack.Scale(2.7, 0.15, 0.4);
+												RenderMesh(meshList[GEO_CUBE], true);
+
+												//upper teeth
+												{
+													meshList[GEO_CONE]->material.kAmbient.Set(0.921, 0.808, 0.616);
+													meshList[GEO_CONE]->material.kDiffuse.Set(0.921, 0.808, 0.616);
+													for (int i = 0; i < 2; ++i)
+													{
+														int teeth = 1;
+														if (i % 2 == 0)
+															teeth = -1;
+														modelStack.PushMatrix();
+														modelStack.Translate(0.15, -0.72, 0.8 * teeth);
+														modelStack.Rotate(180, 1, 0, 0);
+														modelStack.Scale(0.1, 0.5, 0.1);
+														modelStack.Scale(0.5, 5, 2);
+														RenderMesh(meshList[GEO_CONE], true);	//front tooth
+														modelStack.PopMatrix();
+
+														modelStack.PushMatrix();
+														modelStack.Translate(0.05, -1.1, 0.9 * teeth);
+														modelStack.Rotate(180, 1, 0, 0);
+														modelStack.Scale(0.1, 0.5, 0.1);
+														modelStack.Scale(1, 7, 2);
+														RenderMesh(meshList[GEO_CONE], true);	//large back tooth
+														modelStack.PopMatrix();
+
+														modelStack.PushMatrix();
+														modelStack.Translate(0.02, -0.72, 1.05 * teeth);
+														modelStack.Rotate(180, 1, 0, 0);
+														modelStack.Scale(0.1, 0.5, 0.1);
+														modelStack.Scale(0.7, 5, 2);
+														RenderMesh(meshList[GEO_CONE], true);	//back tooth
+														modelStack.PopMatrix();
+													}
+												}
+
+
+												//upper spikes
+												{
+													for (int i = 0; i < 2; ++i)
+													{
+														int spikes = 1;
+														if (i % 2 == 0)
+															spikes = -1;
+														modelStack.PushMatrix();
+														modelStack.Translate(-0.2, -2.5, 1.3 * spikes);
+														modelStack.Rotate(180, 1, 0, 0);
+														modelStack.Scale(0.1, 0.5, 0.1);
+														modelStack.Scale(0.5, 5, 1.15);
+														RenderMesh(meshList[GEO_CONE], true);	//front bottom spike
+														modelStack.PopMatrix();
+
+														modelStack.PushMatrix();
+														modelStack.Translate(-0.3, -2.5, 1.4 * spikes);
+														modelStack.Rotate(180, 1, 0, 0);
+														modelStack.Scale(0.1, 0.5, 0.1);
+														modelStack.Scale(0.6, 5, 1.2);
+														RenderMesh(meshList[GEO_CONE], true);	//front mid bottom spike
+														modelStack.PopMatrix();
+
+														modelStack.PushMatrix();
+														modelStack.Translate(-0.4, -2.5, 1.55 * spikes);
+														modelStack.Rotate(180, 1, 0, 0);
+														modelStack.Scale(0.1, 0.5, 0.1);
+														modelStack.Scale(0.6, 5, 1.25);
+														RenderMesh(meshList[GEO_CONE], true);	//back mid bottom spike
+														modelStack.PopMatrix();
+
+														modelStack.PushMatrix();
+														modelStack.Translate(-0.5, -2.5, 1.65 * spikes);
+														modelStack.Rotate(180, 1, 0, 0);
+														modelStack.Scale(0.1, 0.5, 0.1);
+														modelStack.Scale(0.6, 5, 1.3);
+														RenderMesh(meshList[GEO_CONE], true);	//back bottom spike
+														modelStack.PopMatrix();
+
+														modelStack.PushMatrix();
+														modelStack.Translate(-0.7, -1.5, 1.55 * spikes);
+														modelStack.Rotate(90, 0, 0, 1);
+														modelStack.Scale(0.1, 0.5, 0.1);
+														modelStack.Scale(8, 0.5, 3);
+														RenderMesh(meshList[GEO_CONE], true);	//bottom back spike
+														modelStack.PopMatrix();
+
+														modelStack.PushMatrix();
+														modelStack.Translate(-0.8, 3.1, 1.35 * spikes);
+														modelStack.Rotate(90, 0, 0, 1);
+														modelStack.Scale(0.1, 0.5, 0.1);
+														modelStack.Scale(15, 1.1, 5);
+														RenderMesh(meshList[GEO_CONE], true);	//top back spike
+														modelStack.PopMatrix();
+													}
+												}
+
+												modelStack.PopMatrix();
+
+												//sides of upper lip
+												for (int i = 0; i < 2; ++i)
+												{
+													int sides = 1;
+													if (i % 2 == 0)
+														sides = -1;
+													modelStack.PushMatrix();
+													modelStack.Translate(0.8, -0.2, sides * 0.31);
+													modelStack.Rotate(sides * 10, 0, 1, 0);
+													modelStack.Scale(2.7, 0.15, 0.4);
+													RenderMesh(meshList[GEO_CUBE], true);
+													modelStack.PopMatrix();
+												}
+											}
+
+											//upper sloped part of face
+											modelStack.PushMatrix();
+											modelStack.Translate(1.4, 0.15, 0);
+											modelStack.Scale(1.8, 0.6, 0.35);
+											RenderMesh(meshList[GEO_SLOPE], true);
+											modelStack.PopMatrix();
+
+											//sides of sloped part of face
+											for (int i = 0; i < 2; ++i)
+											{
+												int sides = 1;
+												if (i % 2 == 0)
+												{
+													sides = -1;
+												}
+												modelStack.PushMatrix();
+												modelStack.Translate(1.42, -0.13, sides * 0.36);
+												modelStack.Rotate(-18, 0, 0, 1);
+												modelStack.Rotate(sides * -35, 1, 0, 0);
+												modelStack.Scale(1.8, 0.7, 1);
+												if (i == 0)
+													RenderMesh(meshList[GEO_TRIANGLEBACK], true);
+												else
+													RenderMesh(meshList[GEO_TRIANGLE], true);
+												modelStack.PopMatrix();
+											}
+											modelStack.PopMatrix();
+										}
+										modelStack.PopMatrix();
+									}
+
+									//sides of upper jaw
+									for (int i = 0; i < 2; ++i)
+									{
+										int sides = 1;
+										if (i % 2 == 0)
+											sides = -1;
+										modelStack.PushMatrix();
+										modelStack.Translate(-0.05, 0.2, sides * 0.36);
+										modelStack.Rotate(-35, 0, 0, 1);
+										modelStack.Rotate(sides * 10, 0, 1, 0);
+										modelStack.Scale(1.3, 0.6, 0.6);
+										RenderMesh(meshList[GEO_CUBE], true);
+										modelStack.PopMatrix();
+									}
+								}
+								modelStack.PopMatrix();
+							}
+							modelStack.PopMatrix();
+						}
+						modelStack.PopMatrix();
+					}
+					modelStack.PopMatrix();
+				}
+				modelStack.PopMatrix();
+
+				//swipe effect
+				if (enemyAttackScale > 1)
+				{
+					modelStack.PushMatrix();
+					modelStack.Translate(23, 1, 0);
+					modelStack.Rotate(45, 0, 1, 0);
+					modelStack.Scale(enemyAttackScale, enemyAttackScale, enemyAttackScale);
+					RenderMesh(meshList[GEO_CRESCENT], false);
+					modelStack.PopMatrix();
+				}
+				//circle for his position
+				/*else if (finale == true)
+				{
+					modelStack.PushMatrix();
+					modelStack.Translate(camera.position.x, 1, camera.position.z);
+					modelStack.Scale(4, 1, 4);
+					RenderMesh(meshList[GEO_CIRCLE], false);
+					modelStack.PopMatrix();
+				}*/
+			}
+			modelStack.PopMatrix();
+		}
 	}
 
 	
@@ -802,27 +1604,30 @@ void SceneMarinaBay::Render()
 		RenderTextOnScreen(meshList[GEO_TEXT], "You", Color(0, 1, 0), 5, 72, 55);
 		RenderMeshOnScreen(meshList[GEO_HEALTH], 70, 53, 20, 2);
 		RenderMeshOnScreen(meshList[GEO_LOSTHEALTH], playerHealthPos, 53, playerHealth, 2);
-		//fighting layout
-		RenderMeshOnScreen(meshList[GEO_LAYOUT], 40, 15, 80, 30);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Attack", Color(0, 0, 0), 4, 4, 11);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Items", Color(0, 0, 0), 4, 4, 6);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Run", Color(0, 0, 0), 4, 4, 1);
-		RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(0, 0, 0), 4, pointerX, pointerY);
-		if (fightSelected)
+		if (playerTurn)
 		{
-			RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder", Color(0, 0, 0), 4, 25, 9.5);	//attack1
-			RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder2", Color(0, 0, 0), 4, 25, 2.5);	//attack2
-		}
-		else if (itemsSelected)
-		{
-			RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder3", Color(0, 0, 0), 4, 25, 8);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder4", Color(0, 0, 0), 4, 25, 8);
+			//fighting layout
+			RenderMeshOnScreen(meshList[GEO_LAYOUT], 40, 15, 80, 30);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Attack", Color(0, 0, 0), 4, 4, 11);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Items", Color(0, 0, 0), 4, 4, 6);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Run", Color(0, 0, 0), 4, 4, 1);
+			RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(0, 0, 0), 4, pointerX, pointerY);
+			if (fightSelected)	//not too sure how to make it automatic with attacks enum and based on size of attacksunlocked yet 
+			{
+				RenderTextOnScreen(meshList[GEO_TEXT], "Big", Color(0, 0, 0), 4, 25, 9.5);	//attack1
+				RenderTextOnScreen(meshList[GEO_TEXT], "Rocket Punch", Color(0, 0, 0), 4, 25, 2.5);	//attack2
+			}
+			else if (itemsSelected)
+			{
+				RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder3", Color(0, 0, 0), 4, 25, 8);
+				RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder4", Color(0, 0, 0), 4, 25, 8);
+			}
 		}
 		//for (auto it = buttonList.begin(); it != buttonList.end(); ++it)
 			//RenderMeshOnScreen(meshList[GEO_QUAD], (*it)->getPosX() + (*it)->getWidth() * 0.5, (*it)->getPosY() + (*it)->getHeight() * 0.5, (*it)->getWidth(), (*it)->getHeight());
 		
 
-		double x, y;
+		/*double x, y;
 		Application::GetCursorPos(&x, &y);
 		unsigned w = Application::GetWindowWidth();
 		unsigned h = Application::GetWindowHeight();
@@ -833,7 +1638,7 @@ void SceneMarinaBay::Render()
 		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 29);
 		ss.str("");
 		ss << "y: " << posY;
-		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 27);
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 27);*/
 	}
 	else if (NPCDia && !fight)	//im working on making this condition checking btr
 	{
