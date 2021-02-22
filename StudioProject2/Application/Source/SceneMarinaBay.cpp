@@ -23,10 +23,12 @@ void SceneMarinaBay::Init()
 	buttonList.push_back(new Button(0, 0, 20, 5.5, true));	//run
 	buttonList.push_back(new Button(21, 8.25, 30, 8.25));	//attack1
 	buttonList.push_back(new Button(21, 0, 30, 8.25));	//attack2
+	buttonList.push_back(new Button(53, 8.25, 30, 8.25));	//attack3
 
 	//temp storage of attacks, will change for future minigame purposes
 	attacksList.push_back(BIG);
 	attacksList.push_back(ROCKET_PUNCH);
+	attacksList.push_back(MIND_POWERS);
 	//======Initialising variables========
 	pointerX = 2;
 	pointerY = 11;
@@ -267,6 +269,8 @@ void SceneMarinaBay::Init()
 		meshList[GEO_MC]->textureID = LoadTGA("Image//Marina//skin_adventurer.tga");
 		meshList[GEO_ARM] = MeshBuilder::GenerateOBJMTL("MC", "OBJ//Marina//character_arm.obj", "OBJ//Marina//advancedCharacter.obj.mtl");
 		meshList[GEO_ARM]->textureID = LoadTGA("Image//Marina//skin_adventurer.tga");
+		meshList[GEO_SWORD] = MeshBuilder::GenerateOBJMTL("sword", "OBJ//Marina//Short Sword.obj", "OBJ//Marina//Short Sword.mtl");
+		meshList[GEO_SWORD]->textureID = LoadTGA("Image//Marina//Short Sword.tga");
 
 		//text
 		meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
@@ -346,7 +350,7 @@ void SceneMarinaBay::Update(double dt)
 	if (Application::IsKeyPressed('H'))	//test for attack button
 	{
 		attackSelected = true;
-		playerAction = A_ATTACK2;
+		playerAction = A_ATTACK3;
 	}
 	else if (Application::IsKeyPressed('G'))	//test for dragon attack
 	{
@@ -362,17 +366,37 @@ void SceneMarinaBay::Update(double dt)
 	{
 		switch (playerAction)
 		{
-		case (A_ATTACK1):
+		case (A_ATTACK1):									//temporary solution
 			attackSelected = true;
+			for (unsigned int i = 0; i < buttonList.size(); ++i)
+			{
+				buttonList[i]->active = false;
+			}
+			fightSelected = false;
 			break;
 		case (A_ATTACK2):
 			attackSelected = true;
+			for (unsigned int i = 0; i < buttonList.size(); ++i)
+			{
+				buttonList[i]->active = false;
+			}
+			fightSelected = false;
 			break;
 		case (A_ATTACK3):
 			attackSelected = true;
+			for (unsigned int i = 0; i < buttonList.size(); ++i)
+			{
+				buttonList[i]->active = false;
+			}
+			fightSelected = false;
 			break;
 		case (A_ATTACK4):
 			attackSelected = true;
+			for (unsigned int i = 0; i < buttonList.size(); ++i)
+			{
+				buttonList[i]->active = false;
+			}
+			fightSelected = false;
 			break;
 		case (A_ATTACK):
 			fightSelected = true;
@@ -382,7 +406,7 @@ void SceneMarinaBay::Update(double dt)
 				buttonList[i + A_ATTACK1]->active = true;
 			}
 			break;
-		case (A_ITEMS):
+		case (A_ITEMS):			//if no time will just get rid of
 			itemsSelected = true;
 			break;
 		case (A_RUN):
@@ -447,7 +471,7 @@ void SceneMarinaBay::Update(double dt)
 		case (BIG):			//MC goes big
 			if (!attackHit)	//when attack hasnt hit enemy yet
 			{
-				if (attackScale < 7)		//go big
+				if (attackScale < 8)		//go big
 					attackScale += 7 * dt;
 				else if (attackAngle < 90)		//rotate onto enemy
 					attackAngle += 600 * dt;
@@ -476,8 +500,8 @@ void SceneMarinaBay::Update(double dt)
 		case (ROCKET_PUNCH):
 			if (!attackHit)
 			{
-				if (attackTranslateY < 5)
-					attackTranslateY += 15 * dt;	//goes up so it doesn't sink to the floor
+				if (attackTranslateY < 30)
+					attackTranslateY += 30 * dt;	//goes up so it gets a good angle to hit 
 				else if (attackAngle < 90)
 					attackAngle += 100 * dt;
 				else if (attackTranslateZ < 150)
@@ -506,8 +530,36 @@ void SceneMarinaBay::Update(double dt)
 				}
 			}
 			break;
+		case (MIND_POWERS):
+			if (!attackHit)
+			{
+				if (attackTranslateY < 30 && attackTranslateZ<=0)
+				{
+					attackTranslateY += 30 * dt;
+				}
+				else if (attackTranslateZ < 100)
+				{
+					int attackSpeed = 400;
+					attackTranslateZ += attackSpeed * dt;
+					attackTranslateY -= attackSpeed * 0.25 * dt;
+				}
+				else
+				{
+					attackHit = true;
+					enemyHealthLost = 35.f;
+				}
+			}
+			else
+			{
+				attackTranslateY = 0;
+				attackTranslateZ = 0;
+				attackHit = false;
+				playerTurn = false;
+				enemyTurn = true;
+				attackSelected = false;
+				playerAttack = NO_ATTACK;
+			}
 		}
-
 	}
 	//enemy turn actions
 	else if (enemyTurn && enemyHealthLost<=0 && playerHealthLost<=0)	//if health not still decreasing
@@ -517,28 +569,32 @@ void SceneMarinaBay::Update(double dt)
 		case (SPEAR):
 			idle = false;
 			attack = true;
-			if (attackHit)
+			if (enemyAttackHit)
 				playerHealthLost = 20.f;
 			break;
 		case (DIG):			//dig attack requires more work 
 			movement = true;
 			idle = false;
-			if (attackHit)
+			if (enemyAttackHit)
 				playerHealthLost = 40.f;
 			break;
 		case (BITE):
 			bite = true;
 			idle = false;
-			if (attackHit)
+			if (enemyAttackHit)
 				playerHealthLost = 35.f;
 		}
-		if (attackHit)	//ends enemy's turn and switches enemy's next attack
+		if (enemyAttackHit)	//ends enemy's turn and switches enemy's next attack
 		{
 			enemyAttack = static_cast<ENEMY_ATTACKS>((enemyAttack + 1) % NUM_EATTACKS);	//moves to the next attack
 			attackSelected = false;
 			playerTurn = true;
 			enemyTurn = false;
-			attackHit = false;
+			enemyAttackHit = false;
+			for (unsigned int i = 0; i < A_RUN + 1; ++i)	//reenabling the 3 main buttons
+			{
+				buttonList[i]->active = true;
+			}
 		}
 	}
 	
@@ -606,7 +662,7 @@ void SceneMarinaBay::Update(double dt)
 					move += 50 * dt;
 				else
 				{
-					attackHit = true;
+					enemyAttackHit = true;
 					moveAngle -= 70 * dt;
 					if (moveBack > 0)
 						moveBack -= 100 * dt;
@@ -648,7 +704,7 @@ void SceneMarinaBay::Update(double dt)
 				else
 				{
 					revert = true;
-					attackHit = true;
+					enemyAttackHit = true;
 				}
 			}
 		}
@@ -673,7 +729,7 @@ void SceneMarinaBay::Update(double dt)
 				else
 				{
 					revert = true;
-					attackHit = true;
+					enemyAttackHit = true;
 				}
 			}
 			else							//moving back to original position
@@ -1101,6 +1157,25 @@ void SceneMarinaBay::Render()
 			}
 			RenderMesh(meshList[GEO_ARM], true);
 			modelStack.PopMatrix();
+
+			//sword
+			if (playerAttack == MIND_POWERS)
+			{
+				for (int i = -10; i <= 0; i += 10)
+				{
+					for (int y = 5; y <= 10; y += 5)
+					{
+						modelStack.PushMatrix();
+						modelStack.Translate(-i, y, i);	//for looped
+						modelStack.Translate(0, attackTranslateY, attackTranslateZ);
+						modelStack.Rotate(90, 0, 1, 0);
+						modelStack.Rotate(100, 0, 0, 1);
+						modelStack.Scale(2, 2, 2);
+						RenderMesh(meshList[GEO_SWORD], true);
+						modelStack.PopMatrix();
+					}
+				}
+			}
 		}
 		modelStack.PopMatrix();
 
@@ -1684,6 +1759,7 @@ void SceneMarinaBay::Render()
 			{
 				RenderTextOnScreen(meshList[GEO_TEXT], "Big", Color(0, 0, 0), 4, 25, 9.5);	//attack1
 				RenderTextOnScreen(meshList[GEO_TEXT], "Rocket Punch", Color(0, 0, 0), 4, 25, 2.5);	//attack2
+				RenderTextOnScreen(meshList[GEO_TEXT], "Mind Powers", Color(0, 0, 0), 4, 55, 9.5);	//attack2
 			}
 			else if (itemsSelected)
 			{
@@ -1691,8 +1767,8 @@ void SceneMarinaBay::Render()
 				RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder4", Color(0, 0, 0), 4, 25, 8);
 			}
 		}
-		//for (auto it = buttonList.begin(); it != buttonList.end(); ++it)
-			//RenderMeshOnScreen(meshList[GEO_QUAD], (*it)->getPosX() + (*it)->getWidth() * 0.5, (*it)->getPosY() + (*it)->getHeight() * 0.5, (*it)->getWidth(), (*it)->getHeight());
+		/*for (auto it = buttonList.begin(); it != buttonList.end(); ++it)
+			RenderMeshOnScreen(meshList[GEO_QUAD], (*it)->positionX + (*it)->width * 0.5, (*it)->positionY + (*it)->height * 0.5, (*it)->width, (*it)->height);*/
 		
 
 		/*double x, y;

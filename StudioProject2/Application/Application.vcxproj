@@ -166,7 +166,6 @@
     <ClCompile Include="Source\shader.cpp" />
     <ClCompile Include="Source\Terrain.cpp" />
     <ClCompile Include="Source\Utility.cpp" />
-    <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Menu.h" />
@@ -192,7 +191,6 @@
     <ClInclude Include="Source\MeshBuilder.h" />
     <ClInclude Include="Source\Scene.h" />
     <ClInclude Include="Source\shader.hpp" />
-    <ClInclude Include="test.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Itemdescriptions.txt" />

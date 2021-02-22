@@ -105,7 +105,6 @@ void Camera3::Update(double dt)
 			Vector3 right = view.Cross(up).Normalized();
 			right.y = 0;
 			right = right.Normalized();
-			Vector3 test = position - right * speed * dt;
 			position += right * speed * dt;
 		}
 		if (Application::IsKeyPressed('R'))
