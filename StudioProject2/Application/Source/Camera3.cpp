@@ -75,7 +75,7 @@ To be called every frame. Camera3 will get user inputs and update its position a
 /******************************************************************************/
 void Camera3::Update(double dt)
 {
-	static const float speed = 50.f;
+	static const float speed = 10.f;
 	static const float sensitivity = 0.1f; 
 
 	if (Application::enableMouse == false) {
@@ -105,7 +105,6 @@ void Camera3::Update(double dt)
 			Vector3 right = view.Cross(up).Normalized();
 			right.y = 0;
 			right = right.Normalized();
-			Vector3 test = position - right * speed * dt;
 			position += right * speed * dt;
 		}
 		if (Application::IsKeyPressed('R'))
