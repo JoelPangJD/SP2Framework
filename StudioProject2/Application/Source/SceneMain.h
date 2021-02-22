@@ -110,7 +110,6 @@ private:
 
 	bool inFrontOfMuseum, inFrontOfChangi, InFrontofMarina, inFrontofGarden;
 	bool minigameMuseum;
-	Button yes, no, enter;
 	
 
 	float CharWidth[256];
@@ -124,7 +123,10 @@ private:
 
 	void updateMinigame(double dt);
 
-	std::vector<Vector3*> grids;
+	Vector3* grids[9];
+	Button gridButton[9];
+	std::string colorGrid[9];
+	bool pass;
 };
 
 #endif
