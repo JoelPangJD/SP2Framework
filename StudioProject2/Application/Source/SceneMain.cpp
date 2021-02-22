@@ -196,16 +196,37 @@ void SceneMain::Init()
 	inFrontOfMuseum = false;
 	minigameMuseum = false;
 
-	yes.positionX = 6; yes.positionY = 6; yes.width = yes.height = 33;
-	no.positionX = 41; no.positionY = 6; no.width = no.height = 33;
-	enter.positionX = 20; enter.positionY = 11; enter.width = 34; enter.height = 3;
 
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
 			Vector3* gridPos = new Vector3(33.5 + (16.5 * j), 13.5 + (16.5 * i), 0);
-			grids.push_back(gridPos);
+			grids[(i * 3) + j] = gridPos;
 		}
 	}
+	int height, width;
+	height = width = 15;
+	for (int i = 0; i < 9; i++) {
+		if ((i == 3) || (i == 4) || (i == 5)) {
+			height = 16;
+		}
+		else {
+			height = 15;
+		}
+		if ((i == 1) || (i == 4) || (i == 7)) {
+			width = 16;
+		}
+		else {
+			width = 15;
+		}
+		gridButton[i].positionX = grids[i]->x - width/2;
+		gridButton[i].positionY = grids[i]->y - height / 2;
+		gridButton[i].width = width;
+		gridButton[i].height = height;
+		gridButton[i].active = true;
+		colorGrid[i] = "Red";
+	}
+	pass = false;
+	
 	
 }
 
@@ -253,13 +274,10 @@ void SceneMain::Update(double dt)
 	//minigame for entering museum
 	if (minigameMuseum == true) {
 		Application::enableMouse = true;
-		enter.active = true;
-		enter.updateButton();
-		if (enter.isClickedOn() == true){
+		if (pass == true){
 			minigameMuseum = false;
 			Application::enableMouse = false;
 			Application::SwitchScene = 1;
-			enter.active = yes.active = no.active = false;
 		}
 		updateMinigame(dt);
 	}
@@ -378,16 +396,9 @@ void SceneMain::RenderMinigame()
 	RenderMeshOnScreen(meshList[Panel], 40, 30, 7, 5);
 	int width, height;
 	width = height = 15;
-	RenderTextOnScreen(meshList[GEO_TEXT], "Click here to enter", Color(0, 0, 0), 6, 20, 10);
-	//RenderMeshOnScreen(meshList[Red], 33.5f, 13.5f, 15, 15);
-	//RenderMeshOnScreen(meshList[Red], 33.5f, 30.f, 15, 16);
-	//RenderMeshOnScreen(meshList[Red], 33.5f, 46.5f, 15, 15);
-	//RenderMeshOnScreen(meshList[Red], 50.f, 13.5f, 16, 15);
-	//RenderMeshOnScreen(meshList[Red], 50.f, 30.f, 16, 16);
-	//RenderMeshOnScreen(meshList[Red], 50.f, 46.5f, 16, 15);
-	//RenderMeshOnScreen(meshList[Red], 66.5f, 13.5f, 15, 15);
-	//RenderMeshOnScreen(meshList[Red], 66.5f, 30.f, 15, 16);
-	//RenderMeshOnScreen(meshList[Red], 66.5f, 46.5f, 15, 15);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Turn all squares", Color(0, 0, 0), 3, 8, 50);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Green to enter", Color(0, 0, 0), 3, 8, 46);
+	RenderTextOnScreen(meshList[GEO_TEXT], "the museum.", Color(0, 0, 0), 3, 8, 42);
 	for (int i = 0; i < 9; i++) {
 
 		if ((i == 3) || (i == 4) || (i == 5)) {
@@ -402,19 +413,40 @@ void SceneMain::RenderMinigame()
 		else {
 			width = 15;
 		}
-		RenderMeshOnScreen(meshList[Red], grids[i]->x, grids[i]->y, width, height);
+		if (colorGrid[i] == "Red") {
+			RenderMeshOnScreen(meshList[Red], grids[i]->x, grids[i]->y, width, height);
+		}
+		else if (colorGrid[i] == "Green") {
+			RenderMeshOnScreen(meshList[Green], grids[i]->x, grids[i]->y, width, height);
+		}
 	}
 
 }
 
 void SceneMain::updateMinigame(double dt)
 {
-	yes.active = no.active = true;
-	yes.updateButton();
-	no.updateButton();
-	
+	for (int i = 0; i < 9; i++) {
+		gridButton[i].updateButton();
+		if (gridButton[i].isClickedOn()) {
+			if (colorGrid[i] == "Red") {
+				colorGrid[i] = "Green";
+			}
+			else {
+				colorGrid[i] = "Red";
+			}
+		}
+	}
 
-	static bool bLButtonState1 = false;
+	for (int i = 0; i < 9; i++) {
+		if (colorGrid[i] == "Red") {
+			break;
+		}
+		else if (i == 8) {
+			pass = true;
+		}
+	}
+
+	/*static bool bLButtonState1 = false;
 	if (!bLButtonState1 && Application::IsMousePressed(0))
 	{
 		bLButtonState1 = true;
@@ -430,7 +462,7 @@ void SceneMain::updateMinigame(double dt)
 	else if (bLButtonState1 && !Application::IsMousePressed(0))
 	{
 		bLButtonState1 = false;
-	}
+	}*/
 }
 void SceneMain::RenderText(Mesh* mesh, std::string text, Color color)
 {
@@ -486,7 +518,6 @@ void SceneMain::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 
 
 	float totalspace = 0.5f;
-	float totalz = 0;
 
 
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
@@ -758,6 +789,7 @@ void SceneMain::Render()
 	if (minigameMuseum == true) {
 		RenderMinigame();
 	}
+
 }
 
 void SceneMain::Exit()

@@ -775,6 +775,30 @@ void SceneGarden::RenderNPCDialogue(std::string NPCText, std::string headerText)
 	}
 }
 
+void SceneGarden::RenderMinigameScreen(std::string MinigamedescriptionText, std::string headerText, float fontsize)
+{
+	RenderMeshOnScreen(meshList[GEO_TEXTBOX], 40, 30, 80, 50);
+	RenderMeshOnScreen(meshList[GEO_HEADER], 40, 57, 60, 8);
+	RenderTextOnScreen(meshList[GEO_TEXT], headerText, Color(0, 0, 0), 6, 38 - (headerText.size()*1.5), 54);	//header text
+	string word;																	//automating text
+	int wordpos = 0, ypos = 50 - fontsize, last = MinigamedescriptionText.find_last_of(" ");
+	float xpos = 2.f;
+	while (true)
+	{
+		word = MinigamedescriptionText.substr(wordpos, MinigamedescriptionText.find(" ", wordpos + 1) - wordpos);
+		if (xpos + word.length() * (fontsize * 0.5) + (fontsize * 0.5) > 80)		//if new word will exceed screensize
+		{
+			ypos -= fontsize;
+			xpos = 2;
+		}
+		RenderTextOnScreen(meshList[GEO_TEXT], word, Color(0, 0, 0), fontsize, xpos, ypos);
+		if (wordpos > last)
+			break;
+		wordpos += word.length() + 1;
+		xpos += (fontsize * 0.5) * word.length() + (fontsize * 0.5);
+	}
+}
+
 void SceneGarden::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1002,11 +1026,11 @@ void SceneGarden::Render()
 	//Renderfish();
 	//modelStack.PopMatrix();
 
-	//Renderfish();
 	if (minigame == 0)
 		RenderUI();
 	else if(minigame == 1)
 		Renderminigame1();
+	RenderMinigameScreen("Press the E when the rings overlap, do it sucessfully 3 times in a row to catch a fish", "Fishing", 6);
 }
 
 void SceneGarden::Exit()
