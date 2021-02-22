@@ -38,7 +38,11 @@ class SceneMuseum : public Scene
 		GEO_FRONT,
 		GEO_BACK,
 		GEO_INVENTORY,
+		//TEXT
 		GEO_TEXT,
+		GEO_TEXTINTEXTBOX,
+		GEO_TEXTBOX,
+		GEO_HEADER,
 		//BASIC OBJ FOR DECORATION
 		GEO_ELEPHANT,
 		GEO_STATUE1,
@@ -110,6 +114,7 @@ public:
 	Camera3 camera;
 	bool lighton = true;
 	float fps;
+	float cooldown;
 
 	SceneMuseum();
 	~SceneMuseum();
@@ -127,6 +132,13 @@ private:
 	unsigned m_programID;
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
+
+	//Variables for text
+	std::ostringstream interacttext;
+	bool indialogue;
+	vector<string> dialogue;
+	vector<string>::iterator currentline;
+	string name;
 
 	std::vector<InteractableObject*> items;
 	std::vector<Terrain*> terrains;
@@ -158,6 +170,7 @@ private:
 
 	void StartGame1();
 	void RenderInteractableText();
+	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 
 };
 

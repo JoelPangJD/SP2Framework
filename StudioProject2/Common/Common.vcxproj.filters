@@ -45,4 +45,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Application\Itemdescriptions.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="..\Application\Itemdialogue.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+  </ItemGroup>
 </Project>

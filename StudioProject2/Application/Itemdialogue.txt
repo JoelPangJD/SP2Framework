@@ -1,2 +1,3 @@
 stick|1Hello stick|2...|2Bro I'm trying to be a stick man...|2Don't make me break character|1Oh I didn't realise, my bad
 cat|1Hello cat|2Meow
+answer|1Looks like i need to choose the right image
