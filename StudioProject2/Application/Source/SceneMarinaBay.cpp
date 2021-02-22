@@ -366,17 +366,37 @@ void SceneMarinaBay::Update(double dt)
 	{
 		switch (playerAction)
 		{
-		case (A_ATTACK1):
+		case (A_ATTACK1):									//temporary solution
 			attackSelected = true;
+			for (unsigned int i = 0; i < buttonList.size(); ++i)
+			{
+				buttonList[i]->active = false;
+			}
+			fightSelected = false;
 			break;
 		case (A_ATTACK2):
 			attackSelected = true;
+			for (unsigned int i = 0; i < buttonList.size(); ++i)
+			{
+				buttonList[i]->active = false;
+			}
+			fightSelected = false;
 			break;
 		case (A_ATTACK3):
 			attackSelected = true;
+			for (unsigned int i = 0; i < buttonList.size(); ++i)
+			{
+				buttonList[i]->active = false;
+			}
+			fightSelected = false;
 			break;
 		case (A_ATTACK4):
 			attackSelected = true;
+			for (unsigned int i = 0; i < buttonList.size(); ++i)
+			{
+				buttonList[i]->active = false;
+			}
+			fightSelected = false;
 			break;
 		case (A_ATTACK):
 			fightSelected = true;
@@ -386,7 +406,7 @@ void SceneMarinaBay::Update(double dt)
 				buttonList[i + A_ATTACK1]->active = true;
 			}
 			break;
-		case (A_ITEMS):
+		case (A_ITEMS):			//if no time will just get rid of
 			itemsSelected = true;
 			break;
 		case (A_RUN):
@@ -540,7 +560,6 @@ void SceneMarinaBay::Update(double dt)
 				playerAttack = NO_ATTACK;
 			}
 		}
-
 	}
 	//enemy turn actions
 	else if (enemyTurn && enemyHealthLost<=0 && playerHealthLost<=0)	//if health not still decreasing
@@ -572,6 +591,10 @@ void SceneMarinaBay::Update(double dt)
 			playerTurn = true;
 			enemyTurn = false;
 			enemyAttackHit = false;
+			for (unsigned int i = 0; i < A_RUN + 1; ++i)	//reenabling the 3 main buttons
+			{
+				buttonList[i]->active = true;
+			}
 		}
 	}
 	

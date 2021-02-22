@@ -182,6 +182,14 @@ void SceneMain::Init()
 	meshList[RoadCrossBarrier] = MeshBuilder::GenerateOBJMTL("roadcrossbarrier", "OBJ//CityCenter//road_roundaboutBarrier.obj", "OBJ//CityCenter//road_roundaboutBarrier.mtl");
 	meshList[Lamp] = MeshBuilder::GenerateOBJMTL("lamp", "OBJ//CityCenter//lamp.obj", "OBJ//CityCenter//lamp.mtl");
 	meshList[Museum] = MeshBuilder::GenerateOBJMTL("museum", "OBJ//CityCenter//museum.obj", "OBJ//CityCenter//museum.mtl");
+	meshList[Teacher] = MeshBuilder::GenerateOBJ("teacher", "OBJ//CityCenter//character.obj");
+	meshList[Teacher]->textureID = LoadTGA("Image//CityCenter//teacher.tga");
+	meshList[Friend] = MeshBuilder::GenerateOBJ("friend", "OBJ//CityCenter//character.obj");
+	meshList[Friend]->textureID = LoadTGA("Image//CityCenter//friend.tga");
+	meshList[Header] = MeshBuilder::GenerateQuad("header", Color(1, 1, 1), 1.f);
+	meshList[Header]->textureID = LoadTGA("Image//Marina//header.tga");
+	meshList[Textbox] = MeshBuilder::GenerateQuad("textbox", Color(1, 1, 1), 1.f);
+
 
 	int charac = 0;
 	std::ifstream fin;
@@ -193,7 +201,7 @@ void SceneMain::Init()
 		charac++;
 	}
 	fin.close();
-	inFrontOfMuseum = false;
+	inFrontofMuseum = inFrontofChangi = inFrontofGarden = inFrontofMarina = false;
 	minigameMuseum = false;
 
 
@@ -227,7 +235,8 @@ void SceneMain::Init()
 	}
 	pass = false;
 	
-	
+	items.push_back(new InteractableObject(Vector3(-2, 2, 0), 0, 2, 4, "Mr.Sazz"));
+	items.push_back(new InteractableObject(Vector3(6, 1, 5), 0, 2, 3, "Andy"));
 }
 
 
@@ -235,7 +244,11 @@ void SceneMain::Init()
 void SceneMain::Update(double dt)
 {
 	fps = 1.f / dt;
-	camera.Update(dt);
+	if (!inDialogue)//Don't move while in a dialogue
+		camera.Update(dt);
+	if (cooldown > 0) {
+		cooldown -= dt;
+	}
 
 	if (Application::IsKeyPressed('U'))
 	{
@@ -259,18 +272,38 @@ void SceneMain::Update(double dt)
 	}
 
 	if (Application::IsKeyPressed('E')) {
-		if (inFrontOfMuseum == true) {
+		if (inFrontofMuseum == true) {
 			minigameMuseum = true;
-			//Application::SwitchScene = 1;
 		}
-	
+		else if (inFrontofChangi) {
+			minigameChangi = true;
+		}
+		else if (inFrontofMarina) {
+			minigameMarina = true;
+		}
+		else if (inFrontofGarden) {
+			minigameGarden = true;
+		}
 	}
 	if ((camera.position.x >= 18) && (camera.position.x <= 27.5) && (camera.position.z >= -3) && (camera.position.z <= 3)) {
-		inFrontOfMuseum = true;
+		inFrontofMuseum = true;
+	}
+	else if ((camera.position.x >= -3) && (camera.position.x <= 3) && (camera.position.z >= 18) && (camera.position.z <= 27.5)) {
+		inFrontofChangi = true;
+	}
+	else if ((camera.position.x <= -18) && (camera.position.x >= -27.5) && (camera.position.z >= -3) && (camera.position.z <= 3)) {
+		inFrontofMarina = true;
+	}
+	else if ((camera.position.x >= -3) && (camera.position.x <= 3) && (camera.position.z <= -18) && (camera.position.z >= -27.5)) {
+		inFrontofGarden = true;
 	}
 	else {
-		inFrontOfMuseum = false;
+		inFrontofMuseum = false;
+		inFrontofChangi = false;
+		inFrontofMarina = false;
+		inFrontofGarden = false;
 	}
+
 	//minigame for entering museum
 	if (minigameMuseum == true) {
 		Application::enableMouse = true;
@@ -281,7 +314,7 @@ void SceneMain::Update(double dt)
 		}
 		updateMinigame(dt);
 	}
-
+	updateDialogue();
 
 }
 
@@ -380,11 +413,31 @@ void SceneMain::RenderSkybox()
 
 void SceneMain::RenderUI()
 {
-	modelStack.PushMatrix();
+	if (inDialogue)
+	{
+		string dialoguetext = (*currentLine);
+		string currentname;
+		if (dialoguetext[0] == '1')
+			currentname = "Player name";
+		else if (dialoguetext[0] == '2')
+			currentname = name;
+		dialoguetext = dialoguetext.substr(1);
+		RenderNPCDialogue(dialoguetext, currentname);
+		if (cooldown <= 0 && Application::IsKeyPressed('E')) //Cooldown added to prevent spamming to pass the dialogues too fast
+		{
+			cooldown = 1;
+			currentLine++;
+			if (currentLine == dialogue.end())
+			{
+				inDialogue = false;
+				dialogue.clear();
+			}
+		}
+	}
+
 	std::ostringstream ss;
 	ss << "FPS: " << fps;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 70, 58);
-	modelStack.PopMatrix();
 
 	ss.str("");
 	ss << "Pos: X: " << camera.position.x << " Z: " << camera.position.z;
@@ -464,6 +517,43 @@ void SceneMain::updateMinigame(double dt)
 		bLButtonState1 = false;
 	}*/
 }
+
+void SceneMain::updateDialogue()
+{
+
+	//Check collisions
+	{
+		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+		{
+			if ((*it)->spherecollider(camera.target)) // Checks if the target is within a radius of the stick
+			{
+				int interacttype = (*it)->interact();
+				if (interactText.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
+				{
+					if (interacttype == 1)// 1 is look at
+					{
+						dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
+						currentLine = dialogue.begin(); //Currentline is set at the look at description
+						inDialogue = true;//Set state to in dialogue
+					}
+					if (interacttype == 4) //4 is talk to
+					{
+						dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
+						currentLine = dialogue.begin(); //Currentline iteratior as the first line of dialogue
+						name = (*it)->gettype(); //Set the name of the npc the player talks to
+						inDialogue = true;//Set state to in dialogue
+					}
+					if ((*it)->gettype() == "Mr.Sazz")
+					{
+						interactText << "MrSazz";
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
 void SceneMain::RenderText(Mesh* mesh, std::string text, Color color)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
@@ -569,6 +659,32 @@ void SceneMain::RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int 
 	glEnable(GL_DEPTH_TEST);
 }
 
+void SceneMain::RenderNPCDialogue(std::string NPCText, std::string headerText)
+{
+	//float headerTextPos = 4.f;
+	RenderMeshOnScreen(meshList[Header], 14.75, 19.25, 30, 6);
+	//headerText.size()
+	RenderTextOnScreen(meshList[GEO_TEXT], headerText, Color(0, 0, 0), 4, 14.5 - (headerText.size()), 17);	//header text
+	RenderMeshOnScreen(meshList[Textbox], 40, 8.75, 80, 17.5);
+	string word;																	//automating text
+	int wordpos = 0, ypos = 13, last = NPCText.find_last_of(" ");
+	float xpos = 2.f;
+	while (true)
+	{
+		word = NPCText.substr(wordpos, NPCText.find(" ", wordpos + 1) - wordpos);
+		if (xpos + word.length() * 1.5 + 1 > 80)		//if new word will exceed screensize
+		{
+			ypos -= 3;
+			xpos = 2;
+		}
+		RenderTextOnScreen(meshList[GEO_TEXT], word, Color(0, 0, 0), 3, xpos, ypos);
+		if (wordpos > last)
+			break;
+		wordpos += word.length() + 1;
+		xpos += 1.5 * word.length() + 1;
+	}
+}
+
 
 void SceneMain::Render()
 {
@@ -657,7 +773,7 @@ void SceneMain::Render()
 	modelStack.Rotate(-90, 0, 1, 0);
 	RenderText(meshList[GEO_TEXT], "Museum", Color(0, 0, 0));
 
-	if (inFrontOfMuseum == true) {
+	if (inFrontofMuseum == true) {
 		modelStack.PushMatrix();
 		modelStack.Translate(0.7, -2, -0.29);
 		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0));
@@ -669,6 +785,20 @@ void SceneMain::Render()
 		modelStack.PopMatrix();
 		modelStack.PopMatrix();
 	}
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-2, 0, 0);
+	modelStack.Rotate(-90, 0, 1, 0);
+	modelStack.Scale(1.3, 1.3, 1.3);
+	RenderMesh(meshList[Teacher], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(6, 0, 5);
+	modelStack.Rotate(-90, 0, 1, 0);
+	modelStack.Scale(1, 1, 1);
+	RenderMesh(meshList[Friend], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
@@ -789,7 +919,6 @@ void SceneMain::Render()
 	if (minigameMuseum == true) {
 		RenderMinigame();
 	}
-
 }
 
 void SceneMain::Exit()
