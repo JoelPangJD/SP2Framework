@@ -19,7 +19,7 @@ void InteractableObject::readfromfile(string filename, vector<string>& type)
 			for (int i = std::count(line.begin(), line.end(), '|'); i > 0; i--) //Reads data from dialogue file and splits the data into a string vector
 			{
 				instance2 = line.find('|', instance + 1);
-				type.push_back(line.substr(instance + 1, instance2 - 1 - instance));
+				type.push_back(line.substr(instance + 1, instance2 - 1 - instance)); //Separate lines based on | positions
 				instance = instance2;
 			}
 		}

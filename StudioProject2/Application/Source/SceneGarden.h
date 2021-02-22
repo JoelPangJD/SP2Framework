@@ -25,8 +25,8 @@ class SceneGarden : public Scene
 		GEO_PYRAMID,
 		GEO_SPHERE,
 		GEO_LIGHTBALL,
-		GEO_TORUS1,
-		GEO_TORUS2,
+		GEO_TORUSGAME,
+		GEO_TORUSPLAYER,
 
 		//Skybox
 		GEO_LEFT,
@@ -64,6 +64,9 @@ class SceneGarden : public Scene
 		M_PUPIL,
 		M_FISH1,
 		M_FISH2,
+		M_TORUSGOOD,
+		M_TORUSBAD,
+		M_TORUSNEUTRAL,
 		M_TOTAL
 	};
 	enum UNIFORM_TYPE
@@ -114,10 +117,12 @@ public:
 	Camera3 camera;
 	bool lighton = true;
 	bool hitboxshow = false;
-	int minigame = 0; //0 for no minigame, 1 for minigame one
 	float cooldown = 0; //cooldown time for actions
-	float circlescale1, circlescale2, circlespeed; //Circlescale1 is the size of the shrinking circle for the minigame1, circlescale2 is for the constant circle and circlespeed is the speed at which the circle gets smaller
 	float fps;
+	//Minigame variables
+	int minigame = 0; //0 for no minigame, 1 minigame intro screen, 2 for minigame one
+	float circlescale1, circlescale2, circlespeed; //Circlescale1 is the size of the shrinking circle for the minigame1, circlescale2 is for the constant circle and circlespeed is the speed at which the circle gets smaller
+	int catching = 0;
 
 	SceneGarden();
 	~SceneGarden();
@@ -143,7 +148,6 @@ private:
 	vector<string> dialogue;
 	vector<string>::iterator currentline;
 	string name;
-
 
 	float movex = 0, movez = 0;
 	float scale = 1;

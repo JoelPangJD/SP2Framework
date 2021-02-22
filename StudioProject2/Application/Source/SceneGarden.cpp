@@ -152,6 +152,21 @@ void SceneGarden::Init()
 	materialList[M_FISH2].kSpecular.Set(0.1f, 0.1f, 0.1f);
 	materialList[M_FISH2].kShininess = 10.f;
 
+	materialList[M_TORUSGOOD].kAmbient.Set(0.5f, 1.f, 0.5f);
+	materialList[M_TORUSGOOD].kDiffuse.Set(0.1f, 0.1f, 0.1f);
+	materialList[M_TORUSGOOD].kSpecular.Set(0.1f, 0.1f, 0.1f);
+	materialList[M_TORUSGOOD].kShininess = 1.f;
+
+	materialList[M_TORUSBAD].kAmbient.Set(1.f, 0.5f, 0.5f);
+	materialList[M_TORUSBAD].kDiffuse.Set(0.1f, 0.1f, 0.1f);
+	materialList[M_TORUSBAD].kSpecular.Set(0.1f, 0.1f, 0.1f);
+	materialList[M_TORUSBAD].kShininess = 1.f;
+
+	materialList[M_TORUSNEUTRAL].kAmbient.Set(0.5f, 0.5f, 1.f);
+	materialList[M_TORUSNEUTRAL].kDiffuse.Set(0.5f, 0.5f, 0.5f);
+	materialList[M_TORUSNEUTRAL].kSpecular.Set(0.1f, 0.1f, 0.1f);
+	materialList[M_TORUSNEUTRAL].kShininess = 1.f;
+
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.0f);
 	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.5f, 0.5f, 0.5f), 1);
@@ -165,8 +180,9 @@ void SceneGarden::Init()
 	meshList[GEO_HEMISPHERE] = MeshBuilder::GenerateHemisphere("hemisphere", Color(1, 1, 1), 30, 30, 1);
 	meshList[GEO_CONE] = MeshBuilder::GenerateCone("cone", 1, 20, 30, Color(1, 1, 1));
 
-	meshList[GEO_TORUS1] = MeshBuilder::GenerateTorus("torus1", Color(0.5, 0.5, 0.5), 30, 30, 5,0.1);
-	meshList[GEO_TORUS2] = MeshBuilder::GenerateTorus("torus2", Color(0.5, 1, 0.5), 30, 30, 5, 0.1);
+	meshList[GEO_TORUSGAME] = MeshBuilder::GenerateTorus("torusgame", Color(0.5, 0.5, 0.5), 30, 30, 5,0.1);
+	meshList[GEO_TORUSPLAYER] = MeshBuilder::GenerateTorus("torusplayer", Color(1, 1, 1), 30, 30, 5, 0.1);
+	meshList[GEO_TORUSPLAYER]->material = materialList[M_TORUSNEUTRAL];
 
 	meshList[GEO_GRASSFLOOR] = MeshBuilder::GenerateQuad("grassfloor",1,1,Color(1,1,1), 30);
 	meshList[GEO_GRASSFLOOR]->textureID = LoadTGA("Image//garden//grassfloor.tga");
@@ -302,7 +318,7 @@ void SceneGarden::Update(double dt)
 		}
 	}
 
-	if (minigame == 0)
+	if (minigame == 0) //When not in minigame
 	{
 		if(!indialogue)//Don't move while in a dialogue
 			camera.Update(dt);
@@ -347,18 +363,61 @@ void SceneGarden::Update(double dt)
 			}
 		}
 	}
-	else if (minigame == 1)
+	else if (minigame == 2) //During minigame 1
 	{
 		circlescale1 -= circlespeed * dt;
-		if (Application::IsKeyPressed('E') && cooldown <= 0) //Cooldown added to prevent spamming
+		if (Application::IsKeyPressed(VK_SPACE) && cooldown <= 0) //Cooldown added to prevent spamming
 		{
-			if (circlescale1 >= circlescale2 - 0.05 && circlescale1 <= circlescale2 + 0.05)
+			if (circlescale1 >= circlescale2 - 0.08 && circlescale1 <= circlescale2 + 0.08)
 			{
-				cout << "Good" << endl;
+				meshList[GEO_TORUSPLAYER]->material = materialList[M_TORUSGOOD];
+				catching += 1;
 				circlespeed += 0.2f;
 			}
 			else
-				cout << "Bad" << endl;
+			{
+				meshList[GEO_TORUSPLAYER]->material = materialList[M_TORUSBAD];
+				catching = 0;
+			}
+			switch (catching)
+			{
+			case 1:
+				circlescale2 = 2;
+				circlespeed = 0.8f;
+				break;
+			case 2:
+				circlescale2 = 1.2;
+				circlespeed = 1.1f;
+				break;
+			case 3:
+				circlescale2 = 0.6;
+				circlespeed = 1.4f;
+				break;
+			case 4:
+				circlescale2 = 1.7;
+				circlespeed = 1.6f;
+				break;
+			case 5:
+				circlescale2 = 0.4;
+				circlespeed = 1.8f;
+				break;
+			case 6:
+				circlescale2 = 0.7;
+				circlespeed = 2.f;
+				break;
+			case 7: //If case 4, minigame is won
+				cout << "minigame complete!"<< endl;
+				//add fish to inventory
+				camera = prevcamera;
+				minigame = 0;
+			default:
+				circlescale2 = 1;
+				circlespeed = 0.5f;
+				break;
+			}
+
+
+
 			cooldown = 0.5;
 			circlescale1 = 3;
 		}
@@ -398,13 +457,10 @@ void SceneGarden::Update(double dt)
 		camera = prevcamera;
 		minigame = 0;
 	}
-	else if (Application::IsKeyPressed('V') && minigame != 1) //Enter minigame
+	else if (Application::IsKeyPressed('V') && minigame == 0) //Enter minigame
 	{
 		prevcamera = camera;
 		camera.Init(Vector3(0, 50, -150), Vector3(0, 0, -150), Vector3(0, 0, 1));
-		circlescale2 = 1;
-		circlescale1 = 3;
-		circlespeed = 0.5f;
 		minigame = 1;
 	}
 
@@ -569,15 +625,15 @@ void SceneGarden::Renderminigame1()
 {
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 10, -150);
-	modelStack.Scale(1, 1, 1);
-	RenderMesh(meshList[GEO_TORUS1], false);
+	modelStack.Scale(circlescale2, circlescale2, circlescale2);
+	RenderMesh(meshList[GEO_TORUSGAME], false);
 	modelStack.PopMatrix();
 	if (circlescale1 > 0.1)
 	{
 		modelStack.PushMatrix();
 		modelStack.Translate(0, 10, -150);
 		modelStack.Scale(circlescale1, circlescale1, circlescale1);
-		RenderMesh(meshList[GEO_TORUS2], false);
+		RenderMesh(meshList[GEO_TORUSPLAYER], true);
 		modelStack.PopMatrix();
 	}
 	else
@@ -1028,9 +1084,20 @@ void SceneGarden::Render()
 
 	if (minigame == 0)
 		RenderUI();
-	else if(minigame == 1)
+	else if (minigame == 1)
+	{
+		RenderMinigameScreen("Press the E when the rings overlap, do it sucessfully 3 times in a row to catch a fish", "Fishing", 6);
+		if (Application::IsKeyPressed('E')) //Press E to start the minigame
+		{
+			circlescale2 = 1;
+			circlescale1 = 3;
+			circlespeed = 0.5f;
+			meshList[GEO_TORUSPLAYER]->material = materialList[M_TORUSNEUTRAL];
+			minigame = 2;
+		}
+	}
+	else if (minigame == 2)
 		Renderminigame1();
-	RenderMinigameScreen("Press the E when the rings overlap, do it sucessfully 3 times in a row to catch a fish", "Fishing", 6);
 }
 
 void SceneGarden::Exit()
