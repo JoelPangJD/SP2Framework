@@ -60,7 +60,6 @@ int InteractableObject::interact()
 	}
 	else if (Application::IsKeyPressed('G')) //Pick up
 	{
-		key = true;
 		return 2;
 	}
 	else if (Application::IsKeyPressed('R')) //Use

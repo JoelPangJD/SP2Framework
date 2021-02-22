@@ -8,11 +8,11 @@ class Inventory : public InteractableObject
 public:
 	Inventory();
 	~Inventory();
-	void additem(InteractableObject item);
-	void RemoveItem(InteractableObject item);
+	void additem(InteractableObject* item);
+	void RemoveItem(string item);
 
 
 
 private:
-	std::vector<InteractableObject> storage;
+	std::vector<InteractableObject*> storage;
 };

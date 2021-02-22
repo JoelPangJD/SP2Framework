@@ -19,18 +19,19 @@ Inventory::~Inventory()
 {
 }
 
-void Inventory::additem(InteractableObject Item)
+void Inventory::additem(InteractableObject* item)
 {
-	for (std::vector<InteractableObject*>::iterator it = storage.begin(); it != storage.end(); it++)
-
+	storage.push_back(item);
 }
 
-void Inventory::RemoveItem(InteractableObject Item)
+void Inventory::RemoveItem(string Item)
 {
-	if (key = false)
+	for (std::vector<InteractableObject*>::iterator it = storage.begin(); it != storage.end(); it++)
 	{
-		storage.erase(storage.begin());
-
+		if ((*it)->gettype() == "fish")
+		{
+			storage.erase(storage.begin());
+		}
 	}
 
 }
