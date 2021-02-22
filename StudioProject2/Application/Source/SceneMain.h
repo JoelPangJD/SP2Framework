@@ -113,9 +113,8 @@ private:
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
 
-	bool inFrontOfMuseum, inFrontOfChangi, InFrontofMarina, inFrontofGarden;
-	bool inFrontOfTeacher;
-	bool minigameMuseum;
+	bool inFrontofMuseum, inFrontofChangi, inFrontofMarina, inFrontofGarden;
+	bool minigameMuseum, minigameChangi, minigameMarina, minigameGarden;
 
 	float CharWidth[256];
 	void RenderSkybox();

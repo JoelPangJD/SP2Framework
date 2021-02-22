@@ -201,7 +201,7 @@ void SceneMain::Init()
 		charac++;
 	}
 	fin.close();
-	inFrontOfMuseum = false;
+	inFrontofMuseum = inFrontofChangi = inFrontofGarden = inFrontofMarina = false;
 	minigameMuseum = false;
 
 
@@ -236,6 +236,7 @@ void SceneMain::Init()
 	pass = false;
 	
 	items.push_back(new InteractableObject(Vector3(-2, 2, 0), 0, 2, 4, "Mr.Sazz"));
+	items.push_back(new InteractableObject(Vector3(6, 1, 5), 0, 2, 3, "Andy"));
 }
 
 
@@ -271,21 +272,38 @@ void SceneMain::Update(double dt)
 	}
 
 	if (Application::IsKeyPressed('E')) {
-		if (inFrontOfMuseum == true) {
+		if (inFrontofMuseum == true) {
 			minigameMuseum = true;
-			//Application::SwitchScene = 1;
 		}
-		if (inFrontOfTeacher == true) {
-			//idk yeet yourself into oblivion lmao
+		else if (inFrontofChangi) {
+			minigameChangi = true;
 		}
-	
+		else if (inFrontofMarina) {
+			minigameMarina = true;
+		}
+		else if (inFrontofGarden) {
+			minigameGarden = true;
+		}
 	}
 	if ((camera.position.x >= 18) && (camera.position.x <= 27.5) && (camera.position.z >= -3) && (camera.position.z <= 3)) {
-		inFrontOfMuseum = true;
+		inFrontofMuseum = true;
+	}
+	else if ((camera.position.x >= -3) && (camera.position.x <= 3) && (camera.position.z >= 18) && (camera.position.z <= 27.5)) {
+		inFrontofChangi = true;
+	}
+	else if ((camera.position.x <= -18) && (camera.position.x >= -27.5) && (camera.position.z >= -3) && (camera.position.z <= 3)) {
+		inFrontofMarina = true;
+	}
+	else if ((camera.position.x >= -3) && (camera.position.x <= 3) && (camera.position.z <= -18) && (camera.position.z >= -27.5)) {
+		inFrontofGarden = true;
 	}
 	else {
-		inFrontOfMuseum = false;
+		inFrontofMuseum = false;
+		inFrontofChangi = false;
+		inFrontofMarina = false;
+		inFrontofGarden = false;
 	}
+
 	//minigame for entering museum
 	if (minigameMuseum == true) {
 		Application::enableMouse = true;
@@ -536,7 +554,6 @@ void SceneMain::updateDialogue()
 	}
 }
 
-
 void SceneMain::RenderText(Mesh* mesh, std::string text, Color color)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
@@ -756,7 +773,7 @@ void SceneMain::Render()
 	modelStack.Rotate(-90, 0, 1, 0);
 	RenderText(meshList[GEO_TEXT], "Museum", Color(0, 0, 0));
 
-	if (inFrontOfMuseum == true) {
+	if (inFrontofMuseum == true) {
 		modelStack.PushMatrix();
 		modelStack.Translate(0.7, -2, -0.29);
 		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0));
