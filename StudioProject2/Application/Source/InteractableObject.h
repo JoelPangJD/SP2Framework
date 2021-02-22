@@ -9,8 +9,15 @@ using namespace std;
 
 class InteractableObject : public Entity
 {
+
+protected:
+	bool key;
+
+
 private:
 	void readfromfile(string filename, vector<string>& type);//private function for reading information from text files
+	int x;
+	int y;
 public:
 	vector<string> lookat;
 	vector<string> dialogue;
