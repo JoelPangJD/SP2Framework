@@ -28,12 +28,16 @@ void Inventory::RemoveItem(string Item)
 {
 	for (std::vector<InteractableObject*>::iterator it = storage.begin(); it != storage.end(); it++)
 	{
-		if ((*it)->gettype() == "fish")
+		if ((*it)->gettype() == Item)
 		{
 			storage.erase(storage.begin());
 		}
 	}
+}
 
+vector<InteractableObject*> Inventory::getstorage()
+{
+	return storage;
 }
 
 

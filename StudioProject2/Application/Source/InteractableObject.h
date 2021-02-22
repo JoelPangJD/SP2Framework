@@ -4,7 +4,6 @@
 #include <fstream>
 #include <vector>
 #include "Entity.h"
-#include "Application.h"
 using namespace std;
 
 class InteractableObject : public Entity

@@ -54,22 +54,22 @@ InteractableObject::~InteractableObject()
 
 int InteractableObject::interact()
 {
-	if (Application::IsKeyPressed('F'))//Look at (read the description from text file based on object type)
-	{
-		return 1;
-	}
-	else if (Application::IsKeyPressed('G')) //Pick up
-	{
-		return 2;
-	}
-	else if (Application::IsKeyPressed('R')) //Use
-	{
-		return 3;
-	}
-	else if (Application::IsKeyPressed('T'))//Talk to 
-	{
-		return 4;
-	}
+	//if (Application::IsKeyPressed('F'))//Look at (read the description from text file based on object type)
+	//{
+	//	return 1;
+	//}
+	//else if (Application::IsKeyPressed('G')) //Pick up
+	//{
+	//	return 2;
+	//}
+	//else if (Application::IsKeyPressed('R')) //Use
+	//{
+	//	return 3;
+	//}
+	//else if (Application::IsKeyPressed('T'))//Talk to 
+	//{
+	//	return 4;
+	//}
 	return 0;
 }
 
