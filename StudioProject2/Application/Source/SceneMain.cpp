@@ -396,6 +396,9 @@ void SceneMain::RenderMinigame()
 	RenderMeshOnScreen(meshList[Panel], 40, 30, 7, 5);
 	int width, height;
 	width = height = 15;
+	RenderTextOnScreen(meshList[GEO_TEXT], "Turn all squares", Color(0, 0, 0), 3, 8, 50);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Green to enter", Color(0, 0, 0), 3, 8, 46);
+	RenderTextOnScreen(meshList[GEO_TEXT], "the museum.", Color(0, 0, 0), 3, 8, 42);
 	for (int i = 0; i < 9; i++) {
 
 		if ((i == 3) || (i == 4) || (i == 5)) {
@@ -786,6 +789,7 @@ void SceneMain::Render()
 	if (minigameMuseum == true) {
 		RenderMinigame();
 	}
+
 }
 
 void SceneMain::Exit()

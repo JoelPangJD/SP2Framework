@@ -129,6 +129,7 @@ class SceneMarinaBay : public Scene
 	{
 		SPEAR,
 		DIG,
+		BITE,
 		NUM_EATTACKS,
 	};
 public:
@@ -165,11 +166,15 @@ private:
 	//player's
 	float attackScale, attackAngle, attackTranslateY, attackTranslateZ;
 	//dragon enemy's 
-	float move, moveAngle, timer;
+	//idle
 	float idleHands, idleBounce, idleMouth, idleBreath, idleNeck, idleHead;
 	int idleHandsDir, idleBounceDir, idleMouthDir, idleBreathDir, idleNeckDir, idleHeadDir;
+	//spear
 	float enemyAttackAngle, enemyAttackMove, enemyAttackScale;
-	bool movement, goneDown, idle, attack, revert;
+	//going down thing
+	float move, moveAngle, timer, moveBack;
+	//animation bools
+	bool movement, goneDown, idle, attack, revert, bite, biteRearedBack;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
