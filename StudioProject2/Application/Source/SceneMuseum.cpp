@@ -388,20 +388,14 @@ void SceneMuseum::Update(double dt)
 
 	}
 
-	//if (camera.position.x < -192.129 && camera.position.x > -225 && camera.position.z > 90 && camera.position.z < 100)
-	//{
-	//	if (Application::IsKeyPressed('E'))
-	//	{
-	//		WhenEisPressed = true;
-	//		ShowPreview = true;
-	//	}
-	//	if (ShowPreview == true && Application::IsKeyPressed('R'))
-	//	{
-	//		WhenRisPressed = true;
-	//		terrains.erase(terrains.begin() + 19);
-	//		ShowPreview = false;
-	//	}
-	//}
+	if (camera.position.x < -258 && camera.position.x > -264 && camera.position.z < -24.3 && camera.position.z > -83)
+	{
+		std::cout << "YOU ARE HERE" << std::endl;
+		if (Application::IsKeyPressed('E'))
+		{
+			Application::SwitchScene = 0;
+		}
+	}
 
 }
 
