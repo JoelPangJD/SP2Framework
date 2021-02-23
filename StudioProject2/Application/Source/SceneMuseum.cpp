@@ -331,15 +331,17 @@ void SceneMuseum::Update(double dt)
 					{
 						ShowHoldingGame = false;
 						MousePreview = false;
-						for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
-						{
-							if ((*it)->gettype() == "box")
-							{
-								inventory.additem((*it));
-								items.erase(items.begin() + 2);
-								break;
-							}
-						}
+						Application::SwitchScene = 0;
+						////Adding Box to inventory (IGNORE FIRST)
+						//for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+						//{
+						//	if ((*it)->gettype() == "box")
+						//	{
+						//		inventory.additem((*it));
+						//		items.erase(items.begin() + 2);
+						//		break;
+						//	}
+						//}
 					}
 
 				}
@@ -366,11 +368,6 @@ void SceneMuseum::Update(double dt)
 			bRButtonState = false;
 			std::cout << "RBUTTON UP" << std::endl;
 		}
-	}
-
-	if (Application::IsKeyPressed('T') && EndGame1 == true)
-	{
-		ShowHoldingGame = true;
 	}
 
 	if (Application::IsKeyPressed('5'))
@@ -451,14 +448,11 @@ void SceneMuseum::Update(double dt)
 
 	}
 
-	if (camera.position.x < -258 && camera.position.x > -267 && camera.position.z < -24.3 && camera.position.z > -83)
+	if (Application::IsKeyPressed('T') && EndGame1 == true)
 	{
-		std::cout << "YOU ARE HERE" << std::endl;
-		if (Application::IsKeyPressed('E'))
-		{
-			Application::SwitchScene = 0;
-		}
+		ShowHoldingGame = true;
 	}
+	
 
 }
 
@@ -896,25 +890,32 @@ void SceneMuseum::StartGame1()
 
 }
 
-void SceneMuseum::StartMiniGame()
+void SceneMuseum::ExitMuseum()
 {
-	if (EndGame2 == false)
+	if (camera.position.x < -258 && camera.position.x > -267 && camera.position.z < -24.3 && camera.position.z > -83)
 	{
-		if (camera.position.x < -55 && camera.position.x > -108 && camera.position.z < 20 && camera.position.z > 9.9)
+		RenderInteractableText();
+		StartInteraction();
+	}
+
+}
+
+void SceneMuseum::StartInteraction()
+{
+	if (EndInteraction == false)
+	{
+		if (ShowHoldingGame == true)
 		{
-			RenderInteractableText();
-			if (ShowHoldingGame == true)
-			{
-				MousePreview = true;
-				Application::enableMouse = true;
-				GameCam1 = camera;
-				//Application::enableMouse = true;
-				//Goes to some orange background to view image
-				camera.Init(Vector3(-100, 10, 10), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
-				RenderMeshOnScreen(meshList[GEO_PIC], 40, 30, 80, 65);
-				RenderMeshOnScreen(meshList[GEO_BOX], 4 + MoveX, 29, 3 + AddSize, 8.9);
-			}
+			MousePreview = true;
+			Application::enableMouse = true;
+			GameCam1 = camera;
+			//Application::enableMouse = true;
+			//Goes to some orange background to view image
+			camera.Init(Vector3(-100, 10, 10), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
+			RenderMeshOnScreen(meshList[GEO_PIC], 40, 30, 80, 65);
+			RenderMeshOnScreen(meshList[GEO_BOX], 4 + MoveX, 29, 3 + AddSize, 8.9);
 		}
+
 	}
 
 }
@@ -1230,7 +1231,8 @@ void SceneMuseum::Render()
 	}
 
 	StartGame1();
-	StartMiniGame();
+	StartInteraction();
+	ExitMuseum();
 	RenderUI();
 }
 

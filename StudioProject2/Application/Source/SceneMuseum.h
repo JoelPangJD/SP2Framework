@@ -177,9 +177,12 @@ private:
 	bool EndGame1 = false;
 	bool Continue = false;
 
-	//2nd game
-	bool EndGame2 = false;
+	//Interaction
+	bool EndInteraction = false;
 	bool ShowHoldingGame = false;
+
+	//Exit museum
+	bool ToExit = false;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
@@ -191,7 +194,8 @@ private:
 	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey);
 
 	void StartGame1();
-	void StartMiniGame();
+	void StartInteraction();
+	void ExitMuseum();
 	void RenderInteractableText();
 
 };
