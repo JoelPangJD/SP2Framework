@@ -36,6 +36,8 @@ class SceneMain : public Scene
 		RoadCross,
 		RoadCrossBarrier,
 		Museum,
+		MBS,
+		Changi,
 		Lamp,
 		Sprite,
 		GroundMesh,
@@ -46,7 +48,6 @@ class SceneMain : public Scene
 		Friend,
 		Header,
 		Textbox,
-		MBS,
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE

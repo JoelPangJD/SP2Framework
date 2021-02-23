@@ -190,6 +190,7 @@ void SceneMain::Init()
 	meshList[Header]->textureID = LoadTGA("Image//Marina//header.tga");
 	meshList[Textbox] = MeshBuilder::GenerateQuad("textbox", Color(1, 1, 1), 1.f);
 	meshList[MBS] = MeshBuilder::GenerateOBJMTL("mbs", "OBJ//CityCenter//mbs.obj", "OBJ//CityCenter//mbs.mtl");
+	meshList[Changi] = MeshBuilder::GenerateOBJMTL("changi", "OBJ//Changi//ChangiTower.obj", "OBJ//Changi//ChangiTower.mtl");
 
 
 	inFrontofMuseum = inFrontofChangi = inFrontofGarden = inFrontofMarina = false;
@@ -778,6 +779,11 @@ void SceneMain::Render()
 	modelStack.PushMatrix();
 	modelStack.Translate(-37.5, 0, 0);
 	RenderMesh(meshList[MBS], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-25, 0, 40.5);
+	RenderMesh(meshList[Changi], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
