@@ -38,7 +38,11 @@ class SceneMuseum : public Scene
 		GEO_FRONT,
 		GEO_BACK,
 		GEO_INVENTORY,
+		//FOR TEXT
 		GEO_TEXT,
+		GEO_TEXTBOX,
+		GEO_TEXTINTEXTBOX,
+		GEO_HEADER,
 		//BASIC OBJ FOR DECORATION
 		GEO_ELEPHANT,
 		GEO_STATUE1,
@@ -52,12 +56,14 @@ class SceneMuseum : public Scene
 		GEO_WALLDOOR,
 		GEO_WALLCURVED,
 		GEO_WALLCORNER,
-		//MINIGAME 1 PHOTO
-		GEO_PICTURE3,
+		//GAME 1 PHOTO
 		GEO_MINIPIC1,
-		GEO_COLORBLINDPIC1,
 		GEO_MINIPIC2,
 		GEO_SELECTION,
+		//MINIGAME SLIDING PHOTO
+		GEO_PIC,
+		GEO_BOX,
+		GEO_COLOR,
 		//GROUND MESH
 		GEO_GROUND,
 		NUM_GEOMETRY,
@@ -110,6 +116,7 @@ public:
 	Camera3 camera;
 	bool lighton = true;
 	float fps;
+	float cooldown = 0; //cooldown time for actions
 
 	SceneMuseum();
 	~SceneMuseum();
@@ -131,11 +138,24 @@ private:
 	std::vector<InteractableObject*> items;
 	std::vector<Terrain*> terrains;
 
+	//Variables for text
+	std::ostringstream interacttext;
+	bool indialogue;
+	vector<string> dialogue;
+	vector<string>::iterator currentline;
+	string name;
+
 	float movex = 0;
 	float movez = 0;
 
 	float scale = 1;
 	float rotate = 0;
+
+	float AddSize = 0;
+	float MoveX = 0;
+
+	float TotalSize = 0;
+	float TotalX = 0;
 
 	bool ShowPreview = false;
 	bool ShowFirstGame = false;
@@ -148,15 +168,21 @@ private:
 	bool testing = false;
 	bool CorrectAnswer = false;
 
+	//2nd game
+	bool HoldingGame = true;
+	bool ActivateHold = false;
+
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
 	void RenderWalls();
 	void RenderUI();
 	void RenderText(Mesh* mesh, std::string text, Color color);
+	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
 
 	void StartGame1();
+	void StartMiniGame();
 	void RenderInteractableText();
 
 };

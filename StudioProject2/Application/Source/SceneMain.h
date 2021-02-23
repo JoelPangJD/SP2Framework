@@ -36,6 +36,8 @@ class SceneMain : public Scene
 		RoadCross,
 		RoadCrossBarrier,
 		Museum,
+		MBS,
+		Changi,
 		Lamp,
 		Sprite,
 		GroundMesh,
@@ -116,7 +118,6 @@ private:
 	bool inFrontofMuseum, inFrontofChangi, inFrontofMarina, inFrontofGarden;
 	bool minigameMuseum, minigameChangi, minigameMarina, minigameGarden;
 
-	float CharWidth[256];
 	void RenderSkybox();
 	void RenderUI();
 	void RenderMesh(Mesh* mesh, bool enableLight);
