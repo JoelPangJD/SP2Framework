@@ -189,6 +189,7 @@ void SceneMain::Init()
 	meshList[Header] = MeshBuilder::GenerateQuad("header", Color(1, 1, 1), 1.f);
 	meshList[Header]->textureID = LoadTGA("Image//Marina//header.tga");
 	meshList[Textbox] = MeshBuilder::GenerateQuad("textbox", Color(1, 1, 1), 1.f);
+	meshList[Textbox]->textureID = LoadTGA("Image//Marina//textbox.tga");
 	meshList[MBS] = MeshBuilder::GenerateOBJMTL("mbs", "OBJ//CityCenter//mbs.obj", "OBJ//CityCenter//mbs.mtl");
 	meshList[Changi] = MeshBuilder::GenerateOBJMTL("changi", "OBJ//Changi//ChangiTower.obj", "OBJ//Changi//ChangiTower.mtl");
 
@@ -250,7 +251,12 @@ void SceneMain::Update(double dt)
 {
 	fps = 1.f / dt;
 	if (!inDialogue)//Don't move while in a dialogue
-		camera.Update(dt);
+	{
+		camera.Updatepos(dt); //Updates to the position all happen before updates to the view
+		for (std::vector<Terrain*>::iterator it = wall.begin(); it != wall.end(); it++)
+			(*it)->solidCollisionBox(camera.position);
+		camera.Updateview(dt); //Updates the view after the processing of all the collisions
+	}
 	if (cooldown > 0) {
 		cooldown -= dt;
 	}
@@ -591,6 +597,7 @@ void SceneMain::updateDialogue()
 		counter++;
 	}
 }
+
 void SceneMain::updateCollision()
 {
 	for (std::vector<Terrain*>::iterator it = wall.begin(); it != wall.end(); it++)
