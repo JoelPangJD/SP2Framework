@@ -60,10 +60,11 @@ class SceneMuseum : public Scene
 		GEO_MINIPIC1,
 		GEO_MINIPIC2,
 		GEO_SELECTION,
-		//MINIGAME SLIDING PHOTO
+		//GAME 2
 		GEO_PIC,
 		GEO_BOX,
 		GEO_COLOR,
+		GEO_ITEM1,
 		//GROUND MESH
 		GEO_GROUND,
 		NUM_GEOMETRY,
@@ -113,6 +114,7 @@ class SceneMuseum : public Scene
 	};
 
 public:
+	Inventory inventory;
 	Camera3 camera;
 	bool lighton = true;
 	float fps;
@@ -186,7 +188,7 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
+	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey);
 
 	void StartGame1();
 	void StartMiniGame();
