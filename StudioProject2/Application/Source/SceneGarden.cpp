@@ -280,7 +280,7 @@ void SceneGarden::Init()
 	terrains.push_back(new Terrain(Vector3(62, 0, 51), 0, 1, 5, 3.5, 14, "gazebo"));
 	terrains.push_back(new Terrain(Vector3(49, 0, 51), 0, 1, 5, 3.5, 14, "gazebo"));
 
-	items.push_back(new InteractableObject(Vector3(0, 4, 0), 0, 2, 2, "stick"));
+	items.push_back(new InteractableObject(Vector3(0, 4, 0), 0, 5, 5, "stick"));
 	items.push_back(new InteractableObject(Vector3(55, 0, 54), 180, 0.1, 7, "cat"));
 	items.push_back(new InteractableObject(Vector3(0, -3, -150), 0, 0.5, 2, "fish"));
 	items.push_back(new InteractableObject(Vector3(10, -3, -140), 90, 0.5, 2, "fish"));
@@ -332,7 +332,6 @@ void SceneGarden::Update(double dt)
 			{
 				if ((*it)->spherecollider(camera.target)) // Checks if the target is within a radius of the stick
 				{
-					int interacttype = (*it)->interact();
 					if (interacttext.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
 					{
 						if (Application::IsKeyPressed('F'))// 1 is look at
