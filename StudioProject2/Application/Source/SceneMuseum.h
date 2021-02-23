@@ -157,9 +157,12 @@ private:
 	float TotalSize = 0;
 	float TotalX = 0;
 
+	//Enable mouse
+	bool MousePreview = false;
+
 	bool ShowPreview = false;
 	bool ShowFirstGame = false;
-	bool GameEisPressed = false;
+	bool GameTisPressed = false;
 	bool QuitGame1 = true;
 	bool RenderingMesh = false;
 	bool RenderingText = true;
@@ -168,9 +171,13 @@ private:
 	bool testing = false;
 	bool CorrectAnswer = false;
 
+	//1st game
+	bool EndGame1 = false;
+	bool Continue = false;
+
 	//2nd game
-	bool HoldingGame = true;
-	bool ActivateHold = false;
+	bool EndGame2 = false;
+	bool ShowHoldingGame = false;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();

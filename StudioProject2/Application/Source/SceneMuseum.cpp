@@ -275,71 +275,89 @@ void SceneMuseum::Update(double dt)
 	
 	}
 
-	//Mouse Inputs
-	static bool bLButtonState = false;
-	int BUTTON_TOP = 52.9;
-	int BUTTON_BOTTOM = 34.4;
-	int BUTTON_LEFT = 40.7;
-	int BUTTON_RIGHT = 51.5;
-	if (!bLButtonState && Application::IsMousePressed(0))
+	if (MousePreview == true)
 	{
-		bLButtonState = true;
-		std::cout << "LBUTTON DOWN" << std::endl;
-		//Converting Viewport space to UI space
-		double x, y;
-		Application::GetCursorPos(&x, &y);
-		unsigned w = Application::GetWindowWidth();
-		unsigned h = Application::GetWindowHeight();
-		float posX = x / 10; //convert (0,800) to (0,80)
-		float posY = 60 - y / 10;//convert (600,0) to (0,60)
-		std::cout << "posX:" << posX << " , posY:" << posY << std::endl;
-		if (posX > BUTTON_LEFT && posX < BUTTON_RIGHT && posY > BUTTON_BOTTOM && posY < BUTTON_TOP)
+		//Mouse Inputs
+		static bool bLButtonState = false;
+		int BUTTON_TOP = 52.9;
+		int BUTTON_BOTTOM = 34.4;
+		int BUTTON_LEFT = 40.7;
+		int BUTTON_RIGHT = 51.5;
+
+		int HOLDBUTTON_TOP = 18;
+		int HOLDBUTTON_BOTTOM = 0.6;
+		int HOLDBUTTON_LEFT = 58.8;
+		int HOLDBUTTON_RIGHT = 76.5;
+		if (Application::IsMousePressed(0))
 		{
-			Application::enableMouse = false;
-			CorrectAnswer = true;
-			terrains.erase(terrains.begin() + 19);
-			ShowFirstGame = false;
-			indialogue = false;
-			std::cout << "Hit!" << std::endl;
-			//trigger user action or function
+			bLButtonState = true;
+			std::cout << "LBUTTON DOWN" << std::endl;
+			//Converting Viewport space to UI space
+			double x, y;
+			Application::GetCursorPos(&x, &y);
+			unsigned w = Application::GetWindowWidth();
+			unsigned h = Application::GetWindowHeight();
+			float posX = x / 10; //convert (0,800) to (0,80)
+			float posY = 60 - y / 10;//convert (600,0) to (0,60)
+			std::cout << "posX:" << posX << " , posY:" << posY << std::endl;
+			if (EndGame1 == false)
+			{
+				if (posX > BUTTON_LEFT && posX < BUTTON_RIGHT && posY > BUTTON_BOTTOM && posY < BUTTON_TOP)
+				{
+					Application::enableMouse = false;
+					CorrectAnswer = true;
+					terrains.erase(terrains.begin() + 19);
+					ShowFirstGame = false;
+					Continue = true;
+					indialogue = false;
+					std::cout << "Hit!" << std::endl;
+					//trigger user action or function
+				}
+			}
+			else if (posX > HOLDBUTTON_LEFT && posX < HOLDBUTTON_RIGHT && posY > HOLDBUTTON_BOTTOM && posY < HOLDBUTTON_TOP)
+			{
+				if (Application::IsMousePressed(0))
+				{
+					AddSize += 10 * dt;
+					MoveX += (10 * dt) / 2;
+					std::cout << "AddSize = " << AddSize << std::endl;
+					std::cout << "MoveX = " << MoveX << std::endl;
+
+					if (MoveX > 36.9 && AddSize > 73)
+					{
+						ShowHoldingGame = false;
+						MousePreview = false;
+					}
+
+				}
+				std::cout << "Hit!" << std::endl;
+			}
+			else
+			{
+				std::cout << "Miss!" << std::endl;
+			}
 		}
-		else
+		else if (bLButtonState && !Application::IsMousePressed(0))
 		{
-			std::cout << "Miss!" << std::endl;
+			bLButtonState = false;
+			std::cout << "LBUTTON UP" << std::endl;
 		}
-	}
-	else if (bLButtonState && !Application::IsMousePressed(0))
-	{
-		bLButtonState = false;
-		std::cout << "LBUTTON UP" << std::endl;
-	}
-	static bool bRButtonState = false;
-	if (!bRButtonState && Application::IsMousePressed(1))
-	{
-		bRButtonState = true;
-		std::cout << "RBUTTON DOWN" << std::endl;
-	}
-	else if (bRButtonState && !Application::IsMousePressed(1))
-	{
-		bRButtonState = false;
-		std::cout << "RBUTTON UP" << std::endl;
+		static bool bRButtonState = false;
+		if (!bRButtonState && Application::IsMousePressed(1))
+		{
+			bRButtonState = true;
+			std::cout << "RBUTTON DOWN" << std::endl;
+		}
+		else if (bRButtonState && !Application::IsMousePressed(1))
+		{
+			bRButtonState = false;
+			std::cout << "RBUTTON UP" << std::endl;
+		}
 	}
 
-	if (Application::IsKeyPressed('E') && ActivateHold == true)
+	if (Application::IsKeyPressed('T') && EndGame1 == true)
 	{
-		AddSize += 10 * dt;
-		MoveX += (10 * dt) / 2;
-		TotalSize = AddSize + 3;
-		TotalX = 4 + MoveX;
-
-		if (MoveX > 36.9 && AddSize > 73)
-		{
-			ActivateHold = false;
-			HoldingGame = false;
-		}
-
-		std::cout << "END OF MOVEX = " << MoveX << std::endl;
-		std::cout << "END OF ADDSIZE = " << AddSize << std::endl;
+		ShowHoldingGame = true;
 	}
 
 	if (Application::IsKeyPressed('5'))
@@ -423,7 +441,8 @@ void SceneMuseum::Update(double dt)
 	if (camera.position.x < -258 && camera.position.x > -267 && camera.position.z < -24.3 && camera.position.z > -83)
 	{
 		std::cout << "YOU ARE HERE" << std::endl;
-		if (Application::IsKeyPressed('E'))
+		bool EnableExit = true;
+		if (Application::IsKeyPressed('E') && EnableExit == true)
 		{
 			Application::SwitchScene = 0;
 		}
@@ -751,131 +770,140 @@ void SceneMuseum::RenderWalls()
 
 void SceneMuseum::StartGame1()
 {
-	if (camera.position.x < -192.129 && camera.position.x > -225 && camera.position.z > 90 && camera.position.z < 100)
+	if (EndGame1 == false)
 	{
-		//std::cout << "YOURE HERE" << std::endl;
-		RenderInteractableText();
-		if (Application::IsKeyPressed('T'))
+		if (camera.position.x < -192.129 && camera.position.x > -225 && camera.position.z > 90 && camera.position.z < 100)
 		{
-			ShowPreview = true;
-		}
-		if (ShowPreview == true && Application::IsKeyPressed('R'))
-		{
-			ShowPreview = false;
-			indialogue = false;
-		}
-		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
-		{
-			if ((*it)->spherecollider(camera.target))
+			//std::cout << "YOURE HERE" << std::endl;
+			RenderInteractableText();
+			if (Application::IsKeyPressed('T'))
 			{
-				int interacttype = (*it)->interact();
-				if (interacttext.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
+				ShowPreview = true;
+				MousePreview = true;
+			}
+			if (ShowPreview == true && Application::IsKeyPressed('R'))
+			{
+				ShowPreview = false;
+				MousePreview = true;
+				indialogue = false;
+			}
+			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+			{
+				if ((*it)->spherecollider(camera.target))
 				{
-					if (interacttype == 1 || ShowPreview == true)// 1 is look at
+					int interacttype = (*it)->interact();
+					if (interacttext.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
 					{
-						GameCam1 = camera;
-						RenderingText = true;
-						Application::enableMouse = true;
-						//Goes to some orange background to view image
-						camera.Init(Vector3(-270.713, 10, 100), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
-						RenderMeshOnScreen(meshList[GEO_MINIPIC1], 70, 25, 80, 70);
+						if (interacttype == 1 || ShowPreview == true)// 1 is look at
+						{
+							GameCam1 = camera;
+							RenderingText = true;
+							Application::enableMouse = true;
+							//Goes to some orange background to view image
+							camera.Init(Vector3(-270.713, 10, 100), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
+							RenderMeshOnScreen(meshList[GEO_MINIPIC1], 70, 25, 80, 70);
 
-						dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
-						currentline = dialogue.begin(); //Currentline is set at the look at description
-						indialogue = true;//Set state to in dialogue
-					}
-					if ((*it)->gettype() == "preview")
-					{
-						interacttext << "Preview";
-						break;
+							dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
+							currentline = dialogue.begin(); //Currentline is set at the look at description
+							indialogue = true;//Set state to in dialogue
+						}
+						if ((*it)->gettype() == "preview")
+						{
+							interacttext << "Preview";
+							break;
+						}
 					}
 				}
 			}
 		}
-	}
-	if (camera.position.x < -262 && camera.position.x > -280 && camera.position.z > 90 && camera.position.z < 116)
-	{
-		//std::cout << "YOURE HERE" << std::endl;
-		RenderInteractableText();
-		if (Application::IsKeyPressed('T'))
+		if (camera.position.x < -262 && camera.position.x > -280 && camera.position.z > 90 && camera.position.z < 116)
 		{
-			ShowFirstGame = true;
-			GameEisPressed = true;
-		}
-		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
-		{
-			if ((*it)->spherecollider(camera.target))
+			//std::cout << "YOURE HERE" << std::endl;
+			RenderInteractableText();
+			if (Application::IsKeyPressed('T') && ShowPreview == false)
 			{
-				int interacttype = (*it)->interact();
-				if (interacttext.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
+				ShowFirstGame = true;
+				MousePreview = true;
+				GameTisPressed = true;
+			}
+			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+			{
+				if ((*it)->spherecollider(camera.target))
 				{
-					if (interacttype == 1 || ShowFirstGame == true )// 1 is look at
+					int interacttype = (*it)->interact();
+					if (interacttext.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
 					{
-						GameCam1 = camera;
-						RenderingText = true;
-						Application::enableMouse = true;
-						//Goes to some orange background to view image
-						camera.Init(Vector3(-270.713, 10, 100), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
-						RenderMeshOnScreen(meshList[GEO_SELECTION], 70, 25, 80, 70);
+						if (interacttype == 1 || ShowFirstGame == true)// 1 is look at
+						{
+							GameCam1 = camera;
+							RenderingText = true;
+							Application::enableMouse = true;
+							//Goes to some orange background to view image
+							camera.Init(Vector3(-270.713, 10, 100), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
+							RenderMeshOnScreen(meshList[GEO_SELECTION], 70, 25, 80, 70);
 
-						dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
-						currentline = dialogue.begin(); //Currentline is set at the look at description
-						indialogue = true;//Set state to in dialogue
-					}
-					if ((*it)->gettype() == "answer")
-					{
-						interacttext << "Answer";
-						break;
+							dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
+							currentline = dialogue.begin(); //Currentline is set at the look at description
+							indialogue = true;//Set state to in dialogue
+						}
+						if ((*it)->gettype() == "answer")
+						{
+							interacttext << "Answer";
+							break;
+						}
 					}
 				}
 			}
 		}
-	}
 
-	if (ShowPreview == true)
-	{
-		GameCam1 = camera;
-		RenderingText = true;
-		Application::enableMouse = true;
-		//Goes to some orange background to view image
-		camera.Init(Vector3(-220.713, 10, 95), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
-		RenderMeshOnScreen(meshList[GEO_MINIPIC1], 40, 30, 20, 10);
-	}
+		if (ShowPreview == true)
+		{
+			GameCam1 = camera;
+			RenderingText = true;
+			Application::enableMouse = true;
+			//Goes to some orange background to view image
+			camera.Init(Vector3(-220.713, 10, 95), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
+			RenderMeshOnScreen(meshList[GEO_MINIPIC1], 40, 30, 20, 10);
+		}
 
-	//if (ShowFirstGame == true)
-	//{
-	//	GameCam1 = camera;
-	//	RenderingText = true;
-	//	Application::enableMouse = true;
-	//	//Goes to some orange background to view image
-	//	camera.Init(Vector3(-270.713, 10, 100), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
-	//	RenderMeshOnScreen(meshList[GEO_SELECTION], 70, 25, 80, 70);
-	//}
+		if (Continue == true)
+		{
+			MousePreview = false;
+			EndGame1 = true;
+		}
+		//if (ShowFirstGame == true)
+		//{
+		//	GameCam1 = camera;
+		//	RenderingText = true;
+		//	Application::enableMouse = true;
+		//	//Goes to some orange background to view image
+		//	camera.Init(Vector3(-270.713, 10, 100), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
+		//	RenderMeshOnScreen(meshList[GEO_SELECTION], 70, 25, 80, 70);
+		//}
+	}
 
 }
 
 void SceneMuseum::StartMiniGame()
 {
-	if (HoldingGame == true)
+	if (EndGame2 == false)
 	{
-		ActivateHold = true;
-		RenderMeshOnScreen(meshList[GEO_PIC], 40, 30, 80, 65);
-		RenderMeshOnScreen(meshList[GEO_BOX], 4 + MoveX, 29, 3 + AddSize, 8.9);
-
+		if (camera.position.x < -55 && camera.position.x > -108 && camera.position.z < 20 && camera.position.z > 9.9)
+		{
+			RenderInteractableText();
+			if (ShowHoldingGame == true)
+			{
+				MousePreview = true;
+				Application::enableMouse = true;
+				GameCam1 = camera;
+				//Application::enableMouse = true;
+				//Goes to some orange background to view image
+				camera.Init(Vector3(-100, 10, 10), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
+				RenderMeshOnScreen(meshList[GEO_PIC], 40, 30, 80, 65);
+				RenderMeshOnScreen(meshList[GEO_BOX], 4 + MoveX, 29, 3 + AddSize, 8.9);
+			}
+		}
 	}
-	//if (camera.position.x < -55 && camera.position.x > -108 && camera.position.z < 20 && camera.position.z > 9.9)
-	//{
-	//	RenderInteractableText();
-	//	if (Application::IsKeyPressed('E'))
-	//	{
-	//		RenderMeshOnScreen(meshList[GEO_PIC], 40, 30, 80, 65);
-	//		RenderMeshOnScreen(meshList[GEO_BOX], 40, 30, 3, 3);
-	//		GameCam1 = camera;
-	//		Application::enableMouse = true;
-	//		//Goes to some orange background to view image
-	//		camera.Init(Vector3(-270.713, 10, 100), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
-	//	}
-	//}
 
 }
 
