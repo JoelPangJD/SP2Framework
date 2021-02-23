@@ -210,10 +210,8 @@ void SceneMuseum::Init()
 	meshList[GEO_SELECTION]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
 	meshList[GEO_SELECTION]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[GEO_SELECTION]->material.kShininess = 1.f;
-	items.push_back(new InteractableObject(Vector3(-210.785, 16.0715, 75.3848), 0, 0, 50, "preview"));
-	items.push_back(new InteractableObject(Vector3(-283.869, 16.0715, 95.1478), 0, 0, 50, "answer"));
 
-	//OBJ FOR MINIGAME
+	//OBJ FOR GAME 2
 	meshList[GEO_PIC] = MeshBuilder::GenerateQuad("Holding minigame pic1", Color(1, 1, 1), 1.0f);
 	meshList[GEO_PIC]->textureID = LoadTGA("Image//Museum//slidemesh.tga");
 	meshList[GEO_PIC]->material.kAmbient.Set(0.8f, 0.8f, 0.8f);
@@ -226,6 +224,7 @@ void SceneMuseum::Init()
 	meshList[GEO_BOX]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
 	meshList[GEO_BOX]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[GEO_BOX]->material.kShininess = 1.f;
+	meshList[GEO_ITEM1] = MeshBuilder::GenerateOBJMTL("Box", "OBJ//Museum//wallBlock.obj", "OBJ//Museum//wallBlock.mtl");
 
 	//VECTORS FOR WALLS TO CHECK HITBOX
 	terrains.push_back(new Terrain(Vector3(45, 0, -119.707), 0,0,0, 3, 220.66, "Wall"));
@@ -249,6 +248,11 @@ void SceneMuseum::Init()
 	terrains.push_back(new Terrain(Vector3(261.7488, 0, -205.3159), 0, 22, 10, 218.204, 3, "Wall"));
 	//Door hitbox 
 	terrains.push_back(new Terrain(Vector3(-272.215, 0, 73.66698), 0, 22, 10, 218.204, 3, "Door")); //+19
+
+	//Items vector
+	items.push_back(new InteractableObject(Vector3(-210.785, 16.0715, 75.3848), 0, 0, 50, "preview"));
+	items.push_back(new InteractableObject(Vector3(-283.869, 16.0715, 95.1478), 0, 0, 50, "answer"));
+	items.push_back(new InteractableObject(Vector3(-104.012, 0, 5.04312), 0, 5, 5, "box"));
 
 
 	//Ground mesh
@@ -327,6 +331,15 @@ void SceneMuseum::Update(double dt)
 					{
 						ShowHoldingGame = false;
 						MousePreview = false;
+						for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+						{
+							if ((*it)->gettype() == "box")
+							{
+								inventory.additem((*it));
+								items.erase(items.begin() + 2);
+								break;
+							}
+						}
 					}
 
 				}
@@ -441,8 +454,7 @@ void SceneMuseum::Update(double dt)
 	if (camera.position.x < -258 && camera.position.x > -267 && camera.position.z < -24.3 && camera.position.z > -83)
 	{
 		std::cout << "YOU ARE HERE" << std::endl;
-		bool EnableExit = true;
-		if (Application::IsKeyPressed('E') && EnableExit == true)
+		if (Application::IsKeyPressed('E'))
 		{
 			Application::SwitchScene = 0;
 		}
@@ -930,11 +942,25 @@ void SceneMuseum::RenderUI()
 			}
 		}
 	}
-	modelStack.PushMatrix();
-	std::ostringstream ss;
-	ss << "FPS: " << fps;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 45, 58);
-	modelStack.PopMatrix();
+	else
+	{
+		modelStack.PushMatrix();
+		RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
+		int ypos = 52;
+		vector<InteractableObject*> inventorycontent = inventory.getstorage();
+		for (std::vector<InteractableObject*>::iterator it = inventorycontent.begin(); it != inventorycontent.end(); it++)
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT], (*it)->gettype(), Color(0, 0, 0), 2, 2, ypos);
+			ypos -= 2;
+
+		}
+		std::ostringstream ss;
+		ss << "FPS: " << fps;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 58, 68);
+		RenderTextOnScreen(meshList[GEO_TEXT], interacttext.str(), Color(0.5, 0.5, 0.5), 5, 40 - (interacttext.str().length()), 30);
+		interacttext.str("");
+		modelStack.PopMatrix();
+	}
 }
 
 void SceneMuseum::RenderText(Mesh* mesh, std::string text, Color color)
@@ -1188,6 +1214,20 @@ void SceneMuseum::Render()
 	modelStack.Scale(35, 35, 45);
 	RenderMesh(meshList[GEO_PIC], true);
 	modelStack.PopMatrix();
+
+	//For interactable items
+	for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
+		modelStack.Rotate((*it)->getangle(), 0, 1, 0);
+		modelStack.Scale((*it)->getscale(), (*it)->getscale(), (*it)->getscale());
+		if ((*it)->gettype() == "box")
+		{
+			RenderMesh(meshList[GEO_ITEM1], true);
+		}
+		modelStack.PopMatrix();
+	}
 
 	StartGame1();
 	StartMiniGame();

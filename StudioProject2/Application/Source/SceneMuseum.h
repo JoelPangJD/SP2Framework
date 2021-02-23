@@ -60,10 +60,11 @@ class SceneMuseum : public Scene
 		GEO_MINIPIC1,
 		GEO_MINIPIC2,
 		GEO_SELECTION,
-		//MINIGAME SLIDING PHOTO
+		//GAME 2
 		GEO_PIC,
 		GEO_BOX,
 		GEO_COLOR,
+		GEO_ITEM1,
 		//GROUND MESH
 		GEO_GROUND,
 		NUM_GEOMETRY,
@@ -113,6 +114,7 @@ class SceneMuseum : public Scene
 	};
 
 public:
+	Inventory inventory;
 	Camera3 camera;
 	bool lighton = true;
 	float fps;
