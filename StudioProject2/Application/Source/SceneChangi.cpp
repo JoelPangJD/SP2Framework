@@ -191,12 +191,24 @@ void SceneChangi::Init()
 
 	meshList[GEO_DOORMAN] = MeshBuilder::GenerateOBJ("doorman", "OBJ//Changi//doorman.obj");
 	meshList[GEO_DOORMAN]->textureID = LoadTGA("Image//doorman.tga");
+
+	meshList[GEO_MISSILE] = MeshBuilder::GenerateOBJMTL("missile", "OBJ//Changi//missile.obj", "OBJ//Changi//missile.mtl");
+	
 	//roadOBJ
 	meshList[GEO_STRAIGHT] = MeshBuilder::GenerateOBJMTL("roadStraight", "OBJ//Changi//straightRoad.obj", "OBJ//Changi//straightRoad.mtl");
 	meshList[GEO_ROADSPLIT] = MeshBuilder::GenerateOBJMTL("roadSplit", "OBJ//Changi//splitRoad.obj", "OBJ//Changi//splitRoad.mtl");
 	meshList[GEO_ROADL] = MeshBuilder::GenerateOBJMTL("roadL", "OBJ//Changi//roadL.obj", "OBJ//Changi//roadL.mtl");
 	meshList[GEO_ROADARROW] = MeshBuilder::GenerateOBJMTL("roadArrow", "OBJ//Changi//arrowRoad.obj", "OBJ//Changi//arrowRoad.mtl");
 
+	terrains.push_back(new Terrain(Vector3(-84.8, 10.3, 115), 0, 0, 0, 8, 70, "Wall"));
+	terrains.push_back(new Terrain(Vector3(-84.8, 10.3, -115), 0, 0, 0, 8, 70, "Wall"));
+	terrains.push_back(new Terrain(Vector3(4, 7, -150), 0, 0, 0, 200, 20, "Wall"));
+	terrains.push_back(new Terrain(Vector3(4, 7, 140), 0, 0, 0, 200, 15, "Wall"));
+	terrains.push_back(new Terrain(Vector3(100, 10.3, 0), 0, 0, 0, 20, 300, "Wall"));
+	terrains.push_back(new Terrain(Vector3(-40, 10.3, 33), 0, 0, 0, 30, 62, "stairs"));
+	terrains.push_back(new Terrain(Vector3(10.3, 10.3, 398), 0, 0, 0, 70, 35, "police"));
+	terrains.push_back(new Terrain(Vector3(10.3, 10.3, 347), 0, 0, 0, 80, 38, "ambulance"));
+	terrains.push_back(new Terrain(Vector3(10.3, 10.3, 294), 0, 0, 0, 75, 38, "firetruck"));
 }
 
 
@@ -206,6 +218,14 @@ void SceneChangi::Update(double dt)
 	fps = 1.f / dt;
 	camera.Update(dt);
 	static const float speed = 50.f;
+
+	//check for wall detection
+	for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
+	{
+		(*it)->solidCollisionBox(camera.position);
+	}
+	
+
 
 	if (Application::IsKeyPressed('5'))
 	{
@@ -254,10 +274,10 @@ void SceneChangi::Update(double dt)
 	}
 
 
-	//if (Application::IsKeyPressed('I'))
-	//{
-	//	movex -= 1;
-	//}
+	if (Application::IsKeyPressed('I'))
+	{
+		movex -= 1;
+	}
 	if (Application::IsKeyPressed('K'))
 	{
 		movex += 1;
@@ -280,27 +300,17 @@ void SceneChangi::Update(double dt)
 		welcome = false;
 	}
 
-	wordY += (float)(8 * scale * dt);
-	if (wordY > 3)
-	{
-		scale = -1;
-	}
-	if (wordY < 0)
-	{
-		scale = 1;
-	}
+	//movex -= (float)(80 * dt);
+	//movex -= (float)(80);
+	//if (movex > 300)
+	//{
+	//	scale = -1;
+	//}
+	//if (movex < 0)
+	//{
+	//	scale = 1;
+	//}
 
-	movex += (float)(80 * scale * dt);
-	if (movex > 300)
-	{
-		scale = -1;
-	}
-	if (movex < 0)
-	{
-		scale = 1;
-	}
-
-	camMove = 1.36;
 	//if (camMove > 300)
 	//{
 	//	scale = -1;
@@ -309,6 +319,86 @@ void SceneChangi::Update(double dt)
 	//{
 	//	scale = 1;
 	//}
+	//movex = 1.36;
+	camMove = 1;
+}
+
+void SceneChangi::Render()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
+	glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
+	//====For Matrix stack===
+	viewStack.LoadIdentity();
+	viewStack.LookAt(camera.position.x, camera.position.y,
+		camera.position.z, camera.target.x, camera.target.y,
+		camera.target.z, camera.up.x, camera.up.y, camera.up.z
+	);
+	//LIGHT====================================================
+	if (light[0].type == Light::LIGHT_DIRECTIONAL)
+	{
+		Vector3 lightDir(light[0].position.x, light[0].position.y, light[0].position.z);
+		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
+		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
+	}
+	else if (light[0].type == Light::LIGHT_SPOT)
+	{
+		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
+		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
+		glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
+	}
+	else
+	{
+		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
+		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
+	}
+
+	//LIGHT1====================================================
+	if (light[1].type == Light::LIGHT_DIRECTIONAL)
+	{
+		Vector3 lightDir(light[1].position.x, light[1].position.y, light[1].position.z);
+		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
+		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightDirection_cameraspace.x);
+	}
+	else if (light[1].type == Light::LIGHT_SPOT)
+	{
+		Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
+		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[1].spotDirection;
+		glUniform3fv(m_parameters[U_LIGHT1_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
+	}
+	else
+	{
+		Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
+		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
+	}
+
+	//RenderMeshOnScreen(meshList[GEO_INVENTORY], 40, 20, 30, 30);
+	if (use == true) {
+		camera.position.x = -18;
+		camera.position.y = 51;
+		camera.position.z = 0;
+		camera.theta = 180;
+	}
+
+
+	//Skybox
+	RenderSkybox();
+
+	//========================================================
+	modelStack.LoadIdentity();
+
+	RenderMesh(meshList[GEO_AXES], false);
+
+	RenderRoad();
+	RenderGroundMesh();
+	RenderEntity();
+	RenderWords();
+
+	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
+	RenderUI();
 }
 
 void SceneChangi::RenderMesh(Mesh* mesh, bool enableLight)
@@ -433,26 +523,44 @@ void SceneChangi::RenderEntity()
 	RenderMesh(meshList[GEO_AIRPORT], true);
 	modelStack.PopMatrix();
 
+
+
+	//if (takeFlight != false) {
+
+	//	camera.position.x = camera.position.x - camMove;
+
+	//	modelStack.PushMatrix();
+	//	modelStack.Translate(10 + movex + autoMove, 17, -6.5 + movez);
+	//	modelStack.Rotate(-90, 0, 1, 0);
+	//	modelStack.Scale(7, 7, 7);
+	//	RenderMesh(meshList[GEO_PLANE], true);
+	//	modelStack.PopMatrix();
+	//}
+	//else {
+	//	modelStack.PushMatrix();
+	//	modelStack.Translate(10, 17, -6.5);
+	//	modelStack.Rotate(-90, 0, 1, 0);
+	//	modelStack.Scale(7, 7, 7);
+	//	RenderMesh(meshList[GEO_PLANE], true);
+	//	modelStack.PopMatrix();
+	//}
+
+
 	modelStack.PushMatrix();
-	modelStack.Translate(10 , 17, -6.5 );
+	if (takeFlight != false) {
+
+		autoMove -= 1;
+
+		camera.position.x = camera.position.x - camMove;
+		modelStack.Translate(10 + movex + autoMove, 17, -6.5 + movez);
+	}
+	else {
+		modelStack.Translate(10, 17, -6.5);
+	}
 	modelStack.Rotate(-90, 0, 1, 0);
 	modelStack.Scale(7, 7, 7);
 	RenderMesh(meshList[GEO_PLANE], true);
 	modelStack.PopMatrix();
-
-	if (takeFlight == true) {
-
-		camera.position.x = camera.position.x - camMove;
-
-		modelStack.PushMatrix();
-		modelStack.Translate(10 + movex, 17, -6.5 + movez);
-		modelStack.Rotate(-90, 0, 1, 0);
-		modelStack.Scale(7, 7, 7);
-		RenderMesh(meshList[GEO_PLANE], true);
-		modelStack.PopMatrix();
-
-
-	}
 	
 	modelStack.PushMatrix();
 	modelStack.Translate(10, 0, 343);
@@ -474,6 +582,18 @@ void SceneChangi::RenderEntity()
 	modelStack.Rotate(-90, 0, 1, 0);
 	modelStack.Scale(30, 30, 30);
 	RenderMesh(meshList[GEO_POLICE], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	if (takeFlight != false) {
+		modelStack.Translate(-2000 - autoMove, 30, 0);
+	}
+	else {
+		modelStack.Translate(-1000,30,0);
+	}
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(10,10,10);
+	RenderMesh(meshList[GEO_MISSILE], true);
 	modelStack.PopMatrix();
 
 	if (renderDoorman != false) {
@@ -603,83 +723,6 @@ void SceneChangi::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int si
 	glEnable(GL_DEPTH_TEST);
 }
 
-void SceneChangi::Render()
-{
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-	glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-	//====For Matrix stack===
-	viewStack.LoadIdentity();
-	viewStack.LookAt(camera.position.x, camera.position.y,
-		camera.position.z, camera.target.x, camera.target.y,
-		camera.target.z, camera.up.x, camera.up.y, camera.up.z
-	);
-	//LIGHT====================================================
-	if (light[0].type == Light::LIGHT_DIRECTIONAL)
-	{
-		Vector3 lightDir(light[0].position.x, light[0].position.y, light[0].position.z);
-		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
-	}
-	else if (light[0].type == Light::LIGHT_SPOT)
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
-		glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-	}
-	else
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-	}
-
-	//LIGHT1====================================================
-	if (light[1].type == Light::LIGHT_DIRECTIONAL)
-	{
-		Vector3 lightDir(light[1].position.x, light[1].position.y, light[1].position.z);
-		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightDirection_cameraspace.x);
-	}
-	else if (light[1].type == Light::LIGHT_SPOT)
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
-		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * light[1].spotDirection;
-		glUniform3fv(m_parameters[U_LIGHT1_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-	}
-	else
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
-		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
-	}
-
-	//RenderMeshOnScreen(meshList[GEO_INVENTORY], 40, 20, 30, 30);
-	if (use == true) {
-		camera.position.x = -18;
-		camera.position.y = 51;
-		camera.position.z = 0;
-		camera.theta = 180;
-	}
-
-	
-	//Skybox
-	RenderSkybox();
-
-	//========================================================
-	modelStack.LoadIdentity();
-
-	RenderMesh(meshList[GEO_AXES], false);
-	
-	RenderRoad();
-	RenderGroundMesh();
-	RenderEntity();
-	RenderWords();
-
-	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
-	RenderUI();
-}
 
 void SceneChangi::RenderRoad()
 {
@@ -723,7 +766,7 @@ void SceneChangi::RenderWords()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-100, 14 + wordY, 53);
+	modelStack.Translate(-100, 14, 53);
 	modelStack.Rotate(-90, 0, 1, 0);
 	modelStack.Scale(2, 2, 2);
 	RenderText(meshList[GEO_TEXT], "Touch me", Color(1, 0, 0));
