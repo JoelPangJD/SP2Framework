@@ -11,6 +11,7 @@
 #include <math.h>
 #include "Button.h"
 #include "Terrain.h"
+#include "InteractableObject.h"
 
 class SceneMain : public Scene
 {
@@ -35,6 +36,8 @@ class SceneMain : public Scene
 		RoadCross,
 		RoadCrossBarrier,
 		Museum,
+		MBS,
+		Changi,
 		Lamp,
 		Sprite,
 		GroundMesh,
@@ -42,6 +45,9 @@ class SceneMain : public Scene
 		Red,
 		Green,
 		Teacher,
+		Friend,
+		Header,
+		Textbox,
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE
@@ -109,20 +115,29 @@ private:
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
 
-	bool inFrontOfMuseum, inFrontOfChangi, InFrontofMarina, inFrontofGarden;
-	bool minigameMuseum;
-	
+	bool inFrontofMuseum, inFrontofChangi, inFrontofMarina, inFrontofGarden;
+	bool minigameMuseum, minigameChangi, minigameMarina, minigameGarden;
 
-	float CharWidth[256];
-	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
 	void RenderUI();
-	void RenderMinigame();
+	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int sizey);
 
+	void RenderMinigame();
+	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 	void updateMinigame(double dt);
+
+	void updateDialogue();
+	std::stringstream interactText;
+	bool inDialogue;
+	vector<string> dialogue;
+	vector<string>::iterator currentLine;
+	string name;
+	float cooldown;
+
+	std::vector<InteractableObject*> items;
 
 	Vector3* grids[9];
 	Button gridButton[9];

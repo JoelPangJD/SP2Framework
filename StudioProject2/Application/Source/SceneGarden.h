@@ -8,6 +8,7 @@
 #include "Entity.h"
 #include "InteractableObject.h"
 #include "Terrain.h"
+#include "Inventory.h"
 #include <iostream>
 #include <vector>
 #include <sstream>
@@ -25,8 +26,8 @@ class SceneGarden : public Scene
 		GEO_PYRAMID,
 		GEO_SPHERE,
 		GEO_LIGHTBALL,
-		GEO_TORUS1,
-		GEO_TORUS2,
+		GEO_TORUSGAME,
+		GEO_TORUSPLAYER,
 
 		//Skybox
 		GEO_LEFT,
@@ -64,6 +65,9 @@ class SceneGarden : public Scene
 		M_PUPIL,
 		M_FISH1,
 		M_FISH2,
+		M_TORUSGOOD,
+		M_TORUSBAD,
+		M_TORUSNEUTRAL,
 		M_TOTAL
 	};
 	enum UNIFORM_TYPE
@@ -111,13 +115,20 @@ class SceneGarden : public Scene
 	};
 
 public:
+	Inventory inventory;
 	Camera3 camera;
 	bool lighton = true;
 	bool hitboxshow = false;
-	int minigame = 0; //0 for no minigame, 1 for minigame one
 	float cooldown = 0; //cooldown time for actions
-	float circlescale1, circlescale2, circlespeed; //Circlescale1 is the size of the shrinking circle for the minigame1, circlescale2 is for the constant circle and circlespeed is the speed at which the circle gets smaller
 	float fps;
+	//Minigame variables
+	int minigame = 0; //0 for no minigame, 1 minigame intro screen, 2 for minigame one, 3 for minigame 2 intro, 4 for minigame 2
+	float circlescale1, circlescale2, circlespeed; //Circlescale1 is the size of the shrinking circle for the minigame1, circlescale2 is for the constant circle and circlespeed is the speed at which the circle gets smaller
+	int progress = 0;
+	//Minigame2 variables
+	double cursorx = 0, cursory = 0;
+	float playerx = 40, playery = 30;
+	float objectivex, objectivey;
 
 	SceneGarden();
 	~SceneGarden();
@@ -144,7 +155,6 @@ private:
 	vector<string>::iterator currentline;
 	string name;
 
-
 	float movex = 0, movez = 0;
 	float scale = 1;
 
@@ -155,12 +165,13 @@ private:
 	void RenderSkybox();
 	void RenderUI();
 	void Renderminigame1();
+	void Renderminigame2();
 	void Renderfish();
 	bool fishright = true;
 	float fishAngle = 0;
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
+	void RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int sizey);
 	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 	void RenderMinigameScreen(std::string MinigamedescriptionText, std::string headerText, float fontsize);
 };

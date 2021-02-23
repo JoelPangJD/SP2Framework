@@ -1,5 +1,4 @@
 #include "InteractableObject.h"
-
 InteractableObject::InteractableObject()
 {
 	this->setposition(Vector3(0, 0, 0));
@@ -20,7 +19,7 @@ void InteractableObject::readfromfile(string filename, vector<string>& type)
 			for (int i = std::count(line.begin(), line.end(), '|'); i > 0; i--) //Reads data from dialogue file and splits the data into a string vector
 			{
 				instance2 = line.find('|', instance + 1);
-				type.push_back(line.substr(instance + 1, instance2 - 1 - instance));
+				type.push_back(line.substr(instance + 1, instance2 - 1 - instance)); //Separate lines based on | positions
 				instance = instance2;
 			}
 		}
@@ -55,22 +54,22 @@ InteractableObject::~InteractableObject()
 
 int InteractableObject::interact()
 {
-	if (Application::IsKeyPressed('F'))//Look at (read the description from text file based on object type)
-	{
-		return 1;
-	}
-	else if (Application::IsKeyPressed('G')) //Pick up
-	{
-		return 2;
-	}
-	else if (Application::IsKeyPressed('R')) //Use
-	{
-		return 3;
-	}
-	else if (Application::IsKeyPressed('T'))//Talk to 
-	{
-		return 4;
-	}
+	//if (Application::IsKeyPressed('F'))//Look at (read the description from text file based on object type)
+	//{
+	//	return 1;
+	//}
+	//else if (Application::IsKeyPressed('G')) //Pick up
+	//{
+	//	return 2;
+	//}
+	//else if (Application::IsKeyPressed('R')) //Use
+	//{
+	//	return 3;
+	//}
+	//else if (Application::IsKeyPressed('T'))//Talk to 
+	//{
+	//	return 4;
+	//}
 	return 0;
 }
 

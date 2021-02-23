@@ -23,7 +23,7 @@ void SceneMain::Init()
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
 	//==========================
-	camera.Init(Vector3(-30, 3, 0), Vector3(0, 3, 5), Vector3(0, 1, 0));
+	camera.Init(Vector3(-14, 3, 0), Vector3(0, 3, 5), Vector3(0, 1, 0));
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 
@@ -155,7 +155,7 @@ void SceneMain::Init()
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("Lightball", Color(1, 1, 1), 10, 10, 10);
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//ArialNarrow.tga");
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Marina//ExportedFont.tga");
 
 	meshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
 	meshList[GEO_INVENTORY]->textureID = LoadTGA("Image//inventory.tga");
@@ -182,18 +182,18 @@ void SceneMain::Init()
 	meshList[RoadCrossBarrier] = MeshBuilder::GenerateOBJMTL("roadcrossbarrier", "OBJ//CityCenter//road_roundaboutBarrier.obj", "OBJ//CityCenter//road_roundaboutBarrier.mtl");
 	meshList[Lamp] = MeshBuilder::GenerateOBJMTL("lamp", "OBJ//CityCenter//lamp.obj", "OBJ//CityCenter//lamp.mtl");
 	meshList[Museum] = MeshBuilder::GenerateOBJMTL("museum", "OBJ//CityCenter//museum.obj", "OBJ//CityCenter//museum.mtl");
+	meshList[Teacher] = MeshBuilder::GenerateOBJ("teacher", "OBJ//CityCenter//character.obj");
+	meshList[Teacher]->textureID = LoadTGA("Image//CityCenter//teacher.tga");
+	meshList[Friend] = MeshBuilder::GenerateOBJ("friend", "OBJ//CityCenter//character.obj");
+	meshList[Friend]->textureID = LoadTGA("Image//CityCenter//friend.tga");
+	meshList[Header] = MeshBuilder::GenerateQuad("header", Color(1, 1, 1), 1.f);
+	meshList[Header]->textureID = LoadTGA("Image//Marina//header.tga");
+	meshList[Textbox] = MeshBuilder::GenerateQuad("textbox", Color(1, 1, 1), 1.f);
+	meshList[MBS] = MeshBuilder::GenerateOBJMTL("mbs", "OBJ//CityCenter//mbs.obj", "OBJ//CityCenter//mbs.mtl");
+	meshList[Changi] = MeshBuilder::GenerateOBJMTL("changi", "OBJ//Changi//ChangiTower.obj", "OBJ//Changi//ChangiTower.mtl");
 
-	int charac = 0;
-	std::ifstream fin;
-	std::string line;
-	fin.open("fontdata.csv");
-	while (std::getline(fin, line)) {
 
-		CharWidth[charac] = stoi(line);
-		charac++;
-	}
-	fin.close();
-	inFrontOfMuseum = false;
+	inFrontofMuseum = inFrontofChangi = inFrontofGarden = inFrontofMarina = false;
 	minigameMuseum = false;
 
 
@@ -227,7 +227,8 @@ void SceneMain::Init()
 	}
 	pass = false;
 	
-	
+	items.push_back(new InteractableObject(Vector3(-2, 2, 0), 0, 2, 4, "Mr.Sazz"));
+	items.push_back(new InteractableObject(Vector3(6, 1, 5), 0, 2, 3, "Andy"));
 }
 
 
@@ -235,7 +236,11 @@ void SceneMain::Init()
 void SceneMain::Update(double dt)
 {
 	fps = 1.f / dt;
-	camera.Update(dt);
+	if (!inDialogue)//Don't move while in a dialogue
+		camera.Update(dt);
+	if (cooldown > 0) {
+		cooldown -= dt;
+	}
 
 	if (Application::IsKeyPressed('U'))
 	{
@@ -259,18 +264,38 @@ void SceneMain::Update(double dt)
 	}
 
 	if (Application::IsKeyPressed('E')) {
-		if (inFrontOfMuseum == true) {
+		if (inFrontofMuseum == true) {
 			minigameMuseum = true;
-			//Application::SwitchScene = 1;
 		}
-	
+		else if (inFrontofChangi) {
+			Application::SwitchScene = 2;
+		}
+		else if (inFrontofMarina) {
+			Application::SwitchScene = 3;
+		}
+		else if (inFrontofGarden) {
+			Application::SwitchScene = 4;
+		}
 	}
 	if ((camera.position.x >= 18) && (camera.position.x <= 27.5) && (camera.position.z >= -3) && (camera.position.z <= 3)) {
-		inFrontOfMuseum = true;
+		inFrontofMuseum = true;
+	}
+	else if ((camera.position.x >= -3) && (camera.position.x <= 3) && (camera.position.z >= 18) && (camera.position.z <= 27.5)) {
+		inFrontofChangi = true;
+	}
+	else if ((camera.position.x <= -18) && (camera.position.x >= -27.5) && (camera.position.z >= -3) && (camera.position.z <= 3)) {
+		inFrontofMarina = true;
+	}
+	else if ((camera.position.x >= -3) && (camera.position.x <= 3) && (camera.position.z <= -18) && (camera.position.z >= -27.5)) {
+		inFrontofGarden = true;
 	}
 	else {
-		inFrontOfMuseum = false;
+		inFrontofMuseum = false;
+		inFrontofChangi = false;
+		inFrontofMarina = false;
+		inFrontofGarden = false;
 	}
+
 	//minigame for entering museum
 	if (minigameMuseum == true) {
 		Application::enableMouse = true;
@@ -282,6 +307,36 @@ void SceneMain::Update(double dt)
 		updateMinigame(dt);
 	}
 
+	//if (minigameChangi == true) {
+	//	Application::enableMouse = true;
+	//	if (pass == true) {
+	//		minigameChangi = false;
+	//		Application::enableMouse = false;
+	//		Application::SwitchScene = 2;
+	//	}
+	//	updateMinigame(dt);
+	//}
+
+	//if (minigameMarina == true) {
+	//	Application::enableMouse = true;
+	//	if (pass == true) {
+	//		minigameMarina = false;
+	//		Application::enableMouse = false;
+	//		Application::SwitchScene = 3;
+	//	}
+	//	updateMinigame(dt);
+	//}
+
+	//if (minigameGarden == true) {
+	//	Application::enableMouse = true;
+	//	if (pass == true) {
+	//		minigameGarden = false;
+	//		Application::enableMouse = false;
+	//		Application::SwitchScene = 4;
+	//	}
+	//	updateMinigame(dt);
+	//}
+	updateDialogue();
 
 }
 
@@ -380,11 +435,31 @@ void SceneMain::RenderSkybox()
 
 void SceneMain::RenderUI()
 {
-	modelStack.PushMatrix();
+	if (inDialogue)
+	{
+		string dialoguetext = (*currentLine);
+		string currentname;
+		if (dialoguetext[0] == '1')
+			currentname = "Player name";
+		else if (dialoguetext[0] == '2')
+			currentname = name;
+		dialoguetext = dialoguetext.substr(1);
+		RenderNPCDialogue(dialoguetext, currentname);
+		if (cooldown <= 0 && Application::IsKeyPressed('E')) //Cooldown added to prevent spamming to pass the dialogues too fast
+		{
+			cooldown = 1;
+			currentLine++;
+			if (currentLine == dialogue.end())
+			{
+				inDialogue = false;
+				dialogue.clear();
+			}
+		}
+	}
+
 	std::ostringstream ss;
 	ss << "FPS: " << fps;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 70, 58);
-	modelStack.PopMatrix();
 
 	ss.str("");
 	ss << "Pos: X: " << camera.position.x << " Z: " << camera.position.z;
@@ -464,13 +539,54 @@ void SceneMain::updateMinigame(double dt)
 		bLButtonState1 = false;
 	}*/
 }
+
+void SceneMain::updateDialogue()
+{
+
+	//Check collisions
+	{
+		int counter = 0;
+		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+		{
+			if ((*it)->spherecollider(camera.target)) // Checks if the target is within a radius of the stick
+			{
+				if (Application::IsKeyPressed('F'))// F is look at
+				{
+					dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
+					currentLine = dialogue.begin(); //Currentline is set at the look at description
+					inDialogue = true;//Set state to in dialogue
+				}
+				/*if (Application::IsKeyPressed('G'))
+				{
+					inventory.additem((*it));
+					items.erase(items.begin() + counter);
+					break;
+				}*/
+				if (Application::IsKeyPressed('T')) //T is talk to
+				{
+					dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
+					currentLine = dialogue.begin(); //Currentline iteratior as the first line of dialogue
+					name = (*it)->gettype(); //Set the name of the npc the player talks to
+					inDialogue = true;//Set state to in dialogue
+				}
+				if (interactText.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
+				{
+					if ((*it)->gettype() == "Mr.Sazz")
+					{
+						interactText << "MrSazz";
+						break;
+					}
+				}
+			}
+			counter++;
+		}
+	}
+}
+
 void SceneMain::RenderText(Mesh* mesh, std::string text, Color color)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
-
-	float totalspace = 0;
-	float totalz = 0;
 
 	//glDisable(GL_DEPTH_TEST);
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
@@ -480,16 +596,17 @@ void SceneMain::RenderText(Mesh* mesh, std::string text, Color color)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
 	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
+	float zspace = 0;
+
 	for (unsigned i = 0; i < text.length(); ++i)
 	{
-
 		Mtx44 characterSpacing;
-		characterSpacing.SetToTranslation(totalspace, 0, totalz); //1.0f is the spacing of each character, you may change this value
+		std::vector<std::pair<std::string, std::vector<int>>> result;
+		characterSpacing.SetToTranslation(i * 0.5f, 0, zspace); //1.0f is the spacing of each character, you may change this value
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
-		totalspace += (CharWidth[text[i]] / 64);
-		totalz += 0.001;
-
 		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+
+		zspace += 0.001;
 
 		mesh->Render((unsigned)text[i] * 6, 6);
 	}
@@ -504,7 +621,6 @@ void SceneMain::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 		return;
 
 	glDisable(GL_DEPTH_TEST);
-
 	Mtx44 ortho;
 	ortho.SetToOrtho(0, 80, 0, 60, -10, 10); //size of screen UI
 	projectionStack.PushMatrix();
@@ -515,11 +631,6 @@ void SceneMain::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 	modelStack.LoadIdentity(); //Reset modelStack
 	modelStack.Translate(x, y, 0);
 	modelStack.Scale(size, size, size);
-
-
-	float totalspace = 0.5f;
-
-
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
 	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
 	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
@@ -530,19 +641,14 @@ void SceneMain::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 	for (unsigned i = 0; i < text.length(); ++i)
 	{
 		Mtx44 characterSpacing;
-
-		//Change this line inside for loop
-		characterSpacing.SetToTranslation(totalspace, 0.5f, 0);
+		characterSpacing.SetToTranslation(0.5f + i * 0.5f, 0.5f, 0); //1.0f is the spacing of each character, you may change this value
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
 		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-
-		totalspace += (CharWidth[text[i]] / 64);
 
 		mesh->Render((unsigned)text[i] * 6, 6);
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
-	//Add these code just before glEnable(GL_DEPTH_TEST);
 	projectionStack.PopMatrix();
 	viewStack.PopMatrix();
 	modelStack.PopMatrix();
@@ -567,6 +673,32 @@ void SceneMain::RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int 
 	viewStack.PopMatrix();
 	modelStack.PopMatrix();
 	glEnable(GL_DEPTH_TEST);
+}
+
+void SceneMain::RenderNPCDialogue(std::string NPCText, std::string headerText)
+{
+	//float headerTextPos = 4.f;
+	RenderMeshOnScreen(meshList[Header], 14.75, 19.25, 30, 6);
+	//headerText.size()
+	RenderTextOnScreen(meshList[GEO_TEXT], headerText, Color(0, 0, 0), 4, 14.5 - (headerText.size()), 17);	//header text
+	RenderMeshOnScreen(meshList[Textbox], 40, 8.75, 80, 17.5);
+	string word;																	//automating text
+	int wordpos = 0, ypos = 13, last = NPCText.find_last_of(" ");
+	float xpos = 2.f;
+	while (true)
+	{
+		word = NPCText.substr(wordpos, NPCText.find(" ", wordpos + 1) - wordpos);
+		if (xpos + word.length() * 1.5 + 1 > 80)		//if new word will exceed screensize
+		{
+			ypos -= 3;
+			xpos = 2;
+		}
+		RenderTextOnScreen(meshList[GEO_TEXT], word, Color(0, 0, 0), 3, xpos, ypos);
+		if (wordpos > last)
+			break;
+		wordpos += word.length() + 1;
+		xpos += 1.5 * word.length() + 1;
+	}
 }
 
 
@@ -652,23 +784,27 @@ void SceneMain::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(27.4, 9, -1.5);
-	modelStack.Scale(2, 2, 2);
+	modelStack.Translate(-37.5, 0, 0);
+	RenderMesh(meshList[MBS], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-25, 0, 40.5);
+	RenderMesh(meshList[Changi], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-2, 0, 0);
 	modelStack.Rotate(-90, 0, 1, 0);
-	RenderText(meshList[GEO_TEXT], "Museum", Color(0, 0, 0));
+	modelStack.Scale(1.3, 1.3, 1.3);
+	RenderMesh(meshList[Teacher], true);
+	modelStack.PopMatrix();
 
-	if (inFrontOfMuseum == true) {
-		modelStack.PushMatrix();
-		modelStack.Translate(0.7, -2, -0.29);
-		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0));
-
-		modelStack.PushMatrix();
-		modelStack.Translate(-0.2, -1, 0);
-		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0));
-
-		modelStack.PopMatrix();
-		modelStack.PopMatrix();
-	}
+	modelStack.PushMatrix();
+	modelStack.Translate(6, 0, 5);
+	modelStack.Rotate(-90, 0, 1, 0);
+	modelStack.Scale(1, 1, 1);
+	RenderMesh(meshList[Friend], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
@@ -778,6 +914,71 @@ void SceneMain::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
+	modelStack.Translate(27.4, 9, -1.5);
+	modelStack.Scale(2, 2, 2);
+	modelStack.Rotate(-90, 0, 1, 0);
+	RenderText(meshList[GEO_TEXT], "Museum", Color(0, 0, 0));
+
+	if (inFrontofMuseum) {
+		modelStack.PushMatrix();
+		modelStack.Translate(0.35, -2, -0.29);
+		modelStack.Scale(0.7, 0.7, 1);
+		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0));
+
+		modelStack.PushMatrix();
+		modelStack.Translate(-0.2, -1, 0);
+		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0));
+
+		modelStack.PopMatrix();
+		modelStack.PopMatrix();
+	}
+	modelStack.PopMatrix();
+
+	if (inFrontofChangi) {
+		modelStack.PushMatrix();
+		modelStack.Translate(0.4, 4, 27.4);
+		modelStack.Scale(1, 1, 1);
+		modelStack.Rotate(180, 0, 1, 0);
+		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0));
+
+		modelStack.PushMatrix();
+		modelStack.Translate(-0.2, -1, 0);
+		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0));
+
+		modelStack.PopMatrix();
+		modelStack.PopMatrix();
+	}
+
+	if (inFrontofMarina) {
+		modelStack.PushMatrix();
+		modelStack.Translate(-27.4, 4, 0.4);
+		modelStack.Scale(1, 1, 1);
+		modelStack.Rotate(90, 0, 1, 0);
+		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0));
+
+		modelStack.PushMatrix();
+		modelStack.Translate(-0.2, -1, 0);
+		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0));
+
+		modelStack.PopMatrix();
+		modelStack.PopMatrix();
+	}
+
+	if (inFrontofGarden) {
+		modelStack.PushMatrix();
+		modelStack.Translate(-0.4, 4, -27.4);
+		modelStack.Scale(1, 1, 1);
+		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0));
+
+		modelStack.PushMatrix();
+		modelStack.Translate(-0.2, -1, 0);
+		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0));
+
+		modelStack.PopMatrix();
+		modelStack.PopMatrix();
+	}
+
+	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, 0);
 	modelStack.Scale(7, 7, 7);
 	RenderMesh(meshList[Lamp], true);
@@ -789,7 +990,6 @@ void SceneMain::Render()
 	if (minigameMuseum == true) {
 		RenderMinigame();
 	}
-
 }
 
 void SceneMain::Exit()

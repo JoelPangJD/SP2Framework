@@ -7,35 +7,37 @@
 #include "shader.hpp"
 #include <Mtx44.h>
 #include"MeshBuilder.h"
+#include "Mesh.h"
+#include "SceneMuseum.h"
+
 
 Inventory::Inventory()
 {
-	y = 0;
-	x = 0;
-	key = 0;
-	clue1 = 0;
 }
 
 Inventory::~Inventory()
 {
 }
 
-
-int Inventory::get_key()
-{
-	return key;
-}
-
-int Inventory::get_clue()
-{
-	return clue1;
-}
-
-void Inventory::additem(InteractableObject item)
+void Inventory::additem(InteractableObject* item)
 {
 	storage.push_back(item);
 }
 
-void Inventory::update_inventory()
+void Inventory::RemoveItem(string Item)
 {
+	for (std::vector<InteractableObject*>::iterator it = storage.begin(); it != storage.end(); it++)
+	{
+		if ((*it)->gettype() == Item)
+		{
+			storage.erase(storage.begin());
+		}
+	}
 }
+
+vector<InteractableObject*> Inventory::getstorage()
+{
+	return storage;
+}
+
+

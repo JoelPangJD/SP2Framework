@@ -152,6 +152,21 @@ void SceneGarden::Init()
 	materialList[M_FISH2].kSpecular.Set(0.1f, 0.1f, 0.1f);
 	materialList[M_FISH2].kShininess = 10.f;
 
+	materialList[M_TORUSGOOD].kAmbient.Set(0.5f, 1.f, 0.5f);
+	materialList[M_TORUSGOOD].kDiffuse.Set(0.1f, 0.1f, 0.1f);
+	materialList[M_TORUSGOOD].kSpecular.Set(0.1f, 0.1f, 0.1f);
+	materialList[M_TORUSGOOD].kShininess = 1.f;
+
+	materialList[M_TORUSBAD].kAmbient.Set(1.f, 0.5f, 0.5f);
+	materialList[M_TORUSBAD].kDiffuse.Set(0.1f, 0.1f, 0.1f);
+	materialList[M_TORUSBAD].kSpecular.Set(0.1f, 0.1f, 0.1f);
+	materialList[M_TORUSBAD].kShininess = 1.f;
+
+	materialList[M_TORUSNEUTRAL].kAmbient.Set(0.5f, 0.5f, 1.f);
+	materialList[M_TORUSNEUTRAL].kDiffuse.Set(0.5f, 0.5f, 0.5f);
+	materialList[M_TORUSNEUTRAL].kSpecular.Set(0.1f, 0.1f, 0.1f);
+	materialList[M_TORUSNEUTRAL].kShininess = 1.f;
+
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.0f);
 	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.5f, 0.5f, 0.5f), 1);
@@ -165,8 +180,9 @@ void SceneGarden::Init()
 	meshList[GEO_HEMISPHERE] = MeshBuilder::GenerateHemisphere("hemisphere", Color(1, 1, 1), 30, 30, 1);
 	meshList[GEO_CONE] = MeshBuilder::GenerateCone("cone", 1, 20, 30, Color(1, 1, 1));
 
-	meshList[GEO_TORUS1] = MeshBuilder::GenerateTorus("torus1", Color(0.5, 0.5, 0.5), 30, 30, 5,0.1);
-	meshList[GEO_TORUS2] = MeshBuilder::GenerateTorus("torus2", Color(0.5, 1, 0.5), 30, 30, 5, 0.1);
+	meshList[GEO_TORUSGAME] = MeshBuilder::GenerateTorus("torusgame", Color(0.5, 0.5, 0.5), 30, 30, 5,0.1);
+	meshList[GEO_TORUSPLAYER] = MeshBuilder::GenerateTorus("torusplayer", Color(1, 1, 1), 30, 30, 5, 0.1);
+	meshList[GEO_TORUSPLAYER]->material = materialList[M_TORUSNEUTRAL];
 
 	meshList[GEO_GRASSFLOOR] = MeshBuilder::GenerateQuad("grassfloor",1,1,Color(1,1,1), 30);
 	meshList[GEO_GRASSFLOOR]->textureID = LoadTGA("Image//garden//grassfloor.tga");
@@ -264,7 +280,7 @@ void SceneGarden::Init()
 	terrains.push_back(new Terrain(Vector3(62, 0, 51), 0, 1, 5, 3.5, 14, "gazebo"));
 	terrains.push_back(new Terrain(Vector3(49, 0, 51), 0, 1, 5, 3.5, 14, "gazebo"));
 
-	items.push_back(new InteractableObject(Vector3(0, 4, 0), 0, 2, 2, "stick"));
+	items.push_back(new InteractableObject(Vector3(0, 4, 0), 0, 5, 5, "stick"));
 	items.push_back(new InteractableObject(Vector3(55, 0, 54), 180, 0.1, 7, "cat"));
 	items.push_back(new InteractableObject(Vector3(0, -3, -150), 0, 0.5, 2, "fish"));
 	items.push_back(new InteractableObject(Vector3(10, -3, -140), 90, 0.5, 2, "fish"));
@@ -302,32 +318,46 @@ void SceneGarden::Update(double dt)
 		}
 	}
 
-	if (minigame == 0)
+	if (minigame == 0) //When not in minigame
 	{
-		if(!indialogue)//Don't move while in a dialogue
-			camera.Update(dt);
+		//======================================
+		//         Interactions code
+		//======================================
+		if (!indialogue)//Don't move while in a dialogue
+		{
+			camera.Updatepos(dt); //Updates to the position all happen before updates to the view
+			for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
+				(*it)->solidCollisionBox(camera.position);
+			camera.Updateview(dt); //Updates the view after the processing of all the collisions
+		}
 		//Check collisions
 		{
+			int counter = 0;
 			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 			{
 				if ((*it)->spherecollider(camera.target)) // Checks if the target is within a radius of the stick
 				{
-					int interacttype = (*it)->interact();
+					if (Application::IsKeyPressed('F'))// 1 is look at
+					{
+						dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
+						currentline = dialogue.begin(); //Currentline is set at the look at description
+						indialogue = true;//Set state to in dialogue
+					}
+					if (Application::IsKeyPressed('G'))
+					{
+						inventory.additem((*it));
+						items.erase(items.begin() + counter);
+						break;
+					}
+					if (Application::IsKeyPressed('T')) //4 is talk to
+					{
+						dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
+						currentline = dialogue.begin(); //Currentline iteratior as the first line of dialogue
+						name = (*it)->gettype(); //Set the name of the npc the player talks to
+						indialogue = true;//Set state to in dialogue
+					}
 					if (interacttext.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
 					{
-						if (interacttype == 1)// 1 is look at
-						{
-							dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
-							currentline = dialogue.begin(); //Currentline is set at the look at description
-							indialogue = true;//Set state to in dialogue
-						}
-						if (interacttype == 4) //4 is talk to
-						{
-							dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
-							currentline = dialogue.begin(); //Currentline iteratior as the first line of dialogue
-							name = (*it)->gettype(); //Set the name of the npc the player talks to
-							indialogue = true;//Set state to in dialogue
-						}
 						if ((*it)->gettype() == "stick")
 						{
 							interacttext << "Stick";
@@ -340,27 +370,124 @@ void SceneGarden::Update(double dt)
 						}
 					}
 				}
-			}
-			for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
-			{
-				(*it)->solidCollisionBox(camera.position);
+				counter++;
 			}
 		}
 	}
-	else if (minigame == 1)
+	else if (minigame == 2) //During minigame 1
 	{
 		circlescale1 -= circlespeed * dt;
-		if (Application::IsKeyPressed('E') && cooldown <= 0) //Cooldown added to prevent spamming
+		if (Application::IsKeyPressed(VK_SPACE) && cooldown <= 0) //Cooldown added to prevent spamming
 		{
-			if (circlescale1 >= circlescale2 - 0.05 && circlescale1 <= circlescale2 + 0.05)
+			if (circlescale1 >= circlescale2 - 0.08 && circlescale1 <= circlescale2 + 0.08)
 			{
-				cout << "Good" << endl;
+				meshList[GEO_TORUSPLAYER]->material = materialList[M_TORUSGOOD];
+				progress += 1;
 				circlespeed += 0.2f;
 			}
 			else
-				cout << "Bad" << endl;
+			{
+				meshList[GEO_TORUSPLAYER]->material = materialList[M_TORUSBAD];
+				progress = 0;
+			}
+			int counter = 0;
+			switch (progress)
+			{
+			case 1:
+				circlescale2 = 2;
+				circlespeed = 0.8f;
+				break;
+			case 2:
+				circlescale2 = 1.2;
+				circlespeed = 1.1f;
+				break;
+			case 3:
+				circlescale2 = 0.6;
+				circlespeed = 1.4f;
+				break;
+			case 4:
+				circlescale2 = 1.7;
+				circlespeed = 1.6f;
+				break;
+			case 5:
+				circlescale2 = 0.7;
+				circlespeed = 2.f;
+				break;
+			case 6: //If case 7, minigame is won
+				cout << "minigame complete!"<< endl;
+				for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+				{
+					if ((*it)->gettype() == "fish")
+					{
+						inventory.additem((*it));
+						items.erase(items.begin()+counter);
+						break;
+					}
+					counter++;
+				}
+				camera = prevcamera;
+				minigame = 0;
+			default:
+				circlescale2 = 1;
+				circlespeed = 0.5f;
+				break;
+			}
 			cooldown = 0.5;
 			circlescale1 = 3;
+		}
+	}
+	else if (minigame == 3) //During minigame 2
+	{
+		Application::GetCursorPos(&cursorx, &cursory);
+		cursorx = cursorx / 10;
+		cursory = (60 - cursory / 10);
+		if (playerx > cursorx + 0.1)
+			playerx -= 10 * dt;
+		else if (playerx < cursorx - 0.1)
+			playerx += 10 * dt;
+		if (playery > cursory + 0.1)
+			playery -= 10 * dt;
+		else if(playery < cursory - 0.1)
+			playery += 10 * dt;
+		if ((playerx < objectivex + 1 && playerx > objectivex - 1)
+			&& (playery < objectivey + 1 && playery > objectivey - 1)) //If overlap with objective
+		{
+			progress++;
+		}
+		switch (progress)
+		{
+		case 0:
+			objectivex = 70;
+			objectivey = 50;
+			break;
+		case 1:
+			objectivex = 20;
+			objectivey = 55;
+			break;
+		case 2:
+			objectivex = 30;
+			objectivey = 10;
+			break;
+		case 3:
+			objectivex = 60;
+			objectivey = 40;
+			break;
+		case 4:
+			objectivex = 40;
+			objectivey = 35;
+			break;
+		case 5:
+			objectivex = 10;
+			objectivey = 10;
+			break;
+		case 6:
+			objectivex = 45;
+			objectivey = 55;
+			break;
+		case 7:
+			camera = prevcamera;
+			Application::enableMouse = false;
+			minigame = 0;
 		}
 	}
 	if (Application::IsKeyPressed('5'))
@@ -398,14 +525,20 @@ void SceneGarden::Update(double dt)
 		camera = prevcamera;
 		minigame = 0;
 	}
-	else if (Application::IsKeyPressed('V') && minigame != 1) //Enter minigame
+	else if (Application::IsKeyPressed('V') && minigame == 0) //Enter minigame
 	{
 		prevcamera = camera;
 		camera.Init(Vector3(0, 50, -150), Vector3(0, 0, -150), Vector3(0, 0, 1));
-		circlescale2 = 1;
-		circlescale1 = 3;
-		circlespeed = 0.5f;
+		progress = 0;
 		minigame = 1;
+	}
+	else if (Application::IsKeyPressed('B') && minigame == 0) //Enter minigame
+	{
+		prevcamera = camera;
+		camera.Init(Vector3(0, 150, 50), Vector3(0, 0, 50), Vector3(0, 0, 1));
+		Application::enableMouse = true;
+		progress = 0;
+		minigame = 3;
 	}
 
 	if (Application::IsKeyPressed('I'))
@@ -425,13 +558,13 @@ void SceneGarden::Update(double dt)
 	{
 		if (fishright)
 		{
-			fishAngle += 40 * dt;
+			fishAngle += 60 * dt;
 			if (fishAngle > 20)
 				fishright = false;
 		}
 		else
 		{
-			fishAngle -= 40 * dt;
+			fishAngle -= 60 * dt;
 			if (fishAngle < -20)
 				fishright = true;
 		}
@@ -556,6 +689,14 @@ void SceneGarden::RenderUI()
 	{
 		modelStack.PushMatrix();
 		RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
+		int ypos = 52;
+		vector<InteractableObject*> inventorycontent = inventory.getstorage();
+		for (std::vector<InteractableObject*>::iterator it = inventorycontent.begin(); it != inventorycontent.end(); it++)
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT], (*it)->gettype() , Color(0, 0, 0), 2, 2, ypos);
+			ypos -= 2;
+
+		}
 		std::ostringstream ss;
 		ss << "FPS: " << fps;
 		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 58, 68);
@@ -569,21 +710,34 @@ void SceneGarden::Renderminigame1()
 {
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 10, -150);
-	modelStack.Scale(1, 1, 1);
-	RenderMesh(meshList[GEO_TORUS1], false);
+	modelStack.Scale(circlescale2, circlescale2, circlescale2);
+	RenderMesh(meshList[GEO_TORUSGAME], false);
 	modelStack.PopMatrix();
 	if (circlescale1 > 0.1)
 	{
 		modelStack.PushMatrix();
 		modelStack.Translate(0, 10, -150);
 		modelStack.Scale(circlescale1, circlescale1, circlescale1);
-		RenderMesh(meshList[GEO_TORUS2], false);
+		RenderMesh(meshList[GEO_TORUSPLAYER], true);
 		modelStack.PopMatrix();
 	}
 	else
 	{
 		circlescale1 = 3;
 	}
+}
+
+void SceneGarden::Renderminigame2()
+{
+	RenderMeshOnScreen(meshList[GEO_SPHERE], playerx, playery,2,2);
+	RenderMeshOnScreen(meshList[GEO_SPHERE], objectivex, objectivey, 1, 1);
+	//spherex -= 40;
+	//spherey -= 30;
+	//modelStack.PushMatrix();
+	//modelStack.Translate(-spherex, 0, -150 + spherey);
+	//modelStack.Scale(2,2,2);
+	//RenderMesh(meshList[GEO_SPHERE], true);
+	//modelStack.PopMatrix();
 }
 
 void SceneGarden::Renderfish()
@@ -729,7 +883,7 @@ void SceneGarden::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, 
 
 }
 
-void SceneGarden::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
+void SceneGarden::RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int sizey)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -1028,9 +1182,22 @@ void SceneGarden::Render()
 
 	if (minigame == 0)
 		RenderUI();
-	else if(minigame == 1)
+	else if (minigame == 1)
+	{
+		RenderMinigameScreen("Press the space when the rings overlap, do it sucessfully six times in a row to successfully catch a fish", "Fishing", 6);
+		if (Application::IsKeyPressed('E')) //Press E to start the minigame
+		{
+			circlescale2 = 1;
+			circlescale1 = 3;
+			circlespeed = 0.5f;
+			meshList[GEO_TORUSPLAYER]->material = materialList[M_TORUSNEUTRAL];
+			minigame = 2;
+		}
+	}
+	else if (minigame == 2)
 		Renderminigame1();
-	RenderMinigameScreen("Press the E when the rings overlap, do it sucessfully 3 times in a row to catch a fish", "Fishing", 6);
+	else if (minigame == 3)
+		Renderminigame2();
 }
 
 void SceneGarden::Exit()

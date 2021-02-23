@@ -146,11 +146,11 @@ void Application::Run()
 	Scene* scene4 = new SceneGarden();
 
 	Scene* scene = scene0;
-	scene0->Init();
 	scene1->Init();
 	scene2->Init();
 	scene3->Init();
 	scene4->Init();
+	scene0->Init();
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
