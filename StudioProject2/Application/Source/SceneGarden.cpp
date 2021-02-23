@@ -343,11 +343,9 @@ void SceneGarden::Update(double dt)
 						}
 						if (Application::IsKeyPressed('G'))
 						{
-							for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
-							{
-								inventory.additem((*it));
-								items.erase(items.begin() + counter);
-							}
+							inventory.additem((*it));
+							items.erase(items.begin() + counter);
+							break;
 						}
 						if (Application::IsKeyPressed('T')) //4 is talk to
 						{
