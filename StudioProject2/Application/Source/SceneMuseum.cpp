@@ -911,7 +911,7 @@ void SceneMuseum::StartInteraction()
 			GameCam1 = camera;
 			//Application::enableMouse = true;
 			//Goes to some orange background to view image
-			camera.Init(Vector3(-100, 10, 10), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
+			camera.Init(Vector3(-100, 10, 10), Vector3(220.717, 5, 241.881), Vector3(0, 1, 0));
 			RenderMeshOnScreen(meshList[GEO_PIC], 40, 30, 80, 65);
 			RenderMeshOnScreen(meshList[GEO_BOX], 4 + MoveX, 29, 3 + AddSize, 8.9);
 		}
