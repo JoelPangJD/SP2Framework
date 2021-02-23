@@ -548,26 +548,32 @@ void SceneMain::updateMinigame(double dt)
 
 void SceneMain::updateDialogue()
 {
+	int counter = 0;
 	for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 	{
 		if ((*it)->spherecollider(camera.target)) // Checks if the target is within a radius of the stick
 		{
-			int interacttype = (*it)->interact();
+			if (Application::IsKeyPressed('F'))// F is look at
+			{
+				dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
+				currentLine = dialogue.begin(); //Currentline is set at the look at description
+				inDialogue = true;//Set state to in dialogue
+			}
+			/*if (Application::IsKeyPressed('G'))
+			{
+				inventory.additem((*it));
+				items.erase(items.begin() + counter);
+				break;
+			}*/
+			if (Application::IsKeyPressed('T')) //T is talk to
+			{
+				dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
+				currentLine = dialogue.begin(); //Currentline iteratior as the first line of dialogue
+				name = (*it)->gettype(); //Set the name of the npc the player talks to
+				inDialogue = true;//Set state to in dialogue
+			}
 			if (interactText.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
 			{
-				if (interacttype == 1)// 1 is look at
-				{
-					dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
-					currentLine = dialogue.begin(); //Currentline is set at the look at description
-					inDialogue = true;//Set state to in dialogue
-				}
-				if (interacttype == 4) //4 is talk to
-				{
-					dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
-					currentLine = dialogue.begin(); //Currentline iteratior as the first line of dialogue
-					name = (*it)->gettype(); //Set the name of the npc the player talks to
-					inDialogue = true;//Set state to in dialogue
-				}
 				if ((*it)->gettype() == "Mr.Sazz")
 				{
 					interactText << "MrSazz";
@@ -575,9 +581,9 @@ void SceneMain::updateDialogue()
 				}
 			}
 		}
+		counter++;
 	}
 }
-
 void SceneMain::updateCollision()
 {
 	for (std::vector<Terrain*>::iterator it = wall.begin(); it != wall.end(); it++)
