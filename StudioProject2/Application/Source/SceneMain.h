@@ -46,6 +46,7 @@ class SceneMain : public Scene
 		Friend,
 		Header,
 		Textbox,
+		MBS,
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE
@@ -116,7 +117,6 @@ private:
 	bool inFrontofMuseum, inFrontofChangi, inFrontofMarina, inFrontofGarden;
 	bool minigameMuseum, minigameChangi, minigameMarina, minigameGarden;
 
-	float CharWidth[256];
 	void RenderSkybox();
 	void RenderUI();
 	void RenderMesh(Mesh* mesh, bool enableLight);

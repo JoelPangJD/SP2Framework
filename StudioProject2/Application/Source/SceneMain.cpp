@@ -23,7 +23,7 @@ void SceneMain::Init()
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
 	//==========================
-	camera.Init(Vector3(-30, 3, 0), Vector3(0, 3, 5), Vector3(0, 1, 0));
+	camera.Init(Vector3(-14, 3, 0), Vector3(0, 3, 5), Vector3(0, 1, 0));
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 
@@ -155,7 +155,7 @@ void SceneMain::Init()
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("Lightball", Color(1, 1, 1), 10, 10, 10);
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//ArialNarrow.tga");
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Marina//ExportedFont.tga");
 
 	meshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
 	meshList[GEO_INVENTORY]->textureID = LoadTGA("Image//inventory.tga");
@@ -189,18 +189,9 @@ void SceneMain::Init()
 	meshList[Header] = MeshBuilder::GenerateQuad("header", Color(1, 1, 1), 1.f);
 	meshList[Header]->textureID = LoadTGA("Image//Marina//header.tga");
 	meshList[Textbox] = MeshBuilder::GenerateQuad("textbox", Color(1, 1, 1), 1.f);
+	meshList[MBS] = MeshBuilder::GenerateOBJMTL("mbs", "OBJ//CityCenter//mbs.obj", "OBJ//CityCenter//mbs.mtl");
 
 
-	int charac = 0;
-	std::ifstream fin;
-	std::string line;
-	fin.open("fontdata.csv");
-	while (std::getline(fin, line)) {
-
-		CharWidth[charac] = stoi(line);
-		charac++;
-	}
-	fin.close();
 	inFrontofMuseum = inFrontofChangi = inFrontofGarden = inFrontofMarina = false;
 	minigameMuseum = false;
 
@@ -276,13 +267,13 @@ void SceneMain::Update(double dt)
 			minigameMuseum = true;
 		}
 		else if (inFrontofChangi) {
-			minigameChangi = true;
+			Application::SwitchScene = 2;
 		}
 		else if (inFrontofMarina) {
-			minigameMarina = true;
+			Application::SwitchScene = 3;
 		}
 		else if (inFrontofGarden) {
-			minigameGarden = true;
+			Application::SwitchScene = 4;
 		}
 	}
 	if ((camera.position.x >= 18) && (camera.position.x <= 27.5) && (camera.position.z >= -3) && (camera.position.z <= 3)) {
@@ -314,6 +305,36 @@ void SceneMain::Update(double dt)
 		}
 		updateMinigame(dt);
 	}
+
+	//if (minigameChangi == true) {
+	//	Application::enableMouse = true;
+	//	if (pass == true) {
+	//		minigameChangi = false;
+	//		Application::enableMouse = false;
+	//		Application::SwitchScene = 2;
+	//	}
+	//	updateMinigame(dt);
+	//}
+
+	//if (minigameMarina == true) {
+	//	Application::enableMouse = true;
+	//	if (pass == true) {
+	//		minigameMarina = false;
+	//		Application::enableMouse = false;
+	//		Application::SwitchScene = 3;
+	//	}
+	//	updateMinigame(dt);
+	//}
+
+	//if (minigameGarden == true) {
+	//	Application::enableMouse = true;
+	//	if (pass == true) {
+	//		minigameGarden = false;
+	//		Application::enableMouse = false;
+	//		Application::SwitchScene = 4;
+	//	}
+	//	updateMinigame(dt);
+	//}
 	updateDialogue();
 
 }
@@ -559,9 +580,6 @@ void SceneMain::RenderText(Mesh* mesh, std::string text, Color color)
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
 
-	float totalspace = 0;
-	float totalz = 0;
-
 	//glDisable(GL_DEPTH_TEST);
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
 	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
@@ -570,16 +588,17 @@ void SceneMain::RenderText(Mesh* mesh, std::string text, Color color)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
 	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
+	float zspace = 0;
+
 	for (unsigned i = 0; i < text.length(); ++i)
 	{
-
 		Mtx44 characterSpacing;
-		characterSpacing.SetToTranslation(totalspace, 0, totalz); //1.0f is the spacing of each character, you may change this value
+		std::vector<std::pair<std::string, std::vector<int>>> result;
+		characterSpacing.SetToTranslation(i * 0.5f, 0, zspace); //1.0f is the spacing of each character, you may change this value
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
-		totalspace += (CharWidth[text[i]] / 64);
-		totalz += 0.001;
-
 		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+
+		zspace += 0.001;
 
 		mesh->Render((unsigned)text[i] * 6, 6);
 	}
@@ -594,7 +613,6 @@ void SceneMain::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 		return;
 
 	glDisable(GL_DEPTH_TEST);
-
 	Mtx44 ortho;
 	ortho.SetToOrtho(0, 80, 0, 60, -10, 10); //size of screen UI
 	projectionStack.PushMatrix();
@@ -605,11 +623,6 @@ void SceneMain::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 	modelStack.LoadIdentity(); //Reset modelStack
 	modelStack.Translate(x, y, 0);
 	modelStack.Scale(size, size, size);
-
-
-	float totalspace = 0.5f;
-
-
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
 	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
 	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
@@ -620,19 +633,14 @@ void SceneMain::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 	for (unsigned i = 0; i < text.length(); ++i)
 	{
 		Mtx44 characterSpacing;
-
-		//Change this line inside for loop
-		characterSpacing.SetToTranslation(totalspace, 0.5f, 0);
+		characterSpacing.SetToTranslation(0.5f + i * 0.5f, 0.5f, 0); //1.0f is the spacing of each character, you may change this value
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
 		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-
-		totalspace += (CharWidth[text[i]] / 64);
 
 		mesh->Render((unsigned)text[i] * 6, 6);
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
-	//Add these code just before glEnable(GL_DEPTH_TEST);
 	projectionStack.PopMatrix();
 	viewStack.PopMatrix();
 	modelStack.PopMatrix();
@@ -768,23 +776,8 @@ void SceneMain::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(27.4, 9, -1.5);
-	modelStack.Scale(2, 2, 2);
-	modelStack.Rotate(-90, 0, 1, 0);
-	RenderText(meshList[GEO_TEXT], "Museum", Color(0, 0, 0));
-
-	if (inFrontofMuseum == true) {
-		modelStack.PushMatrix();
-		modelStack.Translate(0.7, -2, -0.29);
-		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0));
-
-		modelStack.PushMatrix();
-		modelStack.Translate(-0.2, -1, 0);
-		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0));
-
-		modelStack.PopMatrix();
-		modelStack.PopMatrix();
-	}
+	modelStack.Translate(-37.5, 0, 0);
+	RenderMesh(meshList[MBS], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
@@ -906,6 +899,71 @@ void SceneMain::Render()
 	modelStack.Scale(2, 2, 2);
 	RenderText(meshList[GEO_TEXT], "Botanic Garden", Color(0, 0, 0));
 	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(27.4, 9, -1.5);
+	modelStack.Scale(2, 2, 2);
+	modelStack.Rotate(-90, 0, 1, 0);
+	RenderText(meshList[GEO_TEXT], "Museum", Color(0, 0, 0));
+
+	if (inFrontofMuseum) {
+		modelStack.PushMatrix();
+		modelStack.Translate(0.35, -2, -0.29);
+		modelStack.Scale(0.7, 0.7, 1);
+		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0));
+
+		modelStack.PushMatrix();
+		modelStack.Translate(-0.2, -1, 0);
+		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0));
+
+		modelStack.PopMatrix();
+		modelStack.PopMatrix();
+	}
+	modelStack.PopMatrix();
+
+	if (inFrontofChangi) {
+		modelStack.PushMatrix();
+		modelStack.Translate(0.4, 4, 27.4);
+		modelStack.Scale(1, 1, 1);
+		modelStack.Rotate(180, 0, 1, 0);
+		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0));
+
+		modelStack.PushMatrix();
+		modelStack.Translate(-0.2, -1, 0);
+		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0));
+
+		modelStack.PopMatrix();
+		modelStack.PopMatrix();
+	}
+
+	if (inFrontofMarina) {
+		modelStack.PushMatrix();
+		modelStack.Translate(-27.4, 4, 0.4);
+		modelStack.Scale(1, 1, 1);
+		modelStack.Rotate(90, 0, 1, 0);
+		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0));
+
+		modelStack.PushMatrix();
+		modelStack.Translate(-0.2, -1, 0);
+		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0));
+
+		modelStack.PopMatrix();
+		modelStack.PopMatrix();
+	}
+
+	if (inFrontofGarden) {
+		modelStack.PushMatrix();
+		modelStack.Translate(-0.4, 4, -27.4);
+		modelStack.Scale(1, 1, 1);
+		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0));
+
+		modelStack.PushMatrix();
+		modelStack.Translate(-0.2, -1, 0);
+		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0));
+
+		modelStack.PopMatrix();
+		modelStack.PopMatrix();
+	}
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, 0);
