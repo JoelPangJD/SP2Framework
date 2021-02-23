@@ -7,6 +7,7 @@
 #include "Light.h"
 #include "MatrixStack.h"
 #include "Entity.h"
+#include "Terrain.h"
 #include <iostream>
 #include <sstream>
 #include <math.h>
@@ -40,6 +41,7 @@ class SceneChangi : public Scene
 		GEO_FIRETRUCK,
 		GEO_POLICE,
 		GEO_DOORMAN,
+		GEO_MISSILE,
 		GEO_STRAIGHT,
 		GEO_ROADL,
 		GEO_ROADSPLIT,
@@ -104,15 +106,17 @@ public:
 	bool welcome;
 	bool atStairs;
 	bool gameStart;
-	bool takeFlight;
+	bool takeFlight = false;
 	float fps;
 
 	float rotateL;
 	float rotateR;
-	float movex = 0;
-	float camMove = 0;
+	float autoMove ;
+	float movex;
 	float movez;
-	float wordY = 0;
+	float camMove;
+	float minimize;
+
 	float scale = 1;
 
 	SceneChangi();
@@ -130,6 +134,8 @@ private:
 	unsigned m_programID;
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
+
+	std::vector<Terrain*> terrains;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
