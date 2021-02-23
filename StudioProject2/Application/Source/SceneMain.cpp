@@ -190,6 +190,7 @@ void SceneMain::Init()
 	meshList[Header]->textureID = LoadTGA("Image//Marina//header.tga");
 	meshList[Textbox] = MeshBuilder::GenerateQuad("textbox", Color(1, 1, 1), 1.f);
 	meshList[MBS] = MeshBuilder::GenerateOBJMTL("mbs", "OBJ//CityCenter//mbs.obj", "OBJ//CityCenter//mbs.mtl");
+	meshList[Changi] = MeshBuilder::GenerateOBJMTL("changi", "OBJ//Changi//ChangiTower.obj", "OBJ//Changi//ChangiTower.mtl");
 
 
 	inFrontofMuseum = inFrontofChangi = inFrontofGarden = inFrontofMarina = false;
@@ -228,6 +229,12 @@ void SceneMain::Init()
 	
 	items.push_back(new InteractableObject(Vector3(-2, 2, 0), 0, 2, 4, "Mr.Sazz"));
 	items.push_back(new InteractableObject(Vector3(6, 1, 5), 0, 2, 3, "Andy"));
+
+	//wall.push_back(new Terrain(Vector3(26, 0, 0), 0, 1, 50, 1, "wall"));
+	wall.push_back(new Terrain(Vector3(26, 0, 0), 0, 0, 0, 2, 100.f, "Wall"));
+	wall.push_back(new Terrain(Vector3(-26, 0, 0), 0, 0, 0, 2, 100.f, "Wall"));
+	wall.push_back(new Terrain(Vector3(0, 0, 26), 0, 0, 0, 100.f, 2, "Wall"));
+	wall.push_back(new Terrain(Vector3(0, 0, -26), 0, 0, 0, 100.f, 2, "Wall"));
 }
 
 
@@ -336,7 +343,7 @@ void SceneMain::Update(double dt)
 	//	updateMinigame(dt);
 	//}
 	updateDialogue();
-
+	updateCollision();
 }
 
 void SceneMain::RenderMesh(Mesh* mesh, bool enableLight)
@@ -470,9 +477,9 @@ void SceneMain::RenderMinigame()
 	RenderMeshOnScreen(meshList[Panel], 40, 30, 7, 5);
 	int width, height;
 	width = height = 15;
-	RenderTextOnScreen(meshList[GEO_TEXT], "Turn all squares", Color(0, 0, 0), 3, 8, 50);
-	RenderTextOnScreen(meshList[GEO_TEXT], "Green to enter", Color(0, 0, 0), 3, 8, 46);
-	RenderTextOnScreen(meshList[GEO_TEXT], "the museum.", Color(0, 0, 0), 3, 8, 42);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Turn all squares", Color(0, 0, 0), 2, 8, 50);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Green to enter", Color(0, 0, 0), 2, 8, 46);
+	RenderTextOnScreen(meshList[GEO_TEXT], "the museum.", Color(0, 0, 0), 2, 8, 42);
 	for (int i = 0; i < 9; i++) {
 
 		if ((i == 3) || (i == 4) || (i == 5)) {
@@ -541,37 +548,47 @@ void SceneMain::updateMinigame(double dt)
 
 void SceneMain::updateDialogue()
 {
-
-	//Check collisions
+	int counter = 0;
+	for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 	{
-		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+		if ((*it)->spherecollider(camera.target)) // Checks if the target is within a radius of the stick
 		{
-			if ((*it)->spherecollider(camera.target)) // Checks if the target is within a radius of the stick
+			if (Application::IsKeyPressed('F'))// F is look at
 			{
-				int interacttype = (*it)->interact();
-				if (interactText.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
+				dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
+				currentLine = dialogue.begin(); //Currentline is set at the look at description
+				inDialogue = true;//Set state to in dialogue
+			}
+			/*if (Application::IsKeyPressed('G'))
+			{
+				inventory.additem((*it));
+				items.erase(items.begin() + counter);
+				break;
+			}*/
+			if (Application::IsKeyPressed('T')) //T is talk to
+			{
+				dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
+				currentLine = dialogue.begin(); //Currentline iteratior as the first line of dialogue
+				name = (*it)->gettype(); //Set the name of the npc the player talks to
+				inDialogue = true;//Set state to in dialogue
+			}
+			if (interactText.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
+			{
+				if ((*it)->gettype() == "Mr.Sazz")
 				{
-					if (interacttype == 1)// 1 is look at
-					{
-						dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
-						currentLine = dialogue.begin(); //Currentline is set at the look at description
-						inDialogue = true;//Set state to in dialogue
-					}
-					if (interacttype == 4) //4 is talk to
-					{
-						dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
-						currentLine = dialogue.begin(); //Currentline iteratior as the first line of dialogue
-						name = (*it)->gettype(); //Set the name of the npc the player talks to
-						inDialogue = true;//Set state to in dialogue
-					}
-					if ((*it)->gettype() == "Mr.Sazz")
-					{
-						interactText << "MrSazz";
-						break;
-					}
+					interactText << "MrSazz";
+					break;
 				}
 			}
 		}
+		counter++;
+	}
+}
+void SceneMain::updateCollision()
+{
+	for (std::vector<Terrain*>::iterator it = wall.begin(); it != wall.end(); it++)
+	{
+		(*it)->solidCollisionBox(camera.position);
 	}
 }
 
@@ -778,6 +795,11 @@ void SceneMain::Render()
 	modelStack.PushMatrix();
 	modelStack.Translate(-37.5, 0, 0);
 	RenderMesh(meshList[MBS], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-25, 0, 40.5);
+	RenderMesh(meshList[Changi], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();

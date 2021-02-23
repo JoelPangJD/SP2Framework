@@ -36,6 +36,8 @@ class SceneMain : public Scene
 		RoadCross,
 		RoadCrossBarrier,
 		Museum,
+		MBS,
+		Changi,
 		Lamp,
 		Sprite,
 		GroundMesh,
@@ -46,7 +48,6 @@ class SceneMain : public Scene
 		Friend,
 		Header,
 		Textbox,
-		MBS,
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE
@@ -129,6 +130,7 @@ private:
 	void updateMinigame(double dt);
 
 	void updateDialogue();
+	void updateCollision();
 	std::stringstream interactText;
 	bool inDialogue;
 	vector<string> dialogue;
@@ -137,6 +139,7 @@ private:
 	float cooldown;
 
 	std::vector<InteractableObject*> items;
+	std::vector<Terrain*> wall;
 
 	Vector3* grids[9];
 	Button gridButton[9];

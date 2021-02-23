@@ -122,9 +122,13 @@ public:
 	float cooldown = 0; //cooldown time for actions
 	float fps;
 	//Minigame variables
-	int minigame = 0; //0 for no minigame, 1 minigame intro screen, 2 for minigame one
+	int minigame = 0; //0 for no minigame, 1 minigame intro screen, 2 for minigame one, 3 for minigame 2 intro, 4 for minigame 2
 	float circlescale1, circlescale2, circlespeed; //Circlescale1 is the size of the shrinking circle for the minigame1, circlescale2 is for the constant circle and circlespeed is the speed at which the circle gets smaller
-	int catching = 0;
+	int progress = 0;
+	//Minigame2 variables
+	double cursorx = 0, cursory = 0;
+	float playerx = 40, playery = 30;
+	float objectivex, objectivey;
 
 	SceneGarden();
 	~SceneGarden();
@@ -161,12 +165,13 @@ private:
 	void RenderSkybox();
 	void RenderUI();
 	void Renderminigame1();
+	void Renderminigame2();
 	void Renderfish();
 	bool fishright = true;
 	float fishAngle = 0;
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
+	void RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int sizey);
 	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 	void RenderMinigameScreen(std::string MinigamedescriptionText, std::string headerText, float fontsize);
 };
