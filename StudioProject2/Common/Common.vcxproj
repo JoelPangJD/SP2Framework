@@ -151,6 +151,10 @@
     <ClInclude Include="Source\timer.h" />
     <ClInclude Include="Source\Vector3.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Application\Itemdescriptions.txt" />
+    <Text Include="..\Application\Itemdialogue.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
