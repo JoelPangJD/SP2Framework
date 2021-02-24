@@ -250,9 +250,9 @@ void SceneMuseum::Init()
 	terrains.push_back(new Terrain(Vector3(-272.215, 0, 73.66698), 0, 22, 10, 218.204, 3, "Door")); //+19
 
 	//Items vector
-	items.push_back(new InteractableObject(Vector3(-210.785, 16.0715, 75.3848), 0, 0, 50, "preview"));
-	items.push_back(new InteractableObject(Vector3(-283.869, 16.0715, 95.1478), 0, 0, 50, "answer"));
-	items.push_back(new InteractableObject(Vector3(-104.012, 0, 5.04312), 0, 5, 5, "box"));
+	items.push_back(new InteractableObject(Vector3(-210.785, 16.0715, 75.3848), 0, 0, 50, "preview","nothing",false));
+	items.push_back(new InteractableObject(Vector3(-283.869, 16.0715, 95.1478), 0, 0, 50, "answer","nothing",false));
+	items.push_back(new InteractableObject(Vector3(-104.012, 0, 5.04312), 0, 5, 5, "box","boxy",false));
 
 
 	//Ground mesh
