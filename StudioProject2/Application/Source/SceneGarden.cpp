@@ -191,6 +191,9 @@ void SceneGarden::Init()
 	meshList[GEO_GRASSFLOOR]->material.kSpecular.Set(0.1f, 0.1f, 0.1f);
 	meshList[GEO_GRASSFLOOR]->material.kShininess = 1.f;
 
+	meshList[GEO_YARNBACKGROUND] = MeshBuilder::GenerateQuad("grassfloor", 1, 1, Color(1, 1, 1), 1);
+	meshList[GEO_YARNBACKGROUND]->textureID = LoadTGA("Image//garden//yarn.tga");
+
 	meshList[GEO_POND] = MeshBuilder::GenerateQuad("pondwater", 1, 1, Color(1, 1, 1), 10);
 	meshList[GEO_POND]->textureID = LoadTGA("Image//watertexture.tga");
 	meshList[GEO_POND]->material.kAmbient.Set(0.3f, 0.3f, 0.3f);
@@ -731,15 +734,9 @@ void SceneGarden::Renderminigame1()
 
 void SceneGarden::Renderminigame2()
 {
+	RenderMeshOnScreen(meshList[GEO_YARNBACKGROUND], 40, 30, 80, 60);
 	RenderMeshOnScreen(meshList[GEO_SPHERE], playerx, playery,2,2);
 	RenderMeshOnScreen(meshList[GEO_SPHERE], objectivex, objectivey, 1, 1);
-	//spherex -= 40;
-	//spherey -= 30;
-	//modelStack.PushMatrix();
-	//modelStack.Translate(-spherex, 0, -150 + spherey);
-	//modelStack.Scale(2,2,2);
-	//RenderMesh(meshList[GEO_SPHERE], true);
-	//modelStack.PopMatrix();
 }
 
 void SceneGarden::Renderfish()
@@ -1213,7 +1210,7 @@ void SceneGarden::Render()
 		Renderminigame1();
 	else if (minigame == 3)
 	{
-		RenderMinigameScreen("", "Untangling the string", 6);
+		RenderMinigameScreen("Use the mouse to guide the end of the thread to the checkpoints ", "Untangling the string", 6);
 		if (Application::IsKeyPressed('E')) //Press E to start the minigame
 		{
 			progress = 0;

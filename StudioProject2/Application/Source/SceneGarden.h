@@ -45,6 +45,9 @@ class SceneGarden : public Scene
 		GEO_TEXTBOX,
 		GEO_HEADER,
 
+		//Minigame
+		GEO_YARNBACKGROUND,
+
 		//Objs
 		GEO_GRASSFLOOR,
 		GEO_CAT,
@@ -59,6 +62,7 @@ class SceneGarden : public Scene
 		GEO_TREE1,
 		GEO_TREE2,
 		NUM_GEOMETRY,
+
 	};
 
 	enum MATERIALS_TYPE
