@@ -146,7 +146,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Button.cpp" />
     <ClCompile Include="Source\Camera3.cpp" />
@@ -156,8 +155,11 @@
     <ClCompile Include="Source\LoadOBJ.cpp" />
     <ClCompile Include="Source\LoadTGA.cpp" />
     <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\Menu.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshBuilder.cpp" />
+    <ClCompile Include="Source\render.cpp" />
+    <ClCompile Include="Source\Scene.cpp" />
     <ClCompile Include="Source\SceneChangi.cpp" />
     <ClCompile Include="Source\SceneGarden.cpp" />
     <ClCompile Include="Source\SceneMarinaBay.cpp" />
@@ -168,7 +170,6 @@
     <ClCompile Include="Source\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Menu.h" />
     <ClInclude Include="Source\Application.h" />
     <ClInclude Include="Source\Button.h" />
     <ClInclude Include="Source\Camera3.h" />
@@ -179,6 +180,8 @@
     <ClInclude Include="Source\LoadOBJ.h" />
     <ClInclude Include="Source\LoadTGA.h" />
     <ClInclude Include="Source\Material.h" />
+    <ClInclude Include="Source\Menu.h" />
+    <ClInclude Include="Source\render.h" />
     <ClInclude Include="Source\SceneChangi.h" />
     <ClInclude Include="Source\SceneGarden.h" />
     <ClInclude Include="Source\SceneMarinaBay.h" />

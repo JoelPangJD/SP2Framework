@@ -99,6 +99,7 @@ public:
 	Camera3 camera;
 	Vector3 pos;
 
+	float cooldown = 0;
 	bool lighton = true;
 	bool use;
 	bool renderStairs = true;
@@ -117,10 +118,11 @@ public:
 	float movez;
 	float camMove;
 	float minimize;
-
+		
 	float scale = 1;
 
 	SceneChangi();
+	SceneChangi(Inventory* inventory);
 	~SceneChangi();
 
 	virtual void Init();

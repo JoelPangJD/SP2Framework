@@ -45,9 +45,13 @@ class SceneGarden : public Scene
 		GEO_TEXTBOX,
 		GEO_HEADER,
 
+		//Minigame
+		GEO_YARNBACKGROUND,
+
 		//Objs
 		GEO_GRASSFLOOR,
 		GEO_CAT,
+		GEO_YARN,
 		GEO_POND,
 		GEO_PONDBED,
 		GEO_PATH,
@@ -58,6 +62,7 @@ class SceneGarden : public Scene
 		GEO_TREE1,
 		GEO_TREE2,
 		NUM_GEOMETRY,
+
 	};
 
 	enum MATERIALS_TYPE
@@ -115,7 +120,6 @@ class SceneGarden : public Scene
 	};
 
 public:
-	Inventory inventory;
 	Camera3 camera;
 	bool lighton = true;
 	bool hitboxshow = false;
@@ -131,6 +135,7 @@ public:
 	float objectivex, objectivey;
 
 	SceneGarden();
+	SceneGarden(Inventory* inventory);
 	~SceneGarden();
 
 	virtual void Init();
@@ -149,11 +154,11 @@ private:
 	Material materialList[M_TOTAL];
 
 	//Variables for text
-	std::ostringstream interacttext;
-	bool indialogue;
-	vector<string> dialogue;
-	vector<string>::iterator currentline;
-	string name;
+	//std::ostringstream interacttext;
+	//bool indialogue;
+	//vector<string> dialogue;
+	//vector<string>::iterator currentline;
+	//string name;
 
 	float movex = 0, movez = 0;
 	float scale = 1;
@@ -161,19 +166,19 @@ private:
 	std::vector<InteractableObject*> items;
 	std::vector<Terrain*> terrains;
 
-	void RenderMesh(Mesh* mesh, bool enableLight);
+	//void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
-	void RenderUI();
+	//void RenderUI();
 	void Renderminigame1();
 	void Renderminigame2();
 	void Renderfish();
 	bool fishright = true;
 	float fishAngle = 0;
-	void RenderText(Mesh* mesh, std::string text, Color color);
-	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int sizey);
-	void RenderNPCDialogue(std::string NPCText, std::string headerText);
-	void RenderMinigameScreen(std::string MinigamedescriptionText, std::string headerText, float fontsize);
+	//void RenderText(Mesh* mesh, std::string text, Color color);
+	//void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
+	//void RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int sizey);
+	//void RenderNPCDialogue(std::string NPCText, std::string headerText);
+	//void RenderMinigameScreen(std::string MinigamedescriptionText, std::string headerText, float fontsize);
 };
 
 #endif

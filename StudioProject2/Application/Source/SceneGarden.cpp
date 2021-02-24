@@ -11,6 +11,11 @@ SceneGarden::SceneGarden()
 {
 }
 
+SceneGarden::SceneGarden(Inventory* inventory)
+{
+	this->inventory = inventory;
+}
+
 SceneGarden::~SceneGarden()
 {
 }
@@ -191,6 +196,9 @@ void SceneGarden::Init()
 	meshList[GEO_GRASSFLOOR]->material.kSpecular.Set(0.1f, 0.1f, 0.1f);
 	meshList[GEO_GRASSFLOOR]->material.kShininess = 1.f;
 
+	meshList[GEO_YARNBACKGROUND] = MeshBuilder::GenerateQuad("grassfloor", 1, 1, Color(1, 1, 1), 1);
+	meshList[GEO_YARNBACKGROUND]->textureID = LoadTGA("Image//garden//yarn.tga");
+
 	meshList[GEO_POND] = MeshBuilder::GenerateQuad("pondwater", 1, 1, Color(1, 1, 1), 10);
 	meshList[GEO_POND]->textureID = LoadTGA("Image//watertexture.tga");
 	meshList[GEO_POND]->material.kAmbient.Set(0.3f, 0.3f, 0.3f);
@@ -222,6 +230,8 @@ void SceneGarden::Init()
 	meshList[GEO_CAT] = MeshBuilder::GenerateOBJMTL("cat", "OBJ//garden//cat.obj", "OBJ//garden//cat.mtl");
 	meshList[GEO_CAT]->textureID = LoadTGA("Image//garden//cat.tga");
 
+	meshList[GEO_YARN] = MeshBuilder::GenerateOBJMTL("yarn", "OBJ//garden//yarn.obj", "OBJ//garden//yarn.mtl");
+
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//font.tga");
 	meshList[GEO_TEXTBOX] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
@@ -247,22 +257,22 @@ void SceneGarden::Init()
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//garden//gardenbottom.tga");
 
 	//Creating terrains in the terrains vector
-	terrains.push_back(new Terrain(Vector3(70, 0, 64), 0, 22, 10, 3, 3, "tree1"));
-	terrains.push_back(new Terrain(Vector3(24, 0, 47), 0, 18, 10, 3, 3, "tree1"));
-	terrains.push_back(new Terrain(Vector3(-25, 0, 80), 0, 18, 10, 3, 3, "tree1"));
-	terrains.push_back(new Terrain(Vector3(-25, 0, 16), 0, 11, 10, 3, 3, "tree1"));
-	terrains.push_back(new Terrain(Vector3(-43, 0, 47), 0, 18, 10, 3, 3, "tree1"));
-	terrains.push_back(new Terrain(Vector3(-43, 0, -24), 0, 17, 10, 3, 3, "tree1"));
-	terrains.push_back(new Terrain(Vector3(88, 0, -17), 0, 13, 10, 3, 3, "tree1"));
-	terrains.push_back(new Terrain(Vector3(112, 0, -75), 0, 13, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(70, 0, 64), 0, 32, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(24, 0, 47), 0, 28, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(-25, 0, 80), 0, 28, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(-25, 0, 16), 0, 21, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(-43, 0, 47), 0, 28, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(-43, 0, -24), 0, 27, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(88, 0, -17), 0, 23, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(112, 0, -75), 0, 23, 10, 3, 3, "tree1"));
 
-	terrains.push_back(new Terrain(Vector3(-47, 0, 76), 0, 13, 10, 3, 3, "tree2"));
-	terrains.push_back(new Terrain(Vector3(1, 0, 54), 0, 17, 13, 3, 3, "tree2"));
-	terrains.push_back(new Terrain(Vector3(130, 0, -60), 0, 17, 10, 3, 3, "tree2"));
-	terrains.push_back(new Terrain(Vector3(80, 0, 27), 0, 15, 10, 3, 3, "tree2"));
-	terrains.push_back(new Terrain(Vector3(-124, 0, -129), 0, 19, 10, 3, 3, "tree2"));
-	terrains.push_back(new Terrain(Vector3(-120, 0, 32), 0, 14, 10, 3, 3, "tree2"));
-	terrains.push_back(new Terrain(Vector3(-123, 0, -42), 0, 21, 10, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(-47, 0, 76), 0, 23, 10, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(1, 0, 54), 0, 27, 13, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(130, 0, -60), 0, 27, 10, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(80, 0, 27), 0, 25, 10, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(-124, 0, -129), 0, 29, 10, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(-120, 0, 32), 0, 24, 10, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(-123, 0, -42), 0, 31, 10, 3, 3, "tree2"));
 
 	//modelStack.Translate(0, -2.5, -247.50);
 
@@ -280,14 +290,15 @@ void SceneGarden::Init()
 	terrains.push_back(new Terrain(Vector3(62, 0, 51), 0, 1, 5, 3.5, 14, "gazebo"));
 	terrains.push_back(new Terrain(Vector3(49, 0, 51), 0, 1, 5, 3.5, 14, "gazebo"));
 
-	items.push_back(new InteractableObject(Vector3(0, 4, 0), 0, 5, 5, "stick"));
-	items.push_back(new InteractableObject(Vector3(55, 0, 54), 180, 0.1, 7, "cat"));
-	items.push_back(new InteractableObject(Vector3(0, -3, -150), 0, 0.5, 2, "fish"));
-	items.push_back(new InteractableObject(Vector3(10, -3, -140), 90, 0.5, 2, "fish"));
-	items.push_back(new InteractableObject(Vector3(-10, -3, -150), -60, 0.5, 2, "fish"));
-	items.push_back(new InteractableObject(Vector3(-20, -3, -120), 60, 0.5, 2, "fish"));
-	items.push_back(new InteractableObject(Vector3(-30, -3, -150), 30, 0.5, 2, "fish"));
-	items.push_back(new InteractableObject(Vector3(20, -3, -140), -30, 0.5, 2, "fish"));
+	items.push_back(new InteractableObject(Vector3(5, 0, 50), 55, 5, 7, "stick", "Stick", true));
+	items.push_back(new InteractableObject(Vector3(55, 0, 54), 180, 0.1, 7, "cat", "Cat", false));
+	items.push_back(new InteractableObject(Vector3(54, 0.2, 50), 0, 0.05, 7, "yarn", "'Yarn'", true));
+	items.push_back(new InteractableObject(Vector3(0, -3, -150), 0, 0.5, 2, "fish", "Fish", false));
+	items.push_back(new InteractableObject(Vector3(10, -3, -140), 90, 0.5, 2, "fish", "Fish", false));
+	items.push_back(new InteractableObject(Vector3(-10, -3, -150), -60, 0.5, 2, "fish", "Fish", false));
+	items.push_back(new InteractableObject(Vector3(-20, -3, -120), 60, 0.5, 2, "fish", "Fish", false));
+	items.push_back(new InteractableObject(Vector3(-30, -3, -150), 30, 0.5, 2, "fish", "Fish", false));
+	items.push_back(new InteractableObject(Vector3(20, -3, -140), -30, 0.5, 2, "fish", "Fish", false));
 }
 
 void SceneGarden::Update(double dt)
@@ -320,59 +331,8 @@ void SceneGarden::Update(double dt)
 
 	if (minigame == 0) //When not in minigame
 	{
-		//======================================
-		//         Interactions code
-		//======================================
-		if (!indialogue)//Don't move while in a dialogue
-		{
-			camera.Updatepos(dt); //Updates to the position all happen before updates to the view
-			for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
-				(*it)->solidCollisionBox(camera.position);
-			camera.Updateview(dt); //Updates the view after the processing of all the collisions
-		}
-		//Check collisions
-		{
-			int counter = 0;
-			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
-			{
-				if ((*it)->spherecollider(camera.target)) // Checks if the target is within a radius of the stick
-				{
-					if (Application::IsKeyPressed('F'))// 1 is look at
-					{
-						dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
-						currentline = dialogue.begin(); //Currentline is set at the look at description
-						indialogue = true;//Set state to in dialogue
-					}
-					if (Application::IsKeyPressed('G'))
-					{
-						inventory.additem((*it));
-						items.erase(items.begin() + counter);
-						break;
-					}
-					if (Application::IsKeyPressed('T')) //4 is talk to
-					{
-						dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
-						currentline = dialogue.begin(); //Currentline iteratior as the first line of dialogue
-						name = (*it)->gettype(); //Set the name of the npc the player talks to
-						indialogue = true;//Set state to in dialogue
-					}
-					if (interacttext.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
-					{
-						if ((*it)->gettype() == "stick")
-						{
-							interacttext << "Stick";
-							break;
-						}
-						if ((*it)->gettype() == "cat")
-						{
-							interacttext << "Cat";
-							break;
-						}
-					}
-				}
-				counter++;
-			}
-		}
+		movement(camera, terrains, dt);
+		interact(camera, items);
 	}
 	else if (minigame == 2) //During minigame 1
 	{
@@ -390,7 +350,6 @@ void SceneGarden::Update(double dt)
 				meshList[GEO_TORUSPLAYER]->material = materialList[M_TORUSBAD];
 				progress = 0;
 			}
-			int counter = 0;
 			switch (progress)
 			{
 			case 1:
@@ -419,11 +378,10 @@ void SceneGarden::Update(double dt)
 				{
 					if ((*it)->gettype() == "fish")
 					{
-						inventory.additem((*it));
-						items.erase(items.begin()+counter);
+						inventory->additem((*it));
+						items.erase(items.begin()+(distance(items.begin(), it)));
 						break;
 					}
-					counter++;
 				}
 				camera = prevcamera;
 				minigame = 0;
@@ -436,7 +394,7 @@ void SceneGarden::Update(double dt)
 			circlescale1 = 3;
 		}
 	}
-	else if (minigame == 3) //During minigame 2
+	else if (minigame == 4) //During minigame 2
 	{
 		Application::GetCursorPos(&cursorx, &cursory);
 		cursorx = cursorx / 10;
@@ -467,7 +425,7 @@ void SceneGarden::Update(double dt)
 		case 2:
 			objectivex = 30;
 			objectivey = 10;
-			break;
+			break; 
 		case 3:
 			objectivex = 60;
 			objectivey = 40;
@@ -522,6 +480,7 @@ void SceneGarden::Update(double dt)
 
 	if (Application::IsKeyPressed('C') && minigame != 0) //exit minigame
 	{
+		Application::enableMouse = false;
 		camera = prevcamera;
 		minigame = 0;
 	}
@@ -538,7 +497,7 @@ void SceneGarden::Update(double dt)
 		camera.Init(Vector3(0, 150, 50), Vector3(0, 0, 50), Vector3(0, 0, 1));
 		Application::enableMouse = true;
 		progress = 0;
-		minigame = 3;
+		minigame = 4;
 	}
 
 	if (Application::IsKeyPressed('I'))
@@ -571,48 +530,6 @@ void SceneGarden::Update(double dt)
 	}
 }
 
-void SceneGarden::RenderMesh(Mesh* mesh, bool enableLight)
-{
-	Mtx44 MVP, modelView, modelView_inverse_transpose;
-
-	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
-	glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-	modelView = viewStack.Top() * modelStack.Top();
-	glUniformMatrix4fv(m_parameters[U_MODELVIEW], 1, GL_FALSE, &modelView.a[0]);
-	if (enableLight && lighton == true)
-	{
-		glUniform1i(m_parameters[U_LIGHTENABLED], 1);
-		modelView_inverse_transpose = modelView.GetInverse().GetTranspose();
-		glUniformMatrix4fv(m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE], 1, GL_FALSE, &modelView_inverse_transpose.a[0]);
-
-		//load material
-		glUniform3fv(m_parameters[U_MATERIAL_AMBIENT], 1, &mesh->material.kAmbient.r);
-		glUniform3fv(m_parameters[U_MATERIAL_DIFFUSE], 1, &mesh->material.kDiffuse.r);
-		glUniform3fv(m_parameters[U_MATERIAL_SPECULAR], 1, &mesh->material.kSpecular.r);
-		glUniform1f(m_parameters[U_MATERIAL_SHININESS], mesh->material.kShininess);
-	}
-	else
-	{
-		glUniform1i(m_parameters[U_LIGHTENABLED], 0);
-	}
-	if (mesh->textureID > 0)
-	{
-		glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-		glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
-	}
-	else
-	{
-		glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 0);
-	}
-	mesh->Render(); //this line should only be called once
-	if (mesh->textureID > 0)
-	{
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-}
-
 void SceneGarden::RenderSkybox()
 {
 	modelStack.PushMatrix();
@@ -621,89 +538,45 @@ void SceneGarden::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, -499);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_FRONT], false);
+	RenderMesh(meshList[GEO_FRONT], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, 499);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_BACK], false);
+	RenderMesh(meshList[GEO_BACK], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, -499, 0);
 	modelStack.Rotate(-90, 1, 0, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_BOTTOM], false);
+	RenderMesh(meshList[GEO_BOTTOM], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 499, 0);
 	modelStack.Rotate(90, 1, 0, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_TOP], false);
+	RenderMesh(meshList[GEO_TOP], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(499, 0, 0);
 	modelStack.Rotate(-90, 0, 1, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_RIGHT], false);
+	RenderMesh(meshList[GEO_RIGHT], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-499, 0, 0);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_LEFT], false);
+	RenderMesh(meshList[GEO_LEFT], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PopMatrix();
-}
-
-void SceneGarden::RenderUI()
-{
-	if (indialogue)
-	{
-		string dialoguetext = (*currentline);
-		string currentname;
-		if (dialoguetext[0] == '1')
-			currentname = "Player name";
-		else if (dialoguetext[0] == '2')
-			currentname = name;
-		dialoguetext = dialoguetext.substr(1);
-		RenderNPCDialogue(dialoguetext, currentname);
-		if (cooldown <= 0 && Application::IsKeyPressed('E')) //Cooldown added to prevent spamming to pass the dialogues too fast
-		{
-			cooldown = 1;
-			currentline++;
-			if(currentline == dialogue.end())
-			{
-				indialogue = false;
-				dialogue.clear();
-			}
-		}
-	}
-	else
-	{
-		modelStack.PushMatrix();
-		RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
-		int ypos = 52;
-		vector<InteractableObject*> inventorycontent = inventory.getstorage();
-		for (std::vector<InteractableObject*>::iterator it = inventorycontent.begin(); it != inventorycontent.end(); it++)
-		{
-			RenderTextOnScreen(meshList[GEO_TEXT], (*it)->gettype() , Color(0, 0, 0), 2, 2, ypos);
-			ypos -= 2;
-
-		}
-		std::ostringstream ss;
-		ss << "FPS: " << fps;
-		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 58, 68);
-		RenderTextOnScreen(meshList[GEO_TEXT], interacttext.str(), Color(0.5, 0.5, 0.5), 5, 40 - (interacttext.str().length()), 30);
-		interacttext.str("");
-		modelStack.PopMatrix();
-	}
 }
 
 void SceneGarden::Renderminigame1()
@@ -711,14 +584,14 @@ void SceneGarden::Renderminigame1()
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 10, -150);
 	modelStack.Scale(circlescale2, circlescale2, circlescale2);
-	RenderMesh(meshList[GEO_TORUSGAME], false);
+	RenderMesh(meshList[GEO_TORUSGAME], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 	if (circlescale1 > 0.1)
 	{
 		modelStack.PushMatrix();
 		modelStack.Translate(0, 10, -150);
 		modelStack.Scale(circlescale1, circlescale1, circlescale1);
-		RenderMesh(meshList[GEO_TORUSPLAYER], true);
+		RenderMesh(meshList[GEO_TORUSPLAYER], true, modelStack, viewStack, projectionStack, m_parameters);
 		modelStack.PopMatrix();
 	}
 	else
@@ -729,15 +602,9 @@ void SceneGarden::Renderminigame1()
 
 void SceneGarden::Renderminigame2()
 {
-	RenderMeshOnScreen(meshList[GEO_SPHERE], playerx, playery,2,2);
-	RenderMeshOnScreen(meshList[GEO_SPHERE], objectivex, objectivey, 1, 1);
-	//spherex -= 40;
-	//spherey -= 30;
-	//modelStack.PushMatrix();
-	//modelStack.Translate(-spherex, 0, -150 + spherey);
-	//modelStack.Scale(2,2,2);
-	//RenderMesh(meshList[GEO_SPHERE], true);
-	//modelStack.PopMatrix();
+	RenderMeshOnScreen(meshList[GEO_YARNBACKGROUND], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMeshOnScreen(meshList[GEO_SPHERE], playerx, playery,2, 2, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMeshOnScreen(meshList[GEO_SPHERE], objectivex, objectivey, 1, 1, modelStack, viewStack, projectionStack, m_parameters);
 }
 
 void SceneGarden::Renderfish()
@@ -753,12 +620,12 @@ void SceneGarden::Renderfish()
 	modelStack.Translate(0.25, 1.5, -0.2);
 	modelStack.PushMatrix();
 	modelStack.Scale(0.15, 0.15, 0.15);
-	RenderMesh(meshList[GEO_SPHERE], true);
+	RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 	modelStack.Translate(-0.5, 0, 0);
 	modelStack.PushMatrix();
 	modelStack.Scale(0.15, 0.15, 0.15);
-	RenderMesh(meshList[GEO_SPHERE], true);
+	RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
@@ -766,30 +633,30 @@ void SceneGarden::Renderfish()
 
 	meshList[GEO_HEMISPHERE]->material = materialList[M_FISH1];
 	modelStack.Scale(0.5, 2, 1);
-	RenderMesh(meshList[GEO_HEMISPHERE], true);
+	RenderMesh(meshList[GEO_HEMISPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 	meshList[GEO_HEMISPHERE]->material = materialList[M_FISH2];
 	modelStack.Scale(0.5, 0.7, 1.3);
-	RenderMesh(meshList[GEO_HEMISPHERE], true);
+	RenderMesh(meshList[GEO_HEMISPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.Rotate(fishAngle, 0, 0, 1); //Fish middle joint angle
 	modelStack.PushMatrix();  //Add spheres to cover joint
 	meshList[GEO_SPHERE]->material = materialList[M_FISH1];
 	modelStack.Scale(0.5, 0.5, 1);
-	RenderMesh(meshList[GEO_SPHERE], true);
+	RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 	meshList[GEO_SPHERE]->material = materialList[M_FISH2];
 	modelStack.Scale(0.5, 0.5, 1.3);
-	RenderMesh(meshList[GEO_SPHERE], true);
+	RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Rotate(180, 0, 0, 1);
 	meshList[GEO_HEMISPHERE]->material = materialList[M_FISH1];
 	modelStack.Scale(0.5, 2, 1);
-	RenderMesh(meshList[GEO_HEMISPHERE], true);
+	RenderMesh(meshList[GEO_HEMISPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 	meshList[GEO_HEMISPHERE]->material = materialList[M_FISH2];
 	modelStack.Scale(0.5, 1, 1.3);
-	RenderMesh(meshList[GEO_HEMISPHERE], true);
+	RenderMesh(meshList[GEO_HEMISPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.Translate(0, -1.8, 0);
@@ -798,159 +665,17 @@ void SceneGarden::Renderfish()
 	modelStack.Rotate(130, 1, 0, 0);
 	modelStack.PushMatrix();
 	modelStack.Scale(0.1, 0.1, 0.5);
-	RenderMesh(meshList[GEO_CONE], true);
+	RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 	modelStack.Rotate(100, 1, 0, 0);
 	modelStack.PushMatrix();
 	modelStack.Scale(0.1, 0.1, 0.5);
-	RenderMesh(meshList[GEO_CONE], true);
+	RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();//Fish tail end
 
 	modelStack.PopMatrix();//Fish body end
 
-}
-
-void SceneGarden::RenderText(Mesh* mesh, std::string text, Color color)
-{
-	if (!mesh || mesh->textureID <= 0) //Proper error check
-		return;
-
-	//glDisable(GL_DEPTH_TEST);
-	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
-	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
-	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
-	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
-	for (unsigned i = 0; i < text.length(); ++i)
-	{
-		Mtx44 characterSpacing;
-		std::vector<std::pair<std::string, std::vector<int>>> result;
-		//std::ifstream myFile("Fontdata.csv");
-		//if (!myFile.is_open()) throw std::runtime_error("Could not open file");
-
-		characterSpacing.SetToTranslation(i * 1.0f, 0, 0); //1.0f is the spacing of each character, you may change this value
-		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
-		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-
-		mesh->Render((unsigned)text[i] * 6, 6);
-	}
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
-	//glEnable(GL_DEPTH_TEST);
-}
-
-void SceneGarden::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
-{
-	if (!mesh || mesh->textureID <= 0) //Proper error check
-		return;
-
-	glDisable(GL_DEPTH_TEST);
-	Mtx44 ortho;
-	ortho.SetToOrtho(0, 80, 0, 60, -10, 10); //size of screen UI
-	projectionStack.PushMatrix();
-	projectionStack.LoadMatrix(ortho);
-	viewStack.PushMatrix();
-	viewStack.LoadIdentity(); //No need camera for ortho mode
-	modelStack.PushMatrix();
-	modelStack.LoadIdentity(); //Reset modelStack
-	modelStack.Translate(x, y, 0);
-	modelStack.Scale(size, size, size);
-	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
-	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
-	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
-	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
-	for (unsigned i = 0; i < text.length(); ++i)
-	{
-		Mtx44 characterSpacing;
-		characterSpacing.SetToTranslation(0.5f + i * 0.5f, 0.5f, 0); //1.0f is the spacing of each character, you may change this value
-		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
-		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-
-		mesh->Render((unsigned)text[i] * 6, 6);
-	}
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
-	projectionStack.PopMatrix();
-	viewStack.PopMatrix();
-	modelStack.PopMatrix();
-	glEnable(GL_DEPTH_TEST);
-
-}
-
-void SceneGarden::RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int sizey)
-{
-	glDisable(GL_DEPTH_TEST);
-	Mtx44 ortho;
-	ortho.SetToOrtho(0, 80, 0, 60, -10, 10); //size of screen UI
-	projectionStack.PushMatrix();
-	projectionStack.LoadMatrix(ortho);
-	viewStack.PushMatrix();
-	viewStack.LoadIdentity(); //No need camera for ortho mode
-	modelStack.PushMatrix();
-	modelStack.LoadIdentity();
-	modelStack.Translate(x, y, 0);
-	modelStack.Scale(sizex, sizey, 0);
-	RenderMesh(mesh, false); //UI should not have light
-	projectionStack.PopMatrix();
-	viewStack.PopMatrix();
-	modelStack.PopMatrix();
-	glEnable(GL_DEPTH_TEST);
-}
-
-void SceneGarden::RenderNPCDialogue(std::string NPCText, std::string headerText)
-{
-	//float headerTextPos = 4.f;
-	RenderMeshOnScreen(meshList[GEO_HEADER], 14.75, 19.25, 30, 6);
-	//headerText.size()
-	RenderTextOnScreen(meshList[GEO_TEXT], headerText, Color(0, 0, 0), 4, 14.5 - (headerText.size()), 17);	//header text
-	RenderMeshOnScreen(meshList[GEO_TEXTBOX], 40, 8.75, 80, 17.5);
-	string word;																	//automating text
-	int wordpos = 0, ypos = 13, last = NPCText.find_last_of(" ");
-	float xpos = 2.f;
-	while (true)
-	{
-		word = NPCText.substr(wordpos, NPCText.find(" ", wordpos + 1) - wordpos);
-		if (xpos + word.length() * 1.5 + 1 > 80)		//if new word will exceed screensize
-		{
-			ypos -= 3;
-			xpos = 2;
-		}
-		RenderTextOnScreen(meshList[GEO_TEXT], word, Color(0, 0, 0), 3, xpos, ypos);
-		if (wordpos > last)
-			break;
-		wordpos += word.length() + 1;
-		xpos += 1.5 * word.length() + 1;
-	}
-}
-
-void SceneGarden::RenderMinigameScreen(std::string MinigamedescriptionText, std::string headerText, float fontsize)
-{
-	RenderMeshOnScreen(meshList[GEO_TEXTBOX], 40, 30, 80, 50);
-	RenderMeshOnScreen(meshList[GEO_HEADER], 40, 57, 60, 8);
-	RenderTextOnScreen(meshList[GEO_TEXT], headerText, Color(0, 0, 0), 6, 38 - (headerText.size()*1.5), 54);	//header text
-	string word;																	//automating text
-	int wordpos = 0, ypos = 50 - fontsize, last = MinigamedescriptionText.find_last_of(" ");
-	float xpos = 2.f;
-	while (true)
-	{
-		word = MinigamedescriptionText.substr(wordpos, MinigamedescriptionText.find(" ", wordpos + 1) - wordpos);
-		if (xpos + word.length() * (fontsize * 0.5) + (fontsize * 0.5) > 80)		//if new word will exceed screensize
-		{
-			ypos -= fontsize;
-			xpos = 2;
-		}
-		RenderTextOnScreen(meshList[GEO_TEXT], word, Color(0, 0, 0), fontsize, xpos, ypos);
-		if (wordpos > last)
-			break;
-		wordpos += word.length() + 1;
-		xpos += (fontsize * 0.5) * word.length() + (fontsize * 0.5);
-	}
 }
 
 void SceneGarden::Render()
@@ -1012,7 +737,7 @@ void SceneGarden::Render()
 	//========================================================
 	modelStack.LoadIdentity();
 
-	RenderMesh(meshList[GEO_AXES], false);
+	RenderMesh(meshList[GEO_AXES], false, modelStack, viewStack, projectionStack, m_parameters);
 
 	//Render interactable items
 	{
@@ -1024,27 +749,28 @@ void SceneGarden::Render()
 			modelStack.Scale((*it)->getscale(), (*it)->getscale(), (*it)->getscale());
 			if ((*it)->gettype() == "stick")
 			{
-				RenderMesh(meshList[GEO_STICK], true);
+				modelStack.Rotate(-90, 1, 0, 0);
+				RenderMesh(meshList[GEO_STICK], true, modelStack, viewStack, projectionStack, m_parameters);
 				if (hitboxshow)
 				{
 					modelStack.PopMatrix();
 					modelStack.PushMatrix();
 					modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
 					modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
-					RenderMesh(meshList[GEO_SPHERE], FALSE);
+					RenderMesh(meshList[GEO_SPHERE], false, modelStack, viewStack, projectionStack, m_parameters);
 				}
 			}
 			if ((*it)->gettype() == "cat")
 			{
 				modelStack.Rotate(-90, 1, 0, 0);
-				RenderMesh(meshList[GEO_CAT], true);
+				RenderMesh(meshList[GEO_CAT], true, modelStack, viewStack, projectionStack, m_parameters);
 				if (hitboxshow)
 				{
 					modelStack.PopMatrix();
 					modelStack.PushMatrix();
 					modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
 					modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
-					RenderMesh(meshList[GEO_SPHERE], FALSE);
+					RenderMesh(meshList[GEO_SPHERE], false, modelStack, viewStack, projectionStack, m_parameters);
 				}
 			}
 			if ((*it)->gettype() == "fish")
@@ -1056,7 +782,19 @@ void SceneGarden::Render()
 					modelStack.PushMatrix();
 					modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
 					modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
-					RenderMesh(meshList[GEO_SPHERE], FALSE);
+					RenderMesh(meshList[GEO_SPHERE], false, modelStack, viewStack, projectionStack, m_parameters);
+				}
+			}
+			if ((*it)->gettype() == "yarn")
+			{
+				RenderMesh(meshList[GEO_YARN], true, modelStack, viewStack, projectionStack, m_parameters);
+				if (hitboxshow)
+				{
+					modelStack.PopMatrix();
+					modelStack.PushMatrix();
+					modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
+					modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
+					RenderMesh(meshList[GEO_SPHERE], false, modelStack, viewStack, projectionStack, m_parameters);
 				}
 			}
 			modelStack.PopMatrix();
@@ -1069,14 +807,14 @@ void SceneGarden::Render()
 		modelStack.Translate(0, -5, -150);
 		modelStack.Rotate(-90, 1, 0, 0);
 		modelStack.Scale(200, 200, 200);
-		RenderMesh(meshList[GEO_PONDBED], true);
+		RenderMesh(meshList[GEO_PONDBED], true, modelStack, viewStack, projectionStack, m_parameters);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
 		modelStack.Translate(0, -2.5, -247.50);
 		modelStack.Rotate(-45, 1, 0, 0);
 		modelStack.Scale(200, 7.1, 200);
-		RenderMesh(meshList[GEO_PONDBED], true);
+		RenderMesh(meshList[GEO_PONDBED], true, modelStack, viewStack, projectionStack, m_parameters);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
@@ -1084,7 +822,7 @@ void SceneGarden::Render()
 		modelStack.Rotate(180, 0, 1, 0);
 		modelStack.Rotate(-45, 1, 0, 0);
 		modelStack.Scale(200, 7.1, 200);
-		RenderMesh(meshList[GEO_PONDBED], true);
+		RenderMesh(meshList[GEO_PONDBED], true, modelStack, viewStack, projectionStack, m_parameters);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
@@ -1092,7 +830,7 @@ void SceneGarden::Render()
 		modelStack.Rotate(90, 0, 1, 0);
 		modelStack.Rotate(-45, 1, 0, 0);
 		modelStack.Scale(200, 7.1, 200);
-		RenderMesh(meshList[GEO_PONDBED], true);
+		RenderMesh(meshList[GEO_PONDBED], true, modelStack, viewStack, projectionStack, m_parameters);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
@@ -1100,7 +838,7 @@ void SceneGarden::Render()
 		modelStack.Rotate(-90, 0, 1, 0);
 		modelStack.Rotate(-45, 1, 0, 0);
 		modelStack.Scale(200, 7.1, 200);
-		RenderMesh(meshList[GEO_PONDBED], true);
+		RenderMesh(meshList[GEO_PONDBED], true, modelStack, viewStack, projectionStack, m_parameters);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
@@ -1108,7 +846,7 @@ void SceneGarden::Render()
 		modelStack.Rotate(90, 1, 0, 0);
 		modelStack.Scale(200, 200, 200);
 		glDisable(GL_CULL_FACE);
-		RenderMesh(meshList[GEO_POND], true);
+		RenderMesh(meshList[GEO_POND], true, modelStack, viewStack, projectionStack, m_parameters);
 		glEnable(GL_CULL_FACE);
 		modelStack.PopMatrix();
 	}
@@ -1116,7 +854,7 @@ void SceneGarden::Render()
 	modelStack.PushMatrix();
 	modelStack.Rotate(-90, 1, 0, 0);
 	modelStack.Scale(500,500,500);
-	RenderMesh(meshList[GEO_GRASSFLOOR], true);
+	RenderMesh(meshList[GEO_GRASSFLOOR], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	//Path locations
@@ -1129,22 +867,22 @@ void SceneGarden::Render()
 				modelStack.Translate(i, -2.29, -0.18);
 				modelStack.Rotate(180, 0, 1, 0);
 				modelStack.Scale(2.3, 2.3, 2.3);
-				RenderMesh(meshList[GEO_PATHT], true);
+				RenderMesh(meshList[GEO_PATHT], true, modelStack, viewStack, projectionStack, m_parameters);
 				modelStack.Rotate(90, 0, 1, 0);
 				modelStack.Translate(7.9, 0, 0.1);
-				RenderMesh(meshList[GEO_PATH], true);
+				RenderMesh(meshList[GEO_PATH], true, modelStack, viewStack, projectionStack, m_parameters);
 				modelStack.Translate(7.9, 0, 00);
-				RenderMesh(meshList[GEO_PATH], true);
+				RenderMesh(meshList[GEO_PATH], true, modelStack, viewStack, projectionStack, m_parameters);
 				modelStack.Translate(6.5, 0.7, 0);
 				modelStack.Rotate(90, 0, 1, 0);
 				modelStack.Scale(0.07, 0.07, 0.07);
-				RenderMesh(meshList[GEO_GAZEBO], true);
+				RenderMesh(meshList[GEO_GAZEBO], true, modelStack, viewStack, projectionStack, m_parameters);
 			}
 			else
 			{
 				modelStack.Translate(i, -2.29, 0);
 				modelStack.Scale(2.3, 2.3, 2.3);
-				RenderMesh(meshList[GEO_PATH], true);
+				RenderMesh(meshList[GEO_PATH], true, modelStack, viewStack, projectionStack, m_parameters);
 			}
 			modelStack.PopMatrix();
 		}
@@ -1159,16 +897,16 @@ void SceneGarden::Render()
 			modelStack.Rotate((*it)->getangle(), 0, 1, 0);
 			modelStack.Scale((*it)->getscale(), (*it)->getscale(), (*it)->getscale());
 			if ((*it)->gettype() == "tree1")
-				RenderMesh(meshList[GEO_TREE1], true);
+				RenderMesh(meshList[GEO_TREE1], true, modelStack, viewStack, projectionStack, m_parameters);
 			else if ((*it)->gettype() == "tree2")
-				RenderMesh(meshList[GEO_TREE2], true);
+				RenderMesh(meshList[GEO_TREE2], true, modelStack, viewStack, projectionStack, m_parameters);
 			if (hitboxshow)
 			{
 				modelStack.PopMatrix();
 				modelStack.PushMatrix();
 				modelStack.Translate((*it)->getposition().x, (*it)->getposition().y + (*it)->getheight()*0.5, (*it)->getposition().z);
 				modelStack.Scale((*it)->getxwidth(), (*it)->getheight(), (*it)->getzwidth());
-				RenderMesh(meshList[GEO_CUBE], false);
+				RenderMesh(meshList[GEO_CUBE], false, modelStack, viewStack, projectionStack, m_parameters);
 			}
 			modelStack.PopMatrix();
 		}
@@ -1181,10 +919,10 @@ void SceneGarden::Render()
 	//modelStack.PopMatrix();
 
 	if (minigame == 0)
-		RenderUI();
+		RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 	else if (minigame == 1)
 	{
-		RenderMinigameScreen("Press the space when the rings overlap, do it sucessfully six times in a row to successfully catch a fish", "Fishing", 6);
+		RenderMinigameIntro("Press the space when the rings overlap, do it sucessfully six times in a row to successfully catch a fish", "Fishing", 6, modelStack, viewStack, projectionStack, m_parameters);
 		if (Application::IsKeyPressed('E')) //Press E to start the minigame
 		{
 			circlescale2 = 1;
@@ -1197,6 +935,19 @@ void SceneGarden::Render()
 	else if (minigame == 2)
 		Renderminigame1();
 	else if (minigame == 3)
+	{
+		RenderMinigameIntro("Use the mouse to guide the end of the thread to the checkpoints ", "Untangling the string", 6, modelStack, viewStack, projectionStack, m_parameters);
+		if (Application::IsKeyPressed('E')) //Press E to start the minigame
+		{
+			progress = 0;
+			prevcamera = camera;
+			camera.Init(Vector3(0, 150, 50), Vector3(0, 0, 50), Vector3(0, 0, 1));
+			Application::enableMouse = true;
+			progress = 0;
+			minigame = 4;
+		}
+	}
+	else if (minigame == 4)
 		Renderminigame2();
 }
 

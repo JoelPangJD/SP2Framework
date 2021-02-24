@@ -100,6 +100,7 @@ public:
 	float fps;
 
 	SceneMain();
+	SceneMain(Inventory* inventory);
 	~SceneMain();
 
 	virtual void Init();
@@ -119,17 +120,11 @@ private:
 	bool minigameMuseum, minigameChangi, minigameMarina, minigameGarden;
 
 	void RenderSkybox();
-	void RenderUI();
-	void RenderMesh(Mesh* mesh, bool enableLight);
-	void RenderText(Mesh* mesh, std::string text, Color color);
-	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int sizey);
 
 	void RenderMinigame();
 	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 	void updateMinigame(double dt);
 
-	void updateDialogue();
 	std::stringstream interactText;
 	bool inDialogue;
 	vector<string> dialogue;
@@ -138,6 +133,7 @@ private:
 	float cooldown;
 
 	std::vector<InteractableObject*> items;
+	std::vector<Terrain*> wall;
 
 	Vector3* grids[9];
 	Button gridButton[9];
