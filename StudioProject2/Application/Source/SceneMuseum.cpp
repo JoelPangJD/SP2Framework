@@ -198,20 +198,6 @@ void SceneMuseum::Init()
 	meshList[GEO_WALLDOOR] = MeshBuilder::GenerateOBJMTL("Wall Door", "OBJ//Museum//wallDoor.obj", "OBJ//Museum//wallDoor.mtl");
 	meshList[GEO_WALLCORNER] = MeshBuilder::GenerateOBJMTL("Wall Corner", "OBJ//Museum//wallWoodCorner.obj", "OBJ//Museum//wallWoodCorner.mtl");
 
-	//NPCs
-	meshList[GEO_MAN] = MeshBuilder::GenerateOBJ("man", "OBJ//Museum//untitled.obj");
-	meshList[GEO_MAN]->textureID = LoadTGA("Image//Museum//criminalMaleA.tga");
-	meshList[GEO_MAN]->material.kAmbient.Set(0.8f, 0.8f, 0.8f);
-	meshList[GEO_MAN]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
-	meshList[GEO_MAN]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
-	meshList[GEO_MAN]->material.kShininess = 1.f;
-	meshList[GEO_ANDY] = MeshBuilder::GenerateOBJ("friend", "OBJ//Marina//defaultCharacter.obj");
-	meshList[GEO_ANDY]->textureID = LoadTGA("Image//CityCenter//friend.tga");
-	meshList[GEO_ANDY]->material.kAmbient.Set(0.8f, 0.8f, 0.8f);
-	meshList[GEO_ANDY]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
-	meshList[GEO_ANDY]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
-	meshList[GEO_ANDY]->material.kShininess = 1.f;
-
 	//OBJ FOR GAME1
 	meshList[GEO_MINIPIC1] = MeshBuilder::GenerateQuad("Minigame pic1", Color(1, 1, 1), 1.0f);
 	meshList[GEO_MINIPIC1]->textureID = LoadTGA("Image//Museum//photomain.tga");
@@ -1275,6 +1261,7 @@ void SceneMuseum::Render()
 	RenderMesh(meshList[GEO_GLASSTABLE], true);
 	modelStack.PopMatrix();
 
+<<<<<<< HEAD
 	//NPC
 	//modelStack.PushMatrix();
 	//modelStack.Translate(272.021, 0, -91.6223);
@@ -1289,6 +1276,8 @@ void SceneMuseum::Render()
 	//modelStack.Scale(1, 1, 1);
 	//RenderMesh(meshList[GEO_ANDY], true);
 	//modelStack.PopMatrix();
+=======
+>>>>>>> parent of 2cdbb02 (Update SceneMuseum)
 	//Game1 OBJ
 	modelStack.PushMatrix();
 	modelStack.Translate(-210.785, 16.0715, 75.3848);
@@ -1304,9 +1293,9 @@ void SceneMuseum::Render()
 	RenderMesh(meshList[GEO_SELECTION], true);
 	modelStack.PopMatrix();
 
-	//Exit door picture
+	//Game2 OBJ
 	modelStack.PushMatrix();
-	modelStack.Translate(-265.3215, 23, -87.4905);
+	modelStack.Translate(-76.3144, 23, -10.252);
 	modelStack.Scale(35, 35, 45);
 	RenderMesh(meshList[GEO_PIC], true);
 	modelStack.PopMatrix();
