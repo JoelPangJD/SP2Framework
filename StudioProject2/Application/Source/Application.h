@@ -2,11 +2,11 @@
 #define APPLICATION_H
 
 #include "timer.h"
-#include "Inventory.h"
 
 class Application
 {
 public:
+
 	Application();
 	~Application();
 	static bool IsKeyPressed(unsigned short key);

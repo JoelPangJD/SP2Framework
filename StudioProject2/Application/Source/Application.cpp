@@ -10,7 +10,7 @@
 //Include the standard C++ headers
 #include <stdio.h>
 #include <stdlib.h>
-
+#include "Inventory.h"
 #include "SceneMain.h"
 #include "SceneMuseum.h"
 #include "SceneGarden.h"
@@ -138,12 +138,13 @@ void Application::SetSwitchScene()
 
 void Application::Run()
 {
+	Inventory* sharedinventory = new Inventory; //Create a shared inventory object
 	//Main Loop
-	Scene* scene0 = new SceneMain();
-	Scene* scene1 = new SceneMuseum();
-	Scene* scene2 = new SceneChangi();
-	Scene* scene3 = new SceneMarinaBay();
-	Scene* scene4 = new SceneGarden();
+	Scene* scene0 = new SceneMain(sharedinventory);
+	Scene* scene1 = new SceneMuseum(sharedinventory);
+	Scene* scene2 = new SceneChangi(sharedinventory);
+	Scene* scene3 = new SceneMarinaBay(sharedinventory);
+	Scene* scene4 = new SceneGarden(sharedinventory);
 
 	Scene* scene = scene0;
 	scene1->Init();

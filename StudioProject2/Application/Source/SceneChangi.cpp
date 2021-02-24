@@ -15,6 +15,11 @@ SceneChangi::SceneChangi()
 {
 }
 
+SceneChangi::SceneChangi(Inventory* inventory)
+{
+	this->inventory = inventory;
+}
+
 SceneChangi::~SceneChangi()
 {
 }

@@ -1,7 +1,6 @@
 #include "SceneMarinaBay.h"
 #include "GL\glew.h"
 #include "Application.h"
-
 #include "LoadTGA.h"
 #include "Utility.h"
 #include "shader.hpp"
@@ -10,6 +9,11 @@
 
 SceneMarinaBay::SceneMarinaBay()
 {
+}
+
+SceneMarinaBay::SceneMarinaBay(Inventory* inventory)
+{
+	this->inventory = inventory;
 }
 
 SceneMarinaBay::~SceneMarinaBay()
@@ -893,57 +897,57 @@ void SceneMarinaBay::RenderSkybox()
 
 void SceneMarinaBay::RenderUI()
 {
-	if (indialogue)
-	{
-		string dialoguetext = (*currentline);
-		string currentname;
-		if (dialoguetext[0] == '1')
-			currentname = "Player name";
-		else if (dialoguetext[0] == '2')
-			currentname = name;
-		dialoguetext = dialoguetext.substr(1);
-		RenderNPCDialogue(dialoguetext, currentname);
-		if (cooldown <= 0 && Application::IsKeyPressed('E')) //Cooldown added to prevent spamming to pass the dialogues too fast
-		{
-			cooldown = 0.5f;
-			currentline++;
-			if (currentline == dialogue.end())
-			{
-				indialogue = false;
-				dialogue.clear();
-			}
-		}
-	}
-	else
-	{
-		RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
-		int ypos = 52;
-		vector<InteractableObject*> inventorycontent = inventory.getstorage();
-		for (std::vector<InteractableObject*>::iterator it = inventorycontent.begin(); it != inventorycontent.end(); it++)
-		{
-			RenderTextOnScreen(meshList[GEO_TEXT], (*it)->gettype(), Color(0, 0, 0), 2, 2, ypos);
-			ypos -= 2;
+	//if (indialogue)
+	//{
+	//	string dialoguetext = (*currentline);
+	//	string currentname;
+	//	if (dialoguetext[0] == '1')
+	//		currentname = "Player name";
+	//	else if (dialoguetext[0] == '2')
+	//		currentname = name;
+	//	dialoguetext = dialoguetext.substr(1);
+	//	RenderNPCDialogue(dialoguetext, currentname);
+	//	if (cooldown <= 0 && Application::IsKeyPressed('E')) //Cooldown added to prevent spamming to pass the dialogues too fast
+	//	{
+	//		cooldown = 0.5f;
+	//		currentline++;
+	//		if (currentline == dialogue.end())
+	//		{
+	//			indialogue = false;
+	//			dialogue.clear();
+	//		}
+	//	}
+	//}
+	//else
+	//{
+	//	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
+	//	int ypos = 52;
+	//	vector<InteractableObject*> inventorycontent = inventory.getstorage();
+	//	for (std::vector<InteractableObject*>::iterator it = inventorycontent.begin(); it != inventorycontent.end(); it++)
+	//	{
+	//		RenderTextOnScreen(meshList[GEO_TEXT], (*it)->gettype(), Color(0, 0, 0), 2, 2, ypos);
+	//		ypos -= 2;
 
-		}
-		//debugging
-		std::ostringstream ss;
-		ss << "x: " << x;
-		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 70, 58);
-		ss.str("");
-		ss << "z: " << z;
-		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 70, 56);
-		ss.str("");
-		ss << "scale: " << scale;
-		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 70, 54);
-		ss.str("");
-		ss << "pos x: " << camera.position.x;
-		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 65, 52);
-		ss.str("");
-		ss << "pos z: " << camera.position.z;
-		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 65, 50);
-		RenderTextOnScreen(meshList[GEO_TEXT], interacttext.str(), Color(0.5, 0.5, 0.5), 5, 40 - (interacttext.str().length()), 30);	//renders text for what your looking at
-		interacttext.str("");
-	}
+	//	}
+	//	//debugging
+	//	std::ostringstream ss;
+	//	ss << "x: " << x;
+	//	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 70, 58);
+	//	ss.str("");
+	//	ss << "z: " << z;
+	//	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 70, 56);
+	//	ss.str("");
+	//	ss << "scale: " << scale;
+	//	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 70, 54);
+	//	ss.str("");
+	//	ss << "pos x: " << camera.position.x;
+	//	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 65, 52);
+	//	ss.str("");
+	//	ss << "pos z: " << camera.position.z;
+	//	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 65, 50);
+	//	RenderTextOnScreen(meshList[GEO_TEXT], interacttext.str(), Color(0.5, 0.5, 0.5), 5, 40 - (interacttext.str().length()), 30);	//renders text for what your looking at
+	//	interacttext.str("");
+	//}
 }
 
 void SceneMarinaBay::RenderText(Mesh* mesh, std::string text, Color color)

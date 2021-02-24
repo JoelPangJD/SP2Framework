@@ -89,7 +89,7 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 	{
 		RenderMeshOnScreen(baseMeshList[GEO_INVENTORY], 8, 37, 33, 45, modelStack, viewStack, projectionStack, m_parameters);
 		int ypos = 52;
-		vector<InteractableObject*> inventorycontent = inventory.getstorage();
+		vector<InteractableObject*> inventorycontent = inventory->getstorage();
 		for (std::vector<InteractableObject*>::iterator it = inventorycontent.begin(); it != inventorycontent.end(); it++)
 		{
 			RenderTextOnScreen(baseMeshList[GEO_TEXT], (*it)->gettype(), Color(0, 0, 0), 2, 2, ypos, modelStack, viewStack, projectionStack, m_parameters);
@@ -257,7 +257,6 @@ void Scene::movement(Camera3 &camera, vector<Terrain*> terrains, double dt)
 void Scene::interact(Camera3 camera, vector<InteractableObject*>& items)
 {
 	{
-		int counter = 0;
 		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 		{
 			if ((*it)->spherecollider(camera.target) && !indialogue) // Checks if the target is within a radius of an item and not in a dialogue
@@ -272,8 +271,8 @@ void Scene::interact(Camera3 camera, vector<InteractableObject*>& items)
 				{
 					if ((*it)->getpickupable() == true)
 					{
-						inventory.additem((*it));
-						items.erase(items.begin() + counter);
+						inventory->additem((*it));
+						items.erase(items.begin() + distance(items.begin(),it));
 						break;
 					}
 					else //If cannot pick up item, a dialogue box show is that tells them that they can't do so
@@ -295,7 +294,6 @@ void Scene::interact(Camera3 camera, vector<InteractableObject*>& items)
 					interacttext << (*it)->getname();
 				break;
 			}
-			counter++;
 		}
 	}
 }

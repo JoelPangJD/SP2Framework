@@ -135,6 +135,7 @@ public:
 	float objectivex, objectivey;
 
 	SceneGarden();
+	SceneGarden(Inventory* inventory);
 	~SceneGarden();
 
 	virtual void Init();

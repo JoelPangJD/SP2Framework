@@ -121,6 +121,7 @@ public:
 	float scale = 1;
 
 	SceneChangi();
+	SceneChangi(Inventory* inventory);
 	~SceneChangi();
 
 	virtual void Init();

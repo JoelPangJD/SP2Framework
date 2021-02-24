@@ -114,13 +114,13 @@ class SceneMuseum : public Scene
 	};
 
 public:
-	Inventory inventory;
 	Camera3 camera;
 	bool lighton = true;
 	float fps;
 	float cooldown = 0; //cooldown time for actions
 
 	SceneMuseum();
+	SceneMuseum(Inventory* inventory);
 	~SceneMuseum();
 
 	virtual void Init();
