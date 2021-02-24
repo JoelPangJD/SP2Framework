@@ -216,16 +216,10 @@ void SceneChangi::Init()
 void SceneChangi::Update(double dt)
 {
 	fps = 1.f / dt;
-	camera.Update(dt);
-	static const float speed = 50.f;
-
-	//check for wall detection
-	for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
-	{
-		(*it)->solidCollisionBox(camera.position);
-	}
-	
-
+	if (cooldown > 0)
+		cooldown -= dt;
+	movement(camera, terrains, dt);
+	//interact(camera, items);
 
 	if (Application::IsKeyPressed('5'))
 	{
@@ -398,7 +392,7 @@ void SceneChangi::Render()
 	RenderWords();
 
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
-	RenderUI();
+	Scene::RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 }
 
 void SceneChangi::RenderMesh(Mesh* mesh, bool enableLight)

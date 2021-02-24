@@ -228,8 +228,8 @@ void SceneMain::Init()
 	}
 	pass = false;
 	
-	items.push_back(new InteractableObject(Vector3(-2, 2, 0), 0, 2, 4, "Mr.Sazz"));
-	items.push_back(new InteractableObject(Vector3(6, 1, 5), 0, 2, 3, "Andy"));
+	items.push_back(new InteractableObject(Vector3(-2, 2, 0), 0, 2, 4, "Mr. Sazz", "Mr. Sazz", false));
+	items.push_back(new InteractableObject(Vector3(6, 1, 5), 0, 2, 3, "Andy", "Andy", false));
 
 	wall.push_back(new Terrain(Vector3(35, 0, 0), 0, 0, 0, 20, 100.f, "Wall"));
 	wall.push_back(new Terrain(Vector3(-35, 0, 0), 0, 0, 0, 20, 100.f, "Wall"));
@@ -248,13 +248,8 @@ void SceneMain::Init()
 void SceneMain::Update(double dt)
 {
 	fps = 1.f / dt;
-	if (!inDialogue)//Don't move while in a dialogue
-	{
-		camera.Updatepos(dt); //Updates to the position all happen before updates to the view
-		for (std::vector<Terrain*>::iterator it = wall.begin(); it != wall.end(); it++)
-			(*it)->solidCollisionBox(camera.position);
-		camera.Updateview(dt); //Updates the view after the processing of all the collisions
-	}
+	movement(camera,wall,dt);
+	interact(camera, items);
 	if (cooldown > 0) {
 		cooldown -= dt;
 	}
@@ -406,39 +401,6 @@ void SceneMain::RenderSkybox()
 	modelStack.PopMatrix();
 
 	modelStack.PopMatrix();
-}
-
-void SceneMain::RenderUI()
-{
-	if (inDialogue)
-	{
-		string dialoguetext = (*currentLine);
-		string currentname;
-		if (dialoguetext[0] == '1')
-			currentname = "Player name";
-		else if (dialoguetext[0] == '2')
-			currentname = name;
-		dialoguetext = dialoguetext.substr(1);
-		RenderNPCDialogue(dialoguetext, currentname);
-		if (cooldown <= 0 && Application::IsKeyPressed('E')) //Cooldown added to prevent spamming to pass the dialogues too fast
-		{
-			cooldown = 1;
-			currentLine++;
-			if (currentLine == dialogue.end())
-			{
-				inDialogue = false;
-				dialogue.clear();
-			}
-		}
-	}
-
-	std::ostringstream ss;
-	ss << "FPS: " << fps;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 70, 58, modelStack, viewStack, projectionStack, m_parameters);
-
-	ss.str("");
-	ss << "Pos: X: " << camera.position.x << " Z: " << camera.position.z;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(1, 0, 0), 4, 0, 50, modelStack, viewStack, projectionStack, m_parameters);
 }
 
 void SceneMain::RenderMinigame()
@@ -848,8 +810,15 @@ void SceneMain::Render()
 	}
 
 	
+
 	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45, modelStack, viewStack, projectionStack, m_parameters);
-	RenderUI();
+
+	Scene::RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
+
+	stringstream ss;
+	ss.str("");
+	ss << "Pos: X: " << camera.position.x << " Z: " << camera.position.z;
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(1, 0, 0), 4, 0, 50, modelStack, viewStack, projectionStack, m_parameters);
 
 	if (minigameMuseum == true) {
 		RenderMinigame();

@@ -119,7 +119,6 @@ private:
 	bool minigameMuseum, minigameChangi, minigameMarina, minigameGarden;
 
 	void RenderSkybox();
-	void RenderUI();
 
 	void RenderMinigame();
 	void RenderNPCDialogue(std::string NPCText, std::string headerText);

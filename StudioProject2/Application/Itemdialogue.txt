@@ -5,4 +5,6 @@ Andy|1Yo! Andy.|2Yo whats up?|1Have you seen that new game released today? Wanna
 answer|1Looks like i need to choose the correct image....
 preview|1Hmmm some sort of color picture...
 yarn|1Hello yarn
+andy|2Yo i saw Mr Tang at the end of the museum awhile ago. I think if you can give him some items he will reward you with something
+yarn|1Hello yarn
 girl|2Hello there! What brings you to the Marina Bay Sands Skypark?|1A guy here stole my wallet and I need to get it back.|2Oh, terribly sorry to hear that. I might not be able to help much but I do have this mushroom from a man in a red cap earlier. Maybe you can use it.|1Thank you very much.|2Perhaps the other guests might be willing to lend you help as well?
