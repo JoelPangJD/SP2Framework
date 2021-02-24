@@ -1194,6 +1194,21 @@ void SceneMuseum::Render()
 	RenderMesh(meshList[GEO_GLASSTABLE], true);
 	modelStack.PopMatrix();
 
+	//NPC
+	//modelStack.PushMatrix();
+	//modelStack.Translate(272.021, 0, -91.6223);
+	//modelStack.Rotate(0, 0, 1, 0);
+	//modelStack.Scale(5, 5, 5);
+	//RenderMesh(meshList[GEO_MAN], true);
+	//modelStack.PopMatrix();
+
+	//modelStack.PushMatrix();
+	//modelStack.Translate(6, 0, 5);
+	//modelStack.Rotate(0, 0, 1, 0);
+	//modelStack.Scale(1, 1, 1);
+	//RenderMesh(meshList[GEO_ANDY], true);
+	//modelStack.PopMatrix();
+
 	//Game1 OBJ
 	modelStack.PushMatrix();
 	modelStack.Translate(-210.785, 16.0715, 75.3848);
