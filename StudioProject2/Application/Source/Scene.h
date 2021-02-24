@@ -1,16 +1,99 @@
+#include "Mesh.h"
 #ifndef SCENE_H
 #define SCENE_H
+#include "MatrixStack.h"
+#include "inventory.h"
+#include "Terrain.h"
+#include "InteractableObject.h"
+#include "Camera3.h"
 
 class Scene
 {
+private:
+	enum GEOMETRY_TYPE
+	{
+		//UI
+		GEO_INVENTORY,
+		//text 
+		GEO_TEXT,
+		GEO_TEXTBOX,
+		GEO_HEADER,
+		NUM_GEOMETRY,
+	};
+
+	enum UNIFORM_TYPE
+	{
+			U_MVP = 0,
+			U_MODELVIEW,
+			U_MODELVIEW_INVERSE_TRANSPOSE,
+			U_MATERIAL_AMBIENT,
+			U_MATERIAL_DIFFUSE,
+			U_MATERIAL_SPECULAR,
+			U_MATERIAL_SHININESS,
+			//Light0
+			U_LIGHT0_POSITION,
+			U_LIGHT0_COLOR,
+			U_LIGHT0_POWER,
+			U_LIGHT0_KC,
+			U_LIGHT0_KL,
+			U_LIGHT0_KQ,
+			U_LIGHTENABLED,
+			U_LIGHT0_TYPE,
+			U_LIGHT0_SPOTDIRECTION,
+			U_LIGHT0_COSCUTOFF,
+			U_LIGHT0_COSINNER,
+			U_LIGHT0_EXPONENT,
+			//Light1
+			U_LIGHT1_POSITION,
+			U_LIGHT1_COLOR,
+			U_LIGHT1_POWER,
+			U_LIGHT1_KC,
+			U_LIGHT1_KL,
+			U_LIGHT1_KQ,
+			U_LIGHT1_TYPE,
+			U_LIGHT1_SPOTDIRECTION,
+			U_LIGHT1_COSCUTOFF,
+			U_LIGHT1_COSINNER,
+			U_LIGHT1_EXPONENT,
+
+			U_NUMLIGHTS,
+			U_COLOR_TEXTURE_ENABLED,
+			U_COLOR_TEXTURE,
+			//Text
+			U_TEXT_ENABLED,
+			U_TEXT_COLOR,
+			U_TOTAL,
+		};
 public:
-	Scene() {}
+	Scene();
 	~Scene() {}
 	
 	virtual void Init() = 0;
 	virtual void Update(double dt) = 0;
 	virtual void Render() = 0;
 	virtual void Exit() = 0;
+	
+	Mesh* baseMeshList[NUM_GEOMETRY];
+
+	Inventory inventory;
+
+	//Variables for text
+	std::ostringstream interacttext;
+	bool indialogue = false;
+	vector<string> dialogue;
+	vector<string>::iterator currentline;
+	string name;
+
+	void RenderMesh(Mesh* mesh, bool enableLight, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
+	void RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
+	void RenderText(Mesh* mesh, std::string text, Color color, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
+	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
+	void RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int sizey, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
+	void RenderNPCDialogue(std::string NPCText, std::string headerText, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
+	void RenderMinigameIntro(std::string MinigamedescriptionText, std::string headerText, float fontsize, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
+	void movement(Camera3 &camera, vector<Terrain*> terrains, double dt);
+	void interact(Camera3 camera, vector<InteractableObject*>& items);
+
 };
 
 #endif

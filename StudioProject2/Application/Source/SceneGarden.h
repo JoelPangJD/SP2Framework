@@ -120,7 +120,6 @@ class SceneGarden : public Scene
 	};
 
 public:
-	Inventory inventory;
 	Camera3 camera;
 	bool lighton = true;
 	bool hitboxshow = false;
@@ -154,11 +153,11 @@ private:
 	Material materialList[M_TOTAL];
 
 	//Variables for text
-	std::ostringstream interacttext;
-	bool indialogue;
-	vector<string> dialogue;
-	vector<string>::iterator currentline;
-	string name;
+	//std::ostringstream interacttext;
+	//bool indialogue;
+	//vector<string> dialogue;
+	//vector<string>::iterator currentline;
+	//string name;
 
 	float movex = 0, movez = 0;
 	float scale = 1;
@@ -166,19 +165,19 @@ private:
 	std::vector<InteractableObject*> items;
 	std::vector<Terrain*> terrains;
 
-	void RenderMesh(Mesh* mesh, bool enableLight);
+	//void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
-	void RenderUI();
+	//void RenderUI();
 	void Renderminigame1();
 	void Renderminigame2();
 	void Renderfish();
 	bool fishright = true;
 	float fishAngle = 0;
-	void RenderText(Mesh* mesh, std::string text, Color color);
-	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int sizey);
-	void RenderNPCDialogue(std::string NPCText, std::string headerText);
-	void RenderMinigameScreen(std::string MinigamedescriptionText, std::string headerText, float fontsize);
+	//void RenderText(Mesh* mesh, std::string text, Color color);
+	//void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
+	//void RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int sizey);
+	//void RenderNPCDialogue(std::string NPCText, std::string headerText);
+	//void RenderMinigameScreen(std::string MinigamedescriptionText, std::string headerText, float fontsize);
 };
 
 #endif
