@@ -187,7 +187,7 @@ private:
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
 	void RenderWalls();
-	void RenderGameUI();
+	//void RenderGameUI();
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);

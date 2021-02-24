@@ -744,7 +744,6 @@ void SceneChangi::RenderRoad()
 
 void SceneChangi::RenderWords()
 {
-
 	std::stringstream ssX;
 	std::stringstream ssY;
 	std::stringstream ssZ;
