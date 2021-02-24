@@ -267,11 +267,9 @@ void SceneMuseum::Init()
 	//Items vector
 	items.push_back(new InteractableObject(Vector3(-210.785, 16.0715, 75.3848), 0, 0, 50, "preview"));
 	items.push_back(new InteractableObject(Vector3(-283.869, 16.0715, 95.1478), 0, 0, 50, "answer"));
-	items.push_back(new InteractableObject(Vector3(-104.012, 0, 5.04312), 0, 5, 10, "box"));
-	items.push_back(new InteractableObject(Vector3(272.021, 0, -91.6223), 0, 1, 50, "Mr Tang"));
+	items.push_back(new InteractableObject(Vector3(-104.012, 0, 5.04312), 0, 5, 5, "box"));
 	items.push_back(new InteractableObject(Vector3(6, 0, 5), 0, 1, 50, "andy"));
-
-
+	items.push_back(new InteractableObject(Vector3(272.021, 0, -91.6223), 0, 1, 50, "Mr Tang"));
 	//Ground mesh
 	meshList[GEO_GROUND] = MeshBuilder::GenerateQuad("ground", Color(1, 1, 1), 1.0f);
 	meshList[GEO_GROUND]->textureID = LoadTGA("Image//Museum//wood.tga");
@@ -287,14 +285,8 @@ void SceneMuseum::Update(double dt)
 	if (ShowPreview == false || CorrectAnswer == true)
 	{
 		Application::enableMouse = false;
-		//check for wall detection
-		{
-			camera.Updatepos(dt); //Updates to the position all happen before updates to the view
-			for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
-				(*it)->solidCollisionBox(camera.position);
-			camera.Updateview(dt); //Updates the view after the processing of all the collisions
-		}
-	
+		movement(camera, terrains,dt);
+		interact(camera, items);
 	}
 
 	if (MousePreview == true)

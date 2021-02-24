@@ -307,11 +307,11 @@ void SceneMarinaBay::Init()
 		terrains.push_back(new Terrain(Vector3(27, 0, -70), 0, 1, 10, 20, 180, "infinity pool"));
 
 		//items/npcs
-		items.push_back(new InteractableObject(Vector3(-50, 5, -100), 90, 0.7, 5, "robot"));
-		items.push_back(new InteractableObject(Vector3(-22, 5, -160), 180, 0.7, 5, "girl"));
+		items.push_back(new InteractableObject(Vector3(-50, 5, -100), 90, 0.7, 5, "robot", "Robot", false));
+		items.push_back(new InteractableObject(Vector3(-22, 5, -160), 180, 0.7, 5, "girl", "Girl", false));
 		//items.push_back(new InteractableObject(Vector3(0, 5, 250), 0, 0.7, 5, "badguy"));
-		items.push_back(new InteractableObject(Vector3(-30, 5, 44), 180, 0.7, 5, "adventurer"));
-		items.push_back(new InteractableObject(Vector3(15, 5, -70), 270, 0.7, 5, "orc"));
+		items.push_back(new InteractableObject(Vector3(-30, 5, 44), 180, 0.7, 5, "adventurer", "Adventurer", false));
+		items.push_back(new InteractableObject(Vector3(15, 5, -70), 270, 0.7, 5, "orc", "Orc" ,false));
 	}
 }
 
@@ -322,13 +322,8 @@ void SceneMarinaBay::Update(double dt)
 	fps = 1.f / dt;
 	if (!fight)
 	{
-		if (!indialogue)//Don't move while in a dialogue
-		{
-			camera.Updatepos(dt); //Updates to the position all happen before updates to the view
-			for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
-				(*it)->solidCollisionBox(camera.position);
-			camera.Updateview(dt); //Updates the view after the processing of all the collisions
-		}
+		this->Scene::movement(camera, terrains, dt);
+		this->interact(camera, items);
 	}
 	else
 	{
@@ -392,57 +387,46 @@ void SceneMarinaBay::Update(double dt)
 	else if (Application::IsKeyPressed('M'))
 		hitboxshow = false;
 
-	int counter = 0;
-	for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
-	{
-		if ((*it)->spherecollider(camera.target)) // Checks if the target is within the radius
-		{
-			if (Application::IsKeyPressed('F'))// 1 is look at
-			{
-				dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
-				currentline = dialogue.begin(); //Currentline is set at the look at description
-				indialogue = true;//Set state to in dialogue
-			}
-			else if (Application::IsKeyPressed('G'))
-			{
-				inventory.additem((*it));
-				items.erase(items.begin() + counter);
-				break;
-			}
-			else if (Application::IsKeyPressed('T')) //4 is talk to
-			{
-				dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
-				currentline = dialogue.begin(); //Currentline iteratior as the first line of dialogue
-				name = (*it)->gettype(); //Set the name of the npc the player talks to
-				indialogue = true;//Set state to in dialogue
-			}
-			else if (interacttext.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
-			{
-				if ((*it)->gettype() == "robot")
-				{
-					interacttext << "Robot";
-					break;
-				}
-				else if ((*it)->gettype() == "girl")
-				{
-					interacttext << "Girl Host";
-					break;
-				}
-				else if ((*it)->gettype() == "adventurer")
-				{
-					interacttext << "Adventurer";
-					break;
-				}
-				else if ((*it)->gettype() == "orc")
-				{
-					interacttext << "Orc";
-					break;
-				} 
-			}
-		}
-		counter++;
-	}
-
+	//int counter = 0;
+	//for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+	//{
+	//	if ((*it)->spherecollider(camera.target)) // Checks if the target is within the radius
+	//	{
+	//		if (Application::IsKeyPressed('F'))// 1 is look at
+	//		{
+	//			dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
+	//			currentline = dialogue.begin(); //Currentline is set at the look at description
+	//			indialogue = true;//Set state to in dialogue
+	//		}
+	//		else if (Application::IsKeyPressed('G'))
+	//		{
+	//			inventory.additem((*it));
+	//			items.erase(items.begin() + counter);
+	//			break;
+	//		}
+	//		else if (Application::IsKeyPressed('T')) //4 is talk to
+	//		{
+	//			dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
+	//			currentline = dialogue.begin(); //Currentline iteratior as the first line of dialogue
+	//			name = (*it)->gettype(); //Set the name of the npc the player talks to
+	//			indialogue = true;//Set state to in dialogue
+	//		}
+	//		else if (interacttext.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
+	//		{
+	//			if ((*it)->gettype() == "robot")
+	//			{
+	//				interacttext << "Robot";
+	//				break;
+	//			}
+	//			else if ((*it)->gettype() == "girl")
+	//			{
+	//				interacttext << "Girl Host";
+	//				break;
+	//			}
+	//		}
+	//	}
+	//	counter++;
+	//}
 	if (actionSelected && fight && !attackSelected)	//if action was selected and in fight and attack is not playing
 	{
 		switch (playerAction)
@@ -1908,8 +1892,7 @@ void SceneMarinaBay::Render()
 	}
 	else if (!fight)
 	{
-		RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
-		RenderUI();
+		Scene::RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 	}
 }
 

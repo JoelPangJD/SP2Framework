@@ -217,43 +217,46 @@ void Camera3::Updatepos(double dt)
 
 void Camera3::Updateview(double dt)
 {
-	static const float sensitivity = 0.1f;
-	double xpos;
-	double ypos;
-	Application::GetCursorPos(&xpos, &ypos);
 
-	if (firstMouse)
-	{
+	if (Application::enableMouse == false) {
+		static const float sensitivity = 0.1f;
+		double xpos;
+		double ypos;
+		Application::GetCursorPos(&xpos, &ypos);
+
+		if (firstMouse)
+		{
+			lastX = xpos;
+			lastY = ypos;
+			firstMouse = false;
+		}
+
+		float xoffset = xpos - lastX;
+		float yoffset = lastY - ypos;
 		lastX = xpos;
 		lastY = ypos;
-		firstMouse = false;
+
+		xoffset *= sensitivity;
+		yoffset *= sensitivity;
+
+		theta += xoffset;
+		phi += yoffset;
+
+		if (phi > 89.0f)
+			phi = 89.0f;
+		if (phi < -89.0f)
+			phi = -89.0f;
+
+		Vector3 direction;
+		direction.x = cos(theta * PI / 180) * cos(phi * PI / 180);
+		direction.y = sin(phi * PI / 180);
+		direction.z = sin(theta * PI / 180) * cos(phi * PI / 180);
+		Vector3 view = (direction).Normalized();
+		Vector3 right = view.Cross(up).Normalized();
+		right.y = 0;
+		up = right.Cross(view).Normalized();
+		target = position + view;
 	}
-
-	float xoffset = xpos - lastX;
-	float yoffset = lastY - ypos;
-	lastX = xpos;
-	lastY = ypos;
-
-	xoffset *= sensitivity;
-	yoffset *= sensitivity;
-
-	theta += xoffset;
-	phi += yoffset;
-
-	if (phi > 89.0f)
-		phi = 89.0f;
-	if (phi < -89.0f)
-		phi = -89.0f;
-
-	Vector3 direction;
-	direction.x = cos(theta * PI / 180) * cos(phi * PI / 180);
-	direction.y = sin(phi * PI / 180);
-	direction.z = sin(theta * PI / 180) * cos(phi * PI / 180);
-	Vector3 view = (direction).Normalized();
-	Vector3 right = view.Cross(up).Normalized();
-	right.y = 0;
-	up = right.Cross(view).Normalized();
-	target = position + view;
 }
 
 void Camera3::Update(Vector3 target, double dt)

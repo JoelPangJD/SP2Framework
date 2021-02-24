@@ -228,35 +228,29 @@ void SceneMain::Init()
 	}
 	pass = false;
 	
-	items.push_back(new InteractableObject(Vector3(-2, 2, 0), 0, 2, 4, "Mr.Sazz"));
-	items.push_back(new InteractableObject(Vector3(6, 1, 5), 0, 2, 3, "Andy"));
+	items.push_back(new InteractableObject(Vector3(-2, 2, 0), 0, 2, 4, "Mr.Sazz", "Mr. Sazz", false));
+	items.push_back(new InteractableObject(Vector3(6, 1, 5), 0, 2, 3, "Andy", "Andy", false));
 
 	//wall.push_back(new Terrain(Vector3(26, 0, 0), 0, 1, 50, 1, "wall"));
 	wall.push_back(new Terrain(Vector3(35, 0, 0), 0, 0, 0, 20, 100.f, "Wall"));
 	wall.push_back(new Terrain(Vector3(-35, 0, 0), 0, 0, 0, 20, 100.f, "Wall"));
 	wall.push_back(new Terrain(Vector3(0, 0, 35), 0, 0, 0, 100.f, 20, "Wall"));
 	wall.push_back(new Terrain(Vector3(0, 0, -35), 0, 0, 0, 100.f, 20, "Wall"));
-	wall.push_back(new Terrain(Vector3(7, 0, 7), 0, 0, 0, 4.f, 4.f, "tree"));
-	wall.push_back(new Terrain(Vector3(-7, 0, 7), 0, 0, 0, 4.f, 4.f, "tree"));
-	wall.push_back(new Terrain(Vector3(7, 0, -7), 0, 0, 0, 4.f, 4.f, "tree"));
-	wall.push_back(new Terrain(Vector3(-7, 0, -7), 0, 0, 0, 4.f, 4.f, "tree"));
-	wall.push_back(new Terrain(Vector3(0, 0, 0), 0, 0, 0, 2.f, 2.f, "lamp"));
-	wall.push_back(new Terrain(Vector3(6, 0, 5), 0, 0, 0, 2.f, 2.f, "Andy"));
-	wall.push_back(new Terrain(Vector3(-2, 0, 0), 0, 0, 0, 2.f, 2.f, "teacher"));
+	wall.push_back(new Terrain(Vector3(7, 0, 7), 0, 10, 0, 4.f, 4.f, "tree"));
+	wall.push_back(new Terrain(Vector3(-7, 0, 7), 0, 10, 0, 4.f, 4.f, "tree"));
+	wall.push_back(new Terrain(Vector3(7, 0, -7), 0, 10, 0, 4.f, 4.f, "tree"));
+	wall.push_back(new Terrain(Vector3(-7, 0, -7), 0, 10, 0, 4.f, 4.f, "tree"));
+	wall.push_back(new Terrain(Vector3(0, 0, 0), 0, 7, 0, 2.f, 2.f, "lamp"));
+	wall.push_back(new Terrain(Vector3(6, 0, 5), -90, 0.26, 0, 2.f, 2.f, "Andy"));
+	wall.push_back(new Terrain(Vector3(-2, 0, 0), -90, 0.3, 0, 2.f, 2.f, "teacher"));
 }
-
 
 
 void SceneMain::Update(double dt)
 {
 	fps = 1.f / dt;
-	if (!inDialogue)//Don't move while in a dialogue
-	{
-		camera.Updatepos(dt); //Updates to the position all happen before updates to the view
-		for (std::vector<Terrain*>::iterator it = wall.begin(); it != wall.end(); it++)
-			(*it)->solidCollisionBox(camera.position);
-		camera.Updateview(dt); //Updates the view after the processing of all the collisions
-	}
+	movement(camera,wall,dt);
+	interact(camera, items);
 	if (cooldown > 0) {
 		cooldown -= dt;
 	}
@@ -817,20 +811,6 @@ void SceneMain::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-2, 0, 0);
-	modelStack.Rotate(-90, 0, 1, 0);
-	modelStack.Scale(0.3, 0.3, 0.3);
-	RenderMesh(meshList[Teacher], true);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(6, 0, 5);
-	modelStack.Rotate(-90, 0, 1, 0);
-	modelStack.Scale(0.26, 0.26, 0.26);
-	RenderMesh(meshList[Friend], true);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
 	modelStack.Translate(-17.5, 0, 0);
 	modelStack.Scale(20, 5, 5);
 	RenderMesh(meshList[RoadTileStraight], true);
@@ -840,6 +820,25 @@ void SceneMain::Render()
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
+	for (std::vector<Terrain*>::iterator it = wall.begin(); it != wall.end(); it++)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
+		modelStack.Rotate((*it)->getangle(), 0, 1, 0);
+		modelStack.Scale((*it)->getscale(), (*it)->getscale(), (*it)->getscale());
+		if ((*it)->gettype() == "tree")
+			RenderMesh(meshList[TREE], true/*, modelStack, viewStack, projectionStack, m_parameters*/);
+		//else if ((*it)->gettype() == "tree2")
+			//RenderMesh(meshList[GEO_TREE2], true/*, modelStack, viewStack, projectionStack, m_parameters*/);
+		else if ((*it)->gettype() == "lamp")
+			RenderMesh(meshList[Lamp], true);
+		else if ((*it)->gettype() == "Andy")
+			RenderMesh(meshList[Friend], true);
+		else if ((*it)->gettype() == "teacher")
+			RenderMesh(meshList[Teacher], true);
+		modelStack.PopMatrix();
+	}
+	
 	modelStack.PushMatrix();
 	modelStack.Translate(2.5, 9, 27.4);
 	modelStack.Scale(2, 2, 2);
@@ -888,29 +887,7 @@ void SceneMain::Render()
 	RenderMesh(meshList[RoadCross], true);
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	modelStack.Translate(7, 0, 7);
-	modelStack.Scale(10, 10, 10);
-	RenderMesh(meshList[TREE], true);
-	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	modelStack.Translate(-7, 0, 7);
-	modelStack.Scale(10, 10, 10);
-	RenderMesh(meshList[TREE], true);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(7, 0, -7);
-	modelStack.Scale(10, 10, 10);
-	RenderMesh(meshList[TREE], true);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(-7, 0, -7);
-	modelStack.Scale(10, 10, 10);
-	RenderMesh(meshList[TREE], true);
-	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-7, 0, -30);
@@ -1001,14 +978,8 @@ void SceneMain::Render()
 		modelStack.PopMatrix();
 	}
 
-	modelStack.PushMatrix();
-	modelStack.Translate(0, 0, 0);
-	modelStack.Scale(7, 7, 7);
-	RenderMesh(meshList[Lamp], true);
-	modelStack.PopMatrix();
 	
-	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
-	RenderUI();
+	Scene::RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 
 	if (minigameMuseum == true) {
 		RenderMinigame();
