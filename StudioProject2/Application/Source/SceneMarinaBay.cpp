@@ -52,8 +52,8 @@ void SceneMarinaBay::Init()
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
 	//==========================
-	//camera.Init(Vector3(0, 8, 0), Vector3(0, 8, 5), Vector3(0, 1, 0));
-	camera.Init(Vector3(90, 40, 240), Vector3(0, 8, 240), Vector3(0, 1, 0));
+	camera.Init(Vector3(0, 8, 0), Vector3(0, 8, 5), Vector3(0, 1, 0));
+	//camera.Init(Vector3(90, 40, 240), Vector3(0, 8, 240), Vector3(0, 1, 0));
 	// Enable depth test		//just so i have to scroll less
 	{
 		glEnable(GL_DEPTH_TEST);
@@ -247,6 +247,20 @@ void SceneMarinaBay::Init()
 		//main boat
 		meshList[GEO_BOAT] = MeshBuilder::GenerateOBJMTL("boat", "OBJ//Marina//boat2.obj", "OBJ//Marina//boat.mtl");
 
+		//NPCs
+		meshList[GEO_MC] = MeshBuilder::GenerateOBJMTL("MC", "OBJ//Marina//character.obj", "OBJ//Marina//defaultCharacter.mtl");
+		meshList[GEO_MC]->textureID = LoadTGA("Image//Marina//mc.tga");
+		meshList[GEO_ARM] = MeshBuilder::GenerateOBJMTL("MC", "OBJ//Marina//character_arm.obj", "OBJ//Marina//defaultCharacter.mtl");
+		meshList[GEO_ARM]->textureID = LoadTGA("Image//Marina//mc.tga");
+		meshList[GEO_ROBOT] = MeshBuilder::GenerateOBJMTL("Robot", "OBJ//Marina//defaultCharacter.obj", "OBJ//Marina//defaultCharacter.mtl");
+		meshList[GEO_ROBOT]->textureID = LoadTGA("Image//Marina//robot.tga");
+		meshList[GEO_ADVENTURER] = MeshBuilder::GenerateOBJMTL("Robot", "OBJ//Marina//defaultCharacter.obj", "OBJ//Marina//defaultCharacter.mtl");
+		meshList[GEO_ADVENTURER]->textureID = LoadTGA("Image//Marina//adventurer.tga");
+		meshList[GEO_GIRL] = MeshBuilder::GenerateOBJMTL("Robot", "OBJ//Marina//defaultCharacter.obj", "OBJ//Marina//defaultCharacter.mtl");
+		meshList[GEO_GIRL]->textureID = LoadTGA("Image//Marina//girl.tga");
+		meshList[GEO_ORC] = MeshBuilder::GenerateOBJMTL("Robot", "OBJ//Marina//defaultCharacter.obj", "OBJ//Marina//defaultCharacter.mtl");
+		meshList[GEO_ORC]->textureID = LoadTGA("Image//Marina//orc.tga");
+
 		//environment
 		meshList[GEO_WATER] = MeshBuilder::GenerateQuad("quad", 1.0f, 1.0f, Color(1, 1, 1), 10);
 		meshList[GEO_WATER]->textureID = LoadTGA("Image//watertexture.tga");
@@ -265,10 +279,6 @@ void SceneMarinaBay::Init()
 		meshList[GEO_TEXTBOX]->textureID = LoadTGA("Image//Marina//textbox.tga");
 		meshList[GEO_HEALTH] = MeshBuilder::GenerateQuad("quad", Color(0, 1, 0), 1.f);
 		meshList[GEO_LOSTHEALTH] = MeshBuilder::GenerateQuad("quad", Color(1, 0, 0), 1.f);
-		meshList[GEO_MC] = MeshBuilder::GenerateOBJMTL("MC", "OBJ//Marina//character.obj", "OBJ//Marina//advancedCharacter.obj.mtl");
-		meshList[GEO_MC]->textureID = LoadTGA("Image//Marina//skin_adventurer.tga");
-		meshList[GEO_ARM] = MeshBuilder::GenerateOBJMTL("MC", "OBJ//Marina//character_arm.obj", "OBJ//Marina//advancedCharacter.obj.mtl");
-		meshList[GEO_ARM]->textureID = LoadTGA("Image//Marina//skin_adventurer.tga");
 		meshList[GEO_SWORD] = MeshBuilder::GenerateOBJMTL("sword", "OBJ//Marina//Short Sword.obj", "OBJ//Marina//Short Sword.mtl");
 		meshList[GEO_SWORD]->textureID = LoadTGA("Image//Marina//Short Sword.tga");
 
@@ -277,6 +287,27 @@ void SceneMarinaBay::Init()
 		meshList[GEO_TEXT]->textureID = LoadTGA("Image//Marina//ExportedFont.tga");
 		meshList[GEO_HEADER] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
 		meshList[GEO_HEADER]->textureID = LoadTGA("Image//Marina//header.tga");
+
+		//terrain
+		terrains.push_back(new Terrain(Vector3(-64.5, 0, 25), 0, 1, 5, 5, 440, "boat side wall"));
+		terrains.push_back(new Terrain(Vector3(64.5, 0, 25), 0, 1, 5, 5, 440, "boat side wall"));
+		terrains.push_back(new Terrain(Vector3(0, 0, -194), 0, 1, 5, 125, 5, "boat back wall"));
+		for (int i = 0; i < 13; ++i)	//curved hull
+		{
+			terrains.push_back(new Terrain(Vector3(63 - i * 3, 0, 249 + i * 4), 0, 1, 5, 5, 10, "boat hull wall"));
+			terrains.push_back(new Terrain(Vector3(-63 + i * 3, 0, 249 + i * 4), 0, 1, 5, 5, 10, "boat hull wall"));
+		}
+		for (int i = 0; i < 9; ++i)		//curved front part of hull
+		{
+			terrains.push_back(new Terrain(Vector3(24 - i * 3, 0, 299 + i * 1.5), 0, 1, 5, 5, 10, "boat hull front"));
+			terrains.push_back(new Terrain(Vector3(-24 + i * 3, 0, 299 + i * 1.5), 0, 1, 5, 5, 10, "boat hull front"));
+		}
+		terrains.push_back(new Terrain(Vector3(0, 0, 115), 0, 1, 10, 92, 140, "captain's space"));
+		terrains.push_back(new Terrain(Vector3(47, 0, 0), 0, 1, 10, 30, 320, "infinity pool"));
+		terrains.push_back(new Terrain(Vector3(27, 0, -70), 0, 1, 10, 20, 180, "infinity pool"));
+
+		//items/npcs
+		items.push_back(new InteractableObject(Vector3(0, 5, 0), 0, 0.7, 5, "robot"));
 	}
 }
 
@@ -287,13 +318,18 @@ void SceneMarinaBay::Update(double dt)
 	fps = 1.f / dt;
 	if (!fight)
 	{
-		camera.Update(dt);
-		Application::enableMouse = false;
+		if (!indialogue)//Don't move while in a dialogue
+		{
+			camera.Updatepos(dt); //Updates to the position all happen before updates to the view
+			for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
+				(*it)->solidCollisionBox(camera.position);
+			camera.Updateview(dt); //Updates the view after the processing of all the collisions
+		}
 	}
 	else
 	{
 		int count = 0;
-		Application::enableMouse = true;	//temp soln
+		//Application::enableMouse = true;	//temp soln
 		for (auto it = buttonList.begin(); it != buttonList.end(); ++it)
 		{
 			if ((*it)->active)
@@ -307,21 +343,6 @@ void SceneMarinaBay::Update(double dt)
 			}
 			++count;
 		}
-	}
-	if (Application::IsKeyPressed('5'))
-	{
-		light[0].type = Light::LIGHT_POINT;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-	else if (Application::IsKeyPressed('6'))
-	{
-		light[0].type = Light::LIGHT_DIRECTIONAL;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-	else if (Application::IsKeyPressed('7'))
-	{
-		light[0].type = Light::LIGHT_SPOT;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
 	}
 	if (Application::IsKeyPressed('1'))
 		glEnable(GL_CULL_FACE);
@@ -362,6 +383,52 @@ void SceneMarinaBay::Update(double dt)
 		fight = false;
 	else if (Application::IsKeyPressed('Y'))
 		fight = true;
+	else if (Application::IsKeyPressed('N'))
+		hitboxshow = true;
+	else if (Application::IsKeyPressed('M'))
+		hitboxshow = false;
+
+	int counter = 0;
+	for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+	{
+		if ((*it)->spherecollider(camera.target)) // Checks if the target is within the radius
+		{
+			if (Application::IsKeyPressed('F'))// 1 is look at
+			{
+				dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
+				currentline = dialogue.begin(); //Currentline is set at the look at description
+				indialogue = true;//Set state to in dialogue
+			}
+			else if (Application::IsKeyPressed('G'))
+			{
+				inventory.additem((*it));
+				items.erase(items.begin() + counter);
+				break;
+			}
+			else if (Application::IsKeyPressed('T')) //4 is talk to
+			{
+				dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
+				currentline = dialogue.begin(); //Currentline iteratior as the first line of dialogue
+				name = (*it)->gettype(); //Set the name of the npc the player talks to
+				indialogue = true;//Set state to in dialogue
+			}
+			else if (interacttext.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
+			{
+				if ((*it)->gettype() == "robot")
+				{
+					interacttext << "Robot";
+					break;
+				}
+				else if ((*it)->gettype() == "girl")
+				{
+					interacttext << "Girl Host";
+					break;
+				}
+			}
+		}
+		counter++;
+	}
+
 	if (actionSelected && fight && !attackSelected && cooldownTimer <= 0)	//if action was selected and in fight and attack is not playing
 	{
 		switch (playerAction)
@@ -583,6 +650,7 @@ void SceneMarinaBay::Update(double dt)
 			idle = false;
 			if (enemyAttackHit)
 				playerHealthLost = 35.f;
+			break;
 		}
 		if (enemyAttackHit)	//ends enemy's turn and switches enemy's next attack
 		{
@@ -729,7 +797,6 @@ void SceneMarinaBay::Update(double dt)
 				else
 				{
 					revert = true;
-					enemyAttackHit = true;
 				}
 			}
 			else							//moving back to original position
@@ -740,10 +807,12 @@ void SceneMarinaBay::Update(double dt)
 				}
 				else if (enemyAttackMove > 0)	//moves back to original position
 				{
+
 					enemyAttackMove -= 60 * dt;
 				}
 				else					//animation finished
 				{
+					enemyAttackHit = true;
 					bite = false;
 					revert = false;
 					biteRearedBack = false;
@@ -869,17 +938,57 @@ void SceneMarinaBay::RenderSkybox()
 
 void SceneMarinaBay::RenderUI()
 {
-	modelStack.PushMatrix();
-	std::ostringstream ss;
-	ss << "x: " << x;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 29);
-	ss.str("");
-	ss << "z: " << z;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 27);
-	ss.str("");
-	ss << "scale: " << scale;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 25);
-	modelStack.PopMatrix();
+	if (indialogue)
+	{
+		string dialoguetext = (*currentline);
+		string currentname;
+		if (dialoguetext[0] == '1')
+			currentname = "Player name";
+		else if (dialoguetext[0] == '2')
+			currentname = name;
+		dialoguetext = dialoguetext.substr(1);
+		RenderNPCDialogue(dialoguetext, currentname);
+		if (cooldown <= 0 && Application::IsKeyPressed('E')) //Cooldown added to prevent spamming to pass the dialogues too fast
+		{
+			cooldown = 1;
+			currentline++;
+			if (currentline == dialogue.end())
+			{
+				indialogue = false;
+				dialogue.clear();
+			}
+		}
+	}
+	else
+	{
+		RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
+		int ypos = 52;
+		vector<InteractableObject*> inventorycontent = inventory.getstorage();
+		for (std::vector<InteractableObject*>::iterator it = inventorycontent.begin(); it != inventorycontent.end(); it++)
+		{
+			RenderTextOnScreen(meshList[GEO_TEXT], (*it)->gettype(), Color(0, 0, 0), 2, 2, ypos);
+			ypos -= 2;
+
+		}
+		//debugging
+		std::ostringstream ss;
+		ss << "x: " << x;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 70, 58);
+		ss.str("");
+		ss << "z: " << z;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 70, 56);
+		ss.str("");
+		ss << "scale: " << scale;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 70, 54);
+		ss.str("");
+		ss << "pos x: " << camera.position.x;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 65, 52);
+		ss.str("");
+		ss << "pos z: " << camera.position.z;
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 65, 50);
+		RenderTextOnScreen(meshList[GEO_TEXT], interacttext.str(), Color(0.5, 0.5, 0.5), 5, 40 - (interacttext.str().length()), 30);	//renders text for what your looking at
+		interacttext.str("");
+	}
 }
 
 void SceneMarinaBay::RenderText(Mesh* mesh, std::string text, Color color)
@@ -1049,13 +1158,10 @@ void SceneMarinaBay::Render()
 		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
 	}
 
-	//RenderMeshOnScreen(meshList[GEO_INVENTORY], 40, 20, 30, 30);
-
 	//Skybox
 	RenderSkybox();
 
 	//========================================================
-	//modelStack.LoadIdentity();
 
 	RenderMesh(meshList[GEO_AXES], false);
 	
@@ -1076,8 +1182,27 @@ void SceneMarinaBay::Render()
 	RenderMesh(meshList[GEO_BOAT], true);
 	modelStack.PopMatrix();
 
-	
-
+	//renders all the items/npcs
+	for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+	{
+		modelStack.PushMatrix();						//minus 5 to make the hitbox line up properly
+		modelStack.Translate((*it)->getposition().x, (*it)->getposition().y - 5, (*it)->getposition().z);
+		modelStack.Rotate((*it)->getangle(), 0, 1, 0);
+		modelStack.Scale((*it)->getscale(), (*it)->getscale(), (*it)->getscale());
+		if ((*it)->gettype() == "robot")
+		{
+			RenderMesh(meshList[GEO_ROBOT], true);
+			if (hitboxshow)
+			{
+				modelStack.PopMatrix();
+				modelStack.PushMatrix();
+				modelStack.Translate((*it)->getposition().x, (*it)->getposition().y + 5, (*it)->getposition().z);
+				modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
+				RenderMesh(meshList[GEO_SPHERE], false);
+			}
+		}
+		modelStack.PopMatrix();
+	}
 	
 	if (!fight)	//no need to be rendered while in fight
 	{	//infinity poolside
@@ -1116,6 +1241,7 @@ void SceneMarinaBay::Render()
 			RenderMesh(meshList[GEO_CHAIR], true);
 			modelStack.PopMatrix();
 		}
+		
 	}
 
 	//might just get rid of this
@@ -1733,10 +1859,20 @@ void SceneMarinaBay::Render()
 			modelStack.PopMatrix();
 		}
 	}
-
+	//terrain testing
+	for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
+	{
+		if (hitboxshow)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate((*it)->getposition().x + x, (*it)->getposition().y + (*it)->getheight() * 0.5, (*it)->getposition().z + z);
+			modelStack.Scale((*it)->getxwidth(), (*it)->getheight(), (*it)->getzwidth());
+			RenderMesh(meshList[GEO_CUBE], false);
+			modelStack.PopMatrix();
+		}
+	}
 	
-	
-
+	//text stuff
 	if (fight && !attackSelected)
 	{
 		//enemy
