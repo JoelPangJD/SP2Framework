@@ -108,6 +108,7 @@ void Scene::RenderText(Mesh* mesh, std::string text, Color color, MS modelStack,
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
+	float zspace = 0.f;
 
 	//glDisable(GL_DEPTH_TEST);
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
@@ -121,10 +122,10 @@ void Scene::RenderText(Mesh* mesh, std::string text, Color color, MS modelStack,
 	{
 		Mtx44 characterSpacing;
 		std::vector<std::pair<std::string, std::vector<int>>> result;
-		characterSpacing.SetToTranslation(i * 1.0f, 0, 0); //1.0f is the spacing of each character, you may change this value
+		characterSpacing.SetToTranslation(i * 0.5f, 0, zspace); //1.0f is the spacing of each character, you may change this value
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
 		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-
+		zspace += 0.01;
 		mesh->Render((unsigned)text[i] * 6, 6);
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
