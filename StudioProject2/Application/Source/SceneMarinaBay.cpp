@@ -171,59 +171,59 @@ void SceneMarinaBay::Init()
 		meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.0f);
 
 		meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(1.f, 1.f, 1.0f), 1);
-		meshList[GEO_CUBE]->material.kAmbient.Set(0.921, 0.808, 0.616);
-		meshList[GEO_CUBE]->material.kDiffuse.Set(0.921, 0.808, 0.616);
+		meshList[GEO_CUBE]->material.kAmbient.Set(0.921f, 0.808f, 0.616f);
+		meshList[GEO_CUBE]->material.kDiffuse.Set(0.921f, 0.808f, 0.616f);
 		meshList[GEO_CUBE]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 		meshList[GEO_CUBE]->material.kShininess = 0.4f;
 
 		meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(1.0, 1.0, 1.0), 10, 10);
-		meshList[GEO_SPHERE]->material.kAmbient.Set(0.917, 0.835, 0.635);
-		meshList[GEO_SPHERE]->material.kDiffuse.Set(0.917, 0.835, 0.635);
+		meshList[GEO_SPHERE]->material.kAmbient.Set(0.917f, 0.835f, 0.635f);
+		meshList[GEO_SPHERE]->material.kDiffuse.Set(0.917f, 0.835f, 0.635f);
 		meshList[GEO_SPHERE]->material.kSpecular.Set(0.2f, 0.2f, 0.2f);
 		meshList[GEO_SPHERE]->material.kShininess = 0.4f;
 		meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("Lightball", Color(1, 1, 1), 10, 10, 10);
 
 		meshList[GEO_SLOPE] = MeshBuilder::GenerateTriangle("slope", Color(1, 1, 1), 1, 1, 1);
-		meshList[GEO_SLOPE]->material.kAmbient.Set(0.886, 0.788, 0.569);
-		meshList[GEO_SLOPE]->material.kDiffuse.Set(0.886, 0.788, 0.569);
+		meshList[GEO_SLOPE]->material.kAmbient.Set(0.886f, 0.788f, 0.569f);
+		meshList[GEO_SLOPE]->material.kDiffuse.Set(0.886f, 0.788f, 0.569f);
 		meshList[GEO_SLOPE]->material.kSpecular.Set(0.2f, 0.2f, 0.2f);
 		meshList[GEO_SLOPE]->material.kShininess = 0.4f;
 
 		meshList[GEO_TRIANGLE] = MeshBuilder::Generate2dTriangle("2d triangle", Color(1, 1, 1), 1, 1);
-		meshList[GEO_TRIANGLE]->material.kAmbient.Set(0.886, 0.788, 0.569);
-		meshList[GEO_TRIANGLE]->material.kDiffuse.Set(0.886, 0.788, 0.569);
+		meshList[GEO_TRIANGLE]->material.kAmbient.Set(0.886f, 0.788f, 0.569f);
+		meshList[GEO_TRIANGLE]->material.kDiffuse.Set(0.886f, 0.788f, 0.569f);
 		meshList[GEO_TRIANGLE]->material.kSpecular.Set(0.2f, 0.2f, 0.2f);
 		meshList[GEO_TRIANGLE]->material.kShininess = 0.4f;
 
 		meshList[GEO_TRIANGLEBACK] = MeshBuilder::Generate2dTriangle("2d triangle back", Color(1, 1, 1), 1, 1, true);
-		meshList[GEO_TRIANGLEBACK]->material.kAmbient.Set(0.886, 0.788, 0.569);
-		meshList[GEO_TRIANGLEBACK]->material.kDiffuse.Set(0.886, 0.788, 0.569);
+		meshList[GEO_TRIANGLEBACK]->material.kAmbient.Set(0.886f, 0.788f, 0.569f);
+		meshList[GEO_TRIANGLEBACK]->material.kDiffuse.Set(0.886f, 0.788f, 0.569f);
 		meshList[GEO_TRIANGLEBACK]->material.kSpecular.Set(0.2f, 0.2f, 0.2f);
 		meshList[GEO_TRIANGLEBACK]->material.kShininess = 0.4f;
 
 		meshList[GEO_CRESCENT] = MeshBuilder::GenerateCrescent("crescent", Color(1, 1, 1), 1);
 
 		meshList[GEO_FRUSTUM] = MeshBuilder::GenerateFrustum("frustum", Color(1, 1, 1), 1, 1, 0.65, 1, 1);
-		meshList[GEO_FRUSTUM]->material.kAmbient.Set(0.917, 0.835, 0.635);
-		meshList[GEO_FRUSTUM]->material.kDiffuse.Set(0.917, 0.835, 0.635);
+		meshList[GEO_FRUSTUM]->material.kAmbient.Set(0.917f, 0.835f, 0.635f);
+		meshList[GEO_FRUSTUM]->material.kDiffuse.Set(0.917f, 0.835f, 0.635f);
 		meshList[GEO_FRUSTUM]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 		meshList[GEO_FRUSTUM]->material.kShininess = 0.4f;
 
 		meshList[GEO_CYLINDER] = MeshBuilder::GenerateCylinder("cylinder", Color(1, 1, 1), 1, 36, 1, 1);
-		meshList[GEO_CYLINDER]->material.kAmbient.Set(0.278, 0.345, 0.212);
-		meshList[GEO_CYLINDER]->material.kDiffuse.Set(0.278, 0.345, 0.212);
+		meshList[GEO_CYLINDER]->material.kAmbient.Set(0.278f, 0.345f, 0.212f);
+		meshList[GEO_CYLINDER]->material.kDiffuse.Set(0.278f, 0.345f, 0.212f);
 		meshList[GEO_CYLINDER]->material.kSpecular.Set(0.2f, 0.2f, 0.2f);
 		meshList[GEO_CYLINDER]->material.kShininess = 0.4f;
 
 		meshList[GEO_CONE] = MeshBuilder::GenerateCone("cone", Color(1, 1, 1), 1, 20);
-		meshList[GEO_CONE]->material.kAmbient.Set(0.647, 0.525, 0.462);
-		meshList[GEO_CONE]->material.kDiffuse.Set(0.647, 0.525, 0.462);
+		meshList[GEO_CONE]->material.kAmbient.Set(0.647f, 0.525f, 0.462f);
+		meshList[GEO_CONE]->material.kDiffuse.Set(0.647f, 0.525f, 0.462f);
 		meshList[GEO_CONE]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 		meshList[GEO_CONE]->material.kShininess = 0.1f;
 
 		meshList[GEO_HEMISPHERE] = MeshBuilder::GenerateHemisphere("hemisphere", Color(1, 1, 1), 18, 36, 1);
-		meshList[GEO_HEMISPHERE]->material.kAmbient.Set(0.278, 0.345, 0.212);
-		meshList[GEO_HEMISPHERE]->material.kDiffuse.Set(0.278, 0.345, 0.212);
+		meshList[GEO_HEMISPHERE]->material.kAmbient.Set(0.278f, 0.345f, 0.212f);
+		meshList[GEO_HEMISPHERE]->material.kDiffuse.Set(0.278f, 0.345f, 0.212f);
 		meshList[GEO_HEMISPHERE]->material.kSpecular.Set(0.2f, 0.2f, 0.2f);
 		meshList[GEO_HEMISPHERE]->material.kShininess = 0.4f;
 
@@ -307,7 +307,11 @@ void SceneMarinaBay::Init()
 		terrains.push_back(new Terrain(Vector3(27, 0, -70), 0, 1, 10, 20, 180, "infinity pool"));
 
 		//items/npcs
-		items.push_back(new InteractableObject(Vector3(0, 5, 0), 0, 0.7, 5, "robot"));
+		items.push_back(new InteractableObject(Vector3(-50, 5, -100), 90, 0.7, 5, "robot"));
+		items.push_back(new InteractableObject(Vector3(-22, 5, -160), 180, 0.7, 5, "girl"));
+		//items.push_back(new InteractableObject(Vector3(0, 5, 250), 0, 0.7, 5, "badguy"));
+		items.push_back(new InteractableObject(Vector3(-30, 5, 44), 180, 0.7, 5, "adventurer"));
+		items.push_back(new InteractableObject(Vector3(15, 5, -70), 270, 0.7, 5, "orc"));
 	}
 }
 
@@ -424,12 +428,22 @@ void SceneMarinaBay::Update(double dt)
 					interacttext << "Girl Host";
 					break;
 				}
+				else if ((*it)->gettype() == "adventurer")
+				{
+					interacttext << "Adventurer";
+					break;
+				}
+				else if ((*it)->gettype() == "orc")
+				{
+					interacttext << "Orc";
+					break;
+				} 
 			}
 		}
 		counter++;
 	}
 
-	if (actionSelected && fight && !attackSelected && cooldownTimer <= 0)	//if action was selected and in fight and attack is not playing
+	if (actionSelected && fight && !attackSelected)	//if action was selected and in fight and attack is not playing
 	{
 		switch (playerAction)
 		{
@@ -484,49 +498,6 @@ void SceneMarinaBay::Update(double dt)
 			cout << "playeraction broke";
 		}
 		actionSelected = false;
-		{
-			//keyboard support might get rid of it entirely depending
-			/*if (Application::IsKeyPressed('F'))
-			{
-				switch (playerAction)
-				{
-				case (A_ATTACK):
-					fightSelected = true;
-					playerAction = A_ATTACK1;
-					pointerX += 21;
-					pointerY -= 3;
-				case (A_ITEMS):
-					itemsSelected = true;
-					playerAction = A_ITEM1;
-				case (A_RUN):
-					fightDia = true;
-					fightDia = "He can probably shoot you before you try.";
-					break;
-				case (A_ATTACK1):
-					attackSelected = true;
-				}
-				cooldownTimer = 0.3f;
-			}*/
-			//else if (Application::IsKeyPressed(VK_UP))		//if up arrow is pressed while in the fight
-			//{
-			//	if (!fightSelected && !itemsSelected)	//when on the first 3 options
-			//	{
-			//		playerAction = static_cast<ACTION_TYPE>((playerAction + 1) % (A_RUN + 1));	//updates playerAction
-			//		pointerY = playerAction * 5 + 1;	//reads which action it is on and moves the pointer
-			//	}
-			//	else if (fightSelected)
-			//	{
-			//		playerAction = static_cast<ACTION_TYPE>((playerAction + 1) % (A_ATTACK4 + 1 - A_RUN));	//minuses the previous enum on the list
-			//		pointerY = (playerAction - A_RUN + 1) * 6 + 2;
-			//	}
-			//	else if (itemsSelected)
-			//	{
-			//		playerAction = static_cast<ACTION_TYPE>((playerAction + 1) % (A_ITEM4 + 1 - A_ATTACK4));
-			//		pointerY = (playerAction - A_ATTACK4 + 1) * 6 + 2;
-			//	}
-			//	cooldownTimer = 0.3f;
-			//}
-		}
 	}
 
 	//player attack animations
@@ -839,8 +810,8 @@ void SceneMarinaBay::Update(double dt)
 
 	
 	//==================Updating timers===========
-	if (cooldownTimer > 0)
-		cooldownTimer -= dt;
+	if (cooldown > 0)
+		cooldown -= dt;
 }
 
 void SceneMarinaBay::RenderMesh(Mesh* mesh, bool enableLight)
@@ -950,7 +921,7 @@ void SceneMarinaBay::RenderUI()
 		RenderNPCDialogue(dialoguetext, currentname);
 		if (cooldown <= 0 && Application::IsKeyPressed('E')) //Cooldown added to prevent spamming to pass the dialogues too fast
 		{
-			cooldown = 1;
+			cooldown = 0.5f;
 			currentline++;
 			if (currentline == dialogue.end())
 			{
@@ -1192,16 +1163,27 @@ void SceneMarinaBay::Render()
 		if ((*it)->gettype() == "robot")
 		{
 			RenderMesh(meshList[GEO_ROBOT], true);
-			if (hitboxshow)
-			{
-				modelStack.PopMatrix();
-				modelStack.PushMatrix();
-				modelStack.Translate((*it)->getposition().x, (*it)->getposition().y + 5, (*it)->getposition().z);
-				modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
-				RenderMesh(meshList[GEO_SPHERE], false);
-			}
 		}
+		else if ((*it)->gettype() == "girl")
+		{
+			RenderMesh(meshList[GEO_GIRL], true);
+		}
+		else if ((*it)->gettype() == "orc")
+			RenderMesh(meshList[GEO_ORC], true);
+		else if ((*it)->gettype() == "adventurer")
+		{
+			RenderMesh(meshList[GEO_ADVENTURER], true);
+		}
+
 		modelStack.PopMatrix();
+		if (hitboxshow)
+		{
+			modelStack.PopMatrix();
+			modelStack.PushMatrix();
+			modelStack.Translate((*it)->getposition().x, (*it)->getposition().y + 5, (*it)->getposition().z);
+			modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
+			RenderMesh(meshList[GEO_SPHERE], false);
+		}
 	}
 	
 	if (!fight)	//no need to be rendered while in fight
@@ -1859,7 +1841,7 @@ void SceneMarinaBay::Render()
 			modelStack.PopMatrix();
 		}
 	}
-	//terrain testing
+	//terrain hitbox checking, to remove in final
 	for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
 	{
 		if (hitboxshow)
@@ -1933,10 +1915,13 @@ void SceneMarinaBay::Render()
 
 void SceneMarinaBay::Exit()
 {
-	//clearing the vector pointers
+	//clearing the vector new pointers
 	for (auto it = buttonList.begin(); it != buttonList.end(); ++it)
 		delete (*it);
-	buttonList.clear();
+	for (auto it = terrains.begin(); it != terrains.end(); ++it)
+		delete (*it);
+	for (auto it = items.begin(); it != items.end(); ++it)
+		delete (*it);
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 	glDeleteProgram(m_programID);
 }
