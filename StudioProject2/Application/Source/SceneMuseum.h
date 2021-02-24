@@ -60,10 +60,11 @@ class SceneMuseum : public Scene
 		GEO_MINIPIC1,
 		GEO_MINIPIC2,
 		GEO_SELECTION,
-		//MINIGAME SLIDING PHOTO
+		//GAME 2
 		GEO_PIC,
 		GEO_BOX,
 		GEO_COLOR,
+		GEO_ITEM1,
 		//GROUND MESH
 		GEO_GROUND,
 		NUM_GEOMETRY,
@@ -113,6 +114,7 @@ class SceneMuseum : public Scene
 	};
 
 public:
+	Inventory inventory;
 	Camera3 camera;
 	bool lighton = true;
 	float fps;
@@ -157,9 +159,12 @@ private:
 	float TotalSize = 0;
 	float TotalX = 0;
 
+	//Enable mouse
+	bool MousePreview = false;
+
 	bool ShowPreview = false;
 	bool ShowFirstGame = false;
-	bool GameEisPressed = false;
+	bool GameTisPressed = false;
 	bool QuitGame1 = true;
 	bool RenderingMesh = false;
 	bool RenderingText = true;
@@ -168,9 +173,16 @@ private:
 	bool testing = false;
 	bool CorrectAnswer = false;
 
-	//2nd game
-	bool HoldingGame = true;
-	bool ActivateHold = false;
+	//1st game
+	bool EndGame1 = false;
+	bool Continue = false;
+
+	//Interaction
+	bool EndInteraction = false;
+	bool ShowHoldingGame = false;
+
+	//Exit museum
+	bool ToExit = false;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
@@ -179,10 +191,11 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
+	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey);
 
 	void StartGame1();
-	void StartMiniGame();
+	void StartInteraction();
+	void ExitMuseum();
 	void RenderInteractableText();
 
 };

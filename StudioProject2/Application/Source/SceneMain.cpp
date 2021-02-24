@@ -182,13 +182,14 @@ void SceneMain::Init()
 	meshList[RoadCrossBarrier] = MeshBuilder::GenerateOBJMTL("roadcrossbarrier", "OBJ//CityCenter//road_roundaboutBarrier.obj", "OBJ//CityCenter//road_roundaboutBarrier.mtl");
 	meshList[Lamp] = MeshBuilder::GenerateOBJMTL("lamp", "OBJ//CityCenter//lamp.obj", "OBJ//CityCenter//lamp.mtl");
 	meshList[Museum] = MeshBuilder::GenerateOBJMTL("museum", "OBJ//CityCenter//museum.obj", "OBJ//CityCenter//museum.mtl");
-	meshList[Teacher] = MeshBuilder::GenerateOBJ("teacher", "OBJ//CityCenter//character.obj");
+	meshList[Teacher] = MeshBuilder::GenerateOBJ("teacher", "OBJ//Marina//advancedCharacter.obj");
 	meshList[Teacher]->textureID = LoadTGA("Image//CityCenter//teacher.tga");
-	meshList[Friend] = MeshBuilder::GenerateOBJ("friend", "OBJ//CityCenter//character.obj");
+	meshList[Friend] = MeshBuilder::GenerateOBJ("friend", "OBJ//Marina//advancedCharacter.obj");
 	meshList[Friend]->textureID = LoadTGA("Image//CityCenter//friend.tga");
 	meshList[Header] = MeshBuilder::GenerateQuad("header", Color(1, 1, 1), 1.f);
 	meshList[Header]->textureID = LoadTGA("Image//Marina//header.tga");
 	meshList[Textbox] = MeshBuilder::GenerateQuad("textbox", Color(1, 1, 1), 1.f);
+	meshList[Textbox]->textureID = LoadTGA("Image//Marina//textbox.tga");
 	meshList[MBS] = MeshBuilder::GenerateOBJMTL("mbs", "OBJ//CityCenter//mbs.obj", "OBJ//CityCenter//mbs.mtl");
 	meshList[Changi] = MeshBuilder::GenerateOBJMTL("changi", "OBJ//Changi//ChangiTower.obj", "OBJ//Changi//ChangiTower.mtl");
 
@@ -229,6 +230,19 @@ void SceneMain::Init()
 	
 	items.push_back(new InteractableObject(Vector3(-2, 2, 0), 0, 2, 4, "Mr.Sazz"));
 	items.push_back(new InteractableObject(Vector3(6, 1, 5), 0, 2, 3, "Andy"));
+
+	//wall.push_back(new Terrain(Vector3(26, 0, 0), 0, 1, 50, 1, "wall"));
+	wall.push_back(new Terrain(Vector3(35, 0, 0), 0, 0, 0, 20, 100.f, "Wall"));
+	wall.push_back(new Terrain(Vector3(-35, 0, 0), 0, 0, 0, 20, 100.f, "Wall"));
+	wall.push_back(new Terrain(Vector3(0, 0, 35), 0, 0, 0, 100.f, 20, "Wall"));
+	wall.push_back(new Terrain(Vector3(0, 0, -35), 0, 0, 0, 100.f, 20, "Wall"));
+	wall.push_back(new Terrain(Vector3(7, 0, 7), 0, 0, 0, 4.f, 4.f, "tree"));
+	wall.push_back(new Terrain(Vector3(-7, 0, 7), 0, 0, 0, 4.f, 4.f, "tree"));
+	wall.push_back(new Terrain(Vector3(7, 0, -7), 0, 0, 0, 4.f, 4.f, "tree"));
+	wall.push_back(new Terrain(Vector3(-7, 0, -7), 0, 0, 0, 4.f, 4.f, "tree"));
+	wall.push_back(new Terrain(Vector3(0, 0, 0), 0, 0, 0, 2.f, 2.f, "lamp"));
+	wall.push_back(new Terrain(Vector3(6, 0, 5), 0, 0, 0, 2.f, 2.f, "Andy"));
+	wall.push_back(new Terrain(Vector3(-2, 0, 0), 0, 0, 0, 2.f, 2.f, "teacher"));
 }
 
 
@@ -237,7 +251,12 @@ void SceneMain::Update(double dt)
 {
 	fps = 1.f / dt;
 	if (!inDialogue)//Don't move while in a dialogue
-		camera.Update(dt);
+	{
+		camera.Updatepos(dt); //Updates to the position all happen before updates to the view
+		for (std::vector<Terrain*>::iterator it = wall.begin(); it != wall.end(); it++)
+			(*it)->solidCollisionBox(camera.position);
+		camera.Updateview(dt); //Updates the view after the processing of all the collisions
+	}
 	if (cooldown > 0) {
 		cooldown -= dt;
 	}
@@ -337,7 +356,7 @@ void SceneMain::Update(double dt)
 	//	updateMinigame(dt);
 	//}
 	updateDialogue();
-
+	updateCollision();
 }
 
 void SceneMain::RenderMesh(Mesh* mesh, bool enableLight)
@@ -471,9 +490,9 @@ void SceneMain::RenderMinigame()
 	RenderMeshOnScreen(meshList[Panel], 40, 30, 7, 5);
 	int width, height;
 	width = height = 15;
-	RenderTextOnScreen(meshList[GEO_TEXT], "Turn all squares", Color(0, 0, 0), 3, 8, 50);
-	RenderTextOnScreen(meshList[GEO_TEXT], "Green to enter", Color(0, 0, 0), 3, 8, 46);
-	RenderTextOnScreen(meshList[GEO_TEXT], "the museum.", Color(0, 0, 0), 3, 8, 42);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Turn all squares", Color(0, 0, 0), 2.2, 7, 50);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Green to enter", Color(0, 0, 0), 2.2, 7, 46);
+	RenderTextOnScreen(meshList[GEO_TEXT], "the museum.", Color(0, 0, 0), 2.2, 7, 42);
 	for (int i = 0; i < 9; i++) {
 
 		if ((i == 3) || (i == 4) || (i == 5)) {
@@ -542,44 +561,48 @@ void SceneMain::updateMinigame(double dt)
 
 void SceneMain::updateDialogue()
 {
-
-	//Check collisions
+	int counter = 0;
+	for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 	{
-		int counter = 0;
-		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+		if ((*it)->spherecollider(camera.target)) // Checks if the target is within a radius of the stick
 		{
-			if ((*it)->spherecollider(camera.target)) // Checks if the target is within a radius of the stick
+			if (Application::IsKeyPressed('F'))// F is look at
 			{
-				if (Application::IsKeyPressed('F'))// F is look at
+				dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
+				currentLine = dialogue.begin(); //Currentline is set at the look at description
+				inDialogue = true;//Set state to in dialogue
+			}
+			/*if (Application::IsKeyPressed('G'))
+			{
+				inventory.additem((*it));
+				items.erase(items.begin() + counter);
+				break;
+			}*/
+			if (Application::IsKeyPressed('T')) //T is talk to
+			{
+				dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
+				currentLine = dialogue.begin(); //Currentline iteratior as the first line of dialogue
+				name = (*it)->gettype(); //Set the name of the npc the player talks to
+				inDialogue = true;//Set state to in dialogue
+			}
+			if (interactText.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
+			{
+				if ((*it)->gettype() == "Mr.Sazz")
 				{
-					dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
-					currentLine = dialogue.begin(); //Currentline is set at the look at description
-					inDialogue = true;//Set state to in dialogue
-				}
-				/*if (Application::IsKeyPressed('G'))
-				{
-					inventory.additem((*it));
-					items.erase(items.begin() + counter);
+					interactText << "MrSazz";
 					break;
-				}*/
-				if (Application::IsKeyPressed('T')) //T is talk to
-				{
-					dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
-					currentLine = dialogue.begin(); //Currentline iteratior as the first line of dialogue
-					name = (*it)->gettype(); //Set the name of the npc the player talks to
-					inDialogue = true;//Set state to in dialogue
-				}
-				if (interactText.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
-				{
-					if ((*it)->gettype() == "Mr.Sazz")
-					{
-						interactText << "MrSazz";
-						break;
-					}
 				}
 			}
-			counter++;
 		}
+		counter++;
+	}
+}
+
+void SceneMain::updateCollision()
+{
+	for (std::vector<Terrain*>::iterator it = wall.begin(); it != wall.end(); it++)
+	{
+		(*it)->solidCollisionBox(camera.position);
 	}
 }
 
@@ -796,14 +819,14 @@ void SceneMain::Render()
 	modelStack.PushMatrix();
 	modelStack.Translate(-2, 0, 0);
 	modelStack.Rotate(-90, 0, 1, 0);
-	modelStack.Scale(1.3, 1.3, 1.3);
+	modelStack.Scale(0.3, 0.3, 0.3);
 	RenderMesh(meshList[Teacher], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(6, 0, 5);
 	modelStack.Rotate(-90, 0, 1, 0);
-	modelStack.Scale(1, 1, 1);
+	modelStack.Scale(0.26, 0.26, 0.26);
 	RenderMesh(meshList[Friend], true);
 	modelStack.PopMatrix();
 

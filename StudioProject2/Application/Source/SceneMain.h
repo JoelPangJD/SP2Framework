@@ -130,6 +130,7 @@ private:
 	void updateMinigame(double dt);
 
 	void updateDialogue();
+	void updateCollision();
 	std::stringstream interactText;
 	bool inDialogue;
 	vector<string> dialogue;
@@ -138,6 +139,7 @@ private:
 	float cooldown;
 
 	std::vector<InteractableObject*> items;
+	std::vector<Terrain*> wall;
 
 	Vector3* grids[9];
 	Button gridButton[9];
