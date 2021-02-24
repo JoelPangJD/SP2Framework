@@ -182,9 +182,9 @@ void SceneMain::Init()
 	meshList[RoadCrossBarrier] = MeshBuilder::GenerateOBJMTL("roadcrossbarrier", "OBJ//CityCenter//road_roundaboutBarrier.obj", "OBJ//CityCenter//road_roundaboutBarrier.mtl");
 	meshList[Lamp] = MeshBuilder::GenerateOBJMTL("lamp", "OBJ//CityCenter//lamp.obj", "OBJ//CityCenter//lamp.mtl");
 	meshList[Museum] = MeshBuilder::GenerateOBJMTL("museum", "OBJ//CityCenter//museum.obj", "OBJ//CityCenter//museum.mtl");
-	meshList[Teacher] = MeshBuilder::GenerateOBJ("teacher", "OBJ//Marina//advancedCharacter.obj");
+	meshList[Teacher] = MeshBuilder::GenerateOBJ("teacher", "OBJ//Marina//defaultCharacter.obj");
 	meshList[Teacher]->textureID = LoadTGA("Image//CityCenter//teacher.tga");
-	meshList[Friend] = MeshBuilder::GenerateOBJ("friend", "OBJ//Marina//advancedCharacter.obj");
+	meshList[Friend] = MeshBuilder::GenerateOBJ("friend", "OBJ//Marina//defaultCharacter.obj");
 	meshList[Friend]->textureID = LoadTGA("Image//CityCenter//friend.tga");
 	meshList[Header] = MeshBuilder::GenerateQuad("header", Color(1, 1, 1), 1.f);
 	meshList[Header]->textureID = LoadTGA("Image//Marina//header.tga");
