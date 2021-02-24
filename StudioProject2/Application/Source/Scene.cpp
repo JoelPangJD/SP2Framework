@@ -255,7 +255,7 @@ void Scene::movement(Camera3 &camera, vector<Terrain*> terrains, double dt)
 	}
 }
 
-void Scene::interact(Camera3 camera, vector<InteractableObject*>& items)
+void Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool MarinaBay)
 {
 	{
 		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
@@ -290,6 +290,40 @@ void Scene::interact(Camera3 camera, vector<InteractableObject*>& items)
 					currentline = dialogue.begin(); //Currentline iteratior as the first line of dialogue
 					name = (*it)->getname(); //Set the name of the npc the player talks to
 					indialogue = true;//Set state to in dialogue
+					if (MarinaBay == true)
+					{
+						//shortening dialogue to not show the full length when talked to
+						if ((*it)->gettype() == "girl")
+							(*it)->updatedialogue("girl2");
+						else if ((*it)->gettype() == "robot")
+							(*it)->updatedialogue("robot2");
+						else if ((*it)->gettype() == "orc2")
+							(*it)->updatedialogue("orc3");
+						else if ((*it)->gettype() == "pool2")
+							(*it)->updatedialogue("pool");
+						//triggers start of riddle
+						else if ((*it)->gettype() == "adventurer")	
+						{
+							(*it)->updatedialogue("adventurer2");
+							riddleStarted = true;
+						}
+						//triggers riddle being solved
+						else if ((*it)->gettype() == "pool" && riddleStarted)
+						{
+							(*it)->updatedialogue("pool2");
+							riddleSolved = true;
+						}
+						//triggers end of riddle
+						else if ((*it)->gettype() == "adventurer2" && riddleSolved)
+						{
+							(*it)->updatedialogue("adventurer3");
+							inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Sword", "Sword", true));
+							inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Orb", "Orb", true));
+						}
+						//updates dialogue once riddle has been solved
+						else if ((*it)->gettype() == "orc" && riddleSolved)
+							(*it)->updatedialogue("orc2");
+					}
 				}
 				if(interacttext.str() == "") //if the text for highlighted object is empty 
 					interacttext << (*it)->getname();
