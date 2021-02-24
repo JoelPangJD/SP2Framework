@@ -309,7 +309,8 @@ void SceneMuseum::Update(double dt)
 					terrains.erase(terrains.begin() + 19);
 					ShowFirstGame = false;
 					Continue = true;
-					indialogue = false;
+					Scene::indialogue = false;
+					Scene::dialogue.clear();
 					std::cout << "Hit!" << std::endl;
 					int counter = 0;
 					for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++) //Delete the two minigame one objects after minigame one is over

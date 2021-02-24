@@ -291,7 +291,8 @@ void Scene::interact(Camera3 camera, vector<InteractableObject*>& items)
 					name = (*it)->getname(); //Set the name of the npc the player talks to
 					indialogue = true;//Set state to in dialogue
 				}
-				interacttext << (*it)->getname();
+				if(interacttext.str() == "") //if the text for highlighted object is empty 
+					interacttext << (*it)->getname();
 				break;
 			}
 			counter++;
