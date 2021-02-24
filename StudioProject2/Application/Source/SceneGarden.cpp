@@ -576,47 +576,47 @@ void SceneGarden::Update(double dt)
 	}
 }
 
-void SceneGarden::RenderMesh(Mesh* mesh, bool enableLight)
-{
-	Mtx44 MVP, modelView, modelView_inverse_transpose;
-
-	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
-	glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-	modelView = viewStack.Top() * modelStack.Top();
-	glUniformMatrix4fv(m_parameters[U_MODELVIEW], 1, GL_FALSE, &modelView.a[0]);
-	if (enableLight && lighton == true)
-	{
-		glUniform1i(m_parameters[U_LIGHTENABLED], 1);
-		modelView_inverse_transpose = modelView.GetInverse().GetTranspose();
-		glUniformMatrix4fv(m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE], 1, GL_FALSE, &modelView_inverse_transpose.a[0]);
-
-		//load material
-		glUniform3fv(m_parameters[U_MATERIAL_AMBIENT], 1, &mesh->material.kAmbient.r);
-		glUniform3fv(m_parameters[U_MATERIAL_DIFFUSE], 1, &mesh->material.kDiffuse.r);
-		glUniform3fv(m_parameters[U_MATERIAL_SPECULAR], 1, &mesh->material.kSpecular.r);
-		glUniform1f(m_parameters[U_MATERIAL_SHININESS], mesh->material.kShininess);
-	}
-	else
-	{
-		glUniform1i(m_parameters[U_LIGHTENABLED], 0);
-	}
-	if (mesh->textureID > 0)
-	{
-		glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-		glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
-	}
-	else
-	{
-		glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 0);
-	}
-	mesh->Render(); //this line should only be called once
-	if (mesh->textureID > 0)
-	{
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-}
+//void SceneGarden::RenderMesh(Mesh* mesh, bool enableLight)
+//{
+//	Mtx44 MVP, modelView, modelView_inverse_transpose;
+//
+//	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
+//	glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+//	modelView = viewStack.Top() * modelStack.Top();
+//	glUniformMatrix4fv(m_parameters[U_MODELVIEW], 1, GL_FALSE, &modelView.a[0]);
+//	if (enableLight && lighton == true)
+//	{
+//		glUniform1i(m_parameters[U_LIGHTENABLED], 1);
+//		modelView_inverse_transpose = modelView.GetInverse().GetTranspose();
+//		glUniformMatrix4fv(m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE], 1, GL_FALSE, &modelView_inverse_transpose.a[0]);
+//
+//		//load material
+//		glUniform3fv(m_parameters[U_MATERIAL_AMBIENT], 1, &mesh->material.kAmbient.r);
+//		glUniform3fv(m_parameters[U_MATERIAL_DIFFUSE], 1, &mesh->material.kDiffuse.r);
+//		glUniform3fv(m_parameters[U_MATERIAL_SPECULAR], 1, &mesh->material.kSpecular.r);
+//		glUniform1f(m_parameters[U_MATERIAL_SHININESS], mesh->material.kShininess);
+//	}
+//	else
+//	{
+//		glUniform1i(m_parameters[U_LIGHTENABLED], 0);
+//	}
+//	if (mesh->textureID > 0)
+//	{
+//		glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
+//		glActiveTexture(GL_TEXTURE0);
+//		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
+//		glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
+//	}
+//	else
+//	{
+//		glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 0);
+//	}
+//	mesh->Render(); //this line should only be called once
+//	if (mesh->textureID > 0)
+//	{
+//		glBindTexture(GL_TEXTURE_2D, 0);
+//	}
+//}
 
 void SceneGarden::RenderSkybox()
 {
@@ -626,42 +626,42 @@ void SceneGarden::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, -499);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_FRONT], false);
+	RenderMesh(meshList[GEO_FRONT], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, 499);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_BACK], false);
+	RenderMesh(meshList[GEO_BACK], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, -499, 0);
 	modelStack.Rotate(-90, 1, 0, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_BOTTOM], false);
+	RenderMesh(meshList[GEO_BOTTOM], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 499, 0);
 	modelStack.Rotate(90, 1, 0, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_TOP], false);
+	RenderMesh(meshList[GEO_TOP], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(499, 0, 0);
 	modelStack.Rotate(-90, 0, 1, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_RIGHT], false);
+	RenderMesh(meshList[GEO_RIGHT], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-499, 0, 0);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_LEFT], false);
+	RenderMesh(meshList[GEO_LEFT], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PopMatrix();
@@ -716,14 +716,14 @@ void SceneGarden::Renderminigame1()
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 10, -150);
 	modelStack.Scale(circlescale2, circlescale2, circlescale2);
-	RenderMesh(meshList[GEO_TORUSGAME], false);
+	RenderMesh(meshList[GEO_TORUSGAME], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 	if (circlescale1 > 0.1)
 	{
 		modelStack.PushMatrix();
 		modelStack.Translate(0, 10, -150);
 		modelStack.Scale(circlescale1, circlescale1, circlescale1);
-		RenderMesh(meshList[GEO_TORUSPLAYER], true);
+		RenderMesh(meshList[GEO_TORUSPLAYER], true, modelStack, viewStack, projectionStack, m_parameters);
 		modelStack.PopMatrix();
 	}
 	else
@@ -735,7 +735,7 @@ void SceneGarden::Renderminigame1()
 void SceneGarden::Renderminigame2()
 {
 	RenderMeshOnScreen(meshList[GEO_YARNBACKGROUND], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
-	RenderMeshOnScreen(meshList[GEO_SPHERE], playerx, playery,2,2, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMeshOnScreen(meshList[GEO_SPHERE], playerx, playery,2, 2, modelStack, viewStack, projectionStack, m_parameters);
 	RenderMeshOnScreen(meshList[GEO_SPHERE], objectivex, objectivey, 1, 1, modelStack, viewStack, projectionStack, m_parameters);
 }
 
@@ -752,12 +752,12 @@ void SceneGarden::Renderfish()
 	modelStack.Translate(0.25, 1.5, -0.2);
 	modelStack.PushMatrix();
 	modelStack.Scale(0.15, 0.15, 0.15);
-	RenderMesh(meshList[GEO_SPHERE], true);
+	RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 	modelStack.Translate(-0.5, 0, 0);
 	modelStack.PushMatrix();
 	modelStack.Scale(0.15, 0.15, 0.15);
-	RenderMesh(meshList[GEO_SPHERE], true);
+	RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
@@ -765,30 +765,30 @@ void SceneGarden::Renderfish()
 
 	meshList[GEO_HEMISPHERE]->material = materialList[M_FISH1];
 	modelStack.Scale(0.5, 2, 1);
-	RenderMesh(meshList[GEO_HEMISPHERE], true);
+	RenderMesh(meshList[GEO_HEMISPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 	meshList[GEO_HEMISPHERE]->material = materialList[M_FISH2];
 	modelStack.Scale(0.5, 0.7, 1.3);
-	RenderMesh(meshList[GEO_HEMISPHERE], true);
+	RenderMesh(meshList[GEO_HEMISPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.Rotate(fishAngle, 0, 0, 1); //Fish middle joint angle
 	modelStack.PushMatrix();  //Add spheres to cover joint
 	meshList[GEO_SPHERE]->material = materialList[M_FISH1];
 	modelStack.Scale(0.5, 0.5, 1);
-	RenderMesh(meshList[GEO_SPHERE], true);
+	RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 	meshList[GEO_SPHERE]->material = materialList[M_FISH2];
 	modelStack.Scale(0.5, 0.5, 1.3);
-	RenderMesh(meshList[GEO_SPHERE], true);
+	RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Rotate(180, 0, 0, 1);
 	meshList[GEO_HEMISPHERE]->material = materialList[M_FISH1];
 	modelStack.Scale(0.5, 2, 1);
-	RenderMesh(meshList[GEO_HEMISPHERE], true);
+	RenderMesh(meshList[GEO_HEMISPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 	meshList[GEO_HEMISPHERE]->material = materialList[M_FISH2];
 	modelStack.Scale(0.5, 1, 1.3);
-	RenderMesh(meshList[GEO_HEMISPHERE], true);
+	RenderMesh(meshList[GEO_HEMISPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.Translate(0, -1.8, 0);
@@ -797,12 +797,12 @@ void SceneGarden::Renderfish()
 	modelStack.Rotate(130, 1, 0, 0);
 	modelStack.PushMatrix();
 	modelStack.Scale(0.1, 0.1, 0.5);
-	RenderMesh(meshList[GEO_CONE], true);
+	RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 	modelStack.Rotate(100, 1, 0, 0);
 	modelStack.PushMatrix();
 	modelStack.Scale(0.1, 0.1, 0.5);
-	RenderMesh(meshList[GEO_CONE], true);
+	RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();//Fish tail end
 
@@ -1007,7 +1007,7 @@ void SceneGarden::Render()
 	//========================================================
 	modelStack.LoadIdentity();
 
-	RenderMesh(meshList[GEO_AXES], false);
+	RenderMesh(meshList[GEO_AXES], false, modelStack, viewStack, projectionStack, m_parameters);
 
 	//Render interactable items
 	{
@@ -1020,27 +1020,27 @@ void SceneGarden::Render()
 			if ((*it)->gettype() == "stick")
 			{
 				modelStack.Rotate(-90, 1, 0, 0);
-				RenderMesh(meshList[GEO_STICK], true);
+				RenderMesh(meshList[GEO_STICK], true, modelStack, viewStack, projectionStack, m_parameters);
 				if (hitboxshow)
 				{
 					modelStack.PopMatrix();
 					modelStack.PushMatrix();
 					modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
 					modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
-					RenderMesh(meshList[GEO_SPHERE], FALSE);
+					RenderMesh(meshList[GEO_SPHERE], false, modelStack, viewStack, projectionStack, m_parameters);
 				}
 			}
 			if ((*it)->gettype() == "cat")
 			{
 				modelStack.Rotate(-90, 1, 0, 0);
-				RenderMesh(meshList[GEO_CAT], true);
+				RenderMesh(meshList[GEO_CAT], true, modelStack, viewStack, projectionStack, m_parameters);
 				if (hitboxshow)
 				{
 					modelStack.PopMatrix();
 					modelStack.PushMatrix();
 					modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
 					modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
-					RenderMesh(meshList[GEO_SPHERE], FALSE);
+					RenderMesh(meshList[GEO_SPHERE], false, modelStack, viewStack, projectionStack, m_parameters);
 				}
 			}
 			if ((*it)->gettype() == "fish")
@@ -1052,19 +1052,19 @@ void SceneGarden::Render()
 					modelStack.PushMatrix();
 					modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
 					modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
-					RenderMesh(meshList[GEO_SPHERE], FALSE);
+					RenderMesh(meshList[GEO_SPHERE], false, modelStack, viewStack, projectionStack, m_parameters);
 				}
 			}
 			if ((*it)->gettype() == "yarn")
 			{
-				RenderMesh(meshList[GEO_YARN], true);
+				RenderMesh(meshList[GEO_YARN], true, modelStack, viewStack, projectionStack, m_parameters);
 				if (hitboxshow)
 				{
 					modelStack.PopMatrix();
 					modelStack.PushMatrix();
 					modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
 					modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
-					RenderMesh(meshList[GEO_SPHERE], FALSE);
+					RenderMesh(meshList[GEO_SPHERE], false, modelStack, viewStack, projectionStack, m_parameters);
 				}
 			}
 			modelStack.PopMatrix();
@@ -1077,14 +1077,14 @@ void SceneGarden::Render()
 		modelStack.Translate(0, -5, -150);
 		modelStack.Rotate(-90, 1, 0, 0);
 		modelStack.Scale(200, 200, 200);
-		RenderMesh(meshList[GEO_PONDBED], true);
+		RenderMesh(meshList[GEO_PONDBED], true, modelStack, viewStack, projectionStack, m_parameters);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
 		modelStack.Translate(0, -2.5, -247.50);
 		modelStack.Rotate(-45, 1, 0, 0);
 		modelStack.Scale(200, 7.1, 200);
-		RenderMesh(meshList[GEO_PONDBED], true);
+		RenderMesh(meshList[GEO_PONDBED], true, modelStack, viewStack, projectionStack, m_parameters);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
@@ -1092,7 +1092,7 @@ void SceneGarden::Render()
 		modelStack.Rotate(180, 0, 1, 0);
 		modelStack.Rotate(-45, 1, 0, 0);
 		modelStack.Scale(200, 7.1, 200);
-		RenderMesh(meshList[GEO_PONDBED], true);
+		RenderMesh(meshList[GEO_PONDBED], true, modelStack, viewStack, projectionStack, m_parameters);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
@@ -1100,7 +1100,7 @@ void SceneGarden::Render()
 		modelStack.Rotate(90, 0, 1, 0);
 		modelStack.Rotate(-45, 1, 0, 0);
 		modelStack.Scale(200, 7.1, 200);
-		RenderMesh(meshList[GEO_PONDBED], true);
+		RenderMesh(meshList[GEO_PONDBED], true, modelStack, viewStack, projectionStack, m_parameters);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
@@ -1108,7 +1108,7 @@ void SceneGarden::Render()
 		modelStack.Rotate(-90, 0, 1, 0);
 		modelStack.Rotate(-45, 1, 0, 0);
 		modelStack.Scale(200, 7.1, 200);
-		RenderMesh(meshList[GEO_PONDBED], true);
+		RenderMesh(meshList[GEO_PONDBED], true, modelStack, viewStack, projectionStack, m_parameters);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
@@ -1116,7 +1116,7 @@ void SceneGarden::Render()
 		modelStack.Rotate(90, 1, 0, 0);
 		modelStack.Scale(200, 200, 200);
 		glDisable(GL_CULL_FACE);
-		RenderMesh(meshList[GEO_POND], true);
+		RenderMesh(meshList[GEO_POND], true, modelStack, viewStack, projectionStack, m_parameters);
 		glEnable(GL_CULL_FACE);
 		modelStack.PopMatrix();
 	}
@@ -1124,7 +1124,7 @@ void SceneGarden::Render()
 	modelStack.PushMatrix();
 	modelStack.Rotate(-90, 1, 0, 0);
 	modelStack.Scale(500,500,500);
-	RenderMesh(meshList[GEO_GRASSFLOOR], true);
+	RenderMesh(meshList[GEO_GRASSFLOOR], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	//Path locations
@@ -1137,22 +1137,22 @@ void SceneGarden::Render()
 				modelStack.Translate(i, -2.29, -0.18);
 				modelStack.Rotate(180, 0, 1, 0);
 				modelStack.Scale(2.3, 2.3, 2.3);
-				RenderMesh(meshList[GEO_PATHT], true);
+				RenderMesh(meshList[GEO_PATHT], true, modelStack, viewStack, projectionStack, m_parameters);
 				modelStack.Rotate(90, 0, 1, 0);
 				modelStack.Translate(7.9, 0, 0.1);
-				RenderMesh(meshList[GEO_PATH], true);
+				RenderMesh(meshList[GEO_PATH], true, modelStack, viewStack, projectionStack, m_parameters);
 				modelStack.Translate(7.9, 0, 00);
-				RenderMesh(meshList[GEO_PATH], true);
+				RenderMesh(meshList[GEO_PATH], true, modelStack, viewStack, projectionStack, m_parameters);
 				modelStack.Translate(6.5, 0.7, 0);
 				modelStack.Rotate(90, 0, 1, 0);
 				modelStack.Scale(0.07, 0.07, 0.07);
-				RenderMesh(meshList[GEO_GAZEBO], true);
+				RenderMesh(meshList[GEO_GAZEBO], true, modelStack, viewStack, projectionStack, m_parameters);
 			}
 			else
 			{
 				modelStack.Translate(i, -2.29, 0);
 				modelStack.Scale(2.3, 2.3, 2.3);
-				RenderMesh(meshList[GEO_PATH], true);
+				RenderMesh(meshList[GEO_PATH], true, modelStack, viewStack, projectionStack, m_parameters);
 			}
 			modelStack.PopMatrix();
 		}
@@ -1167,16 +1167,16 @@ void SceneGarden::Render()
 			modelStack.Rotate((*it)->getangle(), 0, 1, 0);
 			modelStack.Scale((*it)->getscale(), (*it)->getscale(), (*it)->getscale());
 			if ((*it)->gettype() == "tree1")
-				RenderMesh(meshList[GEO_TREE1], true);
+				RenderMesh(meshList[GEO_TREE1], true, modelStack, viewStack, projectionStack, m_parameters);
 			else if ((*it)->gettype() == "tree2")
-				RenderMesh(meshList[GEO_TREE2], true);
+				RenderMesh(meshList[GEO_TREE2], true, modelStack, viewStack, projectionStack, m_parameters);
 			if (hitboxshow)
 			{
 				modelStack.PopMatrix();
 				modelStack.PushMatrix();
 				modelStack.Translate((*it)->getposition().x, (*it)->getposition().y + (*it)->getheight()*0.5, (*it)->getposition().z);
 				modelStack.Scale((*it)->getxwidth(), (*it)->getheight(), (*it)->getzwidth());
-				RenderMesh(meshList[GEO_CUBE], false);
+				RenderMesh(meshList[GEO_CUBE], false, modelStack, viewStack, projectionStack, m_parameters);
 			}
 			modelStack.PopMatrix();
 		}

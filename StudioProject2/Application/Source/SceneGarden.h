@@ -165,7 +165,7 @@ private:
 	std::vector<InteractableObject*> items;
 	std::vector<Terrain*> terrains;
 
-	void RenderMesh(Mesh* mesh, bool enableLight);
+	//void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
 	//void RenderUI();
 	void Renderminigame1();
