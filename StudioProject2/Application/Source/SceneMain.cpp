@@ -228,9 +228,10 @@ void SceneMain::Init()
 	}
 	pass = false;
 	
-	items.push_back(new InteractableObject(Vector3(-2, 2, 0), 0, 2, 4, "Mr. Sazz", "Mr. Sazz", false));
+	items.push_back(new InteractableObject(Vector3(-2, 2, 0), 0, 2, 4, "Mr.Sazz", "Mr. Sazz", false));
 	items.push_back(new InteractableObject(Vector3(6, 1, 5), 0, 2, 3, "Andy", "Andy", false));
 
+	//wall.push_back(new Terrain(Vector3(26, 0, 0), 0, 1, 50, 1, "wall"));
 	wall.push_back(new Terrain(Vector3(35, 0, 0), 0, 0, 0, 20, 100.f, "Wall"));
 	wall.push_back(new Terrain(Vector3(-35, 0, 0), 0, 0, 0, 20, 100.f, "Wall"));
 	wall.push_back(new Terrain(Vector3(0, 0, 35), 0, 0, 0, 100.f, 20, "Wall"));
@@ -352,6 +353,48 @@ void SceneMain::Update(double dt)
 	updateCollision();
 }
 
+void SceneMain::RenderMesh(Mesh* mesh, bool enableLight)
+{
+	Mtx44 MVP, modelView, modelView_inverse_transpose;
+
+	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
+	glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+	modelView = viewStack.Top() * modelStack.Top();
+	glUniformMatrix4fv(m_parameters[U_MODELVIEW], 1, GL_FALSE, &modelView.a[0]);
+	if (enableLight && lighton == true)
+	{
+		glUniform1i(m_parameters[U_LIGHTENABLED], 1);
+		modelView_inverse_transpose = modelView.GetInverse().GetTranspose();
+		glUniformMatrix4fv(m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE], 1, GL_FALSE, &modelView_inverse_transpose.a[0]);
+
+		//load material
+		glUniform3fv(m_parameters[U_MATERIAL_AMBIENT], 1, &mesh->material.kAmbient.r);
+		glUniform3fv(m_parameters[U_MATERIAL_DIFFUSE], 1, &mesh->material.kDiffuse.r);
+		glUniform3fv(m_parameters[U_MATERIAL_SPECULAR], 1, &mesh->material.kSpecular.r);
+		glUniform1f(m_parameters[U_MATERIAL_SHININESS], mesh->material.kShininess);
+	}
+	else
+	{
+		glUniform1i(m_parameters[U_LIGHTENABLED], 0);
+	}
+	if (mesh->textureID > 0)
+	{
+		glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
+		glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
+	}
+	else
+	{
+		glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 0);
+	}
+	mesh->Render(); //this line should only be called once
+	if (mesh->textureID > 0)
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+}
+
 void SceneMain::RenderSkybox()
 {
 	modelStack.PushMatrix();
@@ -360,14 +403,14 @@ void SceneMain::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, -499);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_FRONT], false, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_FRONT], false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, 499);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_BACK], false, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_BACK], false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
@@ -375,7 +418,7 @@ void SceneMain::RenderSkybox()
 	modelStack.Rotate(-90, 1, 0, 0);
 	modelStack.Rotate(90, 0, 0, 1);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_BOTTOM], false, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_BOTTOM], false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
@@ -383,34 +426,67 @@ void SceneMain::RenderSkybox()
 	modelStack.Rotate(90, 1, 0, 0);
 	modelStack.Rotate(-90, 0, 0, 1);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_TOP], false, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_TOP], false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(499, 0, 0);
 	modelStack.Rotate(-90, 0, 1, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_RIGHT], false, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_RIGHT], false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-499, 0, 0);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_LEFT], false, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_LEFT], false);
 	modelStack.PopMatrix();
 
 	modelStack.PopMatrix();
 }
 
+void SceneMain::RenderUI()
+{
+	if (inDialogue)
+	{
+		string dialoguetext = (*currentLine);
+		string currentname;
+		if (dialoguetext[0] == '1')
+			currentname = "Player name";
+		else if (dialoguetext[0] == '2')
+			currentname = name;
+		dialoguetext = dialoguetext.substr(1);
+		RenderNPCDialogue(dialoguetext, currentname);
+		if (cooldown <= 0 && Application::IsKeyPressed('E')) //Cooldown added to prevent spamming to pass the dialogues too fast
+		{
+			cooldown = 1;
+			currentLine++;
+			if (currentLine == dialogue.end())
+			{
+				inDialogue = false;
+				dialogue.clear();
+			}
+		}
+	}
+
+	std::ostringstream ss;
+	ss << "FPS: " << fps;
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 70, 58);
+
+	ss.str("");
+	ss << "Pos: X: " << camera.position.x << " Z: " << camera.position.z;
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(1, 0, 0), 4, 0, 50);
+}
+
 void SceneMain::RenderMinigame()
 {
-	RenderMeshOnScreen(meshList[Panel], 40, 30, 7, 5, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMeshOnScreen(meshList[Panel], 40, 30, 7, 5);
 	int width, height;
 	width = height = 15;
-	RenderTextOnScreen(meshList[GEO_TEXT], "Turn all squares", Color(0, 0, 0), 2.2, 7, 50, modelStack, viewStack, projectionStack, m_parameters);
-	RenderTextOnScreen(meshList[GEO_TEXT], "Green to enter", Color(0, 0, 0), 2.2, 7, 46, modelStack, viewStack, projectionStack, m_parameters);
-	RenderTextOnScreen(meshList[GEO_TEXT], "the museum.", Color(0, 0, 0), 2.2, 7, 42, modelStack, viewStack, projectionStack, m_parameters);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Turn all squares", Color(0, 0, 0), 2.2, 7, 50);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Green to enter", Color(0, 0, 0), 2.2, 7, 46);
+	RenderTextOnScreen(meshList[GEO_TEXT], "the museum.", Color(0, 0, 0), 2.2, 7, 42);
 	for (int i = 0; i < 9; i++) {
 
 		if ((i == 3) || (i == 4) || (i == 5)) {
@@ -426,10 +502,10 @@ void SceneMain::RenderMinigame()
 			width = 15;
 		}
 		if (colorGrid[i] == "Red") {
-			RenderMeshOnScreen(meshList[Red], grids[i]->x, grids[i]->y, width, height, modelStack, viewStack, projectionStack, m_parameters);
+			RenderMeshOnScreen(meshList[Red], grids[i]->x, grids[i]->y, width, height);
 		}
 		else if (colorGrid[i] == "Green") {
-			RenderMeshOnScreen(meshList[Green], grids[i]->x, grids[i]->y, width, height, modelStack, viewStack, projectionStack, m_parameters);
+			RenderMeshOnScreen(meshList[Green], grids[i]->x, grids[i]->y, width, height);
 		}
 	}
 
@@ -524,14 +600,105 @@ void SceneMain::updateCollision()
 	}
 }
 
+void SceneMain::RenderText(Mesh* mesh, std::string text, Color color)
+{
+	if (!mesh || mesh->textureID <= 0) //Proper error check
+		return;
+
+	//glDisable(GL_DEPTH_TEST);
+	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
+	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
+	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
+	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
+	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
+	float zspace = 0;
+
+	for (unsigned i = 0; i < text.length(); ++i)
+	{
+		Mtx44 characterSpacing;
+		std::vector<std::pair<std::string, std::vector<int>>> result;
+		characterSpacing.SetToTranslation(i * 0.5f, 0, zspace); //1.0f is the spacing of each character, you may change this value
+		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
+		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+
+		zspace += 0.001;
+
+		mesh->Render((unsigned)text[i] * 6, 6);
+	}
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
+	//glEnable(GL_DEPTH_TEST);
+}
+
+void SceneMain::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
+{
+	if (!mesh || mesh->textureID <= 0) //Proper error check
+		return;
+
+	glDisable(GL_DEPTH_TEST);
+	Mtx44 ortho;
+	ortho.SetToOrtho(0, 80, 0, 60, -10, 10); //size of screen UI
+	projectionStack.PushMatrix();
+	projectionStack.LoadMatrix(ortho);
+	viewStack.PushMatrix();
+	viewStack.LoadIdentity(); //No need camera for ortho mode
+	modelStack.PushMatrix();
+	modelStack.LoadIdentity(); //Reset modelStack
+	modelStack.Translate(x, y, 0);
+	modelStack.Scale(size, size, size);
+	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
+	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
+	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
+	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
+	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
+	for (unsigned i = 0; i < text.length(); ++i)
+	{
+		Mtx44 characterSpacing;
+		characterSpacing.SetToTranslation(0.5f + i * 0.5f, 0.5f, 0); //1.0f is the spacing of each character, you may change this value
+		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
+		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+
+		mesh->Render((unsigned)text[i] * 6, 6);
+	}
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
+	projectionStack.PopMatrix();
+	viewStack.PopMatrix();
+	modelStack.PopMatrix();
+	glEnable(GL_DEPTH_TEST);
+}
+
+void SceneMain::RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int sizey)
+{
+	glDisable(GL_DEPTH_TEST);
+	Mtx44 ortho;
+	ortho.SetToOrtho(0, 80, 0, 60, -10, 10); //size of screen UI
+	projectionStack.PushMatrix();
+	projectionStack.LoadMatrix(ortho);
+	viewStack.PushMatrix();
+	viewStack.LoadIdentity(); //No need camera for ortho mode
+	modelStack.PushMatrix();
+	modelStack.LoadIdentity();
+	modelStack.Translate(x, y, 0);
+	modelStack.Scale(sizex, sizey, 0);
+	RenderMesh(mesh, false); //UI should not have light
+	projectionStack.PopMatrix();
+	viewStack.PopMatrix();
+	modelStack.PopMatrix();
+	glEnable(GL_DEPTH_TEST);
+}
 
 void SceneMain::RenderNPCDialogue(std::string NPCText, std::string headerText)
 {
 	//float headerTextPos = 4.f;
-	RenderMeshOnScreen(meshList[Header], 14.75, 19.25, 30, 6, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMeshOnScreen(meshList[Header], 14.75, 19.25, 30, 6);
 	//headerText.size()
-	RenderTextOnScreen(meshList[GEO_TEXT], headerText, Color(0, 0, 0), 4, 14.5 - (headerText.size()), 17, modelStack, viewStack, projectionStack, m_parameters);	//header text
-	RenderMeshOnScreen(meshList[Textbox], 40, 8.75, 80, 17.5, modelStack, viewStack, projectionStack, m_parameters);
+	RenderTextOnScreen(meshList[GEO_TEXT], headerText, Color(0, 0, 0), 4, 14.5 - (headerText.size()), 17);	//header text
+	RenderMeshOnScreen(meshList[Textbox], 40, 8.75, 80, 17.5);
 	string word;																	//automating text
 	int wordpos = 0, ypos = 13, last = NPCText.find_last_of(" ");
 	float xpos = 2.f;
@@ -543,7 +710,7 @@ void SceneMain::RenderNPCDialogue(std::string NPCText, std::string headerText)
 			ypos -= 3;
 			xpos = 2;
 		}
-		RenderTextOnScreen(meshList[GEO_TEXT], word, Color(0, 0, 0), 3, xpos, ypos, modelStack, viewStack, projectionStack, m_parameters);
+		RenderTextOnScreen(meshList[GEO_TEXT], word, Color(0, 0, 0), 3, xpos, ypos);
 		if (wordpos > last)
 			break;
 		wordpos += word.length() + 1;
@@ -602,27 +769,27 @@ void SceneMain::Render()
 	//========================================================
 	//modelStack.LoadIdentity();
 
-	RenderMesh(meshList[GEO_AXES], false, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_AXES], false);
 
 	modelStack.PushMatrix();
 	modelStack.Translate(light[0].position.x, light[0].position.y, light[0].position.z);
 	modelStack.Scale(0.05, 0.05, 0.05);
-	RenderMesh(meshList[GEO_LIGHTBALL], false, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_LIGHTBALL], false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Scale(1000, 1000, 1000);
 	modelStack.Rotate(-90, 1, 0, 0);
-	RenderMesh(meshList[GroundMesh], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GroundMesh], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(17.5, 0, 0);
 	modelStack.Scale(20, 5, 5);
-	RenderMesh(meshList[RoadTileStraight], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[RoadTileStraight], true);
 	modelStack.PushMatrix();
 	modelStack.Rotate(90, 0, 1, 0);
-	RenderMesh(meshList[RoadStraightBarrier], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[RoadStraightBarrier], true);
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
@@ -630,26 +797,26 @@ void SceneMain::Render()
 	modelStack.Translate(37.5, 0, 0);
 	modelStack.Scale(25, 25, 25);
 	modelStack.Rotate(90, 0, 1, 0);
-	RenderMesh(meshList[Museum], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[Museum], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-37.5, 0, 0);
-	RenderMesh(meshList[MBS], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[MBS], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-25, 0, 40.5);
-	RenderMesh(meshList[Changi], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[Changi], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-17.5, 0, 0);
 	modelStack.Scale(20, 5, 5);
-	RenderMesh(meshList[RoadTileStraight], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[RoadTileStraight], true);
 	modelStack.PushMatrix();
 	modelStack.Rotate(90, 0, 1, 0);
-	RenderMesh(meshList[RoadStraightBarrier], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[RoadStraightBarrier], true);
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
@@ -660,13 +827,15 @@ void SceneMain::Render()
 		modelStack.Rotate((*it)->getangle(), 0, 1, 0);
 		modelStack.Scale((*it)->getscale(), (*it)->getscale(), (*it)->getscale());
 		if ((*it)->gettype() == "tree")
-			RenderMesh(meshList[TREE], true, modelStack, viewStack, projectionStack, m_parameters);
+			RenderMesh(meshList[TREE], true/*, modelStack, viewStack, projectionStack, m_parameters*/);
+		//else if ((*it)->gettype() == "tree2")
+			//RenderMesh(meshList[GEO_TREE2], true/*, modelStack, viewStack, projectionStack, m_parameters*/);
 		else if ((*it)->gettype() == "lamp")
-			RenderMesh(meshList[Lamp], true, modelStack, viewStack, projectionStack, m_parameters);
+			RenderMesh(meshList[Lamp], true);
 		else if ((*it)->gettype() == "Andy")
-			RenderMesh(meshList[Friend], true, modelStack, viewStack, projectionStack, m_parameters);
+			RenderMesh(meshList[Friend], true);
 		else if ((*it)->gettype() == "teacher")
-			RenderMesh(meshList[Teacher], true, modelStack, viewStack, projectionStack, m_parameters);
+			RenderMesh(meshList[Teacher], true);
 		modelStack.PopMatrix();
 	}
 	
@@ -674,17 +843,17 @@ void SceneMain::Render()
 	modelStack.Translate(2.5, 9, 27.4);
 	modelStack.Scale(2, 2, 2);
 	modelStack.Rotate(180, 0, 1, 0);
-	RenderText(meshList[GEO_TEXT], "Changi Airport", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
+	RenderText(meshList[GEO_TEXT], "Changi Airport", Color(0, 0, 0));
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, 17.5);
 	modelStack.Scale(5, 5, 20);
 	modelStack.Rotate(90, 0, 1, 0);
-	RenderMesh(meshList[RoadTileStraight], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[RoadTileStraight], true);
 	modelStack.PushMatrix();
 	modelStack.Rotate(90, 0, 1, 0);
-	RenderMesh(meshList[RoadStraightBarrier], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[RoadStraightBarrier], true);
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
@@ -692,30 +861,30 @@ void SceneMain::Render()
 	modelStack.Translate(-27.4, 9, 2.5);
 	modelStack.Scale(2, 2, 2);
 	modelStack.Rotate(90, 0, 1, 0);
-	RenderText(meshList[GEO_TEXT], "MarinaBay", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
+	RenderText(meshList[GEO_TEXT], "MarinaBay", Color(0, 0, 0));
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, -17.5);
 	modelStack.Scale(5, 5, 20);
 	modelStack.Rotate(90, 0, 1, 0);
-	RenderMesh(meshList[RoadTileStraight], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[RoadTileStraight], true);
 	modelStack.PushMatrix();
 	modelStack.Rotate(90, 0, 1, 0);
-	RenderMesh(meshList[RoadStraightBarrier], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[RoadStraightBarrier], true);
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
 
 	modelStack.PushMatrix();
 	modelStack.Scale(5, 5, 5);
-	RenderMesh(meshList[RoadCrossBarrier], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[RoadCrossBarrier], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, 0);
 	modelStack.Scale(5, 5, 5);
-	RenderMesh(meshList[RoadCross], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[RoadCross], true);
 	modelStack.PopMatrix();
 
 
@@ -723,42 +892,42 @@ void SceneMain::Render()
 	modelStack.PushMatrix();
 	modelStack.Translate(-7, 0, -30);
 	modelStack.Scale(10, 10, 10);
-	RenderMesh(meshList[TREE], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[TREE], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(7, 0, -33);
 	modelStack.Scale(10, 10, 10);
-	RenderMesh(meshList[TREE], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[TREE], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(1, 0, -38);
 	modelStack.Scale(10, 10, 10);
-	RenderMesh(meshList[TREE], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[TREE], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-2.5, 9, -27.4);
 	modelStack.Scale(2, 2, 2);
-	RenderText(meshList[GEO_TEXT], "Botanic Garden", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
+	RenderText(meshList[GEO_TEXT], "Botanic Garden", Color(0, 0, 0));
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(27.4, 9, -1.5);
 	modelStack.Scale(2, 2, 2);
 	modelStack.Rotate(-90, 0, 1, 0);
-	RenderText(meshList[GEO_TEXT], "Museum", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
+	RenderText(meshList[GEO_TEXT], "Museum", Color(0, 0, 0));
 
 	if (inFrontofMuseum) {
 		modelStack.PushMatrix();
 		modelStack.Translate(0.35, -2, -0.29);
 		modelStack.Scale(0.7, 0.7, 1);
-		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
+		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0));
 
 		modelStack.PushMatrix();
 		modelStack.Translate(-0.2, -1, 0);
-		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
+		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0));
 
 		modelStack.PopMatrix();
 		modelStack.PopMatrix();
@@ -770,11 +939,11 @@ void SceneMain::Render()
 		modelStack.Translate(0.4, 4, 27.4);
 		modelStack.Scale(1, 1, 1);
 		modelStack.Rotate(180, 0, 1, 0);
-		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
+		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0));
 
 		modelStack.PushMatrix();
 		modelStack.Translate(-0.2, -1, 0);
-		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
+		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0));
 
 		modelStack.PopMatrix();
 		modelStack.PopMatrix();
@@ -785,11 +954,11 @@ void SceneMain::Render()
 		modelStack.Translate(-27.4, 4, 0.4);
 		modelStack.Scale(1, 1, 1);
 		modelStack.Rotate(90, 0, 1, 0);
-		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
+		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0));
 
 		modelStack.PushMatrix();
 		modelStack.Translate(-0.2, -1, 0);
-		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
+		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0));
 
 		modelStack.PopMatrix();
 		modelStack.PopMatrix();
@@ -799,26 +968,18 @@ void SceneMain::Render()
 		modelStack.PushMatrix();
 		modelStack.Translate(-0.4, 4, -27.4);
 		modelStack.Scale(1, 1, 1);
-		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
+		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0));
 
 		modelStack.PushMatrix();
 		modelStack.Translate(-0.2, -1, 0);
-		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
+		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0));
 
 		modelStack.PopMatrix();
 		modelStack.PopMatrix();
 	}
 
 	
-
-	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45, modelStack, viewStack, projectionStack, m_parameters);
-
 	Scene::RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
-
-	stringstream ss;
-	ss.str("");
-	ss << "Pos: X: " << camera.position.x << " Z: " << camera.position.z;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(1, 0, 0), 4, 0, 50, modelStack, viewStack, projectionStack, m_parameters);
 
 	if (minigameMuseum == true) {
 		RenderMinigame();

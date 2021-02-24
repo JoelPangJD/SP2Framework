@@ -60,6 +60,9 @@
     <ClCompile Include="Source\SceneGarden.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\SceneMuseum.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Source\InteractableObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -76,9 +79,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SceneMuseum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -137,6 +137,9 @@
     <ClInclude Include="Source\SceneGarden.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\SceneMuseum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Source\InteractableObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -150,9 +153,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\render.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SceneMuseum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
