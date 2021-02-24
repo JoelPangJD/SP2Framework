@@ -197,6 +197,19 @@ void SceneMuseum::Init()
 	meshList[GEO_WALLDOOR] = MeshBuilder::GenerateOBJMTL("Wall Door", "OBJ//Museum//wallDoor.obj", "OBJ//Museum//wallDoor.mtl");
 	meshList[GEO_WALLCORNER] = MeshBuilder::GenerateOBJMTL("Wall Corner", "OBJ//Museum//wallWoodCorner.obj", "OBJ//Museum//wallWoodCorner.mtl");
 
+	//NPC
+	meshList[GEO_TEACHER] = MeshBuilder::GenerateOBJMTL("Wall Corner", "OBJ//Museum//untitled.obj", "OBJ//Museum//untitled.mtl"); 
+	meshList[GEO_TEACHER]->textureID = LoadTGA("Image//Museum//criminalMaleA.tga");
+	meshList[GEO_TEACHER]->material.kAmbient.Set(0.8f, 0.8f, 0.8f);
+	meshList[GEO_TEACHER]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
+	meshList[GEO_TEACHER]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
+	meshList[GEO_TEACHER]->material.kShininess = 1.f;
+	meshList[GEO_ANDY] = MeshBuilder::GenerateOBJ("friend", "OBJ//Marina//defaultCharacter.obj");
+	meshList[GEO_ANDY]->textureID = LoadTGA("Image//CityCenter//friend.tga");
+	meshList[GEO_ANDY]->material.kAmbient.Set(0.8f, 0.8f, 0.8f);
+	meshList[GEO_ANDY]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
+	meshList[GEO_ANDY]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
+	meshList[GEO_ANDY]->material.kShininess = 1.f;
 	//OBJ FOR GAME1
 	meshList[GEO_MINIPIC1] = MeshBuilder::GenerateQuad("Minigame pic1", Color(1, 1, 1), 1.0f);
 	meshList[GEO_MINIPIC1]->textureID = LoadTGA("Image//Museum//photomain.tga");
@@ -250,10 +263,11 @@ void SceneMuseum::Init()
 	terrains.push_back(new Terrain(Vector3(-272.215, 0, 73.66698), 0, 22, 10, 218.204, 3, "Door")); //+19
 
 	//Items vector
-	items.push_back(new InteractableObject(Vector3(-210.785, 16.0715, 75.3848), 0, 0, 50, "preview","nothing",false));
-	items.push_back(new InteractableObject(Vector3(-283.869, 16.0715, 95.1478), 0, 0, 50, "answer","nothing",false));
-	items.push_back(new InteractableObject(Vector3(-104.012, 0, 5.04312), 0, 5, 5, "box","boxy",false));
-
+	items.push_back(new InteractableObject(Vector3(-210.785, 16.0715, 75.3848), 0, 0, 50, "preview","preview for gam2",false));
+	items.push_back(new InteractableObject(Vector3(-283.869, 16.0715, 95.1478), 0, 0, 50, "answer","to answer",false));
+	items.push_back(new InteractableObject(Vector3(-104.012, 0, 5.04312), 0, 5, 50, "box","boxy",true));
+	items.push_back(new InteractableObject(Vector3(12.7309, 0, 5.72924), 0, 0.75, 50, "andy", "Andy", false));
+	items.push_back(new InteractableObject(Vector3(268.052, 0, -108.232), 0, 5, 50, "teacher", "Mr tang", false));
 
 	//Ground mesh
 	meshList[GEO_GROUND] = MeshBuilder::GenerateQuad("ground", Color(1, 1, 1), 1.0f);
@@ -266,6 +280,8 @@ void SceneMuseum::Init()
 void SceneMuseum::Update(double dt)
 {
 	fps = 1.f / dt;
+	if (cooldown > 0)
+		cooldown -= dt;
 
 	if (ShowPreview == false || CorrectAnswer == true)
 	{
@@ -448,7 +464,7 @@ void SceneMuseum::Update(double dt)
 
 	}
 
-	if (Application::IsKeyPressed('T') && EndGame1 == true)
+	if (Application::IsKeyPressed('T') && EndGame1 == true && camera.position.x < -258 && camera.position.x > -267 && camera.position.z < -24.3 && camera.position.z > -83)
 	{
 		ShowHoldingGame = true;
 	}
@@ -876,6 +892,10 @@ void SceneMuseum::StartGame1()
 		{
 			MousePreview = false;
 			EndGame1 = true;
+			items.erase(items.begin());
+			items.erase(items.begin());
+			/*-210.785, 16.0715, 75.3848
+		    - 283.869, 16.0715, 95.1478*/
 		}
 		//if (ShowFirstGame == true)
 		//{
@@ -886,8 +906,18 @@ void SceneMuseum::StartGame1()
 		//	camera.Init(Vector3(-270.713, 10, 100), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
 		//	RenderMeshOnScreen(meshList[GEO_SELECTION], 70, 25, 80, 70);
 		//}
+		RenderGame1UI();
 	}
 
+}
+
+void SceneMuseum::StartGame2()
+{
+	if (EndGame2 == false && EndGame1 == true)
+	{
+		RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
+		interact(camera,items);
+	}
 }
 
 void SceneMuseum::ExitMuseum()
@@ -920,7 +950,7 @@ void SceneMuseum::StartInteraction()
 
 }
 
-void SceneMuseum::RenderUI()
+void SceneMuseum::RenderGame1UI()
 {
 	if (indialogue)
 	{
@@ -1224,9 +1254,9 @@ void SceneMuseum::Render()
 	RenderMesh(meshList[GEO_SELECTION], true);
 	modelStack.PopMatrix();
 
-	//Game2 OBJ
+	//Exit door
 	modelStack.PushMatrix();
-	modelStack.Translate(-76.3144, 23, -10.252);
+	modelStack.Translate(-265.813, 23, -87.885);
 	modelStack.Scale(35, 35, 45);
 	RenderMesh(meshList[GEO_PIC], true);
 	modelStack.PopMatrix();
@@ -1242,13 +1272,21 @@ void SceneMuseum::Render()
 		{
 			RenderMesh(meshList[GEO_ITEM1], true);
 		}
+		else if ((*it)->gettype() == "andy")
+		{
+			RenderMesh(meshList[GEO_ANDY], true);
+		}
+		else if ((*it)->gettype() == "teacher")
+		{
+			RenderMesh(meshList[GEO_TEACHER], true);
+		}
 		modelStack.PopMatrix();
 	}
 
 	StartGame1();
+	StartGame2();
 	StartInteraction();
 	ExitMuseum();
-	RenderUI();
 }
 
 void SceneMuseum::Exit()

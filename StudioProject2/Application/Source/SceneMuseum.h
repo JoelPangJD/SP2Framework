@@ -38,6 +38,9 @@ class SceneMuseum : public Scene
 		GEO_FRONT,
 		GEO_BACK,
 		GEO_INVENTORY,
+		//FOR NPC
+		GEO_TEACHER,
+		GEO_ANDY,
 		//FOR TEXT
 		GEO_TEXT,
 		GEO_TEXTBOX,
@@ -174,28 +177,30 @@ private:
 	bool CorrectAnswer = false;
 
 	//1st game
+	void StartGame1();
 	bool EndGame1 = false;
 	bool Continue = false;
 
-	//Interaction
+	//Exit Museum
+	void StartInteraction();
+	void ExitMuseum();
 	bool EndInteraction = false;
 	bool ShowHoldingGame = false;
-
-	//Exit museum
 	bool ToExit = false;
+
+	//2nd game
+	void StartGame2();
+	bool EndGame2 = false;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
 	void RenderWalls();
-	void RenderUI();
+	void RenderGame1UI();
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey);
 
-	void StartGame1();
-	void StartInteraction();
-	void ExitMuseum();
 	void RenderInteractableText();
 
 };
