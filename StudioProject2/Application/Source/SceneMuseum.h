@@ -38,6 +38,9 @@ class SceneMuseum : public Scene
 		GEO_FRONT,
 		GEO_BACK,
 		GEO_INVENTORY,
+		//NPCs
+		GEO_MAN,
+		GEO_ANDY,
 		//FOR TEXT
 		GEO_TEXT,
 		GEO_TEXTBOX,
