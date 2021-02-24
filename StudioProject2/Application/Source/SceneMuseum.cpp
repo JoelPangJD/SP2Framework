@@ -1242,7 +1242,6 @@ void SceneMuseum::Render()
 	RenderMesh(meshList[GEO_GLASSTABLE], true);
 	modelStack.PopMatrix();
 
-<<<<<<< HEAD
 	//NPC
 	//modelStack.PushMatrix();
 	//modelStack.Translate(272.021, 0, -91.6223);
@@ -1257,8 +1256,7 @@ void SceneMuseum::Render()
 	//modelStack.Scale(1, 1, 1);
 	//RenderMesh(meshList[GEO_ANDY], true);
 	//modelStack.PopMatrix();
-=======
->>>>>>> parent of 2cdbb02 (Update SceneMuseum)
+
 	//Game1 OBJ
 	modelStack.PushMatrix();
 	modelStack.Translate(-210.785, 16.0715, 75.3848);
