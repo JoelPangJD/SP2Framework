@@ -191,6 +191,9 @@ void SceneGarden::Init()
 	meshList[GEO_GRASSFLOOR]->material.kSpecular.Set(0.1f, 0.1f, 0.1f);
 	meshList[GEO_GRASSFLOOR]->material.kShininess = 1.f;
 
+	meshList[GEO_YARNBACKGROUND] = MeshBuilder::GenerateQuad("grassfloor", 1, 1, Color(1, 1, 1), 1);
+	meshList[GEO_YARNBACKGROUND]->textureID = LoadTGA("Image//garden//yarn.tga");
+
 	meshList[GEO_POND] = MeshBuilder::GenerateQuad("pondwater", 1, 1, Color(1, 1, 1), 10);
 	meshList[GEO_POND]->textureID = LoadTGA("Image//watertexture.tga");
 	meshList[GEO_POND]->material.kAmbient.Set(0.3f, 0.3f, 0.3f);
@@ -222,6 +225,8 @@ void SceneGarden::Init()
 	meshList[GEO_CAT] = MeshBuilder::GenerateOBJMTL("cat", "OBJ//garden//cat.obj", "OBJ//garden//cat.mtl");
 	meshList[GEO_CAT]->textureID = LoadTGA("Image//garden//cat.tga");
 
+	meshList[GEO_YARN] = MeshBuilder::GenerateOBJMTL("yarn", "OBJ//garden//yarn.obj", "OBJ//garden//yarn.mtl");
+
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//font.tga");
 	meshList[GEO_TEXTBOX] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
@@ -247,22 +252,22 @@ void SceneGarden::Init()
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//garden//gardenbottom.tga");
 
 	//Creating terrains in the terrains vector
-	terrains.push_back(new Terrain(Vector3(70, 0, 64), 0, 22, 10, 3, 3, "tree1"));
-	terrains.push_back(new Terrain(Vector3(24, 0, 47), 0, 18, 10, 3, 3, "tree1"));
-	terrains.push_back(new Terrain(Vector3(-25, 0, 80), 0, 18, 10, 3, 3, "tree1"));
-	terrains.push_back(new Terrain(Vector3(-25, 0, 16), 0, 11, 10, 3, 3, "tree1"));
-	terrains.push_back(new Terrain(Vector3(-43, 0, 47), 0, 18, 10, 3, 3, "tree1"));
-	terrains.push_back(new Terrain(Vector3(-43, 0, -24), 0, 17, 10, 3, 3, "tree1"));
-	terrains.push_back(new Terrain(Vector3(88, 0, -17), 0, 13, 10, 3, 3, "tree1"));
-	terrains.push_back(new Terrain(Vector3(112, 0, -75), 0, 13, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(70, 0, 64), 0, 32, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(24, 0, 47), 0, 28, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(-25, 0, 80), 0, 28, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(-25, 0, 16), 0, 21, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(-43, 0, 47), 0, 28, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(-43, 0, -24), 0, 27, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(88, 0, -17), 0, 23, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(112, 0, -75), 0, 23, 10, 3, 3, "tree1"));
 
-	terrains.push_back(new Terrain(Vector3(-47, 0, 76), 0, 13, 10, 3, 3, "tree2"));
-	terrains.push_back(new Terrain(Vector3(1, 0, 54), 0, 17, 13, 3, 3, "tree2"));
-	terrains.push_back(new Terrain(Vector3(130, 0, -60), 0, 17, 10, 3, 3, "tree2"));
-	terrains.push_back(new Terrain(Vector3(80, 0, 27), 0, 15, 10, 3, 3, "tree2"));
-	terrains.push_back(new Terrain(Vector3(-124, 0, -129), 0, 19, 10, 3, 3, "tree2"));
-	terrains.push_back(new Terrain(Vector3(-120, 0, 32), 0, 14, 10, 3, 3, "tree2"));
-	terrains.push_back(new Terrain(Vector3(-123, 0, -42), 0, 21, 10, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(-47, 0, 76), 0, 23, 10, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(1, 0, 54), 0, 27, 13, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(130, 0, -60), 0, 27, 10, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(80, 0, 27), 0, 25, 10, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(-124, 0, -129), 0, 29, 10, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(-120, 0, 32), 0, 24, 10, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(-123, 0, -42), 0, 31, 10, 3, 3, "tree2"));
 
 	//modelStack.Translate(0, -2.5, -247.50);
 
@@ -280,8 +285,9 @@ void SceneGarden::Init()
 	terrains.push_back(new Terrain(Vector3(62, 0, 51), 0, 1, 5, 3.5, 14, "gazebo"));
 	terrains.push_back(new Terrain(Vector3(49, 0, 51), 0, 1, 5, 3.5, 14, "gazebo"));
 
-	items.push_back(new InteractableObject(Vector3(0, 4, 0), 0, 5, 5, "stick"));
+	items.push_back(new InteractableObject(Vector3(5, 0, 50), 55, 5, 7, "stick"));
 	items.push_back(new InteractableObject(Vector3(55, 0, 54), 180, 0.1, 7, "cat"));
+	items.push_back(new InteractableObject(Vector3(54, 0.2, 50), 0, 0.05, 7, "yarn"));
 	items.push_back(new InteractableObject(Vector3(0, -3, -150), 0, 0.5, 2, "fish"));
 	items.push_back(new InteractableObject(Vector3(10, -3, -140), 90, 0.5, 2, "fish"));
 	items.push_back(new InteractableObject(Vector3(-10, -3, -150), -60, 0.5, 2, "fish"));
@@ -337,19 +343,26 @@ void SceneGarden::Update(double dt)
 			{
 				if ((*it)->spherecollider(camera.target)) // Checks if the target is within a radius of the stick
 				{
-					if (Application::IsKeyPressed('F'))// 1 is look at
+					if (Application::IsKeyPressed('F'))// F is look at
 					{
 						dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
 						currentline = dialogue.begin(); //Currentline is set at the look at description
 						indialogue = true;//Set state to in dialogue
 					}
-					if (Application::IsKeyPressed('G'))
+					if (Application::IsKeyPressed('G'))// G is pick up
 					{
-						inventory.additem((*it));
-						items.erase(items.begin() + counter);
-						break;
+						if ((*it)->gettype() == "stick")
+						{
+							inventory.additem((*it));
+							items.erase(items.begin() + counter);
+							break;
+						}
+						if ((*it)->gettype() == "yarn")
+						{
+							minigame = 3;
+						}
 					}
-					if (Application::IsKeyPressed('T')) //4 is talk to
+					if (Application::IsKeyPressed('T')) //T is talk to
 					{
 						dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
 						currentline = dialogue.begin(); //Currentline iteratior as the first line of dialogue
@@ -358,16 +371,8 @@ void SceneGarden::Update(double dt)
 					}
 					if (interacttext.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
 					{
-						if ((*it)->gettype() == "stick")
-						{
-							interacttext << "Stick";
-							break;
-						}
-						if ((*it)->gettype() == "cat")
-						{
-							interacttext << "Cat";
-							break;
-						}
+						interacttext << (*it)->gettype();
+						break;
 					}
 				}
 				counter++;
@@ -436,7 +441,7 @@ void SceneGarden::Update(double dt)
 			circlescale1 = 3;
 		}
 	}
-	else if (minigame == 3) //During minigame 2
+	else if (minigame == 4) //During minigame 2
 	{
 		Application::GetCursorPos(&cursorx, &cursory);
 		cursorx = cursorx / 10;
@@ -538,7 +543,7 @@ void SceneGarden::Update(double dt)
 		camera.Init(Vector3(0, 150, 50), Vector3(0, 0, 50), Vector3(0, 0, 1));
 		Application::enableMouse = true;
 		progress = 0;
-		minigame = 3;
+		minigame = 4;
 	}
 
 	if (Application::IsKeyPressed('I'))
@@ -729,15 +734,9 @@ void SceneGarden::Renderminigame1()
 
 void SceneGarden::Renderminigame2()
 {
+	RenderMeshOnScreen(meshList[GEO_YARNBACKGROUND], 40, 30, 80, 60);
 	RenderMeshOnScreen(meshList[GEO_SPHERE], playerx, playery,2,2);
 	RenderMeshOnScreen(meshList[GEO_SPHERE], objectivex, objectivey, 1, 1);
-	//spherex -= 40;
-	//spherey -= 30;
-	//modelStack.PushMatrix();
-	//modelStack.Translate(-spherex, 0, -150 + spherey);
-	//modelStack.Scale(2,2,2);
-	//RenderMesh(meshList[GEO_SPHERE], true);
-	//modelStack.PopMatrix();
 }
 
 void SceneGarden::Renderfish()
@@ -1024,6 +1023,7 @@ void SceneGarden::Render()
 			modelStack.Scale((*it)->getscale(), (*it)->getscale(), (*it)->getscale());
 			if ((*it)->gettype() == "stick")
 			{
+				modelStack.Rotate(-90, 1, 0, 0);
 				RenderMesh(meshList[GEO_STICK], true);
 				if (hitboxshow)
 				{
@@ -1050,6 +1050,18 @@ void SceneGarden::Render()
 			if ((*it)->gettype() == "fish")
 			{
 				Renderfish();
+				if (hitboxshow)
+				{
+					modelStack.PopMatrix();
+					modelStack.PushMatrix();
+					modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
+					modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
+					RenderMesh(meshList[GEO_SPHERE], FALSE);
+				}
+			}
+			if ((*it)->gettype() == "yarn")
+			{
+				RenderMesh(meshList[GEO_YARN], true);
 				if (hitboxshow)
 				{
 					modelStack.PopMatrix();
@@ -1197,6 +1209,19 @@ void SceneGarden::Render()
 	else if (minigame == 2)
 		Renderminigame1();
 	else if (minigame == 3)
+	{
+		RenderMinigameScreen("Use the mouse to guide the end of the thread to the checkpoints ", "Untangling the string", 6);
+		if (Application::IsKeyPressed('E')) //Press E to start the minigame
+		{
+			progress = 0;
+			prevcamera = camera;
+			camera.Init(Vector3(0, 150, 50), Vector3(0, 0, 50), Vector3(0, 0, 1));
+			Application::enableMouse = true;
+			progress = 0;
+			minigame = 4;
+		}
+	}
+	else if (minigame == 4)
 		Renderminigame2();
 }
 
