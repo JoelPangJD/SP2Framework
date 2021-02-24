@@ -12,7 +12,6 @@
 #include <math.h>
 #include "Terrain.h"
 #include "InteractableObject.h"
-#include "Inventory.h"
 
 class SceneMarinaBay : public Scene
 {
@@ -149,9 +148,9 @@ public:
 	Camera3 camera;
 	bool lighton = true;
 	float fps;
-	Inventory inventory;
 
 	SceneMarinaBay();
+	SceneMarinaBay(Inventory* inventory);
 	~SceneMarinaBay();
 
 	virtual void Init();

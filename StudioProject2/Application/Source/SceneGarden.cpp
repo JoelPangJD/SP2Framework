@@ -11,6 +11,11 @@ SceneGarden::SceneGarden()
 {
 }
 
+SceneGarden::SceneGarden(Inventory* inventory)
+{
+	this->inventory = inventory;
+}
+
 SceneGarden::~SceneGarden()
 {
 }
@@ -345,7 +350,6 @@ void SceneGarden::Update(double dt)
 				meshList[GEO_TORUSPLAYER]->material = materialList[M_TORUSBAD];
 				progress = 0;
 			}
-			int counter = 0;
 			switch (progress)
 			{
 			case 1:
@@ -374,11 +378,10 @@ void SceneGarden::Update(double dt)
 				{
 					if ((*it)->gettype() == "fish")
 					{
-						inventory.additem((*it));
-						items.erase(items.begin()+counter);
+						inventory->additem((*it));
+						items.erase(items.begin()+(distance(items.begin(), it)));
 						break;
 					}
-					counter++;
 				}
 				camera = prevcamera;
 				minigame = 0;
@@ -422,7 +425,7 @@ void SceneGarden::Update(double dt)
 		case 2:
 			objectivex = 30;
 			objectivey = 10;
-			break;
+			break; 
 		case 3:
 			objectivex = 60;
 			objectivey = 40;

@@ -100,6 +100,7 @@ public:
 	float fps;
 
 	SceneMain();
+	SceneMain(Inventory* inventory);
 	~SceneMain();
 
 	virtual void Init();

@@ -75,7 +75,7 @@ public:
 	
 	Mesh* baseMeshList[NUM_GEOMETRY];
 
-	Inventory inventory;
+	Inventory* inventory; //Inventory is shared between all scenes
 
 	//Variables for text
 	std::ostringstream interacttext;

@@ -14,6 +14,11 @@ SceneMuseum::SceneMuseum()
 {
 }
 
+SceneMuseum::SceneMuseum(Inventory* inventory)
+{
+	this->inventory = inventory;
+}
+
 SceneMuseum::~SceneMuseum()
 {
 }

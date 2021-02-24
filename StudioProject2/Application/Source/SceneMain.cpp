@@ -12,6 +12,11 @@ SceneMain::SceneMain()
 {
 }
 
+SceneMain::SceneMain(Inventory* inventory)
+{
+	this->inventory = inventory;
+}
+
 SceneMain::~SceneMain()
 {
 }
