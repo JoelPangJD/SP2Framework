@@ -311,6 +311,26 @@ void SceneMuseum::Update(double dt)
 					Continue = true;
 					indialogue = false;
 					std::cout << "Hit!" << std::endl;
+					int counter = 0;
+					for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++) //Delete the two minigame one objects after minigame one is over
+					{
+						if ((*it)->gettype() == "answer") 
+						{
+							items.erase(items.begin()+ counter);
+							break;
+						}
+						counter++;
+					}
+					counter = 0;
+					for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+					{
+						if ((*it)->gettype() == "preview")
+						{
+							items.erase(items.begin()+ counter);
+							break;
+						}
+						counter++;
+					}
 					//trigger user action or function
 				}
 			}
@@ -799,11 +819,12 @@ void SceneMuseum::StartGame1()
 			//Goes to some orange background to view image
 			camera.Init(Vector3(-270.713, 10, 100), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
 			RenderMeshOnScreen(meshList[GEO_MINIPIC1], 70, 25, 80, 70);
-			if (Application::IsKeyPressed('R'))
+			if (Application::IsKeyPressed('R') || Application::IsKeyPressed('E'))
 			{
 				ShowPreview = false;
 				MousePreview = true;
-				indialogue = false;
+				Scene::indialogue = false;
+				Scene::dialogue.clear();
 			}
 		}
 		if (ShowFirstGame == true)
@@ -814,6 +835,13 @@ void SceneMuseum::StartGame1()
 			//Goes to some orange background to view image
 			camera.Init(Vector3(-270.713, 10, 100), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
 			RenderMeshOnScreen(meshList[GEO_SELECTION], 70, 25, 80, 70);
+			if (Application::IsKeyPressed('R') || Application::IsKeyPressed('E'))
+			{
+				ShowFirstGame = false;
+				MousePreview = true;
+				Scene::indialogue = false;
+				Scene::dialogue.clear();
+			}
 		}
 		if (Continue == true)
 		{
@@ -1242,7 +1270,6 @@ void SceneMuseum::Render()
 	RenderMesh(meshList[GEO_GLASSTABLE], true);
 	modelStack.PopMatrix();
 
-<<<<<<< HEAD
 	//NPC
 	//modelStack.PushMatrix();
 	//modelStack.Translate(272.021, 0, -91.6223);
@@ -1257,8 +1284,7 @@ void SceneMuseum::Render()
 	//modelStack.Scale(1, 1, 1);
 	//RenderMesh(meshList[GEO_ANDY], true);
 	//modelStack.PopMatrix();
-=======
->>>>>>> parent of 2cdbb02 (Update SceneMuseum)
+
 	//Game1 OBJ
 	modelStack.PushMatrix();
 	modelStack.Translate(-210.785, 16.0715, 75.3848);
