@@ -48,6 +48,7 @@ class SceneGarden : public Scene
 		//Objs
 		GEO_GRASSFLOOR,
 		GEO_CAT,
+		GEO_YARN,
 		GEO_POND,
 		GEO_PONDBED,
 		GEO_PATH,

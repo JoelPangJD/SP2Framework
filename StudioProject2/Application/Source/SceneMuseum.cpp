@@ -266,11 +266,12 @@ void SceneMuseum::Update(double dt)
 	if (ShowPreview == false || CorrectAnswer == true)
 	{
 		Application::enableMouse = false;
-		camera.Update(dt);
 		//check for wall detection
-		for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
 		{
-			(*it)->solidCollisionBox(camera.position);
+			camera.Updatepos(dt); //Updates to the position all happen before updates to the view
+			for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
+				(*it)->solidCollisionBox(camera.position);
+			camera.Updateview(dt); //Updates the view after the processing of all the collisions
 		}
 	
 	}
