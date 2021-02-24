@@ -228,8 +228,8 @@ void SceneMain::Init()
 	}
 	pass = false;
 	
-	items.push_back(new InteractableObject(Vector3(-2, 2, 0), 0, 2, 4, "Mr.Sazz"));
-	items.push_back(new InteractableObject(Vector3(6, 1, 5), 0, 2, 3, "Andy"));
+	items.push_back(new InteractableObject(Vector3(-2, 2, 0), 0, 2, 4, "Mr.Sazz", "Mr. Sazz", false));
+	items.push_back(new InteractableObject(Vector3(6, 1, 5), 0, 2, 3, "Andy", "Andy", false));
 
 	//wall.push_back(new Terrain(Vector3(26, 0, 0), 0, 1, 50, 1, "wall"));
 	wall.push_back(new Terrain(Vector3(35, 0, 0), 0, 0, 0, 20, 100.f, "Wall"));
@@ -250,13 +250,8 @@ void SceneMain::Init()
 void SceneMain::Update(double dt)
 {
 	fps = 1.f / dt;
-	if (!inDialogue)//Don't move while in a dialogue
-	{
-		camera.Updatepos(dt); //Updates to the position all happen before updates to the view
-		for (std::vector<Terrain*>::iterator it = wall.begin(); it != wall.end(); it++)
-			(*it)->solidCollisionBox(camera.position);
-		camera.Updateview(dt); //Updates the view after the processing of all the collisions
-	}
+	movement(camera,wall,dt);
+	interact(camera, items);
 	if (cooldown > 0) {
 		cooldown -= dt;
 	}
@@ -1007,8 +1002,7 @@ void SceneMain::Render()
 	RenderMesh(meshList[Lamp], true);
 	modelStack.PopMatrix();
 	
-	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
-	RenderUI();
+	Scene::RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 
 	if (minigameMuseum == true) {
 		RenderMinigame();

@@ -260,7 +260,7 @@ void Scene::interact(Camera3 camera, vector<InteractableObject*>& items)
 		int counter = 0;
 		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 		{
-			if ((*it)->spherecollider(camera.target)) // Checks if the target is within a radius of the stick
+			if ((*it)->spherecollider(camera.target) && !indialogue) // Checks if the target is within a radius of an item and not in a dialogue
 			{
 				if (Application::IsKeyPressed('F'))// F is look at
 				{
@@ -270,18 +270,28 @@ void Scene::interact(Camera3 camera, vector<InteractableObject*>& items)
 				}
 				if (Application::IsKeyPressed('G'))// G is pick up
 				{
-					inventory.additem((*it));
-					items.erase(items.begin() + counter);
-					break;
+					if ((*it)->getpickupable() == true)
+					{
+						inventory.additem((*it));
+						items.erase(items.begin() + counter);
+						break;
+					}
+					else //If cannot pick up item, a dialogue box show is that tells them that they can't do so
+					{
+						dialogue.push_back("1I can't do that.");
+						currentline = dialogue.begin(); 
+						name = "";
+						indialogue = true;
+					}
 				}
 				if (Application::IsKeyPressed('T')) //T is talk to
 				{
 					dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
 					currentline = dialogue.begin(); //Currentline iteratior as the first line of dialogue
-					name = (*it)->gettype(); //Set the name of the npc the player talks to
+					name = (*it)->getname(); //Set the name of the npc the player talks to
 					indialogue = true;//Set state to in dialogue
 				}
-				interacttext << (*it)->gettype();
+				interacttext << (*it)->getname();
 				break;
 			}
 			counter++;

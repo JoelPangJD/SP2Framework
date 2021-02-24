@@ -12,19 +12,17 @@ protected:
 
 private:
 	string type;
+	string name;
 	//Vector3 position;
 	float scale;
 	float angle;
 	float radius; //radius of the circle collider
 	float height, xwidth, zwidth;	//scaling of hitbox
 public:
-	Vector3 position;
 	Entity();
 	~Entity();
-	Entity(Vector3 position, float scale, float angle, float radius, string type);
-	Entity(Vector3 position, float scale, float angle, float height, float width, string type);
-	Entity(Vector3 position, float scale, float angle, float height, float xwidth, float zwidth, string type);
 
+	Vector3 position;
 	//Getters
 	Vector3 getposition();
 	float getscale();
@@ -34,6 +32,7 @@ public:
 	float getxwidth();
 	float getzwidth();
 	string gettype();
+	string getname();
 
 	//Setters 
 	void setposition(Vector3 position);
@@ -44,6 +43,7 @@ public:
 	void setxwidth(float xwidth);
 	void setzwidth(float zwidth);
 	void settype(string type);
+	void setname(string name);
 
 	void moveentity(int direction, float speed, double dt);
 	bool spherecollider(Vector3 position);

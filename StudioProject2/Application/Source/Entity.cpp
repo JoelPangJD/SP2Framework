@@ -9,37 +9,6 @@ Entity::Entity()
 	type = "";
 }
 
-Entity::Entity(Vector3 position, float scale, float angle, float radius, string type)
-{
-	this->position = position;
-	this->scale = scale;
-	this->angle = angle;
-	this->radius = radius;
-	this->type = type;
-}
-
-Entity::Entity(Vector3 position, float scale, float angle, float height, float width, string type)
-{
-	this->position = position;
-	this->scale = scale;
-	this->angle = angle;
-	this->radius = radius;
-	this->height = height;
-	xwidth = width;
-	zwidth = width;
-	this->type = type;
-}
-Entity::Entity(Vector3 position, float scale, float angle, float height, float xwidth, float zwidth, string type)
-{
-	this->position = position;
-	this->scale = scale;
-	this->angle = angle;
-	this->height = height;
-	this->xwidth = xwidth;
-	this->zwidth = zwidth;
-	this->type = type;
-}
-
 Entity::~Entity()
 {
 }
@@ -123,9 +92,19 @@ string Entity::gettype()
 	return type;
 }
 
+string Entity::getname()
+{
+	return name;
+}
+
 void Entity::settype(string type)
 {
 	this->type = type;
+}
+
+void Entity::setname(string name)
+{
+	this->name = name;
 }
 
 void Entity::moveentity(int direction, float speed, double dt)
