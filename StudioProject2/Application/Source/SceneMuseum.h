@@ -190,13 +190,14 @@ private:
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
 	void RenderWalls();
-	void RenderUI();
+	void RenderGameUI();
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey);
 
 	void StartGame1();
+	void StartGame2();
 	void StartInteraction();
 	void ExitMuseum();
 	void RenderInteractableText();
