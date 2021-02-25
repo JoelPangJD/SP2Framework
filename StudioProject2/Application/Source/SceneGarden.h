@@ -37,16 +37,10 @@ class SceneGarden : public Scene
 		GEO_FRONT,
 		GEO_BACK,
 
-		//UI
-		GEO_INVENTORY,
-
-		//text 
-		GEO_TEXT,
-		GEO_TEXTBOX,
-		GEO_HEADER,
-
 		//Minigame
 		GEO_YARNBACKGROUND,
+		GEO_PLAYERYARN,
+		GEO_OBJECTIVEYARN,
 
 		//Objs
 		GEO_GRASSFLOOR,
@@ -122,7 +116,7 @@ class SceneGarden : public Scene
 public:
 	Camera3 camera;
 	bool lighton = true;
-	bool hitboxshow = false;
+	bool hitboxshow = true;
 	float cooldown = 0; //cooldown time for actions
 	float fps;
 	//Minigame variables
@@ -166,19 +160,13 @@ private:
 	std::vector<InteractableObject*> items;
 	std::vector<Terrain*> terrains;
 
-	//void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
-	//void RenderUI();
+
 	void Renderminigame1();
 	void Renderminigame2();
 	void Renderfish();
 	bool fishright = true;
 	float fishAngle = 0;
-	//void RenderText(Mesh* mesh, std::string text, Color color);
-	//void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	//void RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int sizey);
-	//void RenderNPCDialogue(std::string NPCText, std::string headerText);
-	//void RenderMinigameScreen(std::string MinigamedescriptionText, std::string headerText, float fontsize);
 };
 
 #endif
