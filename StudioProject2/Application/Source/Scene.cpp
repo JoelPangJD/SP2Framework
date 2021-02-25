@@ -296,6 +296,12 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 	}
 	for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 	{
+		if (MarinaBay)
+		{
+			if ((*it)->gettype() == "badguy2" && currentline + 1 == dialogue.end())	
+				//just returns if its at the end of the dialogue but I still can't think of a better way to do this
+				return "battleStart";
+		}
 		if ((*it)->spherecollider(camera.target) && !indialogue && !ininventory) // Checks if the target is within a radius of an item and not in a dialogue
 		{
 			if (Application::IsKeyPressed('F'))// F is look at
@@ -353,6 +359,8 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 						(*it)->updatedialogue("robot2");
 					else if ((*it)->gettype() == "orc2")
 						(*it)->updatedialogue("orc3");
+					else if ((*it)->gettype() == "badguy")
+						(*it)->updatedialogue("badguy2");
 					else if ((*it)->gettype() == "pool2")
 					{
 						(*it)->updatedialogue("pool");

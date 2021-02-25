@@ -48,6 +48,7 @@ class SceneMarinaBay : public Scene
 		GEO_GIRL,
 		GEO_ORC,
 		GEO_ADVENTURER,
+		GEO_BADGUY,
 
 		//environment
 		GEO_BOAT,
@@ -188,8 +189,11 @@ private:
 	
 	//vars to check whether the attacks have already been added
 	bool bigAdded = false, punchAdded = false, mindAdded = false;
-
-	bool fight = false, fightDia, playerTurn, enemyTurn, fightSelected, itemsSelected, backSelected, attackSelected, actionSelected, attackHit;
+	//vars for when first entering badguy's range
+	bool firstEnter = true;
+	int posZ;
+	//fight vars
+	bool fight = false, fightInit, fightWon, fightLost, fightDia, playerTurn, enemyTurn, fightSelected, itemsSelected, backSelected, attackSelected, actionSelected, attackHit;
 	float cooldownTimer;
 	float pointerX, pointerY, playerHealth, playerHealthPos, playerHealthLost, enemyHealth, enemyHealthPos, enemyHealthLost;
 	//player's
