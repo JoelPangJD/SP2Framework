@@ -1,9 +1,6 @@
-S:\SP2\SP2Framework\StudioProject2\Debug\Common.pdb
-S:\SP2\SP2Framework\StudioProject2\Common\Debug\Common.pdb
-<<<<<<< HEAD
 C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Debug\Common.pdb
 C:\Users\joe_t\source\repos\SP2Framework\StudioProject2\Common\Debug\Common.pdb
-=======
 C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\Common.pdb
 C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Common\Debug\Common.pdb
->>>>>>> c7eec20a5ef4d174686a9e53acefb4c065d45324
+S:\SP2\SP2Framework\StudioProject2\Debug\Common.pdb
+S:\SP2\SP2Framework\StudioProject2\Common\Debug\Common.pdb

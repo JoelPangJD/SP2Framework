@@ -148,7 +148,7 @@ void SceneChangi::Init()
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 
 	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("ground", Color(1, 1, 1), 1.0f);
-	meshList[GEO_QUAD]->textureID = LoadTGA("Image//changiGround.tga");
+	meshList[GEO_QUAD]->textureID = LoadTGA("Image//Changi//changiGround.tga");
 
 	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.5f, 0.2f, 0.0f), 1);
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(0.5, 0.5, 0.5), 10, 10, 10);
@@ -167,17 +167,17 @@ void SceneChangi::Init()
 
 	//Skybox quads
 	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.0f);
-	meshList[GEO_LEFT]->textureID = LoadTGA("Image//cloudBack.tga");
+	meshList[GEO_LEFT]->textureID = LoadTGA("Image//Changi//cloudBack.tga");
 	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.0f);
-	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//cloudFront.tga");
+	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//Changi//cloudFront.tga");
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.0f);
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//cloudRight.tga");
+	meshList[GEO_FRONT]->textureID = LoadTGA("Image//Changi//cloudRight.tga");
 	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.0f);
-	meshList[GEO_BACK]->textureID = LoadTGA("Image//cloudLeft.tga");
+	meshList[GEO_BACK]->textureID = LoadTGA("Image//Changi//cloudLeft.tga");
 	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.0f);
-	meshList[GEO_TOP]->textureID = LoadTGA("Image//cloudUp.tga");
+	meshList[GEO_TOP]->textureID = LoadTGA("Image//Changi//cloudUp.tga");
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
-	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//cloudDown.tga");
+	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//Changi//cloudDown.tga");
 
 	//OBJ
 	meshList[GEO_TOWER] = MeshBuilder::GenerateOBJMTL("tower", "OBJ//Changi//ChangiTower.obj", "OBJ//Changi//ChangiTower.mtl");
@@ -194,8 +194,11 @@ void SceneChangi::Init()
 
 	meshList[GEO_POLICE] = MeshBuilder::GenerateOBJMTL("police", "OBJ//Changi//police.obj", "OBJ//Changi//police.mtl");
 
-	meshList[GEO_DOORMAN] = MeshBuilder::GenerateOBJ("doorman", "OBJ//Changi//doorman.obj");
-	meshList[GEO_DOORMAN]->textureID = LoadTGA("Image//doorman.tga");
+	meshList[GEO_WOMAN] = MeshBuilder::GenerateOBJ("woman", "OBJ//Marina//defaultCharacter.obj");
+	meshList[GEO_WOMAN]->textureID = LoadTGA("Image//Changi//woman.tga");
+
+	meshList[GEO_NPC] = MeshBuilder::GenerateQuad("NPC", Color(1, 1, 1), 1.0f);
+	meshList[GEO_NPC]->textureID = LoadTGA("Image//Changi//womanHead.tga");
 
 	meshList[GEO_MISSILE] = MeshBuilder::GenerateOBJMTL("missile", "OBJ//Changi//missile.obj", "OBJ//Changi//missile.mtl");
 	
@@ -204,6 +207,9 @@ void SceneChangi::Init()
 	meshList[GEO_ROADSPLIT] = MeshBuilder::GenerateOBJMTL("roadSplit", "OBJ//Changi//splitRoad.obj", "OBJ//Changi//splitRoad.mtl");
 	meshList[GEO_ROADL] = MeshBuilder::GenerateOBJMTL("roadL", "OBJ//Changi//roadL.obj", "OBJ//Changi//roadL.mtl");
 	meshList[GEO_ROADARROW] = MeshBuilder::GenerateOBJMTL("roadArrow", "OBJ//Changi//arrowRoad.obj", "OBJ//Changi//arrowRoad.mtl");
+
+	items.push_back(new InteractableObject(Vector3(-100, 0, 60), 0, 2, 30, "Guide", "Guide", false));
+	items.push_back(new InteractableObject(Vector3(-40, 10.3, 72), 0, 2, 20, "stairs", "Stairs", false));
 
 	terrains.push_back(new Terrain(Vector3(-84.8, 10.3, 115), 0, 0, 0, 8, 70, "Wall"));
 	terrains.push_back(new Terrain(Vector3(-84.8, 10.3, -115), 0, 0, 0, 8, 70, "Wall"));
@@ -224,7 +230,7 @@ void SceneChangi::Update(double dt)
 	if (cooldown > 0)
 		cooldown -= dt;
 	movement(camera, terrains, dt);
-	//interact(camera, items);
+	interact(camera, items);
 
 	if (Application::IsKeyPressed('5'))
 	{
@@ -256,12 +262,11 @@ void SceneChangi::Update(double dt)
 			renderStairs = false;
 			renderDoorman = false;
 		}
-	
 	}
 	else
 	{
 		atStairs = false;
-		use = false;
+	    use = false;
 	}
 
 	if (camera.position.x == -18 && camera.position.y == 51 && camera.position.z == 0) {
@@ -342,10 +347,11 @@ void SceneChangi::Render()
 
 	//RenderMeshOnScreen(meshList[GEO_INVENTORY], 40, 20, 30, 30);
 	if (use == true) {
-		camera.position.x = -18;
+		camera.position.x =  -18;
 		camera.position.y = 51;
 		camera.position.z = 0;
 		camera.theta = 180;
+
 	}
 
 
@@ -363,7 +369,7 @@ void SceneChangi::Render()
 	RenderMissile();
 	RenderWords();
 
-	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
+	//RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
 	Scene::RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 }
 
@@ -555,16 +561,6 @@ void SceneChangi::RenderEntity()
 	RenderMesh(meshList[GEO_POLICE], true);
 	modelStack.PopMatrix();
 
-	if (renderDoorman != false) {
-
-		modelStack.PushMatrix();
-		modelStack.Translate(-100, 0, 60);
-		modelStack.Rotate(-90, 0, 1, 0);
-		modelStack.Scale(2, 2, 2);
-		RenderMesh(meshList[GEO_DOORMAN], true);
-		modelStack.PopMatrix();
-	}
-
 	if (renderStairs != false) {
 		modelStack.PushMatrix();
 		modelStack.Translate(-40, 2, 36);
@@ -572,11 +568,16 @@ void SceneChangi::RenderEntity()
 		modelStack.Scale(0.2, 0.2, 0.2);
 		RenderMesh(meshList[GEO_STAIRCAR], true);
 		modelStack.PopMatrix();
+	}
 
-		if (atStairs == true) {
-			RenderTextOnScreen(meshList[GEO_TEXT], "Press E to board the plane! ", Color(1, 0, 0), 4, 3, 7);
-		}
+	if (renderDoorman != false) {
 
+		modelStack.PushMatrix();
+		modelStack.Translate(-100, 0, 60);
+		modelStack.Rotate(-90, 0, 1, 0);
+		//modelStack.Scale(2, 2, 2);
+		RenderMesh(meshList[GEO_WOMAN], true);
+		modelStack.PopMatrix();
 	}
 }
 
@@ -682,6 +683,33 @@ void SceneChangi::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int si
 	glEnable(GL_DEPTH_TEST);
 }
 
+void SceneChangi::RenderNPCDialogue(std::string NPCText, std::string headerText)
+{
+	//float headerTextPos = 4.f;
+	RenderMeshOnScreen(meshList[GEO_HEADER], 14.75, 19.25, 30, 6);
+	//headerText.size()
+	RenderTextOnScreen(meshList[GEO_TEXT], headerText, Color(0, 0, 0), 4, 14.5 - (headerText.size()), 17);	//header text
+	RenderMeshOnScreen(meshList[GEO_TEXTBOX], 40, 8.75, 80, 17.5);
+
+	string word;																	//automating text
+	int wordpos = 0, ypos = 13, last = NPCText.find_last_of(" ");
+	float xpos = 2.f;
+	while (true)
+	{
+		word = NPCText.substr(wordpos, NPCText.find(" ", wordpos + 1) - wordpos);
+		if (xpos + word.length() * 1.5 + 1 > 80)		//if new word will exceed screensize
+		{
+			ypos -= 3;
+			xpos = 2;
+		}
+		RenderTextOnScreen(meshList[GEO_TEXT], word, Color(0, 0, 0), 3, xpos, ypos);
+		if (wordpos > last)
+			break;
+		wordpos += word.length() + 1;
+		xpos += 1.5 * word.length() + 1;
+	}
+}
+
 
 void SceneChangi::RenderRoad()
 {
@@ -724,16 +752,16 @@ void SceneChangi::RenderWords()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-100, 14, 53);
+	modelStack.Translate(-100, 20, 53);
 	modelStack.Rotate(-90, 0, 1, 0);
 	modelStack.Scale(2, 2, 2);
 	RenderText(meshList[GEO_TEXT], "Touch me", Color(1, 0, 0));
 	modelStack.PopMatrix();
 
-	if (welcome == true) {
-		RenderTextOnScreen(meshList[GEO_TEXT], "Welcome to Changi airport! ", Color(1, 0, 0), 4 , 4, 7);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Board the plane for a flight expirence. ", Color(1, 0, 0), 3, 5, 6);
-	}
+	//if (welcome == true) {
+	//	RenderTextOnScreen(meshList[GEO_TEXT], "Welcome to Changi airport! ", Color(1, 0, 0), 4 , 4, 7);
+	//	RenderTextOnScreen(meshList[GEO_TEXT], "Board the plane for a flight expirence. ", Color(1, 0, 0), 3, 5, 6);
+	//}
 
 	//if (atStairs == true) {
 	//	RenderTextOnScreen(meshList[GEO_TEXT], "Press E to board the plane! ", Color(1, 0, 0), 4, 3, 7);
@@ -741,9 +769,9 @@ void SceneChangi::RenderWords()
 
 	if (gameStart == true) {
 		RenderTextOnScreen(meshList[GEO_TEXT], "WARNING!!! ", Color(1, 0, 0), 8, 3, 6);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Unidentified aircraft has been detected", Color(1, 0, 0), 3.5, 2, 12);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Send Help :<", Color(1, 0, 0), 8, 2, 4.2);
-		RenderTextOnScreen(meshList[GEO_TEXT], "[F] to take flight ", Color(1, 0, 0), 5, 3.3, 2);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Unidentified projectile has been detected", Color(1, 0, 0), 3.5, 2, 12);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Dodge incoming enemy missiles", Color(1, 0, 0), 4, 3, 7);
+		RenderTextOnScreen(meshList[GEO_TEXT], "[F] to take off ", Color(1, 0, 0), 5, 3.5, 2);
 		
 		if (Application::IsKeyPressed('F') )
 		{
@@ -758,7 +786,7 @@ void SceneChangi::RenderWords()
 	}
 
 	if (gameEnd == true) {
-		RenderTextOnScreen(meshList[GEO_TEXT], "Nice U make it out ", Color(1, 0, 0), 4, 4, 7);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Goodjob, you make it out.", Color(1, 0, 0), 4, 4, 7);
 	}
 }
 

@@ -11,6 +11,7 @@
 #include <iostream>
 #include <sstream>
 #include <math.h>
+#include "InteractableObject.h"
 
 class SceneChangi : public Scene
 {
@@ -40,7 +41,8 @@ class SceneChangi : public Scene
 		GEO_AMBULANCE,
 		GEO_FIRETRUCK,
 		GEO_POLICE,
-		GEO_DOORMAN,
+		GEO_WOMAN,
+		GEO_NPC,
 		GEO_MISSILE,
 		GEO_STRAIGHT,
 		GEO_ROADL,
@@ -49,6 +51,8 @@ class SceneChangi : public Scene
 		GEO_PLANE,
 		GEO_INVENTORY,
 		GEO_TEXT,
+		GEO_HEADER,
+		GEO_TEXTBOX,
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE
@@ -104,6 +108,7 @@ public:
 	bool use;
 	bool renderStairs = true;
 	bool renderDoorman = true;
+	bool renderNpc;
 	bool welcome;
 	bool atStairs;
 	bool gameStart;
@@ -120,6 +125,8 @@ public:
 	float minimize;
 		
 	float scale = 1;
+
+
 
 	SceneChangi();
 	SceneChangi(Inventory* inventory);
@@ -138,6 +145,7 @@ private:
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
 
+	std::vector<InteractableObject*> items;
 	std::vector<Terrain*> terrains;
 
 	void RenderMesh(Mesh* mesh, bool enableLight);
@@ -151,6 +159,7 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
+	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 
 };
 
