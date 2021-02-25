@@ -201,7 +201,7 @@ void SceneMain::Init()
 
 	inFrontofMuseum = inFrontofChangi = inFrontofGarden = inFrontofMarina = false;
 	minigameMuseum = false;
-	firstEnter = true;
+	firstEnter = firstRender = true;
 
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
@@ -284,8 +284,16 @@ void SceneMain::Update(double dt)
 	}
 
 	if (Application::IsKeyPressed('E')) {
+		if (firstEnter) {
+			firstEnter = false;
+		}
+		if ((firstRender) && (minigameMuseum) && (cooldown <= 0)) {
+			firstRender = false;
+		}
+
 		if (inFrontofMuseum == true) {
 			minigameMuseum = true;
+			cooldown = 0.5;
 		}
 		else if (inFrontofChangi) {
 			Application::SwitchScene = 2;
@@ -295,9 +303,6 @@ void SceneMain::Update(double dt)
 		}
 		else if (inFrontofGarden) {
 			Application::SwitchScene = 4;
-		}
-		if (firstEnter){
-			firstEnter = false;
 		}
 	}
 	if ((camera.position.x >= 18) && (camera.position.x <= 27.5) && (camera.position.z >= -3) && (camera.position.z <= 3)) {
@@ -330,35 +335,7 @@ void SceneMain::Update(double dt)
 		updateMinigame(dt);
 	}
 
-	//if (minigameChangi == true) {
-	//	Application::enableMouse = true;
-	//	if (pass == true) {
-	//		minigameChangi = false;
-	//		Application::enableMouse = false;
-	//		Application::SwitchScene = 2;
-	//	}
-	//	updateMinigame(dt);
-	//}
 
-	//if (minigameMarina == true) {
-	//	Application::enableMouse = true;
-	//	if (pass == true) {
-	//		minigameMarina = false;
-	//		Application::enableMouse = false;
-	//		Application::SwitchScene = 3;
-	//	}
-	//	updateMinigame(dt);
-	//}
-
-	//if (minigameGarden == true) {
-	//	Application::enableMouse = true;
-	//	if (pass == true) {
-	//		minigameGarden = false;
-	//		Application::enableMouse = false;
-	//		Application::SwitchScene = 4;
-	//	}
-	//	updateMinigame(dt);
-	//}
 }
 
 
@@ -417,31 +394,36 @@ void SceneMain::RenderSkybox()
 
 void SceneMain::RenderMinigame()
 {
-	RenderMeshOnScreen(meshList[Panel], 40, 30, 7, 5, modelStack, viewStack, projectionStack, m_parameters);
-	int width, height;
-	width = height = 15;
-	RenderTextOnScreen(meshList[GEO_TEXT], "Turn all squares", Color(0, 0, 0), 2.2, 7, 50, modelStack, viewStack, projectionStack, m_parameters);
-	RenderTextOnScreen(meshList[GEO_TEXT], "Green to enter", Color(0, 0, 0), 2.2, 7, 46, modelStack, viewStack, projectionStack, m_parameters);
-	RenderTextOnScreen(meshList[GEO_TEXT], "the museum.", Color(0, 0, 0), 2.2, 7, 42, modelStack, viewStack, projectionStack, m_parameters);
-	for (int i = 0; i < 9; i++) {
+	if (firstRender) {
+		RenderMinigameIntro("Click on the squares to make them change colour. Convert all of them to green to enter the museum.", "Security", 3, modelStack, viewStack, projectionStack, m_parameters);
+	}
+	else {
+		RenderMeshOnScreen(meshList[Panel], 40, 30, 7, 5, modelStack, viewStack, projectionStack, m_parameters);
+		int width, height;
+		width = height = 15;
+		RenderTextOnScreen(meshList[GEO_TEXT], "Turn all squares", Color(0, 0, 0), 2.2, 7, 50, modelStack, viewStack, projectionStack, m_parameters);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Green to enter", Color(0, 0, 0), 2.2, 7, 46, modelStack, viewStack, projectionStack, m_parameters);
+		RenderTextOnScreen(meshList[GEO_TEXT], "the museum.", Color(0, 0, 0), 2.2, 7, 42, modelStack, viewStack, projectionStack, m_parameters);
+		for (int i = 0; i < 9; i++) {
 
-		if ((i == 3) || (i == 4) || (i == 5)) {
-			height = 16;
-		}
-		else {
-			height = 15;
-		}
-		if ((i == 1) || (i == 4) || (i == 7)) {
-			width = 16;
-		}
-		else {
-			width = 15;
-		}
-		if (colorGrid[i] == "Red") {
-			RenderMeshOnScreen(meshList[Red], grids[i]->x, grids[i]->y, width, height, modelStack, viewStack, projectionStack, m_parameters);
-		}
-		else if (colorGrid[i] == "Green") {
-			RenderMeshOnScreen(meshList[Green], grids[i]->x, grids[i]->y, width, height, modelStack, viewStack, projectionStack, m_parameters);
+			if ((i == 3) || (i == 4) || (i == 5)) {
+				height = 16;
+			}
+			else {
+				height = 15;
+			}
+			if ((i == 1) || (i == 4) || (i == 7)) {
+				width = 16;
+			}
+			else {
+				width = 15;
+			}
+			if (colorGrid[i] == "Red") {
+				RenderMeshOnScreen(meshList[Red], grids[i]->x, grids[i]->y, width, height, modelStack, viewStack, projectionStack, m_parameters);
+			}
+			else if (colorGrid[i] == "Green") {
+				RenderMeshOnScreen(meshList[Green], grids[i]->x, grids[i]->y, width, height, modelStack, viewStack, projectionStack, m_parameters);
+			}
 		}
 	}
 
@@ -470,23 +452,6 @@ void SceneMain::updateMinigame(double dt)
 		}
 	}
 
-	/*static bool bLButtonState1 = false;
-	if (!bLButtonState1 && Application::IsMousePressed(0))
-	{
-		bLButtonState1 = true;
-
-		double x, y;
-		Application::GetCursorPos(&x, &y);
-		unsigned w = Application::GetWindowWidth();
-		unsigned h = Application::GetWindowHeight();
-		float posX = x / 10;
-		float posY = 60 - y / 10;
-		std::cout << posX << " " << posY << "\n";
-	}
-	else if (bLButtonState1 && !Application::IsMousePressed(0))
-	{
-		bLButtonState1 = false;
-	}*/
 }
 
 

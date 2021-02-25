@@ -118,7 +118,7 @@ private:
 
 	bool inFrontofMuseum, inFrontofChangi, inFrontofMarina, inFrontofGarden;
 	bool minigameMuseum/*, minigameChangi, minigameMarina, minigameGarden*/;
-	bool firstEnter;
+	bool firstEnter, firstRender;
 
 	void RenderSkybox();
 
