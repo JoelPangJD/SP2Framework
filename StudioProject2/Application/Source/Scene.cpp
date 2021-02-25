@@ -15,8 +15,10 @@ Scene::Scene()
 	baseMeshList[GEO_TEXTBOX]->textureID = LoadTGA("Image//Marina//textbox.tga");
 	baseMeshList[GEO_HEADER] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
 	baseMeshList[GEO_HEADER]->textureID = LoadTGA("Image//Marina//header.tga");
-	baseMeshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
+	baseMeshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("inventory", Color(1, 1, 1), 1.0f);
 	baseMeshList[GEO_INVENTORY]->textureID = LoadTGA("Image//inventory.tga");
+	baseMeshList[GEO_ACTIONS] = MeshBuilder::GenerateQuad("inventory", Color(1, 1, 1), 1.0f);
+	baseMeshList[GEO_ACTIONS]->textureID = LoadTGA("Image//actions.tga");
 
 }
 
@@ -94,11 +96,14 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 		{
 			RenderTextOnScreen(baseMeshList[GEO_TEXT], (*it)->gettype(), Color(0, 0, 0), 2, 2, ypos, modelStack, viewStack, projectionStack, m_parameters);
 			ypos -= 2;
-
 		}
 		std::ostringstream ss;
 		ss << "FPS: " << fps;
 		RenderTextOnScreen(baseMeshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 58, 68, modelStack, viewStack, projectionStack, m_parameters);
+		if (interacttext.str() != "")
+		{
+			RenderMeshOnScreen(baseMeshList[GEO_ACTIONS], 12, 10, 25, 25, modelStack, viewStack, projectionStack, m_parameters);
+		}
 		RenderTextOnScreen(baseMeshList[GEO_TEXT], interacttext.str(), Color(0.5, 0.5, 0.5), 5, 40 - (interacttext.str().length()), 30, modelStack, viewStack, projectionStack, m_parameters);
 		interacttext.str("");
 	}
@@ -219,11 +224,11 @@ void Scene::RenderNPCDialogue(std::string NPCText, std::string headerText, MS mo
 	}
 }
 
-void Scene::RenderMinigameIntro(std::string MinigamedescriptionText, std::string headerText, float fontsize, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[])
+void Scene::RenderMinigameIntro(std::string MinigamedescriptionText, std::string MinigamenameText, float fontsize, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[])
 {
 	RenderMeshOnScreen(baseMeshList[GEO_TEXTBOX], 40, 30, 80, 50, modelStack, viewStack, projectionStack, m_parameters);
 	RenderMeshOnScreen(baseMeshList[GEO_HEADER], 40, 57, 60, 8, modelStack, viewStack, projectionStack, m_parameters);
-	RenderTextOnScreen(baseMeshList[GEO_TEXT], headerText, Color(0, 0, 0), 6, 38 - (headerText.size() * 1.5), 54, modelStack, viewStack, projectionStack, m_parameters);	//header text
+	RenderTextOnScreen(baseMeshList[GEO_TEXT], MinigamenameText, Color(0, 0, 0), 6, 38 - (MinigamenameText.size() * 1.5), 54, modelStack, viewStack, projectionStack, m_parameters);	//header text
 	string word;																	//automating text
 	int wordpos = 0, ypos = 50 - fontsize, last = MinigamedescriptionText.find_last_of(" ");
 	float xpos = 2.f;
