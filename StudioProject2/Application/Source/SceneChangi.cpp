@@ -208,7 +208,7 @@ void SceneChangi::Init()
 	meshList[GEO_ROADL] = MeshBuilder::GenerateOBJMTL("roadL", "OBJ//Changi//roadL.obj", "OBJ//Changi//roadL.mtl");
 	meshList[GEO_ROADARROW] = MeshBuilder::GenerateOBJMTL("roadArrow", "OBJ//Changi//arrowRoad.obj", "OBJ//Changi//arrowRoad.mtl");
 
-	items.push_back(new InteractableObject(Vector3(-100, 0, 60), 0, 2, 30, "Guide", "Guide", false));
+	items.push_back(new InteractableObject(Vector3(-100, 0, 60), 0, 2, 20, "Guide", "Guide", false));
 	items.push_back(new InteractableObject(Vector3(-40, 10.3, 72), 0, 2, 20, "stairs", "Stairs", false));
 
 	terrains.push_back(new Terrain(Vector3(-84.8, 10.3, 115), 0, 0, 0, 8, 70, "Wall"));
@@ -254,7 +254,7 @@ void SceneChangi::Update(double dt)
 	else if (Application::IsKeyPressed('X'))
 		lighton = true;
 
-	if (camera.position.x <= -30 && camera.position.x >= -50 && camera.position.z > 60 && camera.position.z < 75) {
+	if (camera.position.x <= -30 && camera.position.x >= -50 && camera.position.z > 60 && camera.position.z < 90) {
 		atStairs = true;
 		if (Application::IsKeyPressed('E'))
 		{
@@ -285,7 +285,7 @@ void SceneChangi::Update(double dt)
 		welcome = false;
 	}
 
-	if (camera.position.x == -3000)
+	if (camera.position.x == -2800)
 	{
 		gameEnd = true;
 	}
@@ -776,7 +776,7 @@ void SceneChangi::RenderWords()
 		if (Application::IsKeyPressed('F') )
 		{
 
-			camera.position.x = -18;
+			camera.position.x = 100;
 			camera.position.y = 260;
 			camera.position.z = 0;
 			camera.phi = -90;
