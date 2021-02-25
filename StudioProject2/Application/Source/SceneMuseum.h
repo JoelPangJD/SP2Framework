@@ -13,6 +13,7 @@
 #include "Terrain.h"
 #include "InteractableObject.h"
 #include "Inventory.h"
+#include "Button.h"
 
 class SceneMuseum : public Scene
 {
@@ -134,6 +135,8 @@ public:
 
 private:
 	Camera3 GameCam1;
+	Button button;
+	Button button2;
 	MS modelStack, viewStack, projectionStack; //The matrix stacks
 	unsigned m_parameters[U_TOTAL];
 	unsigned m_vertexArrayID;
@@ -166,8 +169,6 @@ private:
 	//Enable mouse
 	bool MousePreview = false;
 
-	bool ShowPreview = false;
-	bool ShowFirstGame = false;
 	bool GameTisPressed = false;
 	bool QuitGame1 = true;
 	bool RenderingMesh = false;
@@ -178,6 +179,8 @@ private:
 	bool CorrectAnswer = false;
 
 	//1st game
+	bool ShowPreview = false;
+	bool ShowFirstGame = false;
 	void StartGame1();
 	bool EndGame1 = false;
 	bool Continue = false;

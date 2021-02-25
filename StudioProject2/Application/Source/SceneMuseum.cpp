@@ -278,6 +278,26 @@ void SceneMuseum::Init()
 	meshList[GEO_GROUND] = MeshBuilder::GenerateQuad("ground", Color(1, 1, 1), 1.0f);
 	meshList[GEO_GROUND]->textureID = LoadTGA("Image//Museum//wood.tga");
 
+	//Button for exit museum
+	button.positionX = 40.7;
+	button.positionY = 34.4;
+	button.width = 10.8;
+	button.height = 18.5;
+	button.active = true;
+	button.hold = false;
+
+
+
+
+	button2.positionX = 58.9;
+	button2.positionY = 0.5;
+	button2.width = 17.9;
+	button2.height = 17.4;
+	button2.active = true;
+	button2.hold = false;
+
+
+
 }
 
 
@@ -299,97 +319,123 @@ void SceneMuseum::Update(double dt)
 		}
 
 	}
-
 	if (MousePreview == true)
 	{
-		//Mouse Inputs
-		static bool bLButtonState = false;
-		int BUTTON_TOP = 52.9;
-		int BUTTON_BOTTOM = 34.4;
-		int BUTTON_LEFT = 40.7;
-		int BUTTON_RIGHT = 51.5;
-
-		int HOLDBUTTON_TOP = 18;
-		int HOLDBUTTON_BOTTOM = 0.6;
-		int HOLDBUTTON_LEFT = 58.8;
-		int HOLDBUTTON_RIGHT = 76.5;
-		if (Application::IsMousePressed(0))
+		if (EndGame1 == false)
 		{
-			bLButtonState = true;
-			std::cout << "LBUTTON DOWN" << std::endl;
-			//Converting Viewport space to UI space
-			double x, y;
-			Application::GetCursorPos(&x, &y);
-			unsigned w = Application::GetWindowWidth();
-			unsigned h = Application::GetWindowHeight();
-			float posX = x / 10; //convert (0,800) to (0,80)
-			float posY = 60 - y / 10;//convert (600,0) to (0,60)
-			std::cout << "posX:" << posX << " , posY:" << posY << std::endl;
-			if (EndGame1 == false)
+			button.updateButton();
+			if (button.clickedOn)
 			{
-				if (posX > BUTTON_LEFT && posX < BUTTON_RIGHT && posY > BUTTON_BOTTOM && posY < BUTTON_TOP)
-				{
-					Application::enableMouse = false;
-					CorrectAnswer = true;
-					terrains.erase(terrains.begin() + 19);
-					ShowFirstGame = false;
-					Continue = true;
-					indialogue = false;
-					std::cout << "Hit!" << std::endl;
-					//trigger user action or function
-				}
-			}
-			else if (posX > HOLDBUTTON_LEFT && posX < HOLDBUTTON_RIGHT && posY > HOLDBUTTON_BOTTOM && posY < HOLDBUTTON_TOP)
-			{
-				if (Application::IsMousePressed(0))
-				{
-					AddSize += 10 * dt;
-					MoveX += (10 * dt) / 2;
-					std::cout << "AddSize = " << AddSize << std::endl;
-					std::cout << "MoveX = " << MoveX << std::endl;
-
-					if (MoveX > 36.9 && AddSize > 73)
-					{
-						ShowHoldingGame = false;
-						MousePreview = false;
-						Application::SwitchScene = 0;
-						////Adding Box to inventory (IGNORE FIRST)
-						//for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
-						//{
-						//	if ((*it)->gettype() == "box")
-						//	{
-						//		inventory.additem((*it));
-						//		items.erase(items.begin() + 2);
-						//		break;
-						//	}
-						//}
-					}
-
-				}
+				Application::enableMouse = false;
+				CorrectAnswer = true;
+				terrains.erase(terrains.begin() + 19);
+				ShowFirstGame = false;
+				Continue = true;
+				indialogue = false;
 				std::cout << "Hit!" << std::endl;
 			}
-			else
+		}
+		if (EndGame2 == false && EndGame1 == true)
+		{
+			button2.updateButton();
+			if (button2.hold)
 			{
-				std::cout << "Miss!" << std::endl;
+				AddSize += 10 * dt;
+				MoveX += (10 * dt) / 2;
+				std::cout << "AddSize = " << AddSize << std::endl;
+				std::cout << "MoveX = " << MoveX << std::endl;
+
+				if (MoveX > 36.9 && AddSize > 73)
+				{
+					ShowHoldingGame = false;
+					MousePreview = false;
+					Application::SwitchScene = 0;
+				}
 			}
 		}
-		else if (bLButtonState && !Application::IsMousePressed(0))
-		{
-			bLButtonState = false;
-			std::cout << "LBUTTON UP" << std::endl;
-		}
-		static bool bRButtonState = false;
-		if (!bRButtonState && Application::IsMousePressed(1))
-		{
-			bRButtonState = true;
-			std::cout << "RBUTTON DOWN" << std::endl;
-		}
-		else if (bRButtonState && !Application::IsMousePressed(1))
-		{
-			bRButtonState = false;
-			std::cout << "RBUTTON UP" << std::endl;
-		}
+
 	}
+
+	//if (MousePreview == true)
+	//{
+	//	//Mouse Inputs
+	//	static bool bLButtonState = false;
+	//	int BUTTON_TOP = 52.9;
+	//	int BUTTON_BOTTOM = 34.4;
+	//	int BUTTON_LEFT = 40.7;
+	//	int BUTTON_RIGHT = 51.5;
+
+	//	int HOLDBUTTON_TOP = 18;
+	//	int HOLDBUTTON_BOTTOM = 0.6;
+	//	int HOLDBUTTON_LEFT = 58.8;
+	//	int HOLDBUTTON_RIGHT = 76.5;
+	//	if (Application::IsMousePressed(0))
+	//	{
+	//		bLButtonState = true;
+	//		std::cout << "LBUTTON DOWN" << std::endl;
+	//		//Converting Viewport space to UI space
+	//		double x, y;
+	//		Application::GetCursorPos(&x, &y);
+	//		unsigned w = Application::GetWindowWidth();
+	//		unsigned h = Application::GetWindowHeight();
+	//		float posX = x / 10; //convert (0,800) to (0,80)
+	//		float posY = 60 - y / 10;//convert (600,0) to (0,60)
+	//		std::cout << "posX:" << posX << " , posY:" << posY << std::endl;
+	//		if (EndGame1 == false)
+	//		{
+	//			if (posX > BUTTON_LEFT && posX < BUTTON_RIGHT && posY > BUTTON_BOTTOM && posY < BUTTON_TOP)
+	//			{
+	//				Application::enableMouse = false;
+	//				CorrectAnswer = true;
+	//				terrains.erase(terrains.begin() + 19);
+	//				ShowFirstGame = false;
+	//				Continue = true;
+	//				indialogue = false;
+	//				std::cout << "Hit!" << std::endl;
+	//				//trigger user action or function
+	//			}
+	//		}
+	//		else if (posX > HOLDBUTTON_LEFT && posX < HOLDBUTTON_RIGHT && posY > HOLDBUTTON_BOTTOM && posY < HOLDBUTTON_TOP)
+	//		{
+	//			if (Application::IsMousePressed(0))
+	//			{
+	//				AddSize += 10 * dt;
+	//				MoveX += (10 * dt) / 2;
+	//				std::cout << "AddSize = " << AddSize << std::endl;
+	//				std::cout << "MoveX = " << MoveX << std::endl;
+
+	//				if (MoveX > 36.9 && AddSize > 73)
+	//				{
+	//					ShowHoldingGame = false;
+	//					MousePreview = false;
+	//					Application::SwitchScene = 0;
+	//				}
+
+	//			}
+	//			std::cout << "Hit!" << std::endl;
+	//		}
+	//		else
+	//		{
+	//			std::cout << "Miss!" << std::endl;
+	//		}
+	//	}
+	//	else if (bLButtonState && !Application::IsMousePressed(0))
+	//	{
+	//		bLButtonState = false;
+	//		std::cout << "LBUTTON UP" << std::endl;
+	//	}
+	//	static bool bRButtonState = false;
+	//	if (!bRButtonState && Application::IsMousePressed(1))
+	//	{
+	//		bRButtonState = true;
+	//		std::cout << "RBUTTON DOWN" << std::endl;
+	//	}
+	//	else if (bRButtonState && !Application::IsMousePressed(1))
+	//	{
+	//		bRButtonState = false;
+	//		std::cout << "RBUTTON UP" << std::endl;
+	//	}
+	//}
 
 	if (Application::IsKeyPressed('5'))
 	{
@@ -946,7 +992,7 @@ void SceneMuseum::StartInteraction()
 			GameCam1 = camera;
 			//Application::enableMouse = true;
 			//Goes to some orange background to view image
-			camera.Init(Vector3(-100, 10, 10), Vector3(220.717, 5, 241.881), Vector3(0, 1, 0));
+			camera.Init(Vector3(-260, 10, 10), Vector3(220.717, 5, 241.881), Vector3(0, 1, 0));
 			RenderMeshOnScreen(meshList[GEO_PIC], 40, 30, 80, 65);
 			RenderMeshOnScreen(meshList[GEO_BOX], 4 + MoveX, 29, 3 + AddSize, 8.9);
 		}
