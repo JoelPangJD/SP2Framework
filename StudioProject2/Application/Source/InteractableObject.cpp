@@ -58,9 +58,14 @@ void InteractableObject::updatedialogue(string type)
 {
 	settype(type);
 	dialogue.clear();
+	readfromfile("Itemdialogue.txt", dialogue);
+}
+
+void InteractableObject::updatedescription(string type)
+{
+	settype(type);
 	lookat.clear();
 	readfromfile("Itemdescriptions.txt", lookat);
-	readfromfile("Itemdialogue.txt", dialogue);
 }
 
 int InteractableObject::interact()

@@ -78,7 +78,7 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 		RenderNPCDialogue(dialoguetext, currentname, modelStack, viewStack, projectionStack, m_parameters);
 		if (cooldown <= 0 && Application::IsKeyPressed('E')) //Cooldown added to prevent spamming to pass the dialogues too fast
 		{
-			cooldown = 1;
+			cooldown = 0.4f;
 			currentline++;
 			if (currentline == dialogue.end())
 			{
@@ -273,7 +273,7 @@ void Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool Ma
 					currentline = dialogue.begin(); //Currentline is set at the look at description
 					indialogue = true;//Set state to in dialogue
 				}
-				if (Application::IsKeyPressed('G'))// G is pick up
+				else if (Application::IsKeyPressed('G'))// G is pick up
 				{
 					if ((*it)->getpickupable() == true)
 					{
@@ -289,7 +289,7 @@ void Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool Ma
 						indialogue = true;
 					}
 				}
-				if (Application::IsKeyPressed('T')) //T is talk to
+				else if (Application::IsKeyPressed('T')) //T is talk to
 				{
 					dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
 					currentline = dialogue.begin(); //Currentline iteratior as the first line of dialogue
@@ -299,39 +299,46 @@ void Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool Ma
 					{
 						//shortening dialogue to not show the full length when talked to
 						if ((*it)->gettype() == "girl")
+						{
 							(*it)->updatedialogue("girl2");
+							(*it)->updatedescription("girl2");
+						}
 						else if ((*it)->gettype() == "robot")
 							(*it)->updatedialogue("robot2");
 						else if ((*it)->gettype() == "orc2")
 							(*it)->updatedialogue("orc3");
 						else if ((*it)->gettype() == "pool2")
+						{
 							(*it)->updatedialogue("pool");
+							(*it)->updatedescription("pool");
+						}
 						//triggers start of riddle
 						else if ((*it)->gettype() == "adventurer")	
 						{
 							(*it)->updatedialogue("adventurer2");
 							riddleStarted = true;
 						}
-						//triggers riddle being solved
-						else if ((*it)->gettype() == "pool" && riddleStarted)
-						{
-							(*it)->updatedialogue("pool2");
-							riddleSolved = true;
-						}
-						//triggers end of riddle
-						else if ((*it)->gettype() == "adventurer2" && riddleSolved)
-						{
-							(*it)->updatedialogue("adventurer3");
-							inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Sword", "Sword", true));
-							inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Orb", "Orb", true));
-						}
-						//updates dialogue once riddle has been solved
-						else if ((*it)->gettype() == "orc" && riddleSolved)
-							(*it)->updatedialogue("orc2");
 					}
 				}
-				if(interacttext.str() == "") //if the text for highlighted object is empty 
+				else if(interacttext.str() == "") //if the text for highlighted object is empty 
 					interacttext << (*it)->getname();
+				if (MarinaBay == true)
+				{
+					if ((*it)->gettype() == "pool" && riddleStarted)
+					{
+						(*it)->updatedialogue("pool2");
+						(*it)->updatedescription("pool2");
+						riddleSolved = true;
+					}
+					else if ((*it)->gettype() == "adventurer2" && riddleSolved)
+					{
+						(*it)->updatedialogue("adventurer3");
+						inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Sword", "Sword", true));
+						inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Orb", "Orb", true));
+					}
+					else if ((*it)->gettype() == "orc" && riddleSolved)
+						(*it)->updatedialogue("orc2");
+				}
 				break;
 			}
 		}
