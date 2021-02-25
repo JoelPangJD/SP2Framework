@@ -70,6 +70,8 @@ class SceneMuseum : public Scene
 		GEO_BOX,
 		GEO_COLOR,
 		GEO_ITEM1,
+		GEO_KEY,
+		GEO_FLAG,
 		//GROUND MESH
 		GEO_GROUND,
 		NUM_GEOMETRY,
@@ -194,6 +196,7 @@ private:
 
 	//2nd game
 	void StartGame2();
+	bool QisPressed = false;
 	bool EndGame2 = false;
 
 	//void RenderMesh(Mesh* mesh, bool enableLight);

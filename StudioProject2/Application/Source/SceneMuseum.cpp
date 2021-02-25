@@ -243,7 +243,14 @@ void SceneMuseum::Init()
 	meshList[GEO_BOX]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[GEO_BOX]->material.kShininess = 1.f;
 	meshList[GEO_ITEM1] = MeshBuilder::GenerateOBJMTL("Box", "OBJ//Museum//wallBlock.obj", "OBJ//Museum//wallBlock.mtl");
-
+	meshList[GEO_KEY] = MeshBuilder::GenerateOBJMTL("Box", "OBJ//Museum//Key_B_02.obj", "OBJ//Museum//Key_B_02.mtl");
+	meshList[GEO_KEY]->textureID = LoadTGA("Image//Museum//keyB_tx.tga");
+	meshList[GEO_FLAG] = MeshBuilder::GenerateQuad("FLAG", Color(1, 1, 1), 1.0f);
+	meshList[GEO_FLAG]->textureID = LoadTGA("Image//Museum//sg_flag.tga");
+	meshList[GEO_FLAG]->material.kAmbient.Set(0.8f, 0.8f, 0.8f);
+	meshList[GEO_FLAG]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
+	meshList[GEO_FLAG]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
+	meshList[GEO_FLAG]->material.kShininess = 1.f;
 	//VECTORS FOR WALLS TO CHECK HITBOX
 	terrains.push_back(new Terrain(Vector3(45, 0, -119.707), 0, 0, 0, 3, 220.66, "Wall"));
 	terrains.push_back(new Terrain(Vector3(93.77, 0, -243.091), 0, 0, 0, 70.626, 3, "Wall"));
@@ -271,13 +278,15 @@ void SceneMuseum::Init()
 	terrains.push_back(new Terrain(Vector3(97.15, 0, 163.717), 0, 22, 10, 218.204, 3, "Rickshaw hitbox"));
 
 	//Items vector
-	items.push_back(new InteractableObject(Vector3(-210.785, 16.0715, 78.3848), 0, 0, 30, "preview", "preview for gam2", false));
+	items.push_back(new InteractableObject(Vector3(-210.785, 16.0715, 78.3848), 0, 0, 30, "preview", "preview for game2", false));
 	items.push_back(new InteractableObject(Vector3(-283.869, 16.0715, 95.1478), 0, 0, 20, "answer", "to answer", false));
 	items.push_back(new InteractableObject(Vector3(-104.012, 0, 5.04312), 0, 5, 20, "box", "boxy", true));
 	items.push_back(new InteractableObject(Vector3(12.7309, 0, 5.72924), 0, 0.75, 20, "andy", "Andy", false));
 	items.push_back(new InteractableObject(Vector3(268.052, 0, -108.232), 0, 5, 20, "teacher", "Mr tang", false));
 	items.push_back(new InteractableObject(Vector3(90.2891, 20, -210.542), 0, 5, 50, "elephant", "The elephant", false));
 	items.push_back(new InteractableObject(Vector3(97.15, 0, 163.717), 0, 5, 50, "rickshaw", "The Rickshaw", false));
+	items.push_back(new InteractableObject(Vector3(142.895, 2, 77.452), 90, 1, 20, "key", "Mr Tang's Key", true));
+	items.push_back(new InteractableObject(Vector3(192.456, 10, -9.23282), 0, 10, 20, "flag", "Mr Tang's flag", true));
 
 	//Ground mesh
 	meshList[GEO_GROUND] = MeshBuilder::GenerateQuad("ground", Color(1, 1, 1), 1.0f);
@@ -973,6 +982,13 @@ void SceneMuseum::StartGame2()
 	{
 		RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 		interact(camera, items);
+		if (QisPressed)
+		{
+			GameCam1 = camera;
+			//Application::enableMouse = true;
+			//Goes to some orange background to view image
+			camera.Init(Vector3(-260, 10, 10), Vector3(220.717, 5, 241.881), Vector3(0, 1, 0));
+		}
 	}
 }
 
@@ -1335,6 +1351,14 @@ void SceneMuseum::Render()
 		else if ((*it)->gettype() == "teacher")
 		{
 			RenderMesh(meshList[GEO_TEACHER], true, modelStack, viewStack, projectionStack, m_parameters);
+		}
+		else if ((*it)->gettype() == "key")
+		{
+			RenderMesh(meshList[GEO_KEY], true, modelStack, viewStack, projectionStack, m_parameters);
+		}
+		else if ((*it)->gettype() == "flag")
+		{
+			RenderMesh(meshList[GEO_FLAG], true, modelStack, viewStack, projectionStack, m_parameters);
 		}
 		modelStack.PopMatrix();
 	}
