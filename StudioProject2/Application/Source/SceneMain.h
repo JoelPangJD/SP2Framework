@@ -117,7 +117,7 @@ private:
 
 	bool inFrontofMuseum, inFrontofChangi, inFrontofMarina, inFrontofGarden;
 	bool minigameMuseum/*, minigameChangi, minigameMarina, minigameGarden*/;
-	bool firstEnter, firstRender;
+	bool firstEnter, firstRender, walletNotGone;
 
 	void RenderSkybox();
 
@@ -125,10 +125,7 @@ private:
 	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 	void updateMinigame(double dt);
 
-	std::stringstream interactText;
 	bool inDialogue;
-	vector<string> dialogue;
-	vector<string>::iterator currentLine;
 	string name;
 	float cooldown;
 

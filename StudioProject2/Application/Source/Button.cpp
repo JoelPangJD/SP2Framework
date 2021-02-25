@@ -6,6 +6,7 @@ Button::Button()
 	positionX = positionY = width = height = 0;
 	clickedOn = active = false;
 	bLButtonState = true;
+	hold = false;
 }
 
 Button::Button(float positionX, float positionY, float width, float height, bool isActive)
@@ -17,6 +18,7 @@ Button::Button(float positionX, float positionY, float width, float height, bool
 	clickedOn = false;
 	bLButtonState = true;
 	active = isActive;
+	hold = false;
 }
 
 Button::~Button()
@@ -41,6 +43,7 @@ void Button::updateButton()
 			float posY = 60 - y / 10;
 			if (posX > positionX && posX < (positionX + width) && posY > positionY && posY < (positionY + height)) {
 				clickedOn = true;
+				hold = true;
 			}
 			bLButtonState = false;
 		}
@@ -51,6 +54,7 @@ void Button::updateButton()
 		{
 			clickedOn = false;
 			bLButtonState = true;
+			hold = false;
 		}
 	}
 }
