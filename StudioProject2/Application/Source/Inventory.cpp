@@ -13,12 +13,16 @@ Inventory::~Inventory()
 
 InteractableObject* Inventory::getcurrentitem()
 {
-	return *currentitem;
+	return (*currentitem);
 }
 
 int Inventory::getcurrentindex()
 {
-	return (currentitem - storage.begin());
+	if (!storage.empty())
+	{
+		return (currentitem - storage.begin());
+	}
+	return NULL;
 }
 void Inventory::navigateinventory(int direction)
 {
@@ -27,7 +31,7 @@ void Inventory::navigateinventory(int direction)
 		if (direction == 1)
 		{
 			if (currentitem == storage.begin()) //Wrap around if above first item
-				currentitem = storage.end() - 1;
+				currentitem = storage.end();
 			currentitem--;
 		}
 		else if (direction == 2)
@@ -45,15 +49,17 @@ void Inventory::additem(InteractableObject* item)
 	currentitem = storage.begin();
 }
 
-void Inventory::RemoveItem(string Item)
+void Inventory::removeitem(InteractableObject* item)
 {
 	for (std::vector<InteractableObject*>::iterator it = storage.begin(); it != storage.end(); it++)
 	{
-		if ((*it)->gettype() == Item)
+		if ((*it) == item)
 		{
-			storage.erase(storage.begin());
+			storage.erase(storage.begin() + distance(storage.begin(), it));
+			break;
 		}
 	}
+	currentitem = storage.begin();
 }
 
 vector<InteractableObject*> Inventory::getstorage()

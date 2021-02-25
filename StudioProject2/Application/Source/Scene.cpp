@@ -17,8 +17,10 @@ Scene::Scene()
 	baseMeshList[GEO_HEADER]->textureID = LoadTGA("Image//Marina//header.tga");
 	baseMeshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("inventory", Color(1, 1, 1), 1.0f);
 	baseMeshList[GEO_INVENTORY]->textureID = LoadTGA("Image//inventory.tga");
-	baseMeshList[GEO_ACTIONS] = MeshBuilder::GenerateQuad("inventory", Color(1, 1, 1), 1.0f);
+	baseMeshList[GEO_ACTIONS] = MeshBuilder::GenerateQuad("actions", Color(1, 1, 1), 1.0f);
 	baseMeshList[GEO_ACTIONS]->textureID = LoadTGA("Image//actions.tga");
+	baseMeshList[GEO_PRESSE] = MeshBuilder::GenerateQuad("pressE", Color(1, 1, 1), 1.0f);
+	baseMeshList[GEO_PRESSE]->textureID = LoadTGA("Image//pressE.tga");
 
 }
 
@@ -94,8 +96,25 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 		vector<InteractableObject*> inventorycontent = inventory->getstorage();
 		for (std::vector<InteractableObject*>::iterator it = inventorycontent.begin(); it != inventorycontent.end(); it++)
 		{
+			if ((*it) == inventory->getcurrentitem())
+			{
+				RenderMeshOnScreen(baseMeshList[GEO_TEXTBOX], 6, ypos + 1, 10, 2, modelStack, viewStack, projectionStack, m_parameters);
+			}
 			RenderTextOnScreen(baseMeshList[GEO_TEXT], (*it)->gettype(), Color(0, 0, 0), 2, 2, ypos, modelStack, viewStack, projectionStack, m_parameters);
 			ypos -= 2;
+		}
+		if (cooldown <= 0) //Cooldown added to prevent spamming to though inventory too fast
+		{
+			if (Application::IsKeyPressed(VK_UP))
+			{
+				inventory->navigateinventory(1);
+				cooldown = 0.2;
+			}
+			else if (Application::IsKeyPressed(VK_DOWN))
+			{
+				inventory->navigateinventory(2);
+				cooldown = 0.2;
+			}
 		}
 		std::ostringstream ss;
 		ss << "FPS: " << fps;
@@ -206,6 +225,7 @@ void Scene::RenderNPCDialogue(std::string NPCText, std::string headerText, MS mo
 	//headerText.size()
 	RenderTextOnScreen(baseMeshList[GEO_TEXT], headerText, Color(0, 0, 0), 4, 14.5 - (headerText.size()), 17, modelStack, viewStack, projectionStack, m_parameters);	//header text
 	RenderMeshOnScreen(baseMeshList[GEO_TEXTBOX], 40, 8.75, 80, 17.5, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMeshOnScreen(baseMeshList[GEO_PRESSE], 76, 3, 7, 7, modelStack, viewStack, projectionStack, m_parameters);
 	string word;																	//automating text
 	int wordpos = 0, ypos = 13, last = NPCText.find_last_of(" ");
 	float xpos = 2.f;
@@ -265,7 +285,7 @@ void Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool Ma
 	{
 		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 		{
-			if ((*it)->spherecollider(camera.target) && !indialogue) // Checks if the target is within a radius of an item and not in a dialogue
+			if ((*it)->spherecollider(camera.target) && !indialogue && !ininventory) // Checks if the target is within a radius of an item and not in a dialogue
 			{
 				if (Application::IsKeyPressed('F'))// F is look at
 				{
@@ -273,7 +293,7 @@ void Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool Ma
 					currentline = dialogue.begin(); //Currentline is set at the look at description
 					indialogue = true;//Set state to in dialogue
 				}
-				if (Application::IsKeyPressed('G'))// G is pick up
+				else if (Application::IsKeyPressed('G'))// G is pick up
 				{
 					if ((*it)->getpickupable() == true)
 					{
@@ -289,7 +309,15 @@ void Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool Ma
 						indialogue = true;
 					}
 				}
-				if (Application::IsKeyPressed('T')) //T is talk to
+				else if (Application::IsKeyPressed('Q')) //Q is use
+				{
+					if ((*it)->gettype() == "cat" && inventory->getcurrentitem()->gettype() == "fish")//using fish on cat
+					{
+						inventory->removeitem(inventory->getcurrentitem());
+						inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 1, 0, "Marina Bay ticket", "Marina bay ticket", true));
+					}
+				}
+				else if (Application::IsKeyPressed('T')) //T is talk to
 				{
 					dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
 					currentline = dialogue.begin(); //Currentline iteratior as the first line of dialogue

@@ -15,6 +15,7 @@ private:
 		//UI
 		GEO_INVENTORY,
 		GEO_ACTIONS,
+		GEO_PRESSE,
 		//text 
 		GEO_TEXT,
 		GEO_TEXTBOX,
@@ -24,47 +25,47 @@ private:
 
 	enum UNIFORM_TYPE
 	{
-			U_MVP = 0,
-			U_MODELVIEW,
-			U_MODELVIEW_INVERSE_TRANSPOSE,
-			U_MATERIAL_AMBIENT,
-			U_MATERIAL_DIFFUSE,
-			U_MATERIAL_SPECULAR,
-			U_MATERIAL_SHININESS,
-			//Light0
-			U_LIGHT0_POSITION,
-			U_LIGHT0_COLOR,
-			U_LIGHT0_POWER,
-			U_LIGHT0_KC,
-			U_LIGHT0_KL,
-			U_LIGHT0_KQ,
-			U_LIGHTENABLED,
-			U_LIGHT0_TYPE,
-			U_LIGHT0_SPOTDIRECTION,
-			U_LIGHT0_COSCUTOFF,
-			U_LIGHT0_COSINNER,
-			U_LIGHT0_EXPONENT,
-			//Light1
-			U_LIGHT1_POSITION,
-			U_LIGHT1_COLOR,
-			U_LIGHT1_POWER,
-			U_LIGHT1_KC,
-			U_LIGHT1_KL,
-			U_LIGHT1_KQ,
-			U_LIGHT1_TYPE,
-			U_LIGHT1_SPOTDIRECTION,
-			U_LIGHT1_COSCUTOFF,
-			U_LIGHT1_COSINNER,
-			U_LIGHT1_EXPONENT,
+		U_MVP = 0,
+		U_MODELVIEW,
+		U_MODELVIEW_INVERSE_TRANSPOSE,
+		U_MATERIAL_AMBIENT,
+		U_MATERIAL_DIFFUSE,
+		U_MATERIAL_SPECULAR,
+		U_MATERIAL_SHININESS,
+		//Light0
+		U_LIGHT0_POSITION,
+		U_LIGHT0_COLOR,
+		U_LIGHT0_POWER,
+		U_LIGHT0_KC,
+		U_LIGHT0_KL,
+		U_LIGHT0_KQ,
+		U_LIGHTENABLED,
+		U_LIGHT0_TYPE,
+		U_LIGHT0_SPOTDIRECTION,
+		U_LIGHT0_COSCUTOFF,
+		U_LIGHT0_COSINNER,
+		U_LIGHT0_EXPONENT,
+		//Light1
+		U_LIGHT1_POSITION,
+		U_LIGHT1_COLOR,
+		U_LIGHT1_POWER,
+		U_LIGHT1_KC,
+		U_LIGHT1_KL,
+		U_LIGHT1_KQ,
+		U_LIGHT1_TYPE,
+		U_LIGHT1_SPOTDIRECTION,
+		U_LIGHT1_COSCUTOFF,
+		U_LIGHT1_COSINNER,
+		U_LIGHT1_EXPONENT,
 
-			U_NUMLIGHTS,
-			U_COLOR_TEXTURE_ENABLED,
-			U_COLOR_TEXTURE,
-			//Text
-			U_TEXT_ENABLED,
-			U_TEXT_COLOR,
-			U_TOTAL,
-		};
+		U_NUMLIGHTS,
+		U_COLOR_TEXTURE_ENABLED,
+		U_COLOR_TEXTURE,
+		//Text
+		U_TEXT_ENABLED,
+		U_TEXT_COLOR,
+		U_TOTAL,
+	};
 
 	bool riddleStarted = false, riddleSolved = false;	//only for MarinaBay because I can't think of a better method
 public:
@@ -83,6 +84,7 @@ public:
 	//Variables for text
 	std::ostringstream interacttext;
 	bool indialogue = false;
+	bool ininventory = false;
 	vector<string> dialogue;
 	vector<string>::iterator currentline;
 	string name;
@@ -96,7 +98,6 @@ public:
 	void RenderMinigameIntro(std::string MinigamedescriptionText, std::string MinigamenameText, float fontsize, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]); // pass minigame name, description and description font size, try fontsize 6 
 	void movement(Camera3 &camera, vector<Terrain*> terrains, double dt);
 	void interact(Camera3 camera, vector<InteractableObject*>& items, bool MarinaBay = false);	//bool is just so that the other scenes don't waste time checking
-
 };
 
 #endif
