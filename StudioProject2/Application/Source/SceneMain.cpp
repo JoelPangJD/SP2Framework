@@ -200,6 +200,8 @@ void SceneMain::Init()
 	meshList[GEO_BUILDING] = MeshBuilder::GenerateOBJMTL("building", "OBJ//CityCenter//building.obj", "OBJ//CityCenter//building.mtl");
 	meshList[GEO_BUILDING1] = MeshBuilder::GenerateOBJMTL("building1", "OBJ//CityCenter//building1.obj", "OBJ//CityCenter//building1.mtl");
 	meshList[GEO_BUILDING2] = MeshBuilder::GenerateOBJMTL("building2", "OBJ//CityCenter//building2.obj", "OBJ//CityCenter//building2.mtl");
+	meshList[GEO_ROADCURVESTRAIGHT] = MeshBuilder::GenerateOBJMTL("roadcurvestraight", "OBJ//CityCenter//road_curvestraight.obj", "OBJ//CityCenter//road_curvestraight.mtl");
+	meshList[GEO_ROADCURVESTRAIGHTBARRIER] = MeshBuilder::GenerateOBJMTL("roadcurvestraightBarrier", "OBJ//CityCenter//road_curvestraightBarrier.obj", "OBJ//CityCenter//road_curvestraightBarrier.mtl");
 
 
 	inFrontofMuseum = inFrontofChangi = inFrontofGarden = inFrontofMarina = false;
@@ -610,8 +612,8 @@ void SceneMain::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-17.5, 0, 0);
-	modelStack.Scale(20, 5, 5);
+	modelStack.Translate(-25, 0, 0);
+	modelStack.Scale(35, 5, 5);
 	RenderMesh(meshList[GEO_ROADTILESTRAIGHT], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PushMatrix();
 	modelStack.Rotate(90, 0, 1, 0);
@@ -663,15 +665,22 @@ void SceneMain::Render()
 	modelStack.PushMatrix();
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_ROADCROSSBARRIER], true, modelStack, viewStack, projectionStack, m_parameters);
+
+	modelStack.PushMatrix();
+	RenderMesh(meshList[GEO_ROADCROSS], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(0, 0, 0);
+	modelStack.Translate(-47.5, 0, -2.5);
 	modelStack.Scale(5, 5, 5);
-	RenderMesh(meshList[GEO_ROADCROSS], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.Rotate(180, 0, 1, 0);
+	RenderMesh(meshList[GEO_ROADCURVESTRAIGHT], true, modelStack, viewStack, projectionStack, m_parameters);
+
+	modelStack.PushMatrix();
+	RenderMesh(meshList[GEO_ROADCURVESTRAIGHTBARRIER], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
-
-
+	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-7, 0, -30);
