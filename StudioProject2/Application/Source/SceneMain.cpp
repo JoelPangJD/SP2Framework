@@ -201,7 +201,7 @@ void SceneMain::Init()
 
 	inFrontofMuseum = inFrontofChangi = inFrontofGarden = inFrontofMarina = false;
 	minigameMuseum = false;
-	firstEnter = firstRender = true;
+	firstEnter = firstRender = walletNotGone = true;
 
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
@@ -254,9 +254,9 @@ void SceneMain::Init()
 void SceneMain::Update(double dt)
 {
 	fps = 1.f / dt;
-		if ((camera.position.x <= -14) || (!firstEnter) ){
-			movement(camera, wall, dt);
-		}
+	if (!inDialogue){
+		movement(camera, wall, dt);
+	}
 	interact(camera, items);
 	if (cooldown > 0) {
 		cooldown -= dt;
@@ -286,6 +286,8 @@ void SceneMain::Update(double dt)
 	if (Application::IsKeyPressed('E')) {
 		if (firstEnter) {
 			firstEnter = false;
+			inDialogue = false;
+			cooldown = 0.5;
 		}
 		if ((firstRender) && (minigameMuseum) && (cooldown <= 0)) {
 			firstRender = false;
@@ -303,6 +305,10 @@ void SceneMain::Update(double dt)
 		}
 		else if (inFrontofGarden) {
 			Application::SwitchScene = 4;
+		}
+		if ((walletNotGone) && (!firstEnter) && (cooldown <= 0)) {
+			walletNotGone = false;
+			inDialogue = false;
 		}
 	}
 	if ((camera.position.x >= 18) && (camera.position.x <= 27.5) && (camera.position.z >= -3) && (camera.position.z <= 3)) {
@@ -742,7 +748,12 @@ void SceneMain::Render()
 	if (firstEnter == true) {
 		if (camera.position.x > -14) {
 			RenderNPCDialogue("Welcome to the city tour, you can press T to talk to people or interact with objects, F to observe, G to pick up items. Finally you can press E to end or continue the converstaion.", "Mr.Sazz");
+			inDialogue = true;
 		}
+	}
+	if ((walletNotGone) && (!firstEnter) && (cooldown <= 0)) {
+		RenderNPCDialogue("Wait, my pocket is lighter now... My wallet is gone? I have to find my wallet.", "Player Name");
+		inDialogue = true;
 	}
 	
 	RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);

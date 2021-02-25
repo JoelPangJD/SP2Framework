@@ -18,6 +18,7 @@ Button::Button(float positionX, float positionY, float width, float height, bool
 	clickedOn = false;
 	bLButtonState = true;
 	active = isActive;
+	hold = false;
 }
 
 Button::~Button()
