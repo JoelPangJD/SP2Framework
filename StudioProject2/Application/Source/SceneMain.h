@@ -30,24 +30,26 @@ class SceneMain : public Scene
 		GEO_BACK,
 		GEO_INVENTORY,
 		GEO_TEXT,
-		TREE,
-		RoadTileStraight,
-		RoadStraightBarrier,
-		RoadCross,
-		RoadCrossBarrier,
-		Museum,
-		MBS,
-		Changi,
-		Lamp,
-		Sprite,
-		GroundMesh,
-		Panel,
-		Red,
-		Green,
-		Teacher,
-		Friend,
-		Header,
-		Textbox,
+		GEO_TREE,
+		GEO_ROADTILESTRAIGHT,
+		GEO_ROADSTRAIGHTBARRIER,
+		GEO_ROADCROSS,
+		GEO_ROADCROSSBARRIER,
+		GEO_MUSEUM,
+		GEO_MBS,
+		GEO_CHANGI,
+		GEO_LAMP,
+		GEO_GROUNDMESH,
+		GEO_PANEL,
+		GEO_RED,
+		GEO_GREEN,
+		GEO_TEACHER,
+		GEO_FRIEND,
+		GEO_HEADER,
+		GEO_TEXTBOX,
+		GEO_BUILDING,
+		GEO_BUILDING1,
+		GEO_BUILDING2,
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE
@@ -117,7 +119,8 @@ private:
 	Light light[2];
 
 	bool inFrontofMuseum, inFrontofChangi, inFrontofMarina, inFrontofGarden;
-	bool minigameMuseum, minigameChangi, minigameMarina, minigameGarden;
+	bool minigameMuseum/*, minigameChangi, minigameMarina, minigameGarden*/;
+	bool firstEnter, firstRender, walletNotGone;
 
 	void RenderSkybox();
 
@@ -125,10 +128,7 @@ private:
 	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 	void updateMinigame(double dt);
 
-	std::stringstream interactText;
 	bool inDialogue;
-	vector<string> dialogue;
-	vector<string>::iterator currentLine;
 	string name;
 	float cooldown;
 

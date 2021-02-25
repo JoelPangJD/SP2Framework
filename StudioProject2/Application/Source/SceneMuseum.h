@@ -12,6 +12,8 @@
 #include "Entity.h"
 #include "Terrain.h"
 #include "InteractableObject.h"
+#include "Inventory.h"
+#include "Button.h"
 
 class SceneMuseum : public Scene
 {
@@ -38,6 +40,9 @@ class SceneMuseum : public Scene
 		GEO_FRONT,
 		GEO_BACK,
 		GEO_INVENTORY,
+		//FOR NPC
+		GEO_TEACHER,
+		GEO_ANDY,
 		//FOR TEXT
 		GEO_TEXT,
 		GEO_TEXTBOX,
@@ -65,6 +70,8 @@ class SceneMuseum : public Scene
 		GEO_BOX,
 		GEO_COLOR,
 		GEO_ITEM1,
+		GEO_KEY,
+		GEO_FLAG,
 		//GROUND MESH
 		GEO_GROUND,
 		NUM_GEOMETRY,
@@ -130,6 +137,8 @@ public:
 
 private:
 	Camera3 GameCam1;
+	Button button;
+	Button button2;
 	MS modelStack, viewStack, projectionStack; //The matrix stacks
 	unsigned m_parameters[U_TOTAL];
 	unsigned m_vertexArrayID;
@@ -162,8 +171,6 @@ private:
 	//Enable mouse
 	bool MousePreview = false;
 
-	bool ShowPreview = false;
-	bool ShowFirstGame = false;
 	bool GameTisPressed = false;
 	bool QuitGame1 = true;
 	bool RenderingMesh = false;
@@ -174,29 +181,33 @@ private:
 	bool CorrectAnswer = false;
 
 	//1st game
+	bool ShowPreview = false;
+	bool ShowFirstGame = false;
+	void StartGame1();
 	bool EndGame1 = false;
 	bool Continue = false;
 
-	//Interaction
-	bool EndInteraction = false;
-	bool ShowHoldingGame = false;
-
-	//Exit museum
+	//Exit Museum
+	void StartExit();
+	void ExitMuseum();
+	bool EndHoldingGame = false;
+	bool StartTheHoldingGame = false;
 	bool ToExit = false;
 
-	void RenderMesh(Mesh* mesh, bool enableLight);
+	//2nd game
+	void StartGame2();
+	bool QisPressed = false;
+	bool EndGame2 = false;
+
+	//void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
 	void RenderWalls();
-	//void RenderGameUI();
+	void RenderGame1UI();
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey);
 
-	void StartGame1();
-	void StartGame2();
-	void StartInteraction();
-	void ExitMuseum();
 	void RenderInteractableText();
 
 };

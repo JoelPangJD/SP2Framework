@@ -180,7 +180,9 @@ void SceneGarden::Init()
 	meshList[GEO_SPHERE]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
 	meshList[GEO_SPHERE]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[GEO_SPHERE]->material.kShininess = 1.f;
-	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("Lightball", Color(1, 1, 1), 10, 10, 10);
+
+	meshList[GEO_PLAYERYARN] = MeshBuilder::GenerateSphere("playerball", Color(1, 1, 1), 30, 30, 1);
+	meshList[GEO_OBJECTIVEYARN] = MeshBuilder::GenerateSphere("objective", Color(1, 1, 1), 10, 10, 10);
 
 	meshList[GEO_HEMISPHERE] = MeshBuilder::GenerateHemisphere("hemisphere", Color(1, 1, 1), 30, 30, 1);
 	meshList[GEO_CONE] = MeshBuilder::GenerateCone("cone", 1, 20, 30, Color(1, 1, 1));
@@ -232,16 +234,6 @@ void SceneGarden::Init()
 
 	meshList[GEO_YARN] = MeshBuilder::GenerateOBJMTL("yarn", "OBJ//garden//yarn.obj", "OBJ//garden//yarn.mtl");
 
-	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//font.tga");
-	meshList[GEO_TEXTBOX] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
-	meshList[GEO_TEXTBOX]->textureID = LoadTGA("Image//Marina//textbox.tga");
-	meshList[GEO_HEADER] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
-	meshList[GEO_HEADER]->textureID = LoadTGA("Image//Marina//header.tga");
-
-	meshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
-	meshList[GEO_INVENTORY]->textureID = LoadTGA("Image//inventory.tga");
-
 	//Skybox quads
 	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.0f);
 	meshList[GEO_LEFT]->textureID = LoadTGA("Image//garden//gardenleft.tga");
@@ -257,28 +249,28 @@ void SceneGarden::Init()
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//garden//gardenbottom.tga");
 
 	//Creating terrains in the terrains vector
-	terrains.push_back(new Terrain(Vector3(70, 0, 64), 0, 32, 10, 3, 3, "tree1"));
-	terrains.push_back(new Terrain(Vector3(24, 0, 47), 0, 28, 10, 3, 3, "tree1"));
-	terrains.push_back(new Terrain(Vector3(-25, 0, 80), 0, 28, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(70, 0, 64), 0, 32, 10, 3.8, 3.8, "tree1"));
+	terrains.push_back(new Terrain(Vector3(24, 0, 47), 0, 28, 10, 3.5, 3.5, "tree1"));
+	terrains.push_back(new Terrain(Vector3(-25, 0, 80), 0, 28, 10, 3.5, 3.5, "tree1"));
 	terrains.push_back(new Terrain(Vector3(-25, 0, 16), 0, 21, 10, 3, 3, "tree1"));
-	terrains.push_back(new Terrain(Vector3(-43, 0, 47), 0, 28, 10, 3, 3, "tree1"));
-	terrains.push_back(new Terrain(Vector3(-43, 0, -24), 0, 27, 10, 3, 3, "tree1"));
+	terrains.push_back(new Terrain(Vector3(-43, 0, 47), 0, 28, 10, 3.5, 3.5, "tree1"));
+	terrains.push_back(new Terrain(Vector3(-43, 0, -24), 0, 27, 10, 3.5, 3.5, "tree1"));
 	terrains.push_back(new Terrain(Vector3(88, 0, -17), 0, 23, 10, 3, 3, "tree1"));
 	terrains.push_back(new Terrain(Vector3(112, 0, -75), 0, 23, 10, 3, 3, "tree1"));
 
 	terrains.push_back(new Terrain(Vector3(-47, 0, 76), 0, 23, 10, 3, 3, "tree2"));
-	terrains.push_back(new Terrain(Vector3(1, 0, 54), 0, 27, 13, 3, 3, "tree2"));
-	terrains.push_back(new Terrain(Vector3(130, 0, -60), 0, 27, 10, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(1, 0, 54), 0, 27, 13, 3.5, 3.5, "tree2"));
+	terrains.push_back(new Terrain(Vector3(130, 0, -60), 0, 27, 10, 3.5, 3.5, "tree2"));
 	terrains.push_back(new Terrain(Vector3(80, 0, 27), 0, 25, 10, 3, 3, "tree2"));
-	terrains.push_back(new Terrain(Vector3(-124, 0, -129), 0, 29, 10, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(-124, 0, -129), 0, 29, 10, 3.5, 3.5, "tree2"));
 	terrains.push_back(new Terrain(Vector3(-120, 0, 32), 0, 24, 10, 3, 3, "tree2"));
-	terrains.push_back(new Terrain(Vector3(-123, 0, -42), 0, 31, 10, 3, 3, "tree2"));
+	terrains.push_back(new Terrain(Vector3(-123, 0, -42), 0, 31, 10, 3.5, 3.5, "tree2"));
 
 	//modelStack.Translate(0, -2.5, -247.50);
 
 	terrains.push_back(new Terrain(Vector3(0, -2.5, -247.50), 0, 1, 5, 200, 5, "pond"));
 	terrains.push_back(new Terrain(Vector3(0, -2.5, -52.50), 0, 1, 5, 200, 5, "pond"));
-	terrains.push_back(new Terrain(Vector3(-97.5, -2.5, -150), 0, 1, 51, 5, 200, "pond"));
+	terrains.push_back(new Terrain(Vector3(-97.5, -2.5, -150), 0, 1, 5, 5, 200, "pond"));
 	terrains.push_back(new Terrain(Vector3(97.5, -2.5, -150), 0, 1, 5, 5, 200, "pond"));
 
 	terrains.push_back(new Terrain(Vector3(59, 0, 44), 0, 1, 5, 5, 2, "gazebo"));
@@ -333,6 +325,7 @@ void SceneGarden::Update(double dt)
 	{
 		movement(camera, terrains, dt);
 		interact(camera, items);
+
 	}
 	else if (minigame == 2) //During minigame 1
 	{
@@ -751,53 +744,29 @@ void SceneGarden::Render()
 			{
 				modelStack.Rotate(-90, 1, 0, 0);
 				RenderMesh(meshList[GEO_STICK], true, modelStack, viewStack, projectionStack, m_parameters);
-				if (hitboxshow)
-				{
-					modelStack.PopMatrix();
-					modelStack.PushMatrix();
-					modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
-					modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
-					RenderMesh(meshList[GEO_SPHERE], false, modelStack, viewStack, projectionStack, m_parameters);
-				}
 			}
 			if ((*it)->gettype() == "cat")
 			{
 				modelStack.Rotate(-90, 1, 0, 0);
 				RenderMesh(meshList[GEO_CAT], true, modelStack, viewStack, projectionStack, m_parameters);
-				if (hitboxshow)
-				{
-					modelStack.PopMatrix();
-					modelStack.PushMatrix();
-					modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
-					modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
-					RenderMesh(meshList[GEO_SPHERE], false, modelStack, viewStack, projectionStack, m_parameters);
-				}
 			}
 			if ((*it)->gettype() == "fish")
 			{
 				Renderfish();
-				if (hitboxshow)
-				{
-					modelStack.PopMatrix();
-					modelStack.PushMatrix();
-					modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
-					modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
-					RenderMesh(meshList[GEO_SPHERE], false, modelStack, viewStack, projectionStack, m_parameters);
-				}
 			}
 			if ((*it)->gettype() == "yarn")
 			{
 				RenderMesh(meshList[GEO_YARN], true, modelStack, viewStack, projectionStack, m_parameters);
-				if (hitboxshow)
-				{
-					modelStack.PopMatrix();
-					modelStack.PushMatrix();
-					modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
-					modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
-					RenderMesh(meshList[GEO_SPHERE], false, modelStack, viewStack, projectionStack, m_parameters);
-				}
 			}
 			modelStack.PopMatrix();
+			if (hitboxshow)
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
+				modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
+				RenderMesh(meshList[GEO_SPHERE], false, modelStack, viewStack, projectionStack, m_parameters);
+				modelStack.PopMatrix();
+			}
 		}
 	}
 
@@ -953,6 +922,10 @@ void SceneGarden::Render()
 
 void SceneGarden::Exit()
 {
+	for (auto it = terrains.begin(); it != terrains.end(); ++it)
+		delete (*it);
+	for (auto it = items.begin(); it != items.end(); ++it)
+		delete (*it);
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 	glDeleteProgram(m_programID);
 }
