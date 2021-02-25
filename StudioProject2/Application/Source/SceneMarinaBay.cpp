@@ -30,16 +30,15 @@ void SceneMarinaBay::Init()
 	buttonList.push_back(new Button(53, 8.25, 30, 8.25));	//attack3
 
 	//temp storage of attacks, will change for future minigame purposes
-	attacksList.push_back(BIG);
+	/*attacksList.push_back(BIG);
 	attacksList.push_back(ROCKET_PUNCH);
-	attacksList.push_back(MIND_POWERS);
+	attacksList.push_back(MIND_POWERS);*/
 	//======Initialising variables========
 	pointerX = 2;
 	pointerY = 11;
 	enemyHealthPos = 20.f;
 	playerHealthPos = 60.f;
 	enemyHealth = playerHealth = 0;
-	NPCDia = false;
 	attackScale = 1.f;
 	playerTurn = true;
 	playerAttack = NO_ATTACK;
@@ -311,11 +310,13 @@ void SceneMarinaBay::Init()
 		terrains.push_back(new Terrain(Vector3(27, 0, -70), 0, 1, 10, 20, 180, "infinity pool"));
 
 		//items/npcs
-		items.push_back(new InteractableObject(Vector3(-50, 5, -100), 90, 0.7, 5, "robot", "Robot", false));
-		items.push_back(new InteractableObject(Vector3(-22, 5, -160), 180, 0.7, 5, "girl", "Girl", false));
+		items.push_back(new InteractableObject(Vector3(-50, 5, -100), 90, 0.7, 7, "robot", "Robot", false));
+		items.push_back(new InteractableObject(Vector3(-22, 5, -160), 180, 0.7, 7, "girl", "Hostess", false));
 		//items.push_back(new InteractableObject(Vector3(0, 5, 250), 0, 0.7, 5, "badguy"));
-		items.push_back(new InteractableObject(Vector3(-30, 5, 44), 180, 0.7, 5, "adventurer", "Adventurer", false));
-		items.push_back(new InteractableObject(Vector3(15, 5, -70), 270, 0.7, 5, "orc", "Orc" ,false));
+		items.push_back(new InteractableObject(Vector3(-30, 5, 44), 180, 0.7, 7, "adventurer", "Adventurer", false));
+		items.push_back(new InteractableObject(Vector3(15, 5, -70), 270, 0.7, 7, "orc", "Orc", false));
+		items.push_back(new InteractableObject(Vector3(32, 5, 30), 0, 0.7, 5, "pool", "Infinity Pool", false));
+		items.push_back(new InteractableObject(Vector3(50, 5, -160), 0, 0.7, 7, "pool", "Infinity Pool", false));
 	}
 }
 
@@ -327,7 +328,7 @@ void SceneMarinaBay::Update(double dt)
 	if (!fight)
 	{
 		this->Scene::movement(camera, terrains, dt);
-		this->interact(camera, items);
+		this->interact(camera, items, true);
 	}
 	else
 	{
@@ -391,46 +392,6 @@ void SceneMarinaBay::Update(double dt)
 	else if (Application::IsKeyPressed('M'))
 		hitboxshow = false;
 
-	//int counter = 0;
-	//for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
-	//{
-	//	if ((*it)->spherecollider(camera.target)) // Checks if the target is within the radius
-	//	{
-	//		if (Application::IsKeyPressed('F'))// 1 is look at
-	//		{
-	//			dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
-	//			currentline = dialogue.begin(); //Currentline is set at the look at description
-	//			indialogue = true;//Set state to in dialogue
-	//		}
-	//		else if (Application::IsKeyPressed('G'))
-	//		{
-	//			inventory.additem((*it));
-	//			items.erase(items.begin() + counter);
-	//			break;
-	//		}
-	//		else if (Application::IsKeyPressed('T')) //4 is talk to
-	//		{
-	//			dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
-	//			currentline = dialogue.begin(); //Currentline iteratior as the first line of dialogue
-	//			name = (*it)->gettype(); //Set the name of the npc the player talks to
-	//			indialogue = true;//Set state to in dialogue
-	//		}
-	//		else if (interacttext.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
-	//		{
-	//			if ((*it)->gettype() == "robot")
-	//			{
-	//				interacttext << "Robot";
-	//				break;
-	//			}
-	//			else if ((*it)->gettype() == "girl")
-	//			{
-	//				interacttext << "Girl Host";
-	//				break;
-	//			}
-	//		}
-	//	}
-	//	counter++;
-	//}
 	if (actionSelected && fight && !attackSelected)	//if action was selected and in fight and attack is not playing
 	{
 		switch (playerAction)
@@ -796,7 +757,30 @@ void SceneMarinaBay::Update(double dt)
 		enemyHealthPos -= speedOfHealthLost * 0.1 * dt;	//dependent on health's scaling
 	}
 
-	
+	if (!punchAdded || !bigAdded || !mindAdded)	//checks if all the attacks have already been added or not
+	{
+		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+		{
+			if (!bigAdded && (*it)->gettype() == "girl2")	//adds big attack
+			{
+				attacksList.push_back(BIG);
+				inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Mushroom", "Mushroom", true));
+				bigAdded = true;
+			}
+			else if (!punchAdded && (*it)->gettype() == "robot2")	//adds punch attack
+			{
+				attacksList.push_back(ROCKET_PUNCH);
+				inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Robot Arm", "Robot Arm", true));
+				punchAdded = true;
+			}
+			else if (!mindAdded && (*it)->gettype() == "orc3")	//adds mind swords attack
+			{
+				attacksList.push_back(MIND_POWERS);
+				mindAdded = true;
+			}
+		}
+	}
+
 	//==================Updating timers===========
 	if (cooldown > 0)
 		cooldown -= dt;
@@ -893,61 +877,6 @@ void SceneMarinaBay::RenderSkybox()
 	modelStack.PopMatrix();
 
 	modelStack.PopMatrix();
-}
-
-void SceneMarinaBay::RenderUI()
-{
-	//if (indialogue)
-	//{
-	//	string dialoguetext = (*currentline);
-	//	string currentname;
-	//	if (dialoguetext[0] == '1')
-	//		currentname = "Player name";
-	//	else if (dialoguetext[0] == '2')
-	//		currentname = name;
-	//	dialoguetext = dialoguetext.substr(1);
-	//	RenderNPCDialogue(dialoguetext, currentname);
-	//	if (cooldown <= 0 && Application::IsKeyPressed('E')) //Cooldown added to prevent spamming to pass the dialogues too fast
-	//	{
-	//		cooldown = 0.5f;
-	//		currentline++;
-	//		if (currentline == dialogue.end())
-	//		{
-	//			indialogue = false;
-	//			dialogue.clear();
-	//		}
-	//	}
-	//}
-	//else
-	//{
-	//	RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
-	//	int ypos = 52;
-	//	vector<InteractableObject*> inventorycontent = inventory.getstorage();
-	//	for (std::vector<InteractableObject*>::iterator it = inventorycontent.begin(); it != inventorycontent.end(); it++)
-	//	{
-	//		RenderTextOnScreen(meshList[GEO_TEXT], (*it)->gettype(), Color(0, 0, 0), 2, 2, ypos);
-	//		ypos -= 2;
-
-	//	}
-	//	//debugging
-	//	std::ostringstream ss;
-	//	ss << "x: " << x;
-	//	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 70, 58);
-	//	ss.str("");
-	//	ss << "z: " << z;
-	//	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 70, 56);
-	//	ss.str("");
-	//	ss << "scale: " << scale;
-	//	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 70, 54);
-	//	ss.str("");
-	//	ss << "pos x: " << camera.position.x;
-	//	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 65, 52);
-	//	ss.str("");
-	//	ss << "pos z: " << camera.position.z;
-	//	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 65, 50);
-	//	RenderTextOnScreen(meshList[GEO_TEXT], interacttext.str(), Color(0.5, 0.5, 0.5), 5, 40 - (interacttext.str().length()), 30);	//renders text for what your looking at
-	//	interacttext.str("");
-	//}
 }
 
 void SceneMarinaBay::RenderText(Mesh* mesh, std::string text, Color color)
@@ -1148,29 +1077,23 @@ void SceneMarinaBay::Render()
 		modelStack.Translate((*it)->getposition().x, (*it)->getposition().y - 5, (*it)->getposition().z);
 		modelStack.Rotate((*it)->getangle(), 0, 1, 0);
 		modelStack.Scale((*it)->getscale(), (*it)->getscale(), (*it)->getscale());
-		if ((*it)->gettype() == "robot")
-		{
+		if ((*it)->gettype() == "robot" || (*it)->gettype() == "robot2")
 			RenderMesh(meshList[GEO_ROBOT], true);
-		}
-		else if ((*it)->gettype() == "girl")
-		{
+		else if ((*it)->gettype() == "girl" || (*it)->gettype() == "girl2")
 			RenderMesh(meshList[GEO_GIRL], true);
-		}
-		else if ((*it)->gettype() == "orc")
+		else if ((*it)->gettype() == "orc" || (*it)->gettype() == "orc2" || (*it)->gettype() == "orc3")
 			RenderMesh(meshList[GEO_ORC], true);
-		else if ((*it)->gettype() == "adventurer")
-		{
+		else if ((*it)->gettype() == "adventurer" || (*it)->gettype() == "adventurer2" || (*it)->gettype() == "adventurer3")
 			RenderMesh(meshList[GEO_ADVENTURER], true);
-		}
 
 		modelStack.PopMatrix();
 		if (hitboxshow)
 		{
-			modelStack.PopMatrix();
 			modelStack.PushMatrix();
 			modelStack.Translate((*it)->getposition().x, (*it)->getposition().y + 5, (*it)->getposition().z);
 			modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
 			RenderMesh(meshList[GEO_SPHERE], false);
+			modelStack.PopMatrix();
 		}
 	}
 	
@@ -1213,13 +1136,6 @@ void SceneMarinaBay::Render()
 		}
 		
 	}
-
-	//might just get rid of this
-	/*modelStack.PushMatrix();
-	modelStack.Translate(x, 0, z);
-	modelStack.Scale(scale, 2*scale, scale);
-	RenderMesh(meshList[GEO_TALLTREE], true);
-	modelStack.PopMatrix();*/
 	
 	if (fight)
 	{
@@ -1889,10 +1805,6 @@ void SceneMarinaBay::Render()
 		ss.str("");
 		ss << "y: " << posY;
 		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 27);*/
-	}
-	else if (NPCDia && !fight)	//im working on making this condition checking btr
-	{
-		RenderNPCDialogue("My name is Yoshikage Kira. I'm 33 years old. My house is in the northeast section of Morioh, where all the villas are, and I am not married. I work as an employee for the Kame Yu department stores, and I get home every day by 8 PM at the latest. I don't smoke, but I occasionally drink.", "FEHAN");
 	}
 	else if (!fight)
 	{

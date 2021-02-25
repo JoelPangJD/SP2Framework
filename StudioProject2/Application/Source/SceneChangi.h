@@ -107,6 +107,7 @@ public:
 	bool welcome;
 	bool atStairs;
 	bool gameStart;
+	bool gameEnd;
 	bool takeFlight = false;
 	float fps;
 
@@ -146,7 +147,7 @@ private:
 	void RenderUI();
 	void RenderRoad();
 	void RenderWords();
-	//void RenderPlane();//testing
+	void RenderMissile();
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);

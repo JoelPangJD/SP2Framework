@@ -117,21 +117,15 @@ private:
 	Light light[2];
 
 	bool inFrontofMuseum, inFrontofChangi, inFrontofMarina, inFrontofGarden;
-	bool minigameMuseum, minigameChangi, minigameMarina, minigameGarden;
+	bool minigameMuseum/*, minigameChangi, minigameMarina, minigameGarden*/;
+	bool firstEnter;
 
 	void RenderSkybox();
-	void RenderUI();
-	void RenderMesh(Mesh* mesh, bool enableLight);
-	void RenderText(Mesh* mesh, std::string text, Color color);
-	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int sizey);
 
 	void RenderMinigame();
 	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 	void updateMinigame(double dt);
 
-	void updateDialogue();
-	void updateCollision();
 	std::stringstream interactText;
 	bool inDialogue;
 	vector<string> dialogue;

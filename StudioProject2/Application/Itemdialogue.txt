@@ -8,3 +8,14 @@ yarn|1Hello yarn
 andy|2Yo i saw Mr Tang at the end of the museum awhile ago. I think if you can give him some items he will reward you with something
 yarn|1Hello yarn
 girl|2Hello there! What brings you to the Marina Bay Sands Skypark?|1A guy here stole my wallet and I need to get it back.|2Oh, terribly sorry to hear that. I might not be able to help much but I do have this mushroom from a man in a red cap earlier. Maybe you can use it.|1Thank you very much.|2Perhaps the other guests might be willing to lend you help as well?
+girl2|2Maybe the other guests could help?
+robot|2Beep boop. How may I be of service?|1A guy here stole my wallet and I'm trying to get it back but I don't really have much to fight him with.|2Fighting is beyond my protocol. However, I could modify you to be better at fighting if your consent is given.|1Sure, robot parts sound awesome.|2Done.|1Oh thanks, wonder what this will be able to do?
+robot2|2Pleasure to be of service.
+orc|2Zh'uh qr vwudqjhuv wr oryh. Brx nqrz wkh uxohv dqg vr gr L. D ixoo frpplwphqw'v zkdw L'p wklqnlqj ri. Brx zrxogq'w jhw wklv iurp dqb rwkhu jxb.|1Ah! I should've paid more attention in the orcish class. I don't understand a word he's saying. Maybe I should try talking to someone else.
+orc2|2Hello, young one. You require my aid in your fight yes? My people are a pacifistic bunch so I cannot aid you in combat but I can bestow upon you my gifts temporarily.|2This will allow you to wield telekinetic powers for a limited time and create vevry short-lived material objects, it is up to you what you choose to do with it.|1Wow, I never knew you orcs were this cool. Thanks!
+orc3|2I hope my gifts have been helpful to you.
+adventurer|2Hey there, young chap what's got you so high strung?|1Guy, bad, wallet, stolen, help needed.|2Oh, I'll be more than willing to help, but my age has been really getting to me lately. However, if you help me with this riddle, maybe I could lend you a sword of mine.|2"You find me behind the stars; or in a sixth, seventh, or third it takes something round, a computer, and me to make pie i am bigger than anything you can think of what am i"|1Hm, maybe something around here can give me a clue to this.
+adventurer2|2Figured it out yet?
+adventurer3|2Infinity? That makes a lot of sense. Aight as promised here's my sword.|2Also, since you've helped me so much, take this translator orb I have spare.|1This sword seems a bit too heavy for me but maybe I could use the orb instead?
+pool|1Hello infinity pool
+pool2|1Hello infinity po-wait...|1"You find me behind the stars; or in a sixth, seventh, or third it takes something round, a computer, and me to make pie i am bigger than anything you can think of what am i ??"|1The answer's infinity! I should tell this to the old guy quickly.

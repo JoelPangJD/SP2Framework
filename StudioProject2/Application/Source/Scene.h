@@ -65,6 +65,8 @@ private:
 			U_TEXT_COLOR,
 			U_TOTAL,
 		};
+
+	bool riddleStarted = false, riddleSolved = false;	//only for MarinaBay because I can't think of a better method
 public:
 	Scene();
 	~Scene() {}
@@ -93,7 +95,8 @@ public:
 	void RenderNPCDialogue(std::string NPCText, std::string headerText, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
 	void RenderMinigameIntro(std::string MinigamedescriptionText, std::string MinigamenameText, float fontsize, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]); // pass minigame name, description and description font size, try fontsize 6 
 	void movement(Camera3 &camera, vector<Terrain*> terrains, double dt);
-	void interact(Camera3 camera, vector<InteractableObject*>& items);
+	void interact(Camera3 camera, vector<InteractableObject*>& items, bool MarinaBay = false);	//bool is just so that the other scenes don't waste time checking
+
 };
 
 #endif

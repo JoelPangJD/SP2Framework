@@ -113,6 +113,7 @@ void Scene::RenderText(Mesh* mesh, std::string text, Color color, MS modelStack,
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
+	float zspace = 0.f;
 
 	//glDisable(GL_DEPTH_TEST);
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
@@ -126,10 +127,10 @@ void Scene::RenderText(Mesh* mesh, std::string text, Color color, MS modelStack,
 	{
 		Mtx44 characterSpacing;
 		std::vector<std::pair<std::string, std::vector<int>>> result;
-		characterSpacing.SetToTranslation(i * 1.0f, 0, 0); //1.0f is the spacing of each character, you may change this value
+		characterSpacing.SetToTranslation(i * 0.5f, 0, zspace); //1.0f is the spacing of each character, you may change this value
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
 		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-
+		zspace += 0.01;
 		mesh->Render((unsigned)text[i] * 6, 6);
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -259,7 +260,7 @@ void Scene::movement(Camera3 &camera, vector<Terrain*> terrains, double dt)
 	}
 }
 
-void Scene::interact(Camera3 camera, vector<InteractableObject*>& items)
+void Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool MarinaBay)
 {
 	{
 		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
@@ -294,6 +295,40 @@ void Scene::interact(Camera3 camera, vector<InteractableObject*>& items)
 					currentline = dialogue.begin(); //Currentline iteratior as the first line of dialogue
 					name = (*it)->getname(); //Set the name of the npc the player talks to
 					indialogue = true;//Set state to in dialogue
+					if (MarinaBay == true)
+					{
+						//shortening dialogue to not show the full length when talked to
+						if ((*it)->gettype() == "girl")
+							(*it)->updatedialogue("girl2");
+						else if ((*it)->gettype() == "robot")
+							(*it)->updatedialogue("robot2");
+						else if ((*it)->gettype() == "orc2")
+							(*it)->updatedialogue("orc3");
+						else if ((*it)->gettype() == "pool2")
+							(*it)->updatedialogue("pool");
+						//triggers start of riddle
+						else if ((*it)->gettype() == "adventurer")	
+						{
+							(*it)->updatedialogue("adventurer2");
+							riddleStarted = true;
+						}
+						//triggers riddle being solved
+						else if ((*it)->gettype() == "pool" && riddleStarted)
+						{
+							(*it)->updatedialogue("pool2");
+							riddleSolved = true;
+						}
+						//triggers end of riddle
+						else if ((*it)->gettype() == "adventurer2" && riddleSolved)
+						{
+							(*it)->updatedialogue("adventurer3");
+							inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Sword", "Sword", true));
+							inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Orb", "Orb", true));
+						}
+						//updates dialogue once riddle has been solved
+						else if ((*it)->gettype() == "orc" && riddleSolved)
+							(*it)->updatedialogue("orc2");
+					}
 				}
 				if(interacttext.str() == "") //if the text for highlighted object is empty 
 					interacttext << (*it)->getname();
