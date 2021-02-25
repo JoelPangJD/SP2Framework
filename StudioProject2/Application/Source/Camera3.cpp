@@ -170,6 +170,10 @@ void Camera3::Updatepos(double dt)
 	if (Application::SwitchScene == 2) {
 		speed = 50.f;
 	}
+	else if (Application::SwitchScene == 1)
+	{
+		speed = 30.f;
+	}
 	if (Application::enableMouse == false) {
 
 		if (Application::IsKeyPressed('W')) {
