@@ -117,7 +117,8 @@ private:
 	Light light[2];
 
 	bool inFrontofMuseum, inFrontofChangi, inFrontofMarina, inFrontofGarden;
-	bool minigameMuseum, minigameChangi, minigameMarina, minigameGarden;
+	bool minigameMuseum/*, minigameChangi, minigameMarina, minigameGarden*/;
+	bool firstEnter, firstRender;
 
 	void RenderSkybox();
 
