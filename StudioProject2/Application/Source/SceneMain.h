@@ -138,7 +138,7 @@ private:
 	Vector3* grids[9];
 	Button gridButton[9];
 	std::string colorGrid[9];
-	bool pass;
+	bool pass, locked;
 };
 
 #endif

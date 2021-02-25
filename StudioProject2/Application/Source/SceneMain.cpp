@@ -235,7 +235,7 @@ void SceneMain::Init()
 		colorGrid[i] = "Red";
 	}
 	pass = false;
-	
+	locked = false;
 	items.push_back(new InteractableObject(Vector3(-2, 2, 0), 0, 2, 4, "Mr.Sazz", "Mr.Sazz", false));
 	items.push_back(new InteractableObject(Vector3(6, 1, 5), 0, 2, 3, "Andy", "Andy", false));
 
@@ -295,11 +295,15 @@ void SceneMain::Update(double dt)
 		if ((firstRender) && (minigameMuseum) && (cooldown <= 0)) {
 			firstRender = false;
 		}
-
 		
 		if ((walletNotGone) && (!firstEnter) && (cooldown <= 0)) {
 			walletNotGone = false;
 			inDialogue = false;
+		}
+
+		if (inDialogue) {
+			inDialogue = false;
+			locked = false;
 		}
 	}
 	if (Application::IsKeyPressed('Q')) {
@@ -308,10 +312,26 @@ void SceneMain::Update(double dt)
 			cooldown = 1.5;
 		}
 		else if (inFrontofChangi) {
-			Application::SwitchScene = 2;
+			/*if (Scene::inventory->getcurrentitem() != nullptr) {
+				locked = true;
+			}
+			else if (Scene::inventory->getcurrentitem()->getname() == "Changi Airport card place holder") {*/
+				Application::SwitchScene = 2;
+			/*}
+			else {
+				locked = true;
+			}*/
 		}
 		else if (inFrontofMarina) {
-			Application::SwitchScene = 3;
+			/*if (Scene::inventory->getcurrentitem() != nullptr) {
+				locked = true;
+			}
+			else if (Scene::inventory->getcurrentitem()->getname() == "Marina Bay card place holder") {*/
+				Application::SwitchScene = 3;
+			/*}
+			else {
+				locked = true;
+			}*/
 		}
 		else if (inFrontofGarden) {
 			Application::SwitchScene = 4;
@@ -618,8 +638,8 @@ void SceneMain::Render()
 	
 
 	modelStack.PushMatrix();
-	modelStack.Translate(0, 0, 17.5);
-	modelStack.Scale(5, 5, 20);
+	modelStack.Translate(0, 0, 35);
+	modelStack.Scale(5, 5, 55);
 	modelStack.Rotate(90, 0, 1, 0);
 	RenderMesh(meshList[GEO_ROADTILESTRAIGHT], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PushMatrix();
@@ -679,6 +699,13 @@ void SceneMain::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
+	modelStack.Translate(-28, 0, 35);
+	modelStack.Scale(25, 25, 25);
+	modelStack.Rotate(90, 0, 1, 0);
+	RenderMesh(meshList[GEO_BUILDING], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
 	modelStack.Translate(-38, 0, -35);
 	modelStack.Scale(25, 25, 25);
 	modelStack.Rotate(-90, 0, 1, 0);
@@ -691,6 +718,14 @@ void SceneMain::Render()
 	modelStack.Rotate(90, 0, 1, 0);
 	RenderMesh(meshList[GEO_BUILDING2], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
+
+	//condition checking
+	if (locked) {
+		RenderNPCDialogue("It seems that I do not have the item required to open this door", "Player Name");
+		inDialogue = true;
+	}
+
+
 
 	modelStack.PushMatrix();
 	modelStack.Translate(2.5, 9, 27.4);

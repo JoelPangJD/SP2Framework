@@ -15,8 +15,13 @@ Scene::Scene()
 	baseMeshList[GEO_TEXTBOX]->textureID = LoadTGA("Image//Marina//textbox.tga");
 	baseMeshList[GEO_HEADER] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
 	baseMeshList[GEO_HEADER]->textureID = LoadTGA("Image//Marina//header.tga");
-	baseMeshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
+	baseMeshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("inventory", Color(1, 1, 1), 1.0f);
 	baseMeshList[GEO_INVENTORY]->textureID = LoadTGA("Image//inventory.tga");
+	baseMeshList[GEO_ACTIONS] = MeshBuilder::GenerateQuad("actions", Color(1, 1, 1), 1.0f);
+	baseMeshList[GEO_ACTIONS]->textureID = LoadTGA("Image//actions.tga");
+	baseMeshList[GEO_PRESSE] = MeshBuilder::GenerateQuad("pressE", Color(1, 1, 1), 1.0f);
+	baseMeshList[GEO_PRESSE]->textureID = LoadTGA("Image//pressE.tga");
+
 }
 
 void Scene::RenderMesh(Mesh* mesh, bool enableLight, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[])
@@ -68,14 +73,14 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 		string dialoguetext = (*currentline);
 		string currentname;
 		if (dialoguetext[0] == '1')
-			currentname = "Player name";
+			currentname = "Steve";
 		else if (dialoguetext[0] == '2')
 			currentname = name;
 		dialoguetext = dialoguetext.substr(1);
 		RenderNPCDialogue(dialoguetext, currentname, modelStack, viewStack, projectionStack, m_parameters);
 		if (cooldown <= 0 && Application::IsKeyPressed('E')) //Cooldown added to prevent spamming to pass the dialogues too fast
 		{
-			cooldown = 1;
+			cooldown = 0.4f;
 			currentline++;
 			if (currentline == dialogue.end())
 			{
@@ -91,13 +96,33 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 		vector<InteractableObject*> inventorycontent = inventory->getstorage();
 		for (std::vector<InteractableObject*>::iterator it = inventorycontent.begin(); it != inventorycontent.end(); it++)
 		{
-			RenderTextOnScreen(baseMeshList[GEO_TEXT], (*it)->gettype(), Color(0, 0, 0), 2, 2, ypos, modelStack, viewStack, projectionStack, m_parameters);
+			if ((*it) == inventory->getcurrentitem())
+			{
+				RenderMeshOnScreen(baseMeshList[GEO_TEXTBOX], 6, ypos + 1, 10, 2, modelStack, viewStack, projectionStack, m_parameters);
+			}
+			RenderTextOnScreen(baseMeshList[GEO_TEXT], (*it)->getname(), Color(0, 0, 0), 2, 2, ypos, modelStack, viewStack, projectionStack, m_parameters);
 			ypos -= 2;
-
+		}
+		if (cooldown <= 0) //Cooldown added to prevent spamming to though inventory too fast
+		{
+			if (Application::IsKeyPressed(VK_UP))
+			{
+				inventory->navigateinventory(1);
+				cooldown = 0.2;
+			}
+			else if (Application::IsKeyPressed(VK_DOWN))
+			{
+				inventory->navigateinventory(2);
+				cooldown = 0.2;
+			}
 		}
 		std::ostringstream ss;
 		ss << "FPS: " << fps;
 		RenderTextOnScreen(baseMeshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 58, 68, modelStack, viewStack, projectionStack, m_parameters);
+		if (interacttext.str() != "")
+		{
+			RenderMeshOnScreen(baseMeshList[GEO_ACTIONS], 12, 10, 30, 30, modelStack, viewStack, projectionStack, m_parameters);
+		}
 		RenderTextOnScreen(baseMeshList[GEO_TEXT], interacttext.str(), Color(0.5, 0.5, 0.5), 5, 40 - (interacttext.str().length()), 30, modelStack, viewStack, projectionStack, m_parameters);
 		interacttext.str("");
 	}
@@ -200,7 +225,7 @@ void Scene::RenderNPCDialogue(std::string NPCText, std::string headerText, MS mo
 	//headerText.size()
 	RenderTextOnScreen(baseMeshList[GEO_TEXT], headerText, Color(0, 0, 0), 4, 14.5 - (headerText.size()), 17, modelStack, viewStack, projectionStack, m_parameters);	//header text
 	RenderMeshOnScreen(baseMeshList[GEO_TEXTBOX], 40, 8.75, 80, 17.5, modelStack, viewStack, projectionStack, m_parameters);
-
+	RenderMeshOnScreen(baseMeshList[GEO_PRESSE], 76, 3, 7, 7, modelStack, viewStack, projectionStack, m_parameters);
 	string word;																	//automating text
 	int wordpos = 0, ypos = 13, last = NPCText.find_last_of(" ");
 	float xpos = 2.f;
@@ -220,11 +245,11 @@ void Scene::RenderNPCDialogue(std::string NPCText, std::string headerText, MS mo
 	}
 }
 
-void Scene::RenderMinigameIntro(std::string MinigamedescriptionText, std::string headerText, float fontsize, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[])
+void Scene::RenderMinigameIntro(std::string MinigamedescriptionText, std::string MinigamenameText, float fontsize, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[])
 {
 	RenderMeshOnScreen(baseMeshList[GEO_TEXTBOX], 40, 30, 80, 50, modelStack, viewStack, projectionStack, m_parameters);
 	RenderMeshOnScreen(baseMeshList[GEO_HEADER], 40, 57, 60, 8, modelStack, viewStack, projectionStack, m_parameters);
-	RenderTextOnScreen(baseMeshList[GEO_TEXT], headerText, Color(0, 0, 0), 6, 38 - (headerText.size() * 1.5), 54, modelStack, viewStack, projectionStack, m_parameters);	//header text
+	RenderTextOnScreen(baseMeshList[GEO_TEXT], MinigamenameText, Color(0, 0, 0), 6, 38 - (MinigamenameText.size() * 1.5), 54, modelStack, viewStack, projectionStack, m_parameters);	//header text
 	string word;																	//automating text
 	int wordpos = 0, ypos = 50 - fontsize, last = MinigamedescriptionText.find_last_of(" ");
 	float xpos = 2.f;
@@ -255,82 +280,115 @@ void Scene::movement(Camera3 &camera, vector<Terrain*> terrains, double dt)
 	}
 }
 
-void Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool MarinaBay)
+string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool MarinaBay)
 {
+	if (Application::IsKeyPressed('Q') && !(inventory->getstorage().empty())) //Use an item in inventory if inventory not empty
 	{
-		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+		if (inventory->getcurrentitem()->gettype() == "yarn")//Using yarn activates garden minigame 2
+			return "Gardenminigame2";
+		else if((inventory->getcurrentitem()->gettype() == "stick" && inventory->checkinventory("fishing line")) 
+			|| (inventory->getcurrentitem()->gettype() == "fishing line" && inventory->checkinventory("stick")))
 		{
-			if ((*it)->spherecollider(camera.target) && !indialogue) // Checks if the target is within a radius of an item and not in a dialogue
-			{
-				if (Application::IsKeyPressed('F'))// F is look at
-				{
-					dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
-					currentline = dialogue.begin(); //Currentline is set at the look at description
-					indialogue = true;//Set state to in dialogue
-				}
-				if (Application::IsKeyPressed('G'))// G is pick up
-				{
-					if ((*it)->getpickupable() == true)
-					{
-						inventory->additem((*it));
-						items.erase(items.begin() + distance(items.begin(),it));
-						break;
-					}
-					else //If cannot pick up item, a dialogue box show is that tells them that they can't do so
-					{
-						dialogue.push_back("1I can't do that.");
-						currentline = dialogue.begin(); 
-						name = "";
-						indialogue = true;
-					}
-				}
-				if (Application::IsKeyPressed('T')) //T is talk to
-				{
-					dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
-					currentline = dialogue.begin(); //Currentline iteratior as the first line of dialogue
-					name = (*it)->getname(); //Set the name of the npc the player talks to
-					indialogue = true;//Set state to in dialogue
-					if (MarinaBay == true)
-					{
-						//shortening dialogue to not show the full length when talked to
-						if ((*it)->gettype() == "girl")
-							(*it)->updatedialogue("girl2");
-						else if ((*it)->gettype() == "robot")
-							(*it)->updatedialogue("robot2");
-						else if ((*it)->gettype() == "orc2")
-							(*it)->updatedialogue("orc3");
-						else if ((*it)->gettype() == "pool2")
-							(*it)->updatedialogue("pool");
-						//triggers start of riddle
-						else if ((*it)->gettype() == "adventurer")	
-						{
-							(*it)->updatedialogue("adventurer2");
-							riddleStarted = true;
-						}
-						//triggers riddle being solved
-						else if ((*it)->gettype() == "pool" && riddleStarted)
-						{
-							(*it)->updatedialogue("pool2");
-							riddleSolved = true;
-						}
-						//triggers end of riddle
-						else if ((*it)->gettype() == "adventurer2" && riddleSolved)
-						{
-							(*it)->updatedialogue("adventurer3");
-							inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Sword", "Sword", true));
-							inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Orb", "Orb", true));
-						}
-						//updates dialogue once riddle has been solved
-						else if ((*it)->gettype() == "orc" && riddleSolved)
-							(*it)->updatedialogue("orc2");
-					}
-				}
-				if(interacttext.str() == "") //if the text for highlighted object is empty 
-					interacttext << (*it)->getname();
-				break;
-			}
+			inventory->removeitem("stick");
+			inventory->removeitem("fishing line");
+			inventory->additem(new InteractableObject(Vector3(0,0,0),0,1,0,"fishing rod", "Fishing rod", true));
 		}
 	}
+	for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+	{
+		if ((*it)->spherecollider(camera.target) && !indialogue && !ininventory) // Checks if the target is within a radius of an item and not in a dialogue
+		{
+			if (Application::IsKeyPressed('F'))// F is look at
+			{
+				dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
+				currentline = dialogue.begin(); //Currentline is set at the look at description
+				indialogue = true;//Set state to in dialogue
+			}
+			else if (Application::IsKeyPressed('G'))// G is pick up
+			{
+				if ((*it)->getpickupable() == true)
+				{
+					inventory->additem((*it));
+					items.erase(items.begin() + distance(items.begin(),it));
+					break;
+				}
+				else //If cannot pick up item, a dialogue box show is that tells them that they can't do so
+				{
+					dialogue.push_back("1I can't do that.");
+					currentline = dialogue.begin(); 
+					name = "";
+					indialogue = true;
+				}
+			}
+			else if (Application::IsKeyPressed('Q')) //Q is use
+			{
+				if (!(inventory->getstorage().empty())) //For uses that rely on inventory, make sure the inventory is 
+				{
+					if ((*it)->gettype() == "cat" && inventory->getcurrentitem()->gettype() == "fish")//using fish on cat
+					{
+						inventory->removeitem(inventory->getcurrentitem());
+							inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 1, 0, "Marina Bay ticket", "MBS ticket", true));
+					}
+					if ((*it)->gettype() == "pond" && inventory->getcurrentitem()->gettype() == "fishing rod")//using fishing rod on cat
+					{
+						return "Gardenminigame1";
+					}
+				}
+			}
+			else if (Application::IsKeyPressed('T')) //T is talk to
+			{
+				dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
+				currentline = dialogue.begin(); //Currentline iteratior as the first line of dialogue
+				name = (*it)->getname(); //Set the name of the npc the player talks to
+				indialogue = true;//Set state to in dialogue
+				if (MarinaBay == true)
+				{
+					//shortening dialogue to not show the full length when talked to
+					if ((*it)->gettype() == "girl")
+					{
+						(*it)->updatedialogue("girl2");
+						(*it)->updatedescription("girl2");
+					}
+					else if ((*it)->gettype() == "robot")
+						(*it)->updatedialogue("robot2");
+					else if ((*it)->gettype() == "orc2")
+						(*it)->updatedialogue("orc3");
+					else if ((*it)->gettype() == "pool2")
+					{
+						(*it)->updatedialogue("pool");
+						(*it)->updatedescription("pool");
+					}
+					//triggers start of riddle
+					else if ((*it)->gettype() == "adventurer")	
+					{
+						(*it)->updatedialogue("adventurer2");
+						riddleStarted = true;
+					}
+				}
+			}
+			else if(interacttext.str() == "") //if the text for highlighted object is empty 
+				interacttext << (*it)->getname();
+			if (MarinaBay == true)
+			{
+				if ((*it)->gettype() == "pool" && riddleStarted)
+				{
+					(*it)->updatedialogue("pool2");
+					(*it)->updatedescription("pool2");
+					riddleSolved = true;
+				}
+				else if ((*it)->gettype() == "adventurer2" && riddleSolved)
+				{
+					(*it)->updatedialogue("adventurer3");
+					inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Sword", "Sword", true));
+					inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Orb", "Orb", true));
+				}
+				else if ((*it)->gettype() == "orc" && riddleSolved)
+					(*it)->updatedialogue("orc2");
+			}
+			break;
+		}
+	}
+	return ""; //if no special actions occur, return an empty string
 }
 
 
