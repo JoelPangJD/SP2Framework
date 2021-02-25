@@ -144,13 +144,13 @@ void SceneMain::Init()
 
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
-	meshList[GroundMesh] = MeshBuilder::GenerateQuad("quad", 1, 1, Color(1, 1, 1), 100);
-	meshList[GroundMesh]->textureID = LoadTGA("Image//CityCenter//brick.tga");
+	meshList[GEO_GROUNDMESH] = MeshBuilder::GenerateQuad("quad", 1, 1, Color(1, 1, 1), 100);
+	meshList[GEO_GROUNDMESH]->textureID = LoadTGA("Image//CityCenter//brick.tga");
 	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
-	meshList[Panel] = MeshBuilder::GenerateQuad("securitypanel", Color(1, 1, 1), 10.f);
-	meshList[Panel]->textureID = LoadTGA("Image//CityCenter//SecurityPanel.tga");
-	meshList[Red] = MeshBuilder::GenerateQuad("red", Color(1, 0, 0), 1.f);
-	meshList[Green] = MeshBuilder::GenerateQuad("green", Color(0, 1, 0), 1.f);
+	meshList[GEO_PANEL] = MeshBuilder::GenerateQuad("securitypanel", Color(1, 1, 1), 10.f);
+	meshList[GEO_PANEL]->textureID = LoadTGA("Image//CityCenter//SecurityPanel.tga");
+	meshList[GEO_RED] = MeshBuilder::GenerateQuad("red", Color(1, 0, 0), 1.f);
+	meshList[GEO_GREEN] = MeshBuilder::GenerateQuad("green", Color(0, 1, 0), 1.f);
 	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.5f, 0.2f, 0.0f), 1);
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(0.5, 0.5, 0.5), 10, 10, 10);
 	meshList[GEO_SPHERE]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
@@ -180,28 +180,28 @@ void SceneMain::Init()
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
 	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//CityCenter//bottomCityCenter.tga");
 
-	meshList[TREE] = MeshBuilder::GenerateOBJMTL("Tree", "OBJ//CityCenter//tree.obj", "OBJ//CityCenter//tree.mtl");
-	meshList[RoadTileStraight] = MeshBuilder::GenerateOBJMTL("straight", "OBJ//CityCenter//road_straight.obj", "OBJ//CityCenter//road_straight.mtl");
-	meshList[RoadStraightBarrier] = MeshBuilder::GenerateOBJMTL("straight", "OBJ//CityCenter//road_straightBarrier.obj", "OBJ//CityCenter//road_straightBarrier.mtl");
-	meshList[RoadCross] = MeshBuilder::GenerateOBJMTL("roadcross", "OBJ//CityCenter//road_roundabout.obj", "OBJ//CityCenter//road_roundabout.mtl");
-	meshList[RoadCrossBarrier] = MeshBuilder::GenerateOBJMTL("roadcrossbarrier", "OBJ//CityCenter//road_roundaboutBarrier.obj", "OBJ//CityCenter//road_roundaboutBarrier.mtl");
-	meshList[Lamp] = MeshBuilder::GenerateOBJMTL("lamp", "OBJ//CityCenter//lamp.obj", "OBJ//CityCenter//lamp.mtl");
-	meshList[Museum] = MeshBuilder::GenerateOBJMTL("museum", "OBJ//CityCenter//museum.obj", "OBJ//CityCenter//museum.mtl");
-	meshList[Teacher] = MeshBuilder::GenerateOBJ("teacher", "OBJ//Marina//defaultCharacter.obj");
-	meshList[Teacher]->textureID = LoadTGA("Image//CityCenter//teacher.tga");
-	meshList[Friend] = MeshBuilder::GenerateOBJ("friend", "OBJ//Marina//defaultCharacter.obj");
-	meshList[Friend]->textureID = LoadTGA("Image//CityCenter//friend.tga");
-	meshList[Header] = MeshBuilder::GenerateQuad("header", Color(1, 1, 1), 1.f);
-	meshList[Header]->textureID = LoadTGA("Image//Marina//header.tga");
-	meshList[Textbox] = MeshBuilder::GenerateQuad("textbox", Color(1, 1, 1), 1.f);
-	meshList[Textbox]->textureID = LoadTGA("Image//Marina//textbox.tga");
-	meshList[MBS] = MeshBuilder::GenerateOBJMTL("mbs", "OBJ//CityCenter//mbs.obj", "OBJ//CityCenter//mbs.mtl");
-	meshList[Changi] = MeshBuilder::GenerateOBJMTL("changi", "OBJ//Changi//ChangiTower.obj", "OBJ//Changi//ChangiTower.mtl");
+	meshList[GEO_TREE] = MeshBuilder::GenerateOBJMTL("Tree", "OBJ//CityCenter//tree.obj", "OBJ//CityCenter//tree.mtl");
+	meshList[GEO_ROADTILESTRAIGHT] = MeshBuilder::GenerateOBJMTL("straight", "OBJ//CityCenter//road_straight.obj", "OBJ//CityCenter//road_straight.mtl");
+	meshList[GEO_ROADSTRAIGHTBARRIER] = MeshBuilder::GenerateOBJMTL("straight", "OBJ//CityCenter//road_straightBarrier.obj", "OBJ//CityCenter//road_straightBarrier.mtl");
+	meshList[GEO_ROADCROSS] = MeshBuilder::GenerateOBJMTL("roadcross", "OBJ//CityCenter//road_roundabout.obj", "OBJ//CityCenter//road_roundabout.mtl");
+	meshList[GEO_ROADCROSSBARRIER] = MeshBuilder::GenerateOBJMTL("roadcrossbarrier", "OBJ//CityCenter//road_roundaboutBarrier.obj", "OBJ//CityCenter//road_roundaboutBarrier.mtl");
+	meshList[GEO_LAMP] = MeshBuilder::GenerateOBJMTL("lamp", "OBJ//CityCenter//lamp.obj", "OBJ//CityCenter//lamp.mtl");
+	meshList[GEO_MUSEUM] = MeshBuilder::GenerateOBJMTL("museum", "OBJ//CityCenter//museum.obj", "OBJ//CityCenter//museum.mtl");
+	meshList[GEO_TEACHER] = MeshBuilder::GenerateOBJ("teacher", "OBJ//Marina//defaultCharacter.obj");
+	meshList[GEO_TEACHER]->textureID = LoadTGA("Image//CityCenter//teacher.tga");
+	meshList[GEO_FRIEND] = MeshBuilder::GenerateOBJ("friend", "OBJ//Marina//defaultCharacter.obj");
+	meshList[GEO_FRIEND]->textureID = LoadTGA("Image//CityCenter//friend.tga");
+	meshList[GEO_HEADER] = MeshBuilder::GenerateQuad("header", Color(1, 1, 1), 1.f);
+	meshList[GEO_HEADER]->textureID = LoadTGA("Image//Marina//header.tga");
+	meshList[GEO_TEXTBOX] = MeshBuilder::GenerateQuad("textbox", Color(1, 1, 1), 1.f);
+	meshList[GEO_TEXTBOX]->textureID = LoadTGA("Image//Marina//textbox.tga");
+	meshList[GEO_MBS] = MeshBuilder::GenerateOBJMTL("mbs", "OBJ//CityCenter//mbs.obj", "OBJ//CityCenter//mbs.mtl");
+	meshList[GEO_CHANGI] = MeshBuilder::GenerateOBJMTL("changi", "OBJ//Changi//ChangiTower.obj", "OBJ//Changi//ChangiTower.mtl");
 
 
 	inFrontofMuseum = inFrontofChangi = inFrontofGarden = inFrontofMarina = false;
 	minigameMuseum = false;
-	firstEnter = true;
+	firstEnter = firstRender = walletNotGone = true;
 
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
@@ -254,9 +254,9 @@ void SceneMain::Init()
 void SceneMain::Update(double dt)
 {
 	fps = 1.f / dt;
-		if ((camera.position.x <= -14) || (!firstEnter) ){
-			movement(camera, wall, dt);
-		}
+	if (!inDialogue){
+		movement(camera, wall, dt);
+	}
 	interact(camera, items);
 	if (cooldown > 0) {
 		cooldown -= dt;
@@ -284,8 +284,18 @@ void SceneMain::Update(double dt)
 	}
 
 	if (Application::IsKeyPressed('E')) {
+		if (firstEnter) {
+			firstEnter = false;
+			inDialogue = false;
+			cooldown = 0.5;
+		}
+		if ((firstRender) && (minigameMuseum) && (cooldown <= 0)) {
+			firstRender = false;
+		}
+
 		if (inFrontofMuseum == true) {
 			minigameMuseum = true;
+			cooldown = 0.5;
 		}
 		else if (inFrontofChangi) {
 			Application::SwitchScene = 2;
@@ -296,8 +306,9 @@ void SceneMain::Update(double dt)
 		else if (inFrontofGarden) {
 			Application::SwitchScene = 4;
 		}
-		if (firstEnter){
-			firstEnter = false;
+		if ((walletNotGone) && (!firstEnter) && (cooldown <= 0)) {
+			walletNotGone = false;
+			inDialogue = false;
 		}
 	}
 	if ((camera.position.x >= 18) && (camera.position.x <= 27.5) && (camera.position.z >= -3) && (camera.position.z <= 3)) {
@@ -330,35 +341,7 @@ void SceneMain::Update(double dt)
 		updateMinigame(dt);
 	}
 
-	//if (minigameChangi == true) {
-	//	Application::enableMouse = true;
-	//	if (pass == true) {
-	//		minigameChangi = false;
-	//		Application::enableMouse = false;
-	//		Application::SwitchScene = 2;
-	//	}
-	//	updateMinigame(dt);
-	//}
 
-	//if (minigameMarina == true) {
-	//	Application::enableMouse = true;
-	//	if (pass == true) {
-	//		minigameMarina = false;
-	//		Application::enableMouse = false;
-	//		Application::SwitchScene = 3;
-	//	}
-	//	updateMinigame(dt);
-	//}
-
-	//if (minigameGarden == true) {
-	//	Application::enableMouse = true;
-	//	if (pass == true) {
-	//		minigameGarden = false;
-	//		Application::enableMouse = false;
-	//		Application::SwitchScene = 4;
-	//	}
-	//	updateMinigame(dt);
-	//}
 }
 
 
@@ -417,31 +400,36 @@ void SceneMain::RenderSkybox()
 
 void SceneMain::RenderMinigame()
 {
-	RenderMeshOnScreen(meshList[Panel], 40, 30, 7, 5, modelStack, viewStack, projectionStack, m_parameters);
-	int width, height;
-	width = height = 15;
-	RenderTextOnScreen(meshList[GEO_TEXT], "Turn all squares", Color(0, 0, 0), 2.2, 7, 50, modelStack, viewStack, projectionStack, m_parameters);
-	RenderTextOnScreen(meshList[GEO_TEXT], "Green to enter", Color(0, 0, 0), 2.2, 7, 46, modelStack, viewStack, projectionStack, m_parameters);
-	RenderTextOnScreen(meshList[GEO_TEXT], "the museum.", Color(0, 0, 0), 2.2, 7, 42, modelStack, viewStack, projectionStack, m_parameters);
-	for (int i = 0; i < 9; i++) {
+	if (firstRender) {
+		RenderMinigameIntro("Click on the squares to make them change colour. Convert all of them to green to enter the museum.", "Security", 3, modelStack, viewStack, projectionStack, m_parameters);
+	}
+	else {
+		RenderMeshOnScreen(meshList[GEO_PANEL], 40, 30, 7, 5, modelStack, viewStack, projectionStack, m_parameters);
+		int width, height;
+		width = height = 15;
+		RenderTextOnScreen(meshList[GEO_TEXT], "Turn all squares", Color(0, 0, 0), 2.2, 7, 50, modelStack, viewStack, projectionStack, m_parameters);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Green to enter", Color(0, 0, 0), 2.2, 7, 46, modelStack, viewStack, projectionStack, m_parameters);
+		RenderTextOnScreen(meshList[GEO_TEXT], "the museum.", Color(0, 0, 0), 2.2, 7, 42, modelStack, viewStack, projectionStack, m_parameters);
+		for (int i = 0; i < 9; i++) {
 
-		if ((i == 3) || (i == 4) || (i == 5)) {
-			height = 16;
-		}
-		else {
-			height = 15;
-		}
-		if ((i == 1) || (i == 4) || (i == 7)) {
-			width = 16;
-		}
-		else {
-			width = 15;
-		}
-		if (colorGrid[i] == "Red") {
-			RenderMeshOnScreen(meshList[Red], grids[i]->x, grids[i]->y, width, height, modelStack, viewStack, projectionStack, m_parameters);
-		}
-		else if (colorGrid[i] == "Green") {
-			RenderMeshOnScreen(meshList[Green], grids[i]->x, grids[i]->y, width, height, modelStack, viewStack, projectionStack, m_parameters);
+			if ((i == 3) || (i == 4) || (i == 5)) {
+				height = 16;
+			}
+			else {
+				height = 15;
+			}
+			if ((i == 1) || (i == 4) || (i == 7)) {
+				width = 16;
+			}
+			else {
+				width = 15;
+			}
+			if (colorGrid[i] == "Red") {
+				RenderMeshOnScreen(meshList[GEO_RED], grids[i]->x, grids[i]->y, width, height, modelStack, viewStack, projectionStack, m_parameters);
+			}
+			else if (colorGrid[i] == "Green") {
+				RenderMeshOnScreen(meshList[GEO_GREEN], grids[i]->x, grids[i]->y, width, height, modelStack, viewStack, projectionStack, m_parameters);
+			}
 		}
 	}
 
@@ -470,23 +458,6 @@ void SceneMain::updateMinigame(double dt)
 		}
 	}
 
-	/*static bool bLButtonState1 = false;
-	if (!bLButtonState1 && Application::IsMousePressed(0))
-	{
-		bLButtonState1 = true;
-
-		double x, y;
-		Application::GetCursorPos(&x, &y);
-		unsigned w = Application::GetWindowWidth();
-		unsigned h = Application::GetWindowHeight();
-		float posX = x / 10;
-		float posY = 60 - y / 10;
-		std::cout << posX << " " << posY << "\n";
-	}
-	else if (bLButtonState1 && !Application::IsMousePressed(0))
-	{
-		bLButtonState1 = false;
-	}*/
 }
 
 
@@ -494,10 +465,10 @@ void SceneMain::updateMinigame(double dt)
 void SceneMain::RenderNPCDialogue(std::string NPCText, std::string headerText)
 {
 	//float headerTextPos = 4.f;
-	RenderMeshOnScreen(meshList[Header], 14.75, 19.25, 30, 6, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMeshOnScreen(meshList[GEO_HEADER], 14.75, 19.25, 30, 6, modelStack, viewStack, projectionStack, m_parameters);
 	//headerText.size()
 	RenderTextOnScreen(meshList[GEO_TEXT], headerText, Color(0, 0, 0), 4, 14.5 - (headerText.size()), 17, modelStack, viewStack, projectionStack, m_parameters);	//header text
-	RenderMeshOnScreen(meshList[Textbox], 40, 8.75, 80, 17.5, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMeshOnScreen(meshList[GEO_TEXTBOX], 40, 8.75, 80, 17.5, modelStack, viewStack, projectionStack, m_parameters);
 	string word;																	//automating text
 	int wordpos = 0, ypos = 13, last = NPCText.find_last_of(" ");
 	float xpos = 2.f;
@@ -579,16 +550,16 @@ void SceneMain::Render()
 	modelStack.PushMatrix();
 	modelStack.Scale(1000, 1000, 1000);
 	modelStack.Rotate(-90, 1, 0, 0);
-	RenderMesh(meshList[GroundMesh], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_GROUNDMESH], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(17.5, 0, 0);
 	modelStack.Scale(20, 5, 5);
-	RenderMesh(meshList[RoadTileStraight], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_ROADTILESTRAIGHT], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PushMatrix();
 	modelStack.Rotate(90, 0, 1, 0);
-	RenderMesh(meshList[RoadStraightBarrier], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_ROADSTRAIGHTBARRIER], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
@@ -596,26 +567,26 @@ void SceneMain::Render()
 	modelStack.Translate(37.5, 0, 0);
 	modelStack.Scale(25, 25, 25);
 	modelStack.Rotate(90, 0, 1, 0);
-	RenderMesh(meshList[Museum], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_MUSEUM], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-37.5, 0, 0);
-	RenderMesh(meshList[MBS], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_MBS], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-25, 0, 40.5);
-	RenderMesh(meshList[Changi], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_CHANGI], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-17.5, 0, 0);
 	modelStack.Scale(20, 5, 5);
-	RenderMesh(meshList[RoadTileStraight], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_ROADTILESTRAIGHT], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PushMatrix();
 	modelStack.Rotate(90, 0, 1, 0);
-	RenderMesh(meshList[RoadStraightBarrier], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_ROADSTRAIGHTBARRIER], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
@@ -626,13 +597,13 @@ void SceneMain::Render()
 		modelStack.Rotate((*it)->getangle(), 0, 1, 0);
 		modelStack.Scale((*it)->getscale(), (*it)->getscale(), (*it)->getscale());
 		if ((*it)->gettype() == "tree")
-			RenderMesh(meshList[TREE], true, modelStack, viewStack, projectionStack, m_parameters);
+			RenderMesh(meshList[GEO_TREE], true, modelStack, viewStack, projectionStack, m_parameters);
 		else if ((*it)->gettype() == "lamp")
-			RenderMesh(meshList[Lamp], true, modelStack, viewStack, projectionStack, m_parameters);
+			RenderMesh(meshList[GEO_LAMP], true, modelStack, viewStack, projectionStack, m_parameters);
 		else if ((*it)->gettype() == "Andy")
-			RenderMesh(meshList[Friend], true, modelStack, viewStack, projectionStack, m_parameters);
+			RenderMesh(meshList[GEO_FRIEND], true, modelStack, viewStack, projectionStack, m_parameters);
 		else if ((*it)->gettype() == "teacher")
-			RenderMesh(meshList[Teacher], true, modelStack, viewStack, projectionStack, m_parameters);
+			RenderMesh(meshList[GEO_TEACHER], true, modelStack, viewStack, projectionStack, m_parameters);
 		modelStack.PopMatrix();
 	}
 	
@@ -647,10 +618,10 @@ void SceneMain::Render()
 	modelStack.Translate(0, 0, 17.5);
 	modelStack.Scale(5, 5, 20);
 	modelStack.Rotate(90, 0, 1, 0);
-	RenderMesh(meshList[RoadTileStraight], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_ROADTILESTRAIGHT], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PushMatrix();
 	modelStack.Rotate(90, 0, 1, 0);
-	RenderMesh(meshList[RoadStraightBarrier], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_ROADSTRAIGHTBARRIER], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
@@ -665,23 +636,23 @@ void SceneMain::Render()
 	modelStack.Translate(0, 0, -17.5);
 	modelStack.Scale(5, 5, 20);
 	modelStack.Rotate(90, 0, 1, 0);
-	RenderMesh(meshList[RoadTileStraight], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_ROADTILESTRAIGHT], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PushMatrix();
 	modelStack.Rotate(90, 0, 1, 0);
-	RenderMesh(meshList[RoadStraightBarrier], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_ROADSTRAIGHTBARRIER], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
 
 	modelStack.PushMatrix();
 	modelStack.Scale(5, 5, 5);
-	RenderMesh(meshList[RoadCrossBarrier], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_ROADCROSSBARRIER], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, 0);
 	modelStack.Scale(5, 5, 5);
-	RenderMesh(meshList[RoadCross], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_ROADCROSS], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 
@@ -689,19 +660,19 @@ void SceneMain::Render()
 	modelStack.PushMatrix();
 	modelStack.Translate(-7, 0, -30);
 	modelStack.Scale(10, 10, 10);
-	RenderMesh(meshList[TREE], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_TREE], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(7, 0, -33);
 	modelStack.Scale(10, 10, 10);
-	RenderMesh(meshList[TREE], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_TREE], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(1, 0, -38);
 	modelStack.Scale(10, 10, 10);
-	RenderMesh(meshList[TREE], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_TREE], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
@@ -777,7 +748,12 @@ void SceneMain::Render()
 	if (firstEnter == true) {
 		if (camera.position.x > -14) {
 			RenderNPCDialogue("Welcome to the city tour, you can press T to talk to people or interact with objects, F to observe, G to pick up items. Finally you can press E to end or continue the converstaion.", "Mr.Sazz");
+			inDialogue = true;
 		}
+	}
+	if ((walletNotGone) && (!firstEnter) && (cooldown <= 0)) {
+		RenderNPCDialogue("Wait, my pocket is lighter now... My wallet is gone? I have to find my wallet.", "Player Name");
+		inDialogue = true;
 	}
 	
 	RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);

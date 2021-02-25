@@ -9,6 +9,7 @@ public:
 	bool clickedOn; 
 	bool bLButtonState;
 	bool active;
+	bool hold;
 
 	Button();
 	Button(float positionX, float positionY, float width, float height, bool isActive = false);//positionx and position y is bottom left
