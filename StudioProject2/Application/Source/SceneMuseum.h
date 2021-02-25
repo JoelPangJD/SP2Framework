@@ -72,6 +72,9 @@ class SceneMuseum : public Scene
 		GEO_ITEM1,
 		GEO_KEY,
 		GEO_FLAG,
+		GEO_PICFLAG,
+		GEO_PICKEY,
+		GEO_PICBOX,
 		//GROUND MESH
 		GEO_GROUND,
 		NUM_GEOMETRY,
@@ -125,6 +128,17 @@ public:
 	bool lighton = true;
 	float fps;
 	float cooldown = 0; //cooldown time for actions
+
+
+	//Animation
+	float TranslateBoxY = 0.0f;
+	int TranslateBoxDirectional = 1;
+
+	float TranslateFlagY = 0;
+	int TranslateFlagDirectional = 1;
+
+	float TranslateKeyY = 0;
+	int TranslateKeyDirectional = 1;
 
 	SceneMuseum();
 	SceneMuseum(Inventory* inventory);
