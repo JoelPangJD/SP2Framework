@@ -172,7 +172,7 @@ void Camera3::Updatepos(double dt)
 	}
 	else if (Application::SwitchScene == 1)
 	{
-		speed = 30.f;
+		speed = 50.f;
 	}
 	if (Application::enableMouse == false) {
 
