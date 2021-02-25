@@ -22,5 +22,6 @@ public:
 	InteractableObject(Vector3 pos, float angle, float scale, float radius, string type, string name, bool pickupable); //Create an interactable object with an interact radius around it
 	~InteractableObject();
 	void updatedialogue(string type);// to update the dialogue by changing the type
+	void updatedescription(string type);
 	int interact();
 };
