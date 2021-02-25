@@ -298,21 +298,6 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 	{
 		if ((*it)->spherecollider(camera.target) && !indialogue && !ininventory) // Checks if the target is within a radius of an item and not in a dialogue
 		{
-			if (Application::IsKeyPressed('Q')) //Q is use
-			{
-				if (!(inventory->getstorage().empty())) //For uses that rely on inventory, make sure the inventory is not empty first to prevent error
-				{
-					if ((*it)->gettype() == "cat" && inventory->getcurrentitem()->gettype() == "fish")//using fish on cat
-					{
-						inventory->removeitem(inventory->getcurrentitem());
-						inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 1, 0, "Marina Bay ticket", "MBS ticket", true));
-					}
-					if ((*it)->gettype() == "pond" && inventory->getcurrentitem()->gettype() == "fishing rod")//using fishing rod on cat
-					{
-						return "Gardenminigame1";
-					}
-				}
-			}
 			if (Application::IsKeyPressed('F'))// F is look at
 			{
 				dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
@@ -333,6 +318,21 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 					currentline = dialogue.begin(); 
 					name = "";
 					indialogue = true;
+				}
+			}
+			else if (Application::IsKeyPressed('Q')) //Q is use
+			{
+				if (!(inventory->getstorage().empty())) //For uses that rely on inventory, make sure the inventory is 
+				{
+					if ((*it)->gettype() == "cat" && inventory->getcurrentitem()->gettype() == "fish")//using fish on cat
+					{
+						inventory->removeitem(inventory->getcurrentitem());
+							inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 1, 0, "Marina Bay ticket", "MBS ticket", true));
+					}
+					if ((*it)->gettype() == "pond" && inventory->getcurrentitem()->gettype() == "fishing rod")//using fishing rod on cat
+					{
+						return "Gardenminigame1";
+					}
 				}
 			}
 			else if (Application::IsKeyPressed('T')) //T is talk to

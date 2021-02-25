@@ -604,6 +604,7 @@ void SceneGarden::Renderminigame2()
 	RenderMeshOnScreen(meshList[GEO_YARNBACKGROUND], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
 	RenderMeshOnScreen(meshList[GEO_SPHERE], playerx, playery,2, 2, modelStack, viewStack, projectionStack, m_parameters);
 	RenderMeshOnScreen(meshList[GEO_SPHERE], objectivex, objectivey, 1, 1, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMeshOnScreen(meshList[GEO_QUAD], 50, 30, 10, 5, modelStack, viewStack, projectionStack, m_parameters);
 }
 
 void SceneGarden::Renderfish()

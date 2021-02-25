@@ -1,2 +1,6 @@
-﻿  Common.vcxproj -> C:\Users\weich\Documents\GitHub\SP2Framework\StudioProject2\Debug\Common.lib
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\Microsoft.Common.CurrentVersion.targets(5140,5): error MSB3541: Files has invalid value "<<<<<<< HEAD". Illegal characters in path.
+﻿  MatrixStack.cpp
+  Mtx44.cpp
+  timer.cpp
+  Vector3.cpp
+  Generating Code...
+  Common.vcxproj -> S:\SP2\SP2Framework\StudioProject2\Debug\Common.lib

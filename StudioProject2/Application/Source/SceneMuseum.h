@@ -70,6 +70,11 @@ class SceneMuseum : public Scene
 		GEO_BOX,
 		GEO_COLOR,
 		GEO_ITEM1,
+		GEO_KEY,
+		GEO_FLAG,
+		GEO_PICFLAG,
+		GEO_PICKEY,
+		GEO_PICBOX, 
 		//GROUND MESH
 		GEO_GROUND,
 		NUM_GEOMETRY,
@@ -123,6 +128,17 @@ public:
 	bool lighton = true;
 	float fps;
 	float cooldown = 0; //cooldown time for actions
+
+
+	//Animation
+	float TranslateBoxY = 0.0f;
+	int TranslateBoxDirectional = 1;
+
+	float TranslateFlagY = 0;
+	int TranslateFlagDirectional = 1;
+
+	float TranslateKeyY = 0;
+	int TranslateKeyDirectional = 1;
 
 	SceneMuseum();
 	SceneMuseum(Inventory* inventory);
@@ -194,6 +210,7 @@ private:
 
 	//2nd game
 	void StartGame2();
+	bool QisPressed = false;
 	bool EndGame2 = false;
 
 	//void RenderMesh(Mesh* mesh, bool enableLight);
@@ -204,7 +221,6 @@ private:
 	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey);
-
 	void RenderInteractableText();
 
 };
