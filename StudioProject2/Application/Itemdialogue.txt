@@ -1,5 +1,6 @@
 stick|1Hello stick
 cat|1Hello cat|2Meow
+pond|1Hello pond
 Mr.Sazz|1Good morning Mr.Sazz|2Oh hello there, have you finished the homework I gave you last week?|1Yes I have.
 Andy|1Yo! Andy.|2Yo whats up?|1Have you seen that new game released today? Wanna buy it together after school is over?|2Sure.
 answer|1Looks like i need to choose the correct image....

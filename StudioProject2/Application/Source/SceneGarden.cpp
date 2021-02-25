@@ -285,6 +285,7 @@ void SceneGarden::Init()
 	items.push_back(new InteractableObject(Vector3(5, 0, 50), 55, 5, 7, "stick", "Stick", true));
 	items.push_back(new InteractableObject(Vector3(55, 0, 54), 180, 0.1, 7, "cat", "Cat", false));
 	items.push_back(new InteractableObject(Vector3(54, 0.2, 50), 0, 0.05, 7, "yarn", "'Yarn'", true));
+	items.push_back(new InteractableObject(Vector3(0, 0, -150), 0, 1, 120, "pond", "Pond", false));
 	items.push_back(new InteractableObject(Vector3(0, -3, -150), 0, 0.5, 2, "fish", "Fish", false));
 	items.push_back(new InteractableObject(Vector3(10, -3, -140), 90, 0.5, 2, "fish", "Fish", false));
 	items.push_back(new InteractableObject(Vector3(-10, -3, -150), -60, 0.5, 2, "fish", "Fish", false));
@@ -324,8 +325,11 @@ void SceneGarden::Update(double dt)
 	if (minigame == 0) //When not in minigame
 	{
 		movement(camera, terrains, dt);
-		interact(camera, items);
-
+		string trigger = interact(camera, items);
+		if (trigger == "Gardenminigame1")
+			minigame = 1;
+		else if (trigger == "Gardenminigame2")
+			minigame = 3;
 	}
 	else if (minigame == 2) //During minigame 1
 	{
@@ -400,8 +404,8 @@ void SceneGarden::Update(double dt)
 			playery -= 10 * dt;
 		else if(playery < cursory - 0.1)
 			playery += 10 * dt;
-		if ((playerx < objectivex + 1 && playerx > objectivex - 1)
-			&& (playery < objectivey + 1 && playery > objectivey - 1)) //If overlap with objective
+		if ((playerx < objectivex + 2 && playerx > objectivex - 2)
+			&& (playery < objectivey + 2 && playery > objectivey - 2)) //If overlap with objective
 		{
 			progress++;
 		}
@@ -438,6 +442,8 @@ void SceneGarden::Update(double dt)
 		case 7:
 			camera = prevcamera;
 			Application::enableMouse = false;
+			inventory->removeitem("yarn");
+			inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 1, 0, "fishing line", "Fishing line", true));
 			minigame = 0;
 		}
 	}
@@ -891,9 +897,12 @@ void SceneGarden::Render()
 		RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 	else if (minigame == 1)
 	{
-		RenderMinigameIntro("Press the space when the rings overlap, do it sucessfully six times in a row to successfully catch a fish", "Fishing", 6, modelStack, viewStack, projectionStack, m_parameters);
+		RenderMinigameIntro("Press the space when the rings overlap. Time it right sucessfully six times in a row to successfully catch a fish", "Fishing", 6, modelStack, viewStack, projectionStack, m_parameters);
 		if (Application::IsKeyPressed('E')) //Press E to start the minigame
 		{
+			prevcamera = camera;
+			camera.Init(Vector3(0, 50, -150), Vector3(0, 0, -150), Vector3(0, 0, 1));
+			progress = 0;
 			circlescale2 = 1;
 			circlescale1 = 3;
 			circlespeed = 0.5f;
@@ -905,7 +914,7 @@ void SceneGarden::Render()
 		Renderminigame1();
 	else if (minigame == 3)
 	{
-		RenderMinigameIntro("Use the mouse to guide the end of the thread to the checkpoints ", "Untangling the string", 6, modelStack, viewStack, projectionStack, m_parameters);
+		RenderMinigameIntro("Use the mouse to guide the end of the thread to the checkpoints to untangle the yarn looking fishing line", "Tangled 'yarn'", 6, modelStack, viewStack, projectionStack, m_parameters);
 		if (Application::IsKeyPressed('E')) //Press E to start the minigame
 		{
 			progress = 0;
