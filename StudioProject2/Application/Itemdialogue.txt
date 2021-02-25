@@ -1,5 +1,6 @@
 stick|1Hello stick
 cat|1Hello cat|2Meow
+pond|1Hello pond
 Mr.Sazz|1Good morning Mr.Sazz|2Oh hello there, have you finished the homework I gave you last week?|1Yes I have.
 Andy|1Yo! Andy.|2Yo whats up?|1Have you seen that new game released today? Wanna buy it together after school is over?|2Sure.
 answer|1Looks like i need to choose the correct image....
@@ -25,5 +26,5 @@ adventurer2|2Figured it out yet?
 adventurer3|2Infinity? That makes a lot of sense. Aight as promised here's my sword.|2Also, since you've helped me so much, take this translator orb I have spare.|1This sword seems a bit too heavy for me but maybe I could use the orb instead?
 pool|1Hello infinity pool
 pool2|1Hello infinity po-wait...|1"You find me behind the stars; or in a sixth, seventh, or third it takes something round, a computer, and me to make pie i am bigger than anything you can think of what am i ??"|1The answer's infinity! I should tell this to the old guy quickly.
-Guide|2Welcome to Changi airport, board the plane for a flight exprience......|2Oh no! Outsiders fired missiles coming towards the airport.|2 Can u help to drive the plane to safety? Please...
-stairs|1....
+Guide|2Welcome to Changi airport, board the plane for a flight exprience......WAIT|2Oh no! Outsiders fired missiles coming towards the airport.|2 Can u help to drive the plane to safety? Please...
+stairs|1Press [E] to board the plane. [I] to move forward, [J] to move left, [L] to move right, [K] to move backward.

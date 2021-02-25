@@ -49,6 +49,19 @@ void Inventory::additem(InteractableObject* item)
 	currentitem = storage.begin();
 }
 
+void Inventory::removeitem(string type)
+{
+	for (std::vector<InteractableObject*>::iterator it = storage.begin(); it != storage.end(); it++)
+	{
+		if ((*it)->gettype() == type)
+		{
+			storage.erase(storage.begin() + distance(storage.begin(), it));
+			break;
+		}
+	}
+	currentitem = storage.begin();
+}
+
 void Inventory::removeitem(InteractableObject* item)
 {
 	for (std::vector<InteractableObject*>::iterator it = storage.begin(); it != storage.end(); it++)
@@ -60,6 +73,16 @@ void Inventory::removeitem(InteractableObject* item)
 		}
 	}
 	currentitem = storage.begin();
+}
+
+bool Inventory::checkinventory(string type)
+{
+	for (auto it = storage.begin(); it != storage.end(); it++)
+	{
+		if ((*it)->gettype() == type)
+			return true;			//if found, return true and break
+	}
+	return false;
 }
 
 vector<InteractableObject*> Inventory::getstorage()
