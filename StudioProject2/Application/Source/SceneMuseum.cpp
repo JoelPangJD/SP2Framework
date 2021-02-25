@@ -149,7 +149,7 @@ void SceneMuseum::Init()
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.0f);
 	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.5f, 0.2f, 0.0f), 1);
-	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(0.5, 0.5, 0.5), 10, 10, 10);
+	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(0.5, 0.5, 0.5), 10, 10, 0.2);
 	meshList[GEO_SPHERE]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
 	meshList[GEO_SPHERE]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
 	meshList[GEO_SPHERE]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
@@ -266,13 +266,18 @@ void SceneMuseum::Init()
 	terrains.push_back(new Terrain(Vector3(261.7488, 0, -205.3159), 0, 22, 10, 218.204, 3, "Wall"));
 	//Door hitbox 
 	terrains.push_back(new Terrain(Vector3(-272.215, 0, 73.66698), 0, 22, 10, 218.204, 3, "Door")); //+19
+	//DECORATION HITBOX
+	terrains.push_back(new Terrain(Vector3(90.2891, 20, -205.542), 0, 22, 10, 228.204, 3, "Elephant hitbox"));
+	terrains.push_back(new Terrain(Vector3(97.15, 0, 163.717), 0, 22, 10, 218.204, 3, "Rickshaw hitbox"));
 
 	//Items vector
-	items.push_back(new InteractableObject(Vector3(-210.785, 16.0715, 75.3848), 0, 0, 50, "preview", "preview for gam2", false));
-	items.push_back(new InteractableObject(Vector3(-283.869, 16.0715, 95.1478), 0, 0, 50, "answer", "to answer", false));
-	items.push_back(new InteractableObject(Vector3(-104.012, 0, 5.04312), 0, 5, 50, "box", "boxy", true));
-	items.push_back(new InteractableObject(Vector3(12.7309, 0, 5.72924), 0, 0.75, 50, "andy", "Andy", false));
-	items.push_back(new InteractableObject(Vector3(268.052, 0, -108.232), 0, 5, 50, "teacher", "Mr tang", false));
+	items.push_back(new InteractableObject(Vector3(-210.785, 16.0715, 78.3848), 0, 0, 30, "preview", "preview for gam2", false));
+	items.push_back(new InteractableObject(Vector3(-283.869, 16.0715, 95.1478), 0, 0, 20, "answer", "to answer", false));
+	items.push_back(new InteractableObject(Vector3(-104.012, 0, 5.04312), 0, 5, 20, "box", "boxy", true));
+	items.push_back(new InteractableObject(Vector3(12.7309, 0, 5.72924), 0, 0.75, 20, "andy", "Andy", false));
+	items.push_back(new InteractableObject(Vector3(268.052, 0, -108.232), 0, 5, 20, "teacher", "Mr tang", false));
+	items.push_back(new InteractableObject(Vector3(90.2891, 20, -210.542), 0, 5, 50, "elephant", "The elephant", false));
+	items.push_back(new InteractableObject(Vector3(97.15, 0, 163.717), 0, 5, 50, "rickshaw", "The Rickshaw", false));
 
 	//Ground mesh
 	meshList[GEO_GROUND] = MeshBuilder::GenerateQuad("ground", Color(1, 1, 1), 1.0f);
@@ -347,7 +352,7 @@ void SceneMuseum::Update(double dt)
 
 				if (MoveX > 36.9 && AddSize > 73)
 				{
-					ShowHoldingGame = false;
+					StartTheHoldingGame = false;
 					MousePreview = false;
 					Application::SwitchScene = 0;
 				}
@@ -517,7 +522,7 @@ void SceneMuseum::Update(double dt)
 
 	if (Application::IsKeyPressed('T') && EndGame1 == true && camera.position.x < -258 && camera.position.x > -267 && camera.position.z < -24.3 && camera.position.z > -83)
 	{
-		ShowHoldingGame = true;
+		StartTheHoldingGame = true;
 	}
 
 
@@ -525,47 +530,47 @@ void SceneMuseum::Update(double dt)
 
 
 
-void SceneMuseum::RenderMesh(Mesh* mesh, bool enableLight)
-{
-	Mtx44 MVP, modelView, modelView_inverse_transpose;
-
-	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
-	glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-	modelView = viewStack.Top() * modelStack.Top();
-	glUniformMatrix4fv(m_parameters[U_MODELVIEW], 1, GL_FALSE, &modelView.a[0]);
-	if (enableLight && lighton == true)
-	{
-		glUniform1i(m_parameters[U_LIGHTENABLED], 1);
-		modelView_inverse_transpose = modelView.GetInverse().GetTranspose();
-		glUniformMatrix4fv(m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE], 1, GL_FALSE, &modelView_inverse_transpose.a[0]);
-
-		//load material
-		glUniform3fv(m_parameters[U_MATERIAL_AMBIENT], 1, &mesh->material.kAmbient.r);
-		glUniform3fv(m_parameters[U_MATERIAL_DIFFUSE], 1, &mesh->material.kDiffuse.r);
-		glUniform3fv(m_parameters[U_MATERIAL_SPECULAR], 1, &mesh->material.kSpecular.r);
-		glUniform1f(m_parameters[U_MATERIAL_SHININESS], mesh->material.kShininess);
-	}
-	else
-	{
-		glUniform1i(m_parameters[U_LIGHTENABLED], 0);
-	}
-	if (mesh->textureID > 0)
-	{
-		glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-		glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
-	}
-	else
-	{
-		glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 0);
-	}
-	mesh->Render(); //this line should only be called once
-	if (mesh->textureID > 0)
-	{
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-}
+//void SceneMuseum::RenderMesh(Mesh* mesh, bool enableLight)
+//{
+//	Mtx44 MVP, modelView, modelView_inverse_transpose;
+//
+//	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
+//	glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+//	modelView = viewStack.Top() * modelStack.Top();
+//	glUniformMatrix4fv(m_parameters[U_MODELVIEW], 1, GL_FALSE, &modelView.a[0]);
+//	if (enableLight && lighton == true)
+//	{
+//		glUniform1i(m_parameters[U_LIGHTENABLED], 1);
+//		modelView_inverse_transpose = modelView.GetInverse().GetTranspose();
+//		glUniformMatrix4fv(m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE], 1, GL_FALSE, &modelView_inverse_transpose.a[0]);
+//
+//		//load material
+//		glUniform3fv(m_parameters[U_MATERIAL_AMBIENT], 1, &mesh->material.kAmbient.r);
+//		glUniform3fv(m_parameters[U_MATERIAL_DIFFUSE], 1, &mesh->material.kDiffuse.r);
+//		glUniform3fv(m_parameters[U_MATERIAL_SPECULAR], 1, &mesh->material.kSpecular.r);
+//		glUniform1f(m_parameters[U_MATERIAL_SHININESS], mesh->material.kShininess);
+//	}
+//	else
+//	{
+//		glUniform1i(m_parameters[U_LIGHTENABLED], 0);
+//	}
+//	if (mesh->textureID > 0)
+//	{
+//		glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
+//		glActiveTexture(GL_TEXTURE0);
+//		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
+//		glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
+//	}
+//	else
+//	{
+//		glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 0);
+//	}
+//	mesh->Render(); //this line should only be called once
+//	if (mesh->textureID > 0)
+//	{
+//		glBindTexture(GL_TEXTURE_2D, 0);
+//	}
+//}
 
 void SceneMuseum::RenderSkybox()
 {
@@ -585,42 +590,42 @@ void SceneMuseum::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, -499);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_FRONT], false);
+	RenderMesh(meshList[GEO_FRONT], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, 499);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_BACK], false);
+	RenderMesh(meshList[GEO_BACK], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, -499, 0);
 	modelStack.Rotate(-90, 1, 0, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_BOTTOM], false);
+	RenderMesh(meshList[GEO_BOTTOM], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 499, 0);
 	modelStack.Rotate(90, 1, 0, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_TOP], false);
+	RenderMesh(meshList[GEO_TOP], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(499, 0, 0);
 	modelStack.Rotate(-90, 0, 1, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_RIGHT], false);
+	RenderMesh(meshList[GEO_RIGHT], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-499, 0, 0);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_LEFT], false);
+	RenderMesh(meshList[GEO_LEFT], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PopMatrix();
@@ -640,7 +645,7 @@ void SceneMuseum::RenderWalls()
 	modelStack.Translate(54.5, 0, -113.507);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(20, 80, 205);
-	RenderMesh(meshList[GEO_WALL], true);
+	RenderMesh(meshList[GEO_WALL], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 
@@ -648,196 +653,196 @@ void SceneMuseum::RenderWalls()
 	modelStack.Translate(93.77, 0, -235.091);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(20, 80, 60);
-	RenderMesh(meshList[GEO_WALL], true);
+	RenderMesh(meshList[GEO_WALL], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(161.5, 0, -120.507);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(20, 80, 217);
-	RenderMesh(meshList[GEO_WALL], true);
+	RenderMesh(meshList[GEO_WALL], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(206.5, 0, -2);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(20, 80, 110);
-	RenderMesh(meshList[GEO_WALL], true);
+	RenderMesh(meshList[GEO_WALL], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-107.9315, 0, 82);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(20, 80, 300);
-	RenderMesh(meshList[GEO_WALL], true);
+	RenderMesh(meshList[GEO_WALL], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(50, 0, 130);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(20, 80, 115);
-	RenderMesh(meshList[GEO_WALL], true);
+	RenderMesh(meshList[GEO_WALL], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(97.606, 0, 216.3716);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(20, 80, 70);
-	RenderMesh(meshList[GEO_WALL], true);
+	RenderMesh(meshList[GEO_WALL], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(242, 0, 80);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(20, 80, 180);
-	RenderMesh(meshList[GEO_WALL], true);
+	RenderMesh(meshList[GEO_WALL], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(163, 0, 130);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(20, 80, 115);
-	RenderMesh(meshList[GEO_WALL], true);
+	RenderMesh(meshList[GEO_WALL], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-100.273, 0, -2.2017);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(20, 80, 293.69);
-	RenderMesh(meshList[GEO_WALL], true);
+	RenderMesh(meshList[GEO_WALL], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-237.153, 0, -21.76082);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(20, 80, 20);
-	RenderMesh(meshList[GEO_WALL], true);
+	RenderMesh(meshList[GEO_WALL], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-237.153, 0, -80);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(20, 80, 20);
-	RenderMesh(meshList[GEO_WALL], true);
+	RenderMesh(meshList[GEO_WALL], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-256.725, 0, -80);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(20, 80, 20);
-	RenderMesh(meshList[GEO_WALL], true);
+	RenderMesh(meshList[GEO_WALL], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-275.86, 0, -80);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(20, 40, 20);
-	RenderMesh(meshList[GEO_WALLCORNER], true);
+	RenderMesh(meshList[GEO_WALLCORNER], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-275.77, 0, 85.866);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(20, 80, 312.079);
-	RenderMesh(meshList[GEO_WALL], true);
+	RenderMesh(meshList[GEO_WALL], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-275.86, 0, 251.47);
 	modelStack.Rotate(270, 0, 1, 0);
 	modelStack.Scale(20, 40, 20);
-	RenderMesh(meshList[GEO_WALLCORNER], true);
+	RenderMesh(meshList[GEO_WALLCORNER], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-226.94, 0, 269.39);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(20, 80, 80);
-	RenderMesh(meshList[GEO_WALL], true);
+	RenderMesh(meshList[GEO_WALL], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-177.61, 0, 166.13);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(20, 80, 186.80);
-	RenderMesh(meshList[GEO_WALL], true);
+	RenderMesh(meshList[GEO_WALL], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-272.215, 0, 82.023);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(20, 40.1209, 29.7171);
-	RenderMesh(meshList[GEO_WALLDOOR], true);
+	RenderMesh(meshList[GEO_WALLDOOR], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-255.54, 0, -51.028);
 	modelStack.Rotate(0, 0, 1, 0);
 	modelStack.Scale(20, 40.1209, 39);
-	RenderMesh(meshList[GEO_WALLDOOR], true);
+	RenderMesh(meshList[GEO_WALLDOOR], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(380.54, 0, 36.895);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(20, 40.1209, 39);
-	RenderMesh(meshList[GEO_WALLDOOR], true);
+	RenderMesh(meshList[GEO_WALLDOOR], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(362.13, 0, 63.431);
 	modelStack.Rotate(0, 0, 1, 0);
 	modelStack.Scale(21, 40, 16.540);
-	RenderMesh(meshList[GEO_WALLCORNER], true);
+	RenderMesh(meshList[GEO_WALLCORNER], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(260.982, 0, -199.02);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(20, 80, 219.59);
-	RenderMesh(meshList[GEO_WALL], true);
+	RenderMesh(meshList[GEO_WALL], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(350.982, 0, 80);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(20, 80, 40);
-	RenderMesh(meshList[GEO_WALL], true);
+	RenderMesh(meshList[GEO_WALL], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(380.54, 0, -93.718);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(20, 80, 227.96);
-	RenderMesh(meshList[GEO_WALL], true);
+	RenderMesh(meshList[GEO_WALL], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(55, 0, 198);
 	modelStack.Rotate(270, 0, 1, 0);
 	modelStack.Scale(21, 40, 30);
-	RenderMesh(meshList[GEO_WALLCURVED], true);
+	RenderMesh(meshList[GEO_WALLCURVED], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(143.4894, 0, 194.39);
 	modelStack.Rotate(360, 0, 1, 0);
 	modelStack.Scale(25, 40, 30);
-	RenderMesh(meshList[GEO_WALLCURVED], true);
+	RenderMesh(meshList[GEO_WALLCURVED], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(57.0803, 0, -229.69);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(25, 40, 30);
-	RenderMesh(meshList[GEO_WALLCURVED], true);
+	RenderMesh(meshList[GEO_WALLCURVED], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(138.77, 0, -233.091);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(25, 40, 30);
-	RenderMesh(meshList[GEO_WALLCURVED], true);
+	RenderMesh(meshList[GEO_WALLCURVED], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 }
 
@@ -976,16 +981,16 @@ void SceneMuseum::ExitMuseum()
 	if (camera.position.x < -258 && camera.position.x > -267 && camera.position.z < -24.3 && camera.position.z > -83)
 	{
 		RenderInteractableText();
-		StartInteraction();
+		StartExit();
 	}
 
 }
 
-void SceneMuseum::StartInteraction()
+void SceneMuseum::StartExit()
 {
-	if (EndInteraction == false)
+	if (EndHoldingGame == false)
 	{
-		if (ShowHoldingGame == true)
+		if (StartTheHoldingGame == true)
 		{
 			MousePreview = true;
 			Application::enableMouse = true;
@@ -1130,7 +1135,7 @@ void SceneMuseum::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, 
 	modelStack.LoadIdentity();
 	modelStack.Translate(x, y, 0);
 	modelStack.Scale(sizex, sizey, 0);
-	RenderMesh(mesh, false); //UI should not have light
+	RenderMesh(mesh, false, modelStack, viewStack, projectionStack, m_parameters); //UI should not have light
 	projectionStack.PopMatrix();
 	viewStack.PopMatrix();
 	modelStack.PopMatrix();
@@ -1222,7 +1227,7 @@ void SceneMuseum::Render()
 	//Skybox
 	RenderSkybox();
 
-	RenderMesh(meshList[GEO_AXES], false);
+	RenderMesh(meshList[GEO_AXES], false, modelStack, viewStack, projectionStack, m_parameters);
 
 	RenderWalls();
 
@@ -1232,7 +1237,7 @@ void SceneMuseum::Render()
 	modelStack.Rotate(90, 1, 0, 0);
 	modelStack.Rotate(180, 1, 0, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_GROUND], false);
+	RenderMesh(meshList[GEO_GROUND], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	//OBJ
@@ -1240,21 +1245,21 @@ void SceneMuseum::Render()
 	modelStack.Translate(90.2891, 20, -210.542);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(7, 7, 7);
-	RenderMesh(meshList[GEO_ELEPHANT], true);
+	RenderMesh(meshList[GEO_ELEPHANT], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(45.9141, -8.1529, -87.926);
 	modelStack.Rotate(0, 0, 1, 0);
 	modelStack.Scale(20, 25, 50);
-	RenderMesh(meshList[GEO_PAINTING], true);
+	RenderMesh(meshList[GEO_PAINTING], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(145.9141, -8.1529, -87.926);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(20, 25, 50);
-	RenderMesh(meshList[GEO_PAINTING2], true);
+	RenderMesh(meshList[GEO_PAINTING2], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 
@@ -1264,7 +1269,7 @@ void SceneMuseum::Render()
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Rotate(-51.626, 0, 0, 1);
 	modelStack.Scale(5, 5, 5);
-	RenderMesh(meshList[GEO_RICKSHAW], true);
+	RenderMesh(meshList[GEO_RICKSHAW], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 
@@ -1272,7 +1277,7 @@ void SceneMuseum::Render()
 	modelStack.Translate(167.2672, 0, -4.8068);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(15, 15, 15);
-	RenderMesh(meshList[GEO_GLASSTABLE], true);
+	RenderMesh(meshList[GEO_GLASSTABLE], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	//NPC
@@ -1294,7 +1299,7 @@ void SceneMuseum::Render()
 	modelStack.PushMatrix();
 	modelStack.Translate(-210.785, 16.0715, 75.3848);
 	modelStack.Scale(20, 20, 20);
-	RenderMesh(meshList[GEO_MINIPIC1], true);
+	RenderMesh(meshList[GEO_MINIPIC1], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 
@@ -1302,14 +1307,14 @@ void SceneMuseum::Render()
 	modelStack.Translate(-283.869, 16.0715, 95.1478);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(35, 35, 45);
-	RenderMesh(meshList[GEO_SELECTION], true);
+	RenderMesh(meshList[GEO_SELECTION], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	//Exit door
 	modelStack.PushMatrix();
 	modelStack.Translate(-265.813, 23, -87.885);
 	modelStack.Scale(35, 35, 45);
-	RenderMesh(meshList[GEO_PIC], true);
+	RenderMesh(meshList[GEO_PIC], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	//For interactable items
@@ -1321,22 +1326,22 @@ void SceneMuseum::Render()
 		modelStack.Scale((*it)->getscale(), (*it)->getscale(), (*it)->getscale());
 		if ((*it)->gettype() == "box")
 		{
-			RenderMesh(meshList[GEO_ITEM1], true);
+			RenderMesh(meshList[GEO_ITEM1], true, modelStack, viewStack, projectionStack, m_parameters);
 		}
 		else if ((*it)->gettype() == "andy")
 		{
-			RenderMesh(meshList[GEO_ANDY], true);
+			RenderMesh(meshList[GEO_ANDY], true, modelStack, viewStack, projectionStack, m_parameters);
 		}
 		else if ((*it)->gettype() == "teacher")
 		{
-			RenderMesh(meshList[GEO_TEACHER], true);
+			RenderMesh(meshList[GEO_TEACHER], true, modelStack, viewStack, projectionStack, m_parameters);
 		}
 		modelStack.PopMatrix();
 	}
 
 	StartGame1();
 	StartGame2();
-	StartInteraction();
+	StartExit();
 	ExitMuseum();
 }
 

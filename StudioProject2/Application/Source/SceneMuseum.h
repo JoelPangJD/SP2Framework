@@ -186,17 +186,17 @@ private:
 	bool Continue = false;
 
 	//Exit Museum
-	void StartInteraction();
+	void StartExit();
 	void ExitMuseum();
-	bool EndInteraction = false;
-	bool ShowHoldingGame = false;
+	bool EndHoldingGame = false;
+	bool StartTheHoldingGame = false;
 	bool ToExit = false;
 
 	//2nd game
 	void StartGame2();
 	bool EndGame2 = false;
 
-	void RenderMesh(Mesh* mesh, bool enableLight);
+	//void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
 	void RenderWalls();
 	void RenderGame1UI();
