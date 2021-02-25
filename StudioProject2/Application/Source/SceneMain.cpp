@@ -201,7 +201,7 @@ void SceneMain::Init()
 
 	inFrontofMuseum = inFrontofChangi = inFrontofGarden = inFrontofMarina = false;
 	minigameMuseum = false;
-
+	firstEnter = true;
 
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
@@ -254,7 +254,9 @@ void SceneMain::Init()
 void SceneMain::Update(double dt)
 {
 	fps = 1.f / dt;
-	movement(camera,wall,dt);
+		if ((camera.position.x <= -14) || (!firstEnter) ){
+			movement(camera, wall, dt);
+		}
 	interact(camera, items);
 	if (cooldown > 0) {
 		cooldown -= dt;
@@ -293,6 +295,9 @@ void SceneMain::Update(double dt)
 		}
 		else if (inFrontofGarden) {
 			Application::SwitchScene = 4;
+		}
+		if (firstEnter){
+			firstEnter = false;
 		}
 	}
 	if ((camera.position.x >= 18) && (camera.position.x <= 27.5) && (camera.position.z >= -3) && (camera.position.z <= 3)) {
@@ -769,7 +774,11 @@ void SceneMain::Render()
 		modelStack.PopMatrix();
 		modelStack.PopMatrix();
 	}
-
+	if (firstEnter == true) {
+		if (camera.position.x > -14) {
+			RenderNPCDialogue("Welcome to the city tour, you can press T to talk to people or interact with objects, F to observe, G to pick up items. Finally you can press E to end or continue the converstaion.", "Mr.Sazz");
+		}
+	}
 	
 	RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 
