@@ -47,6 +47,9 @@ class SceneMain : public Scene
 		GEO_FRIEND,
 		GEO_HEADER,
 		GEO_TEXTBOX,
+		GEO_BUILDING,
+		GEO_BUILDING1,
+		GEO_BUILDING2,
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE

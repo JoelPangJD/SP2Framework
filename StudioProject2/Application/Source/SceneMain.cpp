@@ -197,6 +197,9 @@ void SceneMain::Init()
 	meshList[GEO_TEXTBOX]->textureID = LoadTGA("Image//Marina//textbox.tga");
 	meshList[GEO_MBS] = MeshBuilder::GenerateOBJMTL("mbs", "OBJ//CityCenter//mbs.obj", "OBJ//CityCenter//mbs.mtl");
 	meshList[GEO_CHANGI] = MeshBuilder::GenerateOBJMTL("changi", "OBJ//Changi//ChangiTower.obj", "OBJ//Changi//ChangiTower.mtl");
+	meshList[GEO_BUILDING] = MeshBuilder::GenerateOBJMTL("building", "OBJ//CityCenter//building.obj", "OBJ//CityCenter//building.mtl");
+	meshList[GEO_BUILDING1] = MeshBuilder::GenerateOBJMTL("building1", "OBJ//CityCenter//building1.obj", "OBJ//CityCenter//building1.mtl");
+	meshList[GEO_BUILDING2] = MeshBuilder::GenerateOBJMTL("building2", "OBJ//CityCenter//building2.obj", "OBJ//CityCenter//building2.mtl");
 
 
 	inFrontofMuseum = inFrontofChangi = inFrontofGarden = inFrontofMarina = false;
@@ -293,9 +296,16 @@ void SceneMain::Update(double dt)
 			firstRender = false;
 		}
 
+		
+		if ((walletNotGone) && (!firstEnter) && (cooldown <= 0)) {
+			walletNotGone = false;
+			inDialogue = false;
+		}
+	}
+	if (Application::IsKeyPressed('Q')) {
 		if (inFrontofMuseum == true) {
 			minigameMuseum = true;
-			cooldown = 0.5;
+			cooldown = 1.5;
 		}
 		else if (inFrontofChangi) {
 			Application::SwitchScene = 2;
@@ -305,10 +315,6 @@ void SceneMain::Update(double dt)
 		}
 		else if (inFrontofGarden) {
 			Application::SwitchScene = 4;
-		}
-		if ((walletNotGone) && (!firstEnter) && (cooldown <= 0)) {
-			walletNotGone = false;
-			inDialogue = false;
 		}
 	}
 	if ((camera.position.x >= 18) && (camera.position.x <= 27.5) && (camera.position.z >= -3) && (camera.position.z <= 3)) {
@@ -571,12 +577,15 @@ void SceneMain::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-37.5, 0, 0);
+	modelStack.Translate(-75.5, 0, 0);
+	modelStack.Scale(10, 10, 10);
 	RenderMesh(meshList[GEO_MBS], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-25, 0, 40.5);
+	modelStack.Translate(10, 0, 250);
+	modelStack.Scale(10, 10, 10);
+	modelStack.Translate(-28, 0, 8);
 	RenderMesh(meshList[GEO_CHANGI], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
@@ -607,12 +616,6 @@ void SceneMain::Render()
 		modelStack.PopMatrix();
 	}
 	
-	modelStack.PushMatrix();
-	modelStack.Translate(2.5, 9, 27.4);
-	modelStack.Scale(2, 2, 2);
-	modelStack.Rotate(180, 0, 1, 0);
-	RenderText(meshList[GEO_TEXT], "Changi Airport", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
-	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, 17.5);
@@ -623,13 +626,6 @@ void SceneMain::Render()
 	modelStack.Rotate(90, 0, 1, 0);
 	RenderMesh(meshList[GEO_ROADSTRAIGHTBARRIER], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(-27.4, 9, 2.5);
-	modelStack.Scale(2, 2, 2);
-	modelStack.Rotate(90, 0, 1, 0);
-	RenderText(meshList[GEO_TEXT], "MarinaBay", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
@@ -676,6 +672,41 @@ void SceneMain::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
+	modelStack.Translate(28, 0, -35);
+	modelStack.Scale(25, 25, 25);
+	modelStack.Rotate(90, 0, 1, 0);
+	RenderMesh(meshList[GEO_BUILDING], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-38, 0, -35);
+	modelStack.Scale(25, 25, 25);
+	modelStack.Rotate(-90, 0, 1, 0);
+	RenderMesh(meshList[GEO_BUILDING1], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix(); 
+
+	modelStack.PushMatrix();
+	modelStack.Translate(30, 0, 55);
+	modelStack.Scale(25, 25, 25);
+	modelStack.Rotate(90, 0, 1, 0);
+	RenderMesh(meshList[GEO_BUILDING2], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(2.5, 9, 27.4);
+	modelStack.Scale(2, 2, 2);
+	modelStack.Rotate(180, 0, 1, 0);
+	RenderText(meshList[GEO_TEXT], "Changi Airport", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-27.4, 9, 2.5);
+	modelStack.Scale(2, 2, 2);
+	modelStack.Rotate(90, 0, 1, 0);
+	RenderText(meshList[GEO_TEXT], "MarinaBay", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
+	
+	modelStack.PushMatrix();
 	modelStack.Translate(-2.5, 9, -27.4);
 	modelStack.Scale(2, 2, 2);
 	RenderText(meshList[GEO_TEXT], "Botanic Garden", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
@@ -687,11 +718,12 @@ void SceneMain::Render()
 	modelStack.Rotate(-90, 0, 1, 0);
 	RenderText(meshList[GEO_TEXT], "Museum", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
 
+
 	if (inFrontofMuseum) {
 		modelStack.PushMatrix();
 		modelStack.Translate(0.35, -2, -0.29);
 		modelStack.Scale(0.7, 0.7, 1);
-		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
+		RenderText(meshList[GEO_TEXT], "Q to", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
 
 		modelStack.PushMatrix();
 		modelStack.Translate(-0.2, -1, 0);
@@ -707,7 +739,7 @@ void SceneMain::Render()
 		modelStack.Translate(0.4, 4, 27.4);
 		modelStack.Scale(1, 1, 1);
 		modelStack.Rotate(180, 0, 1, 0);
-		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
+		RenderText(meshList[GEO_TEXT], "Q to", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
 
 		modelStack.PushMatrix();
 		modelStack.Translate(-0.2, -1, 0);
@@ -722,7 +754,7 @@ void SceneMain::Render()
 		modelStack.Translate(-27.4, 4, 0.4);
 		modelStack.Scale(1, 1, 1);
 		modelStack.Rotate(90, 0, 1, 0);
-		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
+		RenderText(meshList[GEO_TEXT], "Q to", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
 
 		modelStack.PushMatrix();
 		modelStack.Translate(-0.2, -1, 0);
@@ -736,7 +768,7 @@ void SceneMain::Render()
 		modelStack.PushMatrix();
 		modelStack.Translate(-0.4, 4, -27.4);
 		modelStack.Scale(1, 1, 1);
-		RenderText(meshList[GEO_TEXT], "E to", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
+		RenderText(meshList[GEO_TEXT], "Q to", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
 
 		modelStack.PushMatrix();
 		modelStack.Translate(-0.2, -1, 0);
@@ -745,6 +777,8 @@ void SceneMain::Render()
 		modelStack.PopMatrix();
 		modelStack.PopMatrix();
 	}
+
+
 	if (firstEnter == true) {
 		if (camera.position.x > -14) {
 			RenderNPCDialogue("Welcome to the city tour, you can press T to talk to people or interact with objects, F to observe, G to pick up items. Finally you can press E to end or continue the converstaion.", "Mr.Sazz");
