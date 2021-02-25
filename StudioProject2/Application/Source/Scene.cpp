@@ -17,7 +17,6 @@ Scene::Scene()
 	baseMeshList[GEO_HEADER]->textureID = LoadTGA("Image//Marina//header.tga");
 	baseMeshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
 	baseMeshList[GEO_INVENTORY]->textureID = LoadTGA("Image//inventory.tga");
-
 }
 
 void Scene::RenderMesh(Mesh* mesh, bool enableLight, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[])
@@ -201,6 +200,7 @@ void Scene::RenderNPCDialogue(std::string NPCText, std::string headerText, MS mo
 	//headerText.size()
 	RenderTextOnScreen(baseMeshList[GEO_TEXT], headerText, Color(0, 0, 0), 4, 14.5 - (headerText.size()), 17, modelStack, viewStack, projectionStack, m_parameters);	//header text
 	RenderMeshOnScreen(baseMeshList[GEO_TEXTBOX], 40, 8.75, 80, 17.5, modelStack, viewStack, projectionStack, m_parameters);
+
 	string word;																	//automating text
 	int wordpos = 0, ypos = 13, last = NPCText.find_last_of(" ");
 	float xpos = 2.f;

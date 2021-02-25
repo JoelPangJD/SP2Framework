@@ -9,3 +9,5 @@ girl|1Looks to be the hostess of this place.|1I should probably try and ask her 
 robot|1It's a robot cleaner.|1I'm not sure what time period we're in either.
 orc|1It's an orc.|1Usually they're quite aggressive but due to some orc rights movements, some of their kind has been accepted as pacifists and can now be within human areas with no consequence.
 adventurer|1Another human. Looks like he's been through his fair share of adventures.
+Guide|1Tour guide for Changi Airport.
+stairs|1Press [E] to board the plane. [I] to move forward, [J] to move left, [L] to move right, [K] to move backward.
