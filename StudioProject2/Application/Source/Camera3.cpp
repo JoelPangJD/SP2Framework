@@ -166,7 +166,7 @@ void Camera3::Update(double dt)
 
 void Camera3::Updatepos(double dt)
 {
-	static const float speed = 10.f;
+	static const float speed = 30.f;
 
 	if (Application::enableMouse == false) {
 
