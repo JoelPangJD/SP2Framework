@@ -251,6 +251,24 @@ void SceneMuseum::Init()
 	meshList[GEO_FLAG]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
 	meshList[GEO_FLAG]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[GEO_FLAG]->material.kShininess = 1.f;
+	meshList[GEO_PICFLAG] = MeshBuilder::GenerateQuad("Picture of flag on the floor", Color(1, 1, 1), 1.0f);
+	meshList[GEO_PICFLAG]->textureID = LoadTGA("Image//Museum//Flag-Singapore.tga");
+	meshList[GEO_PICFLAG]->material.kAmbient.Set(0.8f, 0.8f, 0.8f);
+	meshList[GEO_PICFLAG]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
+	meshList[GEO_PICFLAG]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
+	meshList[GEO_PICFLAG]->material.kShininess = 1.f;
+	meshList[GEO_PICKEY] = MeshBuilder::GenerateQuad("Picture of the key on the floor", Color(1, 1, 1), 1.0f);
+	meshList[GEO_PICKEY]->textureID = LoadTGA("Image//Museum//download.tga");
+	meshList[GEO_PICKEY]->material.kAmbient.Set(0.8f, 0.8f, 0.8f);
+	meshList[GEO_PICKEY]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
+	meshList[GEO_PICKEY]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
+	meshList[GEO_PICKEY]->material.kShininess = 1.f;
+	meshList[GEO_PICBOX] = MeshBuilder::GenerateQuad("Picture of the box on the floor", Color(1, 1, 1), 1.0f);
+	meshList[GEO_PICBOX]->textureID = LoadTGA("Image//Museum//wallBlock_E.tga");
+	meshList[GEO_PICBOX]->material.kAmbient.Set(0.8f, 0.8f, 0.8f);
+	meshList[GEO_PICBOX]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
+	meshList[GEO_PICBOX]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
+	meshList[GEO_PICBOX]->material.kShininess = 1.f;
 	//VECTORS FOR WALLS TO CHECK HITBOX
 	terrains.push_back(new Terrain(Vector3(45, 0, -119.707), 0, 0, 0, 3, 220.66, "Wall"));
 	terrains.push_back(new Terrain(Vector3(93.77, 0, -243.091), 0, 0, 0, 70.626, 3, "Wall"));
@@ -321,6 +339,24 @@ void SceneMuseum::Update(double dt)
 	fps = 1.f / dt;
 	if (cooldown > 0)
 		cooldown -= dt;
+
+	TranslateBoxY += dt * TranslateBoxDirectional * 10; //spped of translation of Y
+	if (TranslateBoxY > 5|| TranslateBoxY < -5)
+	{
+		TranslateBoxDirectional *= -1; // changes direction
+	}
+
+	TranslateKeyY += dt * TranslateKeyDirectional * 10; //spped of translation of Y
+	if (TranslateKeyY > 5 || TranslateKeyY < -5)
+	{
+		TranslateKeyDirectional *= -1; // changes direction
+	}
+
+	TranslateFlagY -= dt * TranslateFlagDirectional * 10; //spped of translation of Y
+	if (TranslateFlagY > 5 || TranslateFlagY < -5)
+	{
+		TranslateFlagDirectional *= -1; // changes direction
+	}
 
 	if (ShowPreview == false || CorrectAnswer == true)
 	{
@@ -1324,6 +1360,29 @@ void SceneMuseum::Render()
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(35, 35, 45);
 	RenderMesh(meshList[GEO_SELECTION], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
+
+	//Game2 OBJ
+	modelStack.PushMatrix();
+	modelStack.Translate(361.669, 16.0715 + TranslateKeyY, -198.308);
+	modelStack.Rotate(-45, 0, 1, 0);
+	modelStack.Scale(10, 10, 10);
+	RenderMesh(meshList[GEO_PICKEY], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
+
+
+	modelStack.PushMatrix();
+	modelStack.Translate(160.696, 16.0715 + TranslateBoxY, -197.08);
+	modelStack.Rotate(45, 0, 1, 0);
+	modelStack.Scale(35, 35, 45);
+	RenderMesh(meshList[GEO_PICBOX], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(160.813, 16.0715 + TranslateFlagY, -18.725);
+	modelStack.Rotate(135, 0, 1, 0);
+	modelStack.Scale(15, 15, 15);
+	RenderMesh(meshList[GEO_PICFLAG], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	//Exit door
