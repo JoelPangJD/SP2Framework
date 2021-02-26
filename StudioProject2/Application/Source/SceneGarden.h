@@ -55,6 +55,8 @@ class SceneGarden : public Scene
 		GEO_GAZEBO,
 		GEO_TREE1,
 		GEO_TREE2,
+		GEO_LILY1,
+		GEO_LILY2,
 		NUM_GEOMETRY,
 
 	};
@@ -116,7 +118,7 @@ class SceneGarden : public Scene
 public:
 	Camera3 camera;
 	bool lighton = true;
-	bool hitboxshow = false;
+	bool hitboxshow = true;
 	float cooldown = 0; //cooldown time for actions
 	float fps;
 	//Minigame variables

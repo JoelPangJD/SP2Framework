@@ -84,7 +84,6 @@ public:
 	//Variables for text
 	std::ostringstream interacttext;
 	bool indialogue = false;
-	bool ininventory = false;
 	vector<string> dialogue;
 	vector<string>::iterator currentline;
 	string name;

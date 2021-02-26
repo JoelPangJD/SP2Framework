@@ -307,10 +307,15 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 				//just returns if its at the end of the dialogue but I still can't think of a better way to do this
 				return "battleStart";
 		}
-		if ((*it)->spherecollider(camera.target) && !indialogue && !ininventory) // Checks if the target is within a radius of an item and not in a dialogue
+		if ((*it)->spherecollider(camera.target) && !indialogue) // Checks if the target is within a radius of an item and not in a dialogue
 		{
 			if (Application::IsKeyPressed('Q')) //Q is use
 			{
+				if ((*it)->gettype() == "gardentocity")
+				{
+					camera.position = Vector3(-85, 0, 0);
+					Application::SwitchScene = 0;
+				}
 				if (!(inventory->getstorage().empty())) //For uses that rely on inventory, make sure the inventory is 
 				{
 					if ((*it)->gettype() == "cat" && inventory->getcurrentitem()->gettype() == "fish")//using fish on cat
