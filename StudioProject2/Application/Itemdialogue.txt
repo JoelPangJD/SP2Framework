@@ -33,6 +33,6 @@ Guide|2Welcome to Changi airport, board the plane for a flight exprience......WA
 stairs|1Press [E] to board the plane. [I] to move forward, [J] to move left, [L] to move right, [K] to move backward.
 badguy|1I should make sure I have at least one attack before fighting him.
 badguy2|2So, you really think you can take me.|1Mr.Sazz?|2Ah, you must've meant my worthless brother. |2Anyways, I might not be as good as my brother in physical combat, but I have something even greater than the limits of a human. Try and keep my pet entertained for a few seconds could you?| 
-badguy3|2Back for more are you? 
-citytomuseum|1Hello museum
+badguy3|2Back for more are you?| 
+citytomuseum|1Hello museum 
 gardentocity|1Hello path

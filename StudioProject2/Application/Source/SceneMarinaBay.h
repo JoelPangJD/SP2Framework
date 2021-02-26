@@ -187,11 +187,10 @@ private:
 	//vars to check whether the attacks have already been added
 	bool bigAdded = false, punchAdded = false, mindAdded = false;
 	//vars for when first entering badguy's range and minigame intros
-	bool firstEnter = true, fightIntro, talkIntro;
+	bool firstEnter = true, fightIntro, talkIntro, triedToRun;
 	int posZ;
 	//fight vars
-	bool fight = false, fightInit, fightWon, fightLost, fightDia, playerTurn, enemyTurn, fightSelected, itemsSelected, backSelected, attackSelected, actionSelected, attackHit;
-	float cooldownTimer;
+	bool fight = false, fightInit, fightWon, fightLost, fightOver, fightDia, playerTurn, enemyTurn, fightSelected, itemsSelected, backSelected, attackSelected, actionSelected, attackHit;
 	float pointerX, pointerY, playerHealth, playerHealthPos, playerHealthLost, enemyHealth, enemyHealthPos, enemyHealthLost;
 	//player's
 	float attackScale, attackAngle, attackTranslateY, attackTranslateZ;
@@ -208,12 +207,7 @@ private:
 	bool movement, goneDown, idle, attack, revert, bite, biteRearedBack;
 	bool hitboxshow;
 
-	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
-	void RenderText(Mesh* mesh, std::string text, Color color);
-	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey);
-	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 	//function to convert enums from ATTACK to string
 	string EnumToStr(ATTACK enumToConvert);
 };
