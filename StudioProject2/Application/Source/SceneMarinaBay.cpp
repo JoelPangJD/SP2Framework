@@ -339,6 +339,7 @@ void SceneMarinaBay::Update(double dt)
 	else
 	{
 		int count = 0;
+		//Application::enableMouse = true;	//temp soln
 		for (auto it = buttonList.begin(); it != buttonList.end(); ++it)
 		{
 			if ((*it)->active)
@@ -400,8 +401,6 @@ void SceneMarinaBay::Update(double dt)
 	{
 		if (firstEnter && camera.position.z >= posZ)
 			firstEnter = false;
-		else if (fightIntro && fight && cooldown<=0)
-			fightIntro = false;
 	}
 
 	if (fight)
@@ -410,9 +409,7 @@ void SceneMarinaBay::Update(double dt)
 		{
 			camera.Init(Vector3(90, 40, 240), Vector3(0, 8, 240), Vector3(0, 1, 0));
 			Application::enableMouse = true;
-			fightIntro = true;
-			cooldown = 0.5f;
-			fightInit = false;
+			fightInit = true;
 		}
 
 
@@ -437,6 +434,14 @@ void SceneMarinaBay::Update(double dt)
 				fightSelected = false;
 				break;
 			case (A_ATTACK3):
+				attackSelected = true;
+				for (unsigned int i = 0; i < buttonList.size(); ++i)
+				{
+					buttonList[i]->active = false;
+				}
+				fightSelected = false;
+				break;
+			case (A_ATTACK4):
 				attackSelected = true;
 				for (unsigned int i = 0; i < buttonList.size(); ++i)
 				{
@@ -797,8 +802,6 @@ void SceneMarinaBay::Update(double dt)
 			attacksList.push_back(MIND_POWERS);
 			mindAdded = true;
 		}
-		if (attacksList.size() > 0 && (*it)->gettype() == "badguy")
-			(*it)->updatedialogue("badguy2");
 	}
 	//}
 
@@ -1106,7 +1109,7 @@ void SceneMarinaBay::Render()
 			RenderMesh(meshList[GEO_ORC], true);
 		else if ((*it)->gettype() == "adventurer" || (*it)->gettype() == "adventurer2" || (*it)->gettype() == "adventurer3")
 			RenderMesh(meshList[GEO_ADVENTURER], true);
-		else if ((*it)->gettype()=="badguy" || (*it)->gettype()=="badguy2")
+		else if ((*it)->gettype()=="badguy")
 			RenderMesh(meshList[GEO_BADGUY], true);
 
 		modelStack.PopMatrix();
@@ -1166,7 +1169,7 @@ void SceneMarinaBay::Render()
 		
 	}
 	
-
+	
 
 	if (fight)
 	{
@@ -1806,20 +1809,11 @@ void SceneMarinaBay::Render()
 			RenderTextOnScreen(meshList[GEO_TEXT], "Items", Color(0, 0, 0), 4, 4, 6);
 			RenderTextOnScreen(meshList[GEO_TEXT], "Run", Color(0, 0, 0), 4, 4, 1);
 			RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(0, 0, 0), 4, pointerX, pointerY);
-			if (fightSelected)	
-			{	
-				string attack1 = EnumToStr(attacksList[0]);
-				RenderTextOnScreen(meshList[GEO_TEXT], attack1, Color(0, 0, 0), 4, 25, 9.5);	
-				if (attacksList.size() > 1)	//checks if theres 2 attacks in the vector
-				{
-					string attack2 = EnumToStr(attacksList[1]);
-					RenderTextOnScreen(meshList[GEO_TEXT], attack2, Color(0, 0, 0), 4, 25, 2.5);	
-				}
-				if (attacksList.size() > 2)	//check for 3 attacks in vector
-				{
-					string attack3 = EnumToStr(attacksList[2]);
-					RenderTextOnScreen(meshList[GEO_TEXT], attack3, Color(0, 0, 0), 4, 55, 9.5);	
-				}
+			if (fightSelected)	//not too sure how to make it automatic with attacks enum and based on size of attacksunlocked yet 
+			{
+				RenderTextOnScreen(meshList[GEO_TEXT], "Big", Color(0, 0, 0), 4, 25, 9.5);	//attack1
+				RenderTextOnScreen(meshList[GEO_TEXT], "Rocket Punch", Color(0, 0, 0), 4, 25, 2.5);	//attack2
+				RenderTextOnScreen(meshList[GEO_TEXT], "Mind Powers", Color(0, 0, 0), 4, 55, 9.5);	//attack2
 			}
 			else if (itemsSelected)
 			{
@@ -1847,23 +1841,6 @@ void SceneMarinaBay::Render()
 	else if (!fight)
 	{
 		Scene::RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
-	}
-
-
-	if (fightIntro)
-		RenderMinigameIntro("This game is a turn-based gamemode, if your healthbar turns all red you'll lose. Similarly, if your opponent's bar turns all red they'll lose. You have access to a few options on the bottom of the screen that can be done in a turn, just click on the buttons and they will either show more actions or do an action that ends your turn.", "Turn-based fight", 4, modelStack, viewStack, projectionStack, m_parameters);
-}
-
-string SceneMarinaBay::EnumToStr(ATTACK enumToConvert)	//function to convert enums from ATTACK to string
-{
-	switch (enumToConvert)
-	{
-	case (BIG):
-		return "BIG";
-	case (ROCKET_PUNCH):
-		return "ROCKET PUNCH";
-	case (MIND_POWERS):
-		return "MIND POWERS";
 	}
 }
 
