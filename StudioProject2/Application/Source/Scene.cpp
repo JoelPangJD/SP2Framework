@@ -303,7 +303,7 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 	{
 		if (MarinaBay)
 		{
-			if ((*it)->gettype() == "badguy2" && currentline + 1 == dialogue.end())	
+			if ((*it)->gettype() == "badguy3" && currentline + 1 == dialogue.end())	
 				//just returns if its at the end of the dialogue but I still can't think of a better way to do this
 				return "battleStart";
 		}
@@ -370,8 +370,8 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 						(*it)->updatedialogue("robot2");
 					else if ((*it)->gettype() == "orc2")
 						(*it)->updatedialogue("orc3");
-					else if ((*it)->gettype() == "badguy")
-						(*it)->updatedialogue("badguy2");
+					else if ((*it)->gettype() == "badguy2")
+						(*it)->updatedialogue("badguy3");
 					else if ((*it)->gettype() == "pool2")
 					{
 						(*it)->updatedialogue("pool");
