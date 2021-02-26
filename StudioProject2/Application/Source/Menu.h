@@ -5,8 +5,6 @@
 #include "Button.h"
 #include "Scene.h"
 #include "MeshBuilder.h"
-#include "LoadOBJ.h"
-#include "LoadTGA.h"
 
 class Menu : public Scene
 {

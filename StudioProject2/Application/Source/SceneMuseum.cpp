@@ -7,6 +7,8 @@
 #include "shader.hpp"
 #include <Mtx44.h>
 #include"MeshBuilder.h"
+#include "Menu.h"
+#include "Entity.h"
 
 
 SceneMuseum::SceneMuseum()
@@ -300,11 +302,17 @@ void SceneMuseum::Init()
 	items.push_back(new InteractableObject(Vector3(-283.869, 16.0715, 95.1478), 0, 0, 20, "answer", "to answer", false));
 	items.push_back(new InteractableObject(Vector3(-104.012, 0, 5.04312), 0, 5, 20, "box", "boxy", true));
 	items.push_back(new InteractableObject(Vector3(12.7309, 0, 5.72924), 0, 0.75, 20, "andy", "Andy", false));
-	items.push_back(new InteractableObject(Vector3(268.052, 0, -108.232), 0, 5, 20, "teacher", "Mr tang", false));
+	items.push_back(new InteractableObject(Vector3(268.052, 0, -108.232), 0, 5, 20, "before gathering item", "Mr tang", false));
+	items.push_back(new InteractableObject(Vector3(268.052, 0, -108.232), 0, 5, 20, "after gathering item", "Mr tang", false));
 	items.push_back(new InteractableObject(Vector3(90.2891, 20, -210.542), 0, 5, 50, "elephant", "The elephant", false));
 	items.push_back(new InteractableObject(Vector3(97.15, 0, 163.717), 0, 5, 50, "rickshaw", "The Rickshaw", false));
 	items.push_back(new InteractableObject(Vector3(142.895, 2, 77.452), 90, 1, 20, "key", "Mr Tang's Key", true));
 	items.push_back(new InteractableObject(Vector3(192.456, 10, -9.23282), 0, 10, 20, "flag", "Mr Tang's flag", true));
+
+	items.push_back(new InteractableObject(Vector3(160.813, 10, -18.725), 0, 10, 20, "place flag", "Place flag", true));
+	items.push_back(new InteractableObject(Vector3(361.669, 10, -198.308), 0, 10, 20, "place key", "Place key", true));
+	items.push_back(new InteractableObject(Vector3(160.696, 10, -197.08), 0, 10, 20, "place box", "Place box", true));
+
 
 	//Ground mesh
 	meshList[GEO_GROUND] = MeshBuilder::GenerateQuad("ground", Color(1, 1, 1), 1.0f);
@@ -327,6 +335,8 @@ void SceneMuseum::Init()
 	button2.height = 17.4;
 	button2.active = true;
 	button2.hold = false;
+
+	
 
 
 
@@ -1014,12 +1024,17 @@ void SceneMuseum::StartGame2()
 	{
 		RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 		interact(camera, items);
-		if (QisPressed)
+		if (camera.position.x > 340 && camera.position.x < 345 && camera.position.z >-185 && camera.position.z < -180 ) //if player is infront of key drop place
 		{
-			GameCam1 = camera;
-			//Application::enableMouse = true;
-			//Goes to some orange background to view image
-			camera.Init(Vector3(-260, 10, 10), Vector3(220.717, 5, 241.881), Vector3(0, 1, 0));
+			std::cout << "YOURE AT THE KEY PLACE" << std::endl;
+		}
+		else if (camera.position.x > 173 && camera.position.x < 177 && camera.position.z >-190 && camera.position.z < -180) //if player is infront of box drop place
+		{
+			std::cout << "YOURE AT THE BOX PLACE" << std::endl;
+		}
+		else if (camera.position.x > 177 && camera.position.x < 200 && camera.position.z >-57 && camera.position.z < -13) //if player is infront of flag drop place
+		{
+			std::cout << "YOURE AT THE FLAG PLACE" << std::endl;
 		}
 	}
 }
@@ -1403,7 +1418,7 @@ void SceneMuseum::Render()
 		{
 			RenderMesh(meshList[GEO_ANDY], true, modelStack, viewStack, projectionStack, m_parameters);
 		}
-		else if ((*it)->gettype() == "teacher")
+		else if ((*it)->gettype() == "before gathering item")
 		{
 			RenderMesh(meshList[GEO_TEACHER], true, modelStack, viewStack, projectionStack, m_parameters);
 		}

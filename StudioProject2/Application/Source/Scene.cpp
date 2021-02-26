@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include "SceneMuseum.h"
 #include "GL\glew.h"
 #include "Application.h"
 #include "LoadTGA.h"
@@ -298,6 +299,25 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 			name = "";
 			indialogue = true;
 		}
+		//For scene museum, to place item
+		if (inventory->getcurrentitem()->gettype() == "key")
+		{
+			place1 = true;
+			inventory->removeitem("key");
+		}
+
+		else if (inventory->getcurrentitem()->gettype() == "flag")
+		{
+			place2 = true;
+			inventory->removeitem("flag");
+		}
+
+		else if (inventory->getcurrentitem()->gettype() == "box")
+		{
+			place3 = true;
+			inventory->removeitem("box");
+		}
+
 	}
 	for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 	{

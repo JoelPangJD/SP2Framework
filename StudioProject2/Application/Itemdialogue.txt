@@ -7,7 +7,8 @@ answer|1Looks like i need to choose the correct image....
 preview|1Hmmm some sort of color picture...
 yarn|1Hello yarn
 andy|2Yo i saw Mr Tang at the end of the museum awhile ago. I think if you can give him some items he will reward you with something
-teacher|2Hello there are you enjoying the museum tour?|2If you did observe carefully, i have left 3 items around the museum.|2If you can bring back those 3 items, i will reward you with something
+before gathering item|2Hello there are you enjoying the museum tour?|2If you did observe carefully, i have left 3 items around the museum.|2If you can bring back those 3 items, i will reward you with something
+after gathering item|2Hello there i see you have placed 3 items around me|2Very well i will reward you with this Changi Pass, bring some of your classmate with you!
 key|1I think i can pick this up
 flag|1I think i can pick this up
 box|1I think i can pick this up
