@@ -173,7 +173,7 @@ void SceneGarden::Init()
 	materialList[M_TORUSNEUTRAL].kShininess = 1.f;
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
-	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.0f);
+	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(0.6, 0.6, 0.6), 1.0f);
 	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.5f, 0.5f, 0.5f), 1);
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1, 1, 1), 30, 30, 1);
 	meshList[GEO_SPHERE]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
@@ -182,7 +182,7 @@ void SceneGarden::Init()
 	meshList[GEO_SPHERE]->material.kShininess = 1.f;
 
 	meshList[GEO_PLAYERYARN] = MeshBuilder::GenerateSphere("playerball", Color(0.5, 0.5, 0.5), 30, 30, 1);
-	meshList[GEO_OBJECTIVEYARN] = MeshBuilder::GenerateSphere("objective", Color(0.3, 0.3, 0.3), 30, 30, 1);
+	meshList[GEO_OBJECTIVEYARN] = MeshBuilder::GenerateSphere("objective", Color(0.3, 0.5, 0.3), 30, 30, 1);
 
 	meshList[GEO_HEMISPHERE] = MeshBuilder::GenerateHemisphere("hemisphere", Color(1, 1, 1), 30, 30, 1);
 	meshList[GEO_CONE] = MeshBuilder::GenerateCone("cone", 1, 20, 30, Color(1, 1, 1));
@@ -1052,12 +1052,12 @@ void SceneGarden::Render()
 		RenderMesh(meshList[GEO_LILY1], true, modelStack, viewStack, projectionStack, m_parameters);
 		modelStack.PopMatrix();
 	}
-	modelStack.PushMatrix();
-	modelStack.Translate(movex, 0, movez); //-70,-100
-	//modelStack.Rotate(0, 0, 1, 0);
-	modelStack.Scale(scale,scale,scale);//1.5
-	RenderMesh(meshList[GEO_LILY1], true, modelStack, viewStack, projectionStack, m_parameters);
-	modelStack.PopMatrix();
+	//modelStack.PushMatrix();
+	//modelStack.Translate(movex, 0, movez); //-70,-100
+	////modelStack.Rotate(0, 0, 1, 0);
+	//modelStack.Scale(scale,scale,scale);//1.5
+	//RenderMesh(meshList[GEO_LILY1], true, modelStack, viewStack, projectionStack, m_parameters);
+	//modelStack.PopMatrix();
 
 	if (minigame == 0)
 		RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);

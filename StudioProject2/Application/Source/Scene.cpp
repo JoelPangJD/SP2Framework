@@ -282,7 +282,7 @@ void Scene::movement(Camera3 &camera, vector<Terrain*> terrains, double dt)
 	}
 }
 
-string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool MarinaBay)
+string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool MarinaBay)
 {
 	if (Application::IsKeyPressed('Q') && !(inventory->getstorage().empty())) //Use an item in inventory if inventory not empty
 	{
@@ -315,9 +315,17 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 			{
 				if ((*it)->gettype() == "gardentocity")
 				{
-					camera.position = Vector3(-85, 0, 0);
+					camera.position = Vector3(-85, 5, 0);
 					Application::SwitchScene = 0;
 				}
+
+				else if ((*it)->gettype() == "citytomuseum")
+				{
+					//The position here is in the scene before swtiching such that the player will not overlap when they return to the same scene
+					camera.position = Vector3(0, 3, -10); //Change the camera position to somewhere that doesn't overlap to prevent constantly moving back and forth
+					return "frontofmuseum"; //For the other scene you can follow the garden to city example as there is no minigame to trigger before hand
+				}
+
 				if (!(inventory->getstorage().empty())) //For uses that rely on inventory, make sure the inventory is 
 				{
 					if ((*it)->gettype() == "cat" && inventory->getcurrentitem()->gettype() == "fish")//using fish on cat
