@@ -1522,6 +1522,10 @@ void SceneMuseum::Render()
 
 void SceneMuseum::Exit()
 {
+	for (auto it = terrains.begin(); it != terrains.end(); ++it)
+		delete (*it);
+	for (auto it = items.begin(); it != items.end(); ++it)
+		delete (*it);
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 	glDeleteProgram(m_programID);
 }

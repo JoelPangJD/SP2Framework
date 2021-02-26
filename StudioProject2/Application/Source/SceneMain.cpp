@@ -345,6 +345,12 @@ void SceneMain::Update(double dt)
 	}
 	else
 		inFrontofMuseum = false;
+	if(trigger == "locked") { //Use the interact code return to return the lock condition instead of locked bool
+			dialogue.push_back("1It seems that I do not have the item required to open this door.");
+			currentline = dialogue.begin();
+			name = "";
+			indialogue = true;
+		}
 	// The radius seems to be
 	if ((camera.position.x >= -3) && (camera.position.x <= 3) && (camera.position.z >= 18) && (camera.position.z <= 27.5)) {
 		inFrontofChangi = true;
@@ -684,16 +690,6 @@ void SceneMain::Render()
 	RenderMesh(meshList[GEO_BUILDING2], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
-	//condition checking
-	if (locked) {
-		dialogue.push_back("1It seems that I do not have the item required to open this door.");
-		currentline = dialogue.begin();
-		name = "";
-		indialogue = true;
-	}
-
-
-
 	modelStack.PushMatrix();
 	modelStack.Translate(2.5, 9, 27.4);
 	modelStack.Scale(2, 2, 2);
@@ -720,7 +716,8 @@ void SceneMain::Render()
 	modelStack.Rotate(-90, 0, 1, 0);
 	RenderText(meshList[GEO_TEXT], "Museum", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
 
-
+	
+	//condition checking
 	if (inFrontofMuseum) {
 		modelStack.PushMatrix();
 		modelStack.Translate(0.35, -2, -0.29);
