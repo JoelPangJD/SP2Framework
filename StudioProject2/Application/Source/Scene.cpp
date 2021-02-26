@@ -91,14 +91,14 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 	}
 	else
 	{
-		RenderMeshOnScreen(baseMeshList[GEO_INVENTORY], 8, 37, 33, 45, modelStack, viewStack, projectionStack, m_parameters);
+		RenderMeshOnScreen(baseMeshList[GEO_INVENTORY], 10, 37, 43, 45, modelStack, viewStack, projectionStack, m_parameters);
 		int ypos = 52;
 		vector<InteractableObject*> inventorycontent = inventory->getstorage();
 		for (std::vector<InteractableObject*>::iterator it = inventorycontent.begin(); it != inventorycontent.end(); it++)
 		{
 			if ((*it) == inventory->getcurrentitem())
 			{
-				RenderMeshOnScreen(baseMeshList[GEO_TEXTBOX], 6, ypos + 1, 10, 2, modelStack, viewStack, projectionStack, m_parameters);
+				RenderMeshOnScreen(baseMeshList[GEO_TEXTBOX], 8, ypos + 1, 14, 2, modelStack, viewStack, projectionStack, m_parameters);
 			}
 			RenderTextOnScreen(baseMeshList[GEO_TEXT], (*it)->getname(), Color(0, 0, 0), 2, 2, ypos, modelStack, viewStack, projectionStack, m_parameters);
 			ypos -= 2;
@@ -250,6 +250,7 @@ void Scene::RenderMinigameIntro(std::string MinigamedescriptionText, std::string
 	RenderMeshOnScreen(baseMeshList[GEO_TEXTBOX], 40, 30, 80, 50, modelStack, viewStack, projectionStack, m_parameters);
 	RenderMeshOnScreen(baseMeshList[GEO_HEADER], 40, 57, 60, 8, modelStack, viewStack, projectionStack, m_parameters);
 	RenderTextOnScreen(baseMeshList[GEO_TEXT], MinigamenameText, Color(0, 0, 0), 6, 38 - (MinigamenameText.size() * 1.5), 54, modelStack, viewStack, projectionStack, m_parameters);	//header text
+	RenderMeshOnScreen(baseMeshList[GEO_PRESSE], 76, 8, 7, 7, modelStack, viewStack, projectionStack, m_parameters);
 	string word;																	//automating text
 	int wordpos = 0, ypos = 50 - fontsize, last = MinigamedescriptionText.find_last_of(" ");
 	float xpos = 2.f;
@@ -292,6 +293,10 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 			inventory->removeitem("stick");
 			inventory->removeitem("fishing line");
 			inventory->additem(new InteractableObject(Vector3(0,0,0),0,1,0,"fishing rod", "Fishing rod", true));
+			dialogue.push_back("1The stick and fishing line were combined into a fishing rod.");
+			currentline = dialogue.begin();
+			name = "";
+			indialogue = true;
 		}
 	}
 	for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
@@ -304,6 +309,27 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 		}
 		if ((*it)->spherecollider(camera.target) && !indialogue && !ininventory) // Checks if the target is within a radius of an item and not in a dialogue
 		{
+			if (Application::IsKeyPressed('Q')) //Q is use
+			{
+				if (!(inventory->getstorage().empty())) //For uses that rely on inventory, make sure the inventory is 
+				{
+					if ((*it)->gettype() == "cat" && inventory->getcurrentitem()->gettype() == "fish")//using fish on cat
+					{
+						inventory->removeitem(inventory->getcurrentitem());
+						inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 1, 0, "Marina Bay ticket", "MBS ticket", true));
+						dialogue.push_back("1Oh it gave me a ticket to the Marina Bay Sands.");
+						dialogue.push_back("1I should be access that place now to find who stole my wallet");
+						currentline = dialogue.begin();
+						name = "";
+						indialogue = true;
+
+					}
+					if ((*it)->gettype() == "pond" && inventory->getcurrentitem()->gettype() == "fishing rod")//using fishing rod on cat
+					{
+						return "Gardenminigame1";
+					}
+				}
+			}
 			if (Application::IsKeyPressed('F'))// F is look at
 			{
 				dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
@@ -324,21 +350,6 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 					currentline = dialogue.begin(); 
 					name = "";
 					indialogue = true;
-				}
-			}
-			else if (Application::IsKeyPressed('Q')) //Q is use
-			{
-				if (!(inventory->getstorage().empty())) //For uses that rely on inventory, make sure the inventory is 
-				{
-					if ((*it)->gettype() == "cat" && inventory->getcurrentitem()->gettype() == "fish")//using fish on cat
-					{
-						inventory->removeitem(inventory->getcurrentitem());
-							inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 1, 0, "Marina Bay ticket", "MBS ticket", true));
-					}
-					if ((*it)->gettype() == "pond" && inventory->getcurrentitem()->gettype() == "fishing rod")//using fishing rod on cat
-					{
-						return "Gardenminigame1";
-					}
 				}
 			}
 			else if (Application::IsKeyPressed('T')) //T is talk to
