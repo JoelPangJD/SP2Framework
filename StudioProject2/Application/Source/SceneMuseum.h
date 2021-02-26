@@ -130,7 +130,6 @@ public:
 	float fps;
 	float cooldown = 0; //cooldown time for actions
 
-
 	//Animation
 	float TranslateBoxY = 0.0f;
 	int TranslateBoxDirectional = 1;
@@ -211,7 +210,6 @@ private:
 
 	//2nd game
 	void StartGame2();
-	bool QisPressed = false;
 	bool EndGame2 = false;
 
 	//void RenderMesh(Mesh* mesh, bool enableLight);

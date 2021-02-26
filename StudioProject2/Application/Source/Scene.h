@@ -68,6 +68,12 @@ private:
 	};
 
 	bool riddleStarted = false, riddleSolved = false;	//only for MarinaBay because I can't think of a better method
+
+protected: //for SceneMuseum 
+	bool place1 = false;
+	bool place2 = false;
+	bool place3 = false;
+
 public:
 	Scene();
 	~Scene() {}
@@ -84,6 +90,7 @@ public:
 	//Variables for text
 	std::ostringstream interacttext;
 	bool indialogue = false;
+	bool CantUse = true;
 	vector<string> dialogue;
 	vector<string>::iterator currentline;
 	string name;

@@ -196,7 +196,7 @@ private:
 	//player's
 	float attackScale, attackAngle, attackTranslateY, attackTranslateZ;
 	//dragon enemy's 
-	bool enemyAttackHit;
+	bool enemyAttackHit, enemyAlrAttacked, enemyAnimPlaying;
 	//idle
 	float idleHands, idleBounce, idleMouth, idleBreath, idleNeck, idleHead;
 	int idleHandsDir, idleBounceDir, idleMouthDir, idleBreathDir, idleNeckDir, idleHeadDir;
