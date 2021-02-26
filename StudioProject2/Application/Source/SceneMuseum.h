@@ -15,6 +15,7 @@
 #include "Inventory.h"
 #include "Button.h"
 
+
 class SceneMuseum : public Scene
 {
 	enum GEOMETRY_TYPE

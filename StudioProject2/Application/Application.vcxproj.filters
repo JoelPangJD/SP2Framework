@@ -72,13 +72,13 @@
     <ClCompile Include="Source\Button.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Menu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\render.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -149,10 +149,10 @@
     <ClInclude Include="Source\Button.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Menu.h">
+    <ClInclude Include="Source\render.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\render.h">
+    <ClInclude Include="Source\Menu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
