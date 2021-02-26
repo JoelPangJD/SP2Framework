@@ -309,9 +309,9 @@ void SceneMuseum::Init()
 	items.push_back(new InteractableObject(Vector3(142.895, 2, 77.452), 90, 1, 20, "key", "Mr Tang's Key", true));
 	items.push_back(new InteractableObject(Vector3(192.456, 10, -9.23282), 0, 10, 20, "flag", "Mr Tang's flag", true));
 
-	items.push_back(new InteractableObject(Vector3(160.813, 10, -18.725), 0, 10, 20, "place flag", "Place flag", true));
-	items.push_back(new InteractableObject(Vector3(361.669, 10, -198.308), 0, 10, 20, "place key", "Place key", true));
-	items.push_back(new InteractableObject(Vector3(160.696, 10, -197.08), 0, 10, 20, "place box", "Place box", true));
+	items.push_back(new InteractableObject(Vector3(160.813, 10, -18.725), 0, 10, 20, "place flag", "Place flag", false));
+	items.push_back(new InteractableObject(Vector3(361.669, 10, -198.308), 0, 10, 20, "place key", "Place key", false));
+	items.push_back(new InteractableObject(Vector3(160.696, 10, -197.08), 0, 10, 20, "place box", "Place box", false));
 
 
 	//Ground mesh
@@ -1024,18 +1024,11 @@ void SceneMuseum::StartGame2()
 	{
 		RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 		interact(camera, items);
-		if (camera.position.x > 340 && camera.position.x < 345 && camera.position.z >-185 && camera.position.z < -180 ) //if player is infront of key drop place
+		if (place1 == true && place2 == true && place3 == true)
 		{
-			std::cout << "YOURE AT THE KEY PLACE" << std::endl;
+			std::cout << "YOU PLACED ALL" << std::endl;
 		}
-		else if (camera.position.x > 173 && camera.position.x < 177 && camera.position.z >-190 && camera.position.z < -180) //if player is infront of box drop place
-		{
-			std::cout << "YOURE AT THE BOX PLACE" << std::endl;
-		}
-		else if (camera.position.x > 177 && camera.position.x < 200 && camera.position.z >-57 && camera.position.z < -13) //if player is infront of flag drop place
-		{
-			std::cout << "YOURE AT THE FLAG PLACE" << std::endl;
-		}
+		
 	}
 }
 
@@ -1419,6 +1412,10 @@ void SceneMuseum::Render()
 			RenderMesh(meshList[GEO_ANDY], true, modelStack, viewStack, projectionStack, m_parameters);
 		}
 		else if ((*it)->gettype() == "before gathering item")
+		{
+			RenderMesh(meshList[GEO_TEACHER], true, modelStack, viewStack, projectionStack, m_parameters);
+		}
+		else if ((*it)->gettype() == "after gathering item")
 		{
 			RenderMesh(meshList[GEO_TEACHER], true, modelStack, viewStack, projectionStack, m_parameters);
 		}
