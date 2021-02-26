@@ -40,6 +40,7 @@ void SceneMarinaBay::Init()
 	playerTurn = true;
 	playerAttack = NO_ATTACK;
 	posZ = 200;
+	fightLost = false;
 	//dragon animations
 	movement = attack = goneDown = false, idle = true;
 	move = moveAngle = timer = 0;
@@ -318,6 +319,7 @@ void SceneMarinaBay::Init()
 		items.push_back(new InteractableObject(Vector3(32, 5, 30), 0, 0.7, 5, "pool", "Infinity Pool", false));
 		items.push_back(new InteractableObject(Vector3(50, 5, -160), 0, 0.7, 7, "pool", "Infinity Pool", false));
 	}
+
 }
 
 
@@ -327,10 +329,10 @@ void SceneMarinaBay::Update(double dt)
 	fps = 1.f / dt;
 	if (!fight)	//not in fight
 	{
-		if (!firstEnter || camera.position.z<200)	//dramatic first entry of bad guy not triggered yet
+		if ((!firstEnter || camera.position.z<200) && !fightLost)	//dramatic first entry of bad guy not triggered yet
 			this->Scene::movement(camera, terrains, dt);
 		string trigger = this->interact(camera, items, true);
-		if (trigger == "battleStart")
+		if (trigger == "battleStart" && !fightLost)
 		{
 			fight = true;
 			fightInit = true;
@@ -348,6 +350,7 @@ void SceneMarinaBay::Update(double dt)
 				{
 					playerAction = static_cast<ACTION_TYPE>(count);	//makes player action = the button number
 					actionSelected = true;
+					break;
 				}
 			}
 			++count;
@@ -409,6 +412,32 @@ void SceneMarinaBay::Update(double dt)
 			firstEnter = false;
 		else if (fightIntro && fight && cooldown<=0)
 			fightIntro = false;
+		else if (fightLost)		//resetting fight vars
+		{
+			fightLost = false;
+			fightOver = false;
+			enemyAttack = SPEAR;
+			enemyHealth = playerHealth = 0;
+			enemyHealthLost = playerHealthLost = 0;
+			enemyHealthPos = 20.f;
+			playerHealthPos = 60.f;
+			attackScale = 1.f;
+			playerTurn = true;
+			enemyTurn = false;
+			playerAttack = NO_ATTACK;
+			Application::enableMouse = false;
+			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+			{
+				if ((*it)->gettype() == "badguy3")
+					(*it)->settype("badguy2");
+			}
+		}
+		else if (triedToRun)
+		{
+			playerTurn = false;
+			enemyTurn = true;
+			triedToRun = false;
+		}
 	}
 
 	if (fight)
@@ -451,14 +480,13 @@ void SceneMarinaBay::Update(double dt)
 				itemsSelected = true;
 				break;
 			case (A_RUN):
-				fightDia = true;
-				fightText = "Placeholder :D";
+				triedToRun = true;
 				break;
 			default:
 				cout << "playeraction broke";
 			}
 			actionSelected = false;
-			if (playerAction > A_RUN + 1)	//if doing an action that would end the turn
+			if (playerAction > A_ITEMS)	//if doing an action that would end the turn
 			{
 				for (unsigned int i = 0; i < buttonList.size(); ++i)
 				{
@@ -803,6 +831,21 @@ void SceneMarinaBay::Update(double dt)
 			enemyHealth += speedOfHealthLost * 0.2 * dt;
 			enemyHealthPos -= speedOfHealthLost * 0.1 * dt;	//dependent on health's scaling
 		}
+		
+		//fight resolutions
+		if (playerHealth >= 20 || enemyHealth >= 20)
+		{
+			fightOver = true;
+			fight = false;
+
+			/*if (enemyHealth >= 20)
+				fightWon = true;
+			else*/
+			{
+				fightLost = true;
+				camera.Init(Vector3(-57, 8, 157), Vector3(-57, 8, 158), Vector3(0, 1, 0));
+			}
+		}
 	}
 
 	for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
@@ -826,54 +869,13 @@ void SceneMarinaBay::Update(double dt)
 		}
 		if (attacksList.size() > 0 && (*it)->gettype() == "badguy")
 			(*it)->updatedialogue("badguy2");
+		else if (fightLost && (*it)->gettype() == "badguy3")
+			(*it)->settype("badguy2");	//changes type but not dialogue so players won't have to sit through everything
 	}
-	//}
 
 	//==================Updating timers===========
 	if (cooldown > 0)
 		cooldown -= dt;
-}
-
-void SceneMarinaBay::RenderMesh(Mesh* mesh, bool enableLight)
-{
-	Mtx44 MVP, modelView, modelView_inverse_transpose;
-
-	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
-	glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-	modelView = viewStack.Top() * modelStack.Top();
-	glUniformMatrix4fv(m_parameters[U_MODELVIEW], 1, GL_FALSE, &modelView.a[0]);
-	if (enableLight && lighton == true)
-	{
-		glUniform1i(m_parameters[U_LIGHTENABLED], 1);
-		modelView_inverse_transpose = modelView.GetInverse().GetTranspose();
-		glUniformMatrix4fv(m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE], 1, GL_FALSE, &modelView_inverse_transpose.a[0]);
-
-		//load material
-		glUniform3fv(m_parameters[U_MATERIAL_AMBIENT], 1, &mesh->material.kAmbient.r);
-		glUniform3fv(m_parameters[U_MATERIAL_DIFFUSE], 1, &mesh->material.kDiffuse.r);
-		glUniform3fv(m_parameters[U_MATERIAL_SPECULAR], 1, &mesh->material.kSpecular.r);
-		glUniform1f(m_parameters[U_MATERIAL_SHININESS], mesh->material.kShininess);
-	}
-	else
-	{
-		glUniform1i(m_parameters[U_LIGHTENABLED], 0);
-	}
-	if (mesh->textureID > 0)
-	{
-		glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-		glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
-	}
-	else
-	{
-		glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 0);
-	}
-	mesh->Render(); //this line should only be called once
-	if (mesh->textureID > 0)
-	{
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
 }
 
 void SceneMarinaBay::RenderSkybox()
@@ -884,14 +886,14 @@ void SceneMarinaBay::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, -499);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_FRONT], false);
+	RenderMesh(meshList[GEO_FRONT], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, 499);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_BACK], false);
+	RenderMesh(meshList[GEO_BACK], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
@@ -899,7 +901,7 @@ void SceneMarinaBay::RenderSkybox()
 	modelStack.Rotate(-90, 1, 0, 0);
 	modelStack.Rotate(90, 0, 0, 1);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_BOTTOM], false);
+	RenderMesh(meshList[GEO_BOTTOM], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
@@ -907,139 +909,24 @@ void SceneMarinaBay::RenderSkybox()
 	modelStack.Rotate(90, 1, 0, 0);
 	modelStack.Rotate(-90, 0, 0, 1);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_TOP], false);
+	RenderMesh(meshList[GEO_TOP], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(499, 0, 0);
 	modelStack.Rotate(-90, 0, 1, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_RIGHT], false);
+	RenderMesh(meshList[GEO_RIGHT], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-499, 0, 0);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_LEFT], false);
+	RenderMesh(meshList[GEO_LEFT], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PopMatrix();
-}
-
-void SceneMarinaBay::RenderText(Mesh* mesh, std::string text, Color color)
-{
-	if (!mesh || mesh->textureID <= 0) //Proper error check
-		return;
-
-	//glDisable(GL_DEPTH_TEST);
-	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
-	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
-	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
-	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
-	for (unsigned i = 0; i < text.length(); ++i)
-	{
-		Mtx44 characterSpacing;
-		std::vector<std::pair<std::string, std::vector<int>>> result;
-		characterSpacing.SetToTranslation(i * 1.0f, 0, 0); //1.0f is the spacing of each character, you may change this value
-		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
-		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-
-		mesh->Render((unsigned)text[i] * 6, 6);
-	}
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
-	//glEnable(GL_DEPTH_TEST);
-}
-
-void SceneMarinaBay::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
-{
-	if (!mesh || mesh->textureID <= 0) //Proper error check
-		return;
-
-	glDisable(GL_DEPTH_TEST);
-	Mtx44 ortho;
-	ortho.SetToOrtho(0, 80, 0, 60, -10, 10); //size of screen UI
-	projectionStack.PushMatrix();
-	projectionStack.LoadMatrix(ortho);
-	viewStack.PushMatrix();
-	viewStack.LoadIdentity(); //No need camera for ortho mode
-	modelStack.PushMatrix();
-	modelStack.LoadIdentity(); //Reset modelStack
-	modelStack.Translate(x, y, 0);
-	modelStack.Scale(size, size, size);
-	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
-	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
-	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
-	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
-	for (unsigned i = 0; i < text.length(); ++i)
-	{
-		Mtx44 characterSpacing;
-		characterSpacing.SetToTranslation(0.5f + i * 0.5f, 0.5f, 0); //1.0f is the spacing of each character, you may change this value
-		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
-		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-
-		mesh->Render((unsigned)text[i] * 6, 6);
-	}
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
-	projectionStack.PopMatrix();
-	viewStack.PopMatrix();
-	modelStack.PopMatrix();
-	glEnable(GL_DEPTH_TEST);
-
-}
-
-void SceneMarinaBay::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey)
-{
-	glDisable(GL_DEPTH_TEST);
-	Mtx44 ortho;
-	ortho.SetToOrtho(0, 80, 0, 60, -10, 10); //size of screen UI
-	projectionStack.PushMatrix();
-	projectionStack.LoadMatrix(ortho);
-	viewStack.PushMatrix();
-	viewStack.LoadIdentity(); //No need camera for ortho mode
-	modelStack.PushMatrix();
-	modelStack.LoadIdentity();
-	modelStack.Translate(x, y, 0);
-	modelStack.Scale(sizex, sizey, 1);
-	RenderMesh(mesh, false); //UI should not have light
-	projectionStack.PopMatrix();
-	viewStack.PopMatrix();
-	modelStack.PopMatrix();
-	glEnable(GL_DEPTH_TEST);
-}
-
-void SceneMarinaBay::RenderNPCDialogue(std::string NPCText, std::string headerText)
-{
-	//float headerTextPos = 4.f;
-	RenderMeshOnScreen(meshList[GEO_HEADER], 14.75, 19.25, 30, 6);
-	//headerText.size()
-	RenderTextOnScreen(meshList[GEO_TEXT], headerText, Color(0, 0, 0), 4, x + 14.5 - (headerText.size()), 17);	//header text
-	RenderMeshOnScreen(meshList[GEO_TEXTBOX], 40, 8.75, 80, 17.5);
-	string word;																	//automating text
-	int wordpos = 0, ypos = 13, last = NPCText.find_last_of(" ");
-	float xpos = 2.f;
-	while (true)
-	{
-		word = NPCText.substr(wordpos, NPCText.find(" ", wordpos + 1) - wordpos);
-		if (xpos + word.length() * 1.5 + 1 > 80)		//if new word will exceed screensize
-		{
-			ypos -= 3;
-			xpos = 2;
-		}
-		RenderTextOnScreen(meshList[GEO_TEXT], word, Color(0, 0, 0), 3, xpos, ypos);
-		if (wordpos > last)
-			break;
-		wordpos += word.length() + 1;
-		xpos += 1.5 * word.length() + 1;
-	}
 }
 
 void SceneMarinaBay::Render()
@@ -1099,7 +986,7 @@ void SceneMarinaBay::Render()
 
 	//========================================================
 
-	RenderMesh(meshList[GEO_AXES], false);
+	RenderMesh(meshList[GEO_AXES], false, modelStack, viewStack, projectionStack, m_parameters);
 	
 	//infinity pool (to be changed to fix the need for face culling, maybe)
 	modelStack.PushMatrix();
@@ -1107,7 +994,7 @@ void SceneMarinaBay::Render()
 	modelStack.Rotate(90, 1, 0, 0);
 	modelStack.Scale(30, 317, 1);
 	//glDisable(GL_CULL_FACE);
-	RenderMesh(meshList[GEO_WATER], true);
+	RenderMesh(meshList[GEO_WATER], true, modelStack, viewStack, projectionStack, m_parameters);
 	//glEnable(GL_CULL_FACE);
 	modelStack.PopMatrix();
 
@@ -1115,7 +1002,7 @@ void SceneMarinaBay::Render()
 	modelStack.PushMatrix();
 	modelStack.Translate(0, -27.7, 0);
 	modelStack.Scale(40, 25, 50);
-	RenderMesh(meshList[GEO_BOAT], true);
+	RenderMesh(meshList[GEO_BOAT], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	//renders all the items/npcs
@@ -1126,15 +1013,15 @@ void SceneMarinaBay::Render()
 		modelStack.Rotate((*it)->getangle(), 0, 1, 0);
 		modelStack.Scale((*it)->getscale(), (*it)->getscale(), (*it)->getscale());
 		if ((*it)->gettype() == "robot" || (*it)->gettype() == "robot2")
-			RenderMesh(meshList[GEO_ROBOT], true);
+			RenderMesh(meshList[GEO_ROBOT], true, modelStack, viewStack, projectionStack, m_parameters);
 		else if ((*it)->gettype() == "girl" || (*it)->gettype() == "girl2")
-			RenderMesh(meshList[GEO_GIRL], true);
+			RenderMesh(meshList[GEO_GIRL], true, modelStack, viewStack, projectionStack, m_parameters);
 		else if ((*it)->gettype() == "orc" || (*it)->gettype() == "orc2" || (*it)->gettype() == "orc3")
-			RenderMesh(meshList[GEO_ORC], true);
+			RenderMesh(meshList[GEO_ORC], true, modelStack, viewStack, projectionStack, m_parameters);
 		else if ((*it)->gettype() == "adventurer" || (*it)->gettype() == "adventurer2" || (*it)->gettype() == "adventurer3")
-			RenderMesh(meshList[GEO_ADVENTURER], true);
-		else if ((*it)->gettype()=="badguy" || (*it)->gettype()=="badguy2")
-			RenderMesh(meshList[GEO_BADGUY], true);
+			RenderMesh(meshList[GEO_ADVENTURER], true, modelStack, viewStack, projectionStack, m_parameters);
+		else if ((*it)->gettype()=="badguy" || (*it)->gettype()=="badguy2" || (*it)->gettype()=="badguy3")
+			RenderMesh(meshList[GEO_BADGUY], true, modelStack, viewStack, projectionStack, m_parameters);
 
 		modelStack.PopMatrix();
 		if (hitboxshow)
@@ -1142,16 +1029,12 @@ void SceneMarinaBay::Render()
 			modelStack.PushMatrix();
 			modelStack.Translate((*it)->getposition().x, (*it)->getposition().y + 5, (*it)->getposition().z);
 			modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
-			RenderMesh(meshList[GEO_SPHERE], false);
+			RenderMesh(meshList[GEO_SPHERE], false, modelStack, viewStack, projectionStack, m_parameters);
 			modelStack.PopMatrix();
 		}
 	}
 	
 
-	if (firstEnter && camera.position.z >= posZ)
-	{
-		RenderNPCDialogue("So, you chased me all the way here. If you really think you can take me, then step forward but be prepared I'm not going to go down easy", "???");
-	}
 
 	if (!fight)	//no need to be rendered while in fight
 	{	//infinity poolside
@@ -1161,7 +1044,7 @@ void SceneMarinaBay::Render()
 			modelStack.PushMatrix();
 			modelStack.Translate(23, 0, z);
 			modelStack.Scale(10, 20, 10);
-			RenderMesh(meshList[GEO_TREE], true);
+			RenderMesh(meshList[GEO_TREE], true, modelStack, viewStack, projectionStack, m_parameters);
 			modelStack.PopMatrix();
 
 			//all the chairs
@@ -1171,7 +1054,7 @@ void SceneMarinaBay::Render()
 			modelStack.Translate(23, 0, z + 5);
 			modelStack.Rotate(-90, 0, 1, 0);
 			modelStack.Scale(0.2, 0.2, 0.2);
-			RenderMesh(meshList[GEO_CHAIR], true);
+			RenderMesh(meshList[GEO_CHAIR], true, modelStack, viewStack, projectionStack, m_parameters);
 			modelStack.PopMatrix();
 
 			//chair in the middle of trees
@@ -1179,7 +1062,7 @@ void SceneMarinaBay::Render()
 			modelStack.Translate(23, 0, z + 15);
 			modelStack.Rotate(-90, 0, 1, 0);
 			modelStack.Scale(0.2, 0.2, 0.2);
-			RenderMesh(meshList[GEO_CHAIR], true);
+			RenderMesh(meshList[GEO_CHAIR], true, modelStack, viewStack, projectionStack, m_parameters);
 			modelStack.PopMatrix();
 
 			//chair directly before the tree
@@ -1187,7 +1070,7 @@ void SceneMarinaBay::Render()
 			modelStack.Translate(23, 0, z - 5);
 			modelStack.Rotate(-90, 0, 1, 0);
 			modelStack.Scale(0.2, 0.2, 0.2);
-			RenderMesh(meshList[GEO_CHAIR], true);
+			RenderMesh(meshList[GEO_CHAIR], true, modelStack, viewStack, projectionStack, m_parameters);
 			modelStack.PopMatrix();
 		}
 		
@@ -1209,7 +1092,7 @@ void SceneMarinaBay::Render()
 				modelStack.Rotate(attackAngle, 1, 0, 0);
 				modelStack.Scale(attackScale, attackScale, attackScale);
 			}
-			RenderMesh(meshList[GEO_MC], true);
+			RenderMesh(meshList[GEO_MC], true, modelStack, viewStack, projectionStack, m_parameters);
 			modelStack.PopMatrix();
 
 			modelStack.PushMatrix();
@@ -1223,7 +1106,7 @@ void SceneMarinaBay::Render()
 				modelStack.Translate(0, attackTranslateY, attackTranslateZ);
 				modelStack.Rotate(-attackAngle, 1, 0, 0);
 			}
-			RenderMesh(meshList[GEO_ARM], true);
+			RenderMesh(meshList[GEO_ARM], true, modelStack, viewStack, projectionStack, m_parameters);
 			modelStack.PopMatrix();
 
 			//sword
@@ -1239,7 +1122,7 @@ void SceneMarinaBay::Render()
 						modelStack.Rotate(90, 0, 1, 0);
 						modelStack.Rotate(100, 0, 0, 1);
 						modelStack.Scale(2, 2, 2);
-						RenderMesh(meshList[GEO_SWORD], true);
+						RenderMesh(meshList[GEO_SWORD], true, modelStack, viewStack, projectionStack, m_parameters);
 						modelStack.PopMatrix();
 					}
 				}
@@ -1279,7 +1162,7 @@ void SceneMarinaBay::Render()
 				modelStack.Scale(10, 10, 10);
 				meshList[GEO_SPHERE]->material.kAmbient.Set(0.886, 0.788, 0.569);
 				meshList[GEO_SPHERE]->material.kDiffuse.Set(0.886, 0.788, 0.569);
-				RenderMesh(meshList[GEO_SPHERE], true);
+				RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 				{
 					//bottom connecting body
 					{
@@ -1290,7 +1173,7 @@ void SceneMarinaBay::Render()
 						modelStack.Scale(0.96, 4.6, 0.96);
 						meshList[GEO_FRUSTUM]->material.kAmbient.Set(0.886, 0.788, 0.569);
 						meshList[GEO_FRUSTUM]->material.kDiffuse.Set(0.886, 0.788, 0.569);
-						RenderMesh(meshList[GEO_FRUSTUM], true);
+						RenderMesh(meshList[GEO_FRUSTUM], true, modelStack, viewStack, projectionStack, m_parameters);
 						modelStack.PopMatrix();
 					}
 
@@ -1301,7 +1184,7 @@ void SceneMarinaBay::Render()
 						modelStack.Rotate(moveAngle * 1.5, 0, 0, 1);
 					modelStack.Rotate(0, 0, 0, 1);
 					modelStack.Scale(0.6, 0.6, 0.6);
-					RenderMesh(meshList[GEO_SPHERE], true);
+					RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 					{
 						//middle spine
 						modelStack.PushMatrix();
@@ -1314,7 +1197,7 @@ void SceneMarinaBay::Render()
 						modelStack.Scale(1., 2., 1.);
 						meshList[GEO_CYLINDER]->material.kAmbient.Set(0.886, 0.788, 0.569);
 						meshList[GEO_CYLINDER]->material.kDiffuse.Set(0.886, 0.788, 0.569);
-						RenderMesh(meshList[GEO_CYLINDER], true);
+						RenderMesh(meshList[GEO_CYLINDER], true, modelStack, viewStack, projectionStack, m_parameters);
 						modelStack.PopMatrix();
 
 
@@ -1330,7 +1213,7 @@ void SceneMarinaBay::Render()
 						else if (bite == true)
 							modelStack.Rotate(enemyAttackMove, 0, 0, 1);
 						modelStack.Rotate(0, 0, 0, 1);
-						RenderMesh(meshList[GEO_SPHERE], true);
+						RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 						{
 							int arms = 1;
 							for (int i = 0; i < 2; ++i)
@@ -1342,14 +1225,14 @@ void SceneMarinaBay::Render()
 									modelStack.Rotate(-moveAngle, 0, 0, 1);
 								modelStack.Rotate(arms * -30, 1, 0, 0);
 								modelStack.Scale(0.5, 0.8, 0.5);
-								RenderMesh(meshList[GEO_SPHERE], true);
+								RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 								{
 									//lower upperarm
 									modelStack.PushMatrix();
 									modelStack.Translate(0, -1.5, 0);
 									modelStack.Rotate(90, 1, 1, 0);
 									modelStack.Scale(0.8, 0.7, 0.8);
-									RenderMesh(meshList[GEO_SPHERE], true);
+									RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 									modelStack.PopMatrix();
 
 									//elbow joint
@@ -1361,14 +1244,14 @@ void SceneMarinaBay::Render()
 									}
 									modelStack.Scale(1, 0.625, 1);
 									modelStack.Scale(0.5, 0.5, 0.5);
-									RenderMesh(meshList[GEO_SPHERE], true);
+									RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 									{
 										//forearm
 										modelStack.PushMatrix();
 										modelStack.Translate(2, -1.0, 0);
 										modelStack.Rotate(60, 0, 0, 1);
 										modelStack.Scale(1.1, 2.5, 1.1);
-										RenderMesh(meshList[GEO_SPHERE], true);
+										RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 										modelStack.PopMatrix();
 
 										//knuckle
@@ -1376,7 +1259,7 @@ void SceneMarinaBay::Render()
 										modelStack.Translate(3.7, -2.0, 0);
 										modelStack.Rotate(120, 0, 0, 1);
 										modelStack.Scale(0.8, 0.8, 0.8);
-										RenderMesh(meshList[GEO_SPHERE], true);
+										RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 										{
 											//hand
 											modelStack.PushMatrix();
@@ -1384,28 +1267,28 @@ void SceneMarinaBay::Render()
 											modelStack.Scale(2.5, 1, 2.5);
 											meshList[GEO_CUBE]->material.kAmbient.Set(0.921, 0.808, 0.616);
 											meshList[GEO_CUBE]->material.kDiffuse.Set(0.921, 0.808, 0.616);
-											RenderMesh(meshList[GEO_CUBE], true);
+											RenderMesh(meshList[GEO_CUBE], true, modelStack, viewStack, projectionStack, m_parameters);
 											{
 												//first finger
 												modelStack.PushMatrix();
 												modelStack.Translate(-.5, .0, 0);
 												modelStack.Rotate(90, 0, 0, 1);
 												modelStack.Scale(0.5, 0.5, 0.1);
-												RenderMesh(meshList[GEO_CYLINDER], true);
+												RenderMesh(meshList[GEO_CYLINDER], true, modelStack, viewStack, projectionStack, m_parameters);
 												modelStack.PopMatrix();
 
 												modelStack.PushMatrix();
 												modelStack.Translate(-.5, .0, 0.4);
 												modelStack.Rotate(90, 0, 0, 1);
 												modelStack.Scale(0.5, 0.5, 0.1);
-												RenderMesh(meshList[GEO_CYLINDER], true);
+												RenderMesh(meshList[GEO_CYLINDER], true, modelStack, viewStack, projectionStack, m_parameters);
 												modelStack.PopMatrix();
 
 												modelStack.PushMatrix();
 												modelStack.Translate(-.5, .0, -0.4);
 												modelStack.Rotate(90, 0, 0, 1);
 												modelStack.Scale(0.5, 0.5, 0.1);
-												RenderMesh(meshList[GEO_CYLINDER], true);
+												RenderMesh(meshList[GEO_CYLINDER], true, modelStack, viewStack, projectionStack, m_parameters);
 												modelStack.PopMatrix();
 											}
 											modelStack.PopMatrix();
@@ -1425,7 +1308,7 @@ void SceneMarinaBay::Render()
 								modelStack.Translate(idleNeck, idleNeck, idleNeck);
 							modelStack.Rotate(-73, 0, 0, 1);
 							modelStack.Scale(1., 3.5, 1.);
-							RenderMesh(meshList[GEO_FRUSTUM], true);
+							RenderMesh(meshList[GEO_FRUSTUM], true, modelStack, viewStack, projectionStack, m_parameters);
 							modelStack.PopMatrix();
 
 							//neck joint
@@ -1445,7 +1328,7 @@ void SceneMarinaBay::Render()
 							}
 							modelStack.Rotate(0, 0, 0, 1);
 							modelStack.Scale(.7, .7, .7);
-							RenderMesh(meshList[GEO_SPHERE], true);
+							RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 							{
 								//head
 								modelStack.PushMatrix();
@@ -1461,7 +1344,7 @@ void SceneMarinaBay::Render()
 										modelStack.Scale(0.1, 3.5, 0.1);
 										meshList[GEO_CYLINDER]->material.kAmbient.Set(0.53, 0.36, 0.24);
 										meshList[GEO_CYLINDER]->material.kDiffuse.Set(0.53, 0.36, 0.24);
-										RenderMesh(meshList[GEO_CYLINDER], true);
+										RenderMesh(meshList[GEO_CYLINDER], true, modelStack, viewStack, projectionStack, m_parameters);
 										{
 											//connecting cone/spear head depending
 											modelStack.PushMatrix();
@@ -1470,7 +1353,7 @@ void SceneMarinaBay::Render()
 											modelStack.Scale(1, 0.142, 1);
 											meshList[GEO_CONE]->material.kAmbient.Set(0.77, 0.78, 0.78);
 											meshList[GEO_CONE]->material.kDiffuse.Set(0.77, 0.78, 0.78);
-											RenderMesh(meshList[GEO_CONE], true);
+											RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);
 											modelStack.PopMatrix();
 										}
 										modelStack.PopMatrix();
@@ -1488,14 +1371,14 @@ void SceneMarinaBay::Render()
 										modelStack.Scale(1, 0.6, 0.8);
 										meshList[GEO_CUBE]->material.kAmbient.Set(0.835, 0.682, 0.529);
 										meshList[GEO_CUBE]->material.kDiffuse.Set(0.835, 0.682, 0.529);
-										RenderMesh(meshList[GEO_CUBE], true);
+										RenderMesh(meshList[GEO_CUBE], true, modelStack, viewStack, projectionStack, m_parameters);
 										{
 											//middle lower lip
 											modelStack.PushMatrix();
 											modelStack.Translate(1., -0.6, 0);
 											modelStack.Rotate(-20, 0, 0, 1);
 											modelStack.Scale(2.5, 0.15, 0.3);
-											RenderMesh(meshList[GEO_CUBE], true);
+											RenderMesh(meshList[GEO_CUBE], true, modelStack, viewStack, projectionStack, m_parameters);
 											{
 												//tongue
 												modelStack.PushMatrix();
@@ -1503,7 +1386,7 @@ void SceneMarinaBay::Render()
 												modelStack.Scale(0.2, 1, 1);
 												meshList[GEO_HEMISPHERE]->material.kAmbient.Set(0.380, 0.278, 0.314);
 												meshList[GEO_HEMISPHERE]->material.kDiffuse.Set(0.380, 0.278, 0.314);
-												RenderMesh(meshList[GEO_HEMISPHERE], true);
+												RenderMesh(meshList[GEO_HEMISPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 												modelStack.PopMatrix();
 
 												//lower teeth
@@ -1518,21 +1401,21 @@ void SceneMarinaBay::Render()
 													modelStack.Translate(0.1, 0.4, 0.9 * teeth);
 													modelStack.Scale(0.1, 0.1, 0.1);	//to make it really small
 													modelStack.Scale(0.5, 10, 1);
-													RenderMesh(meshList[GEO_CONE], true);	//back tooth
+													RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//back tooth
 													modelStack.PopMatrix();
 
 													modelStack.PushMatrix();
 													modelStack.Translate(0.15, 0.4, 0.8 * teeth);
 													modelStack.Scale(0.1, 0.1, 0.1);
 													modelStack.Scale(0.5, 5, 1);
-													RenderMesh(meshList[GEO_CONE], true);	//2nd back tooth
+													RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//2nd back tooth
 													modelStack.PopMatrix();
 
 													modelStack.PushMatrix();
 													modelStack.Translate(0.4, 0.4, 0.4 * teeth);
 													modelStack.Scale(0.1, 0.1, 0.1);
 													modelStack.Scale(0.5, 5, 1);
-													RenderMesh(meshList[GEO_CONE], true);	//front tooth
+													RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//front tooth
 													modelStack.PopMatrix();
 												}
 											}
@@ -1544,7 +1427,7 @@ void SceneMarinaBay::Render()
 											modelStack.Rotate(-20, 0, 0, 1);
 											modelStack.Rotate(10, 0, 1, 0);
 											modelStack.Scale(2.3, 0.15, 0.3);
-											RenderMesh(meshList[GEO_CUBE], true);
+											RenderMesh(meshList[GEO_CUBE], true, modelStack, viewStack, projectionStack, m_parameters);
 											modelStack.PopMatrix();
 
 											//right lower lip(?)
@@ -1553,7 +1436,7 @@ void SceneMarinaBay::Render()
 											modelStack.Rotate(-20, 0, 0, 1);
 											modelStack.Rotate(-10, 0, 1, 0);
 											modelStack.Scale(2.3, 0.15, 0.3);
-											RenderMesh(meshList[GEO_CUBE], true);
+											RenderMesh(meshList[GEO_CUBE], true, modelStack, viewStack, projectionStack, m_parameters);
 											modelStack.PopMatrix();
 										}
 										modelStack.PopMatrix();
@@ -1570,7 +1453,7 @@ void SceneMarinaBay::Render()
 										modelStack.Rotate(-30, 0, 0, 1);
 										modelStack.Rotate(sides * 10, 0, 1, 0);
 										modelStack.Scale(1, 0.6, 0.4);
-										RenderMesh(meshList[GEO_CUBE], true);
+										RenderMesh(meshList[GEO_CUBE], true, modelStack, viewStack, projectionStack, m_parameters);
 										modelStack.PopMatrix();
 									}
 
@@ -1584,7 +1467,7 @@ void SceneMarinaBay::Render()
 										modelStack.Scale(1.3, 0.6, 1);
 										meshList[GEO_CUBE]->material.kAmbient.Set(0.886, 0.788, 0.569);	//making it the top shiny colour
 										meshList[GEO_CUBE]->material.kDiffuse.Set(0.886, 0.788, 0.569);
-										RenderMesh(meshList[GEO_CUBE], true);
+										RenderMesh(meshList[GEO_CUBE], true, modelStack, viewStack, projectionStack, m_parameters);
 										{
 											modelStack.PushMatrix();
 											modelStack.Scale(0.769, 1, 1);	//making everything smaller
@@ -1602,7 +1485,7 @@ void SceneMarinaBay::Render()
 													modelStack.Scale(0.15, 0.2, 0.15);
 													meshList[GEO_SPHERE]->material.kAmbient.Set(0.984, 0.827, 0.494);
 													meshList[GEO_SPHERE]->material.kDiffuse.Set(0.984, 0.827, 0.494);
-													RenderMesh(meshList[GEO_SPHERE], true);
+													RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 													modelStack.PopMatrix();
 												}
 
@@ -1610,7 +1493,7 @@ void SceneMarinaBay::Render()
 												modelStack.PushMatrix();
 												modelStack.Translate(1., -0.2, 0);
 												modelStack.Scale(2.7, 0.15, 0.4);
-												RenderMesh(meshList[GEO_CUBE], true);
+												RenderMesh(meshList[GEO_CUBE], true, modelStack, viewStack, projectionStack, m_parameters);
 
 												//upper teeth
 												{
@@ -1626,7 +1509,7 @@ void SceneMarinaBay::Render()
 														modelStack.Rotate(180, 1, 0, 0);
 														modelStack.Scale(0.1, 0.5, 0.1);
 														modelStack.Scale(0.5, 5, 2);
-														RenderMesh(meshList[GEO_CONE], true);	//front tooth
+														RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//front tooth
 														modelStack.PopMatrix();
 
 														modelStack.PushMatrix();
@@ -1634,7 +1517,7 @@ void SceneMarinaBay::Render()
 														modelStack.Rotate(180, 1, 0, 0);
 														modelStack.Scale(0.1, 0.5, 0.1);
 														modelStack.Scale(1, 7, 2);
-														RenderMesh(meshList[GEO_CONE], true);	//large back tooth
+														RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//large back tooth
 														modelStack.PopMatrix();
 
 														modelStack.PushMatrix();
@@ -1642,7 +1525,7 @@ void SceneMarinaBay::Render()
 														modelStack.Rotate(180, 1, 0, 0);
 														modelStack.Scale(0.1, 0.5, 0.1);
 														modelStack.Scale(0.7, 5, 2);
-														RenderMesh(meshList[GEO_CONE], true);	//back tooth
+														RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//back tooth
 														modelStack.PopMatrix();
 													}
 												}
@@ -1660,7 +1543,7 @@ void SceneMarinaBay::Render()
 														modelStack.Rotate(180, 1, 0, 0);
 														modelStack.Scale(0.1, 0.5, 0.1);
 														modelStack.Scale(0.5, 5, 1.15);
-														RenderMesh(meshList[GEO_CONE], true);	//front bottom spike
+														RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//front bottom spike
 														modelStack.PopMatrix();
 
 														modelStack.PushMatrix();
@@ -1668,7 +1551,7 @@ void SceneMarinaBay::Render()
 														modelStack.Rotate(180, 1, 0, 0);
 														modelStack.Scale(0.1, 0.5, 0.1);
 														modelStack.Scale(0.6, 5, 1.2);
-														RenderMesh(meshList[GEO_CONE], true);	//front mid bottom spike
+														RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//front mid bottom spike
 														modelStack.PopMatrix();
 
 														modelStack.PushMatrix();
@@ -1676,7 +1559,7 @@ void SceneMarinaBay::Render()
 														modelStack.Rotate(180, 1, 0, 0);
 														modelStack.Scale(0.1, 0.5, 0.1);
 														modelStack.Scale(0.6, 5, 1.25);
-														RenderMesh(meshList[GEO_CONE], true);	//back mid bottom spike
+														RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//back mid bottom spike
 														modelStack.PopMatrix();
 
 														modelStack.PushMatrix();
@@ -1684,7 +1567,7 @@ void SceneMarinaBay::Render()
 														modelStack.Rotate(180, 1, 0, 0);
 														modelStack.Scale(0.1, 0.5, 0.1);
 														modelStack.Scale(0.6, 5, 1.3);
-														RenderMesh(meshList[GEO_CONE], true);	//back bottom spike
+														RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//back bottom spike
 														modelStack.PopMatrix();
 
 														modelStack.PushMatrix();
@@ -1692,7 +1575,7 @@ void SceneMarinaBay::Render()
 														modelStack.Rotate(90, 0, 0, 1);
 														modelStack.Scale(0.1, 0.5, 0.1);
 														modelStack.Scale(8, 0.5, 3);
-														RenderMesh(meshList[GEO_CONE], true);	//bottom back spike
+														RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//bottom back spike
 														modelStack.PopMatrix();
 
 														modelStack.PushMatrix();
@@ -1700,7 +1583,7 @@ void SceneMarinaBay::Render()
 														modelStack.Rotate(90, 0, 0, 1);
 														modelStack.Scale(0.1, 0.5, 0.1);
 														modelStack.Scale(15, 1.1, 5);
-														RenderMesh(meshList[GEO_CONE], true);	//top back spike
+														RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//top back spike
 														modelStack.PopMatrix();
 													}
 												}
@@ -1717,7 +1600,7 @@ void SceneMarinaBay::Render()
 													modelStack.Translate(0.8, -0.2, sides * 0.31);
 													modelStack.Rotate(sides * 10, 0, 1, 0);
 													modelStack.Scale(2.7, 0.15, 0.4);
-													RenderMesh(meshList[GEO_CUBE], true);
+													RenderMesh(meshList[GEO_CUBE], true, modelStack, viewStack, projectionStack, m_parameters);
 													modelStack.PopMatrix();
 												}
 											}
@@ -1726,7 +1609,7 @@ void SceneMarinaBay::Render()
 											modelStack.PushMatrix();
 											modelStack.Translate(1.4, 0.15, 0);
 											modelStack.Scale(1.8, 0.6, 0.35);
-											RenderMesh(meshList[GEO_SLOPE], true);
+											RenderMesh(meshList[GEO_SLOPE], true, modelStack, viewStack, projectionStack, m_parameters);
 											modelStack.PopMatrix();
 
 											//sides of sloped part of face
@@ -1743,9 +1626,9 @@ void SceneMarinaBay::Render()
 												modelStack.Rotate(sides * -35, 1, 0, 0);
 												modelStack.Scale(1.8, 0.7, 1);
 												if (i == 0)
-													RenderMesh(meshList[GEO_TRIANGLEBACK], true);
+													RenderMesh(meshList[GEO_TRIANGLEBACK], true, modelStack, viewStack, projectionStack, m_parameters);
 												else
-													RenderMesh(meshList[GEO_TRIANGLE], true);
+													RenderMesh(meshList[GEO_TRIANGLE], true, modelStack, viewStack, projectionStack, m_parameters);
 												modelStack.PopMatrix();
 											}
 											modelStack.PopMatrix();
@@ -1764,7 +1647,7 @@ void SceneMarinaBay::Render()
 										modelStack.Rotate(-35, 0, 0, 1);
 										modelStack.Rotate(sides * 10, 0, 1, 0);
 										modelStack.Scale(1.3, 0.6, 0.6);
-										RenderMesh(meshList[GEO_CUBE], true);
+										RenderMesh(meshList[GEO_CUBE], true, modelStack, viewStack, projectionStack, m_parameters);
 										modelStack.PopMatrix();
 									}
 								}
@@ -1785,18 +1668,9 @@ void SceneMarinaBay::Render()
 					modelStack.Translate(23, 1, 0);
 					modelStack.Rotate(45, 0, 1, 0);
 					modelStack.Scale(enemyAttackScale, enemyAttackScale, enemyAttackScale);
-					RenderMesh(meshList[GEO_CRESCENT], false);
+					RenderMesh(meshList[GEO_CRESCENT], false, modelStack, viewStack, projectionStack, m_parameters);
 					modelStack.PopMatrix();
 				}
-				//circle for his position
-				/*else if (finale == true)
-				{
-					modelStack.PushMatrix();
-					modelStack.Translate(camera.position.x, 1, camera.position.z);
-					modelStack.Scale(4, 1, 4);
-					RenderMesh(meshList[GEO_CIRCLE], false);
-					modelStack.PopMatrix();
-				}*/
 			}
 			modelStack.PopMatrix();
 		}
@@ -1809,7 +1683,7 @@ void SceneMarinaBay::Render()
 			modelStack.PushMatrix();
 			modelStack.Translate((*it)->getposition().x + x, (*it)->getposition().y + (*it)->getheight() * 0.5, (*it)->getposition().z + z);
 			modelStack.Scale((*it)->getxwidth(), (*it)->getheight(), (*it)->getzwidth());
-			RenderMesh(meshList[GEO_CUBE], false);
+			RenderMesh(meshList[GEO_CUBE], false, modelStack, viewStack, projectionStack, m_parameters);
 			modelStack.PopMatrix();
 		}
 	}
@@ -1818,40 +1692,40 @@ void SceneMarinaBay::Render()
 	if (fight && !attackSelected)
 	{
 		//enemy
-		RenderTextOnScreen(meshList[GEO_TEXT], "Evil Guy", Color(0, 1, 0), 5, 0, 55);
-		RenderMeshOnScreen(meshList[GEO_HEALTH], 10, 53, 20, 2);
-		RenderMeshOnScreen(meshList[GEO_LOSTHEALTH], enemyHealthPos, 53, enemyHealth, 2);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Evil Guy", Color(0, 1, 0), 5, 0, 55, modelStack, viewStack, projectionStack, m_parameters);
+		RenderMeshOnScreen(meshList[GEO_HEALTH], 10, 53, 20, 2, modelStack, viewStack, projectionStack, m_parameters);
+		RenderMeshOnScreen(meshList[GEO_LOSTHEALTH], enemyHealthPos, 53, enemyHealth, 2, modelStack, viewStack, projectionStack, m_parameters);
 		//MC
-		RenderTextOnScreen(meshList[GEO_TEXT], "You", Color(0, 1, 0), 5, 72, 55);
-		RenderMeshOnScreen(meshList[GEO_HEALTH], 70, 53, 20, 2);
-		RenderMeshOnScreen(meshList[GEO_LOSTHEALTH], playerHealthPos, 53, playerHealth, 2);
+		RenderTextOnScreen(meshList[GEO_TEXT], "You", Color(0, 1, 0), 5, 72, 55, modelStack, viewStack, projectionStack, m_parameters);
+		RenderMeshOnScreen(meshList[GEO_HEALTH], 70, 53, 20, 2, modelStack, viewStack, projectionStack, m_parameters);
+		RenderMeshOnScreen(meshList[GEO_LOSTHEALTH], playerHealthPos, 53, playerHealth, 2, modelStack, viewStack, projectionStack, m_parameters);
 		if (playerTurn)
 		{
 			//fighting layout
-			RenderMeshOnScreen(meshList[GEO_LAYOUT], 40, 15, 80, 30);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Attack", Color(0, 0, 0), 4, 4, 11);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Items", Color(0, 0, 0), 4, 4, 6);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Run", Color(0, 0, 0), 4, 4, 1);
-			RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(0, 0, 0), 4, pointerX, pointerY);
+			RenderMeshOnScreen(meshList[GEO_LAYOUT], 40, 15, 80, 30, modelStack, viewStack, projectionStack, m_parameters);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Attack", Color(0, 0, 0), 4, 4, 11, modelStack, viewStack, projectionStack, m_parameters);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Items", Color(0, 0, 0), 4, 4, 6, modelStack, viewStack, projectionStack, m_parameters);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Run", Color(0, 0, 0), 4, 4, 1, modelStack, viewStack, projectionStack, m_parameters);
+			RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(0, 0, 0), 4, pointerX, pointerY, modelStack, viewStack, projectionStack, m_parameters);
 			if (fightSelected)	
 			{	
 				string attack1 = EnumToStr(attacksList[0]);
-				RenderTextOnScreen(meshList[GEO_TEXT], attack1, Color(0, 0, 0), 4, 25, 9.5);	
+				RenderTextOnScreen(meshList[GEO_TEXT], attack1, Color(0, 0, 0), 4, 25, 9.5, modelStack, viewStack, projectionStack, m_parameters);
 				if (attacksList.size() > 1)	//checks if theres 2 attacks in the vector
 				{
 					string attack2 = EnumToStr(attacksList[1]);
-					RenderTextOnScreen(meshList[GEO_TEXT], attack2, Color(0, 0, 0), 4, 25, 2.5);	
+					RenderTextOnScreen(meshList[GEO_TEXT], attack2, Color(0, 0, 0), 4, 25, 2.5, modelStack, viewStack, projectionStack, m_parameters);
 				}
 				if (attacksList.size() > 2)	//check for 3 attacks in vector
 				{
 					string attack3 = EnumToStr(attacksList[2]);
-					RenderTextOnScreen(meshList[GEO_TEXT], attack3, Color(0, 0, 0), 4, 55, 9.5);	
+					RenderTextOnScreen(meshList[GEO_TEXT], attack3, Color(0, 0, 0), 4, 55, 9.5, modelStack, viewStack, projectionStack, m_parameters);
 				}
 			}
 			else if (itemsSelected)
 			{
-				RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder3", Color(0, 0, 0), 4, 25, 8);
-				RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder4", Color(0, 0, 0), 4, 25, 8);
+				RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder3", Color(0, 0, 0), 4, 25, 8, modelStack, viewStack, projectionStack, m_parameters);
+				RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder4", Color(0, 0, 0), 4, 25, 8, modelStack, viewStack, projectionStack, m_parameters);
 			}
 		}
 		/*for (auto it = buttonList.begin(); it != buttonList.end(); ++it)
@@ -1876,6 +1750,20 @@ void SceneMarinaBay::Render()
 		Scene::RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 	}
 
+
+	if (firstEnter && camera.position.z >= posZ)
+	{
+		Scene::RenderNPCDialogue("So, you chased me all the way here. If you really think you can take me, then step forward but be prepared I'm not going to go down easy", "???", modelStack, viewStack, projectionStack, m_parameters);
+	}
+	else if (fightLost)
+	{
+		if (attacksList.size() < 3)
+			Scene::RenderNPCDialogue("More attacks can be gained from the previous section. Also, a 2-on-1 makes it hard to run.", "Tips", modelStack, viewStack, projectionStack, m_parameters);
+		else
+			Scene::RenderNPCDialogue("A 2-on-1 makes it quite hard to run.", "Tips", modelStack, viewStack, projectionStack, m_parameters);
+	}
+	else if (triedToRun)
+		Scene::RenderNPCDialogue("Nice try.", "Robber", modelStack, viewStack, projectionStack, m_parameters);
 
 	if (fightIntro)
 		RenderMinigameIntro("This game is a turn-based gamemode, if your healthbar turns all red you'll lose. Similarly, if your opponent's bar turns all red they'll lose. You have access to a few options on the bottom of the screen that can be done in a turn, just click on the buttons and they will either show more actions or do an action that ends your turn.", "Turn-based fight", 4, modelStack, viewStack, projectionStack, m_parameters);
