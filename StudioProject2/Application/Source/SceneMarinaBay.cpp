@@ -390,8 +390,15 @@ void SceneMarinaBay::Update(double dt)
 	}
 	if (Application::IsKeyPressed('U'))
 		fight = false;
-	else if (Application::IsKeyPressed('Y'))
+	else if (Application::IsKeyPressed('Y') && cooldown<=0)
+	{
 		fight = true;
+		fightInit = true;
+		attacksList.push_back(BIG);
+		attacksList.push_back(ROCKET_PUNCH);
+		attacksList.push_back(MIND_POWERS);
+		cooldown = 1.f;
+	}
 	else if (Application::IsKeyPressed('N'))
 		hitboxshow = true;
 	else if (Application::IsKeyPressed('M'))
@@ -422,26 +429,14 @@ void SceneMarinaBay::Update(double dt)
 			{
 			case (A_ATTACK1):									//temporary solution
 				attackSelected = true;
-				for (unsigned int i = 0; i < buttonList.size(); ++i)
-				{
-					buttonList[i]->active = false;
-				}
 				fightSelected = false;
 				break;
 			case (A_ATTACK2):
 				attackSelected = true;
-				for (unsigned int i = 0; i < buttonList.size(); ++i)
-				{
-					buttonList[i]->active = false;
-				}
 				fightSelected = false;
 				break;
 			case (A_ATTACK3):
 				attackSelected = true;
-				for (unsigned int i = 0; i < buttonList.size(); ++i)
-				{
-					buttonList[i]->active = false;
-				}
 				fightSelected = false;
 				break;
 			case (A_ATTACK):
@@ -463,6 +458,13 @@ void SceneMarinaBay::Update(double dt)
 				cout << "playeraction broke";
 			}
 			actionSelected = false;
+			if (playerAction > A_RUN + 1)	//if doing an action that would end the turn
+			{
+				for (unsigned int i = 0; i < buttonList.size(); ++i)
+				{
+					buttonList[i]->active = false;
+				}
+			}
 		}
 
 		//player attack animations
@@ -567,34 +569,60 @@ void SceneMarinaBay::Update(double dt)
 		//enemy turn actions
 		else if (enemyTurn && enemyHealthLost <= 0 && playerHealthLost <= 0)	//if health not still decreasing
 		{
-			switch (enemyAttack)	//handles enemy attacks
+			if (!enemyAlrAttacked)
 			{
-			case (SPEAR):
-				idle = false;
-				attack = true;
-				if (enemyAttackHit)
-					playerHealthLost = 20.f;
-				break;
-			case (DIG):			//dig attack requires more work 
-				movement = true;
-				idle = false;
-				if (enemyAttackHit)
-					playerHealthLost = 40.f;
-				break;
-			case (BITE):
-				bite = true;
-				idle = false;
-				if (enemyAttackHit)
-					playerHealthLost = 35.f;
-				break;
+				switch (enemyAttack)	//handles enemy attacks
+				{
+				case (SPEAR):
+					if (!enemyAnimPlaying)	//check to make sure animation isn't already playing
+					{
+						idle = false;
+						attack = true;
+						enemyAnimPlaying = true;
+					}
+					if (enemyAttackHit)
+					{
+						playerHealthLost = 20.f;
+						enemyAlrAttacked = true;
+					}
+					break;
+				case (DIG):			//dig attack requires more work 
+					if (!enemyAnimPlaying)
+					{
+						idle = false;
+						movement = true;
+						enemyAnimPlaying = true;
+					}
+					if (enemyAttackHit)
+					{
+						playerHealthLost = 40.f;
+						enemyAlrAttacked = true;
+					}
+					break;
+				case (BITE):
+					if (!enemyAnimPlaying)
+					{
+						idle = false;
+						bite = true;
+						enemyAnimPlaying = true;
+					}
+					if (enemyAttackHit)
+					{
+						playerHealthLost = 35.f;
+						enemyAlrAttacked = true;
+					}
+					break;
+				}
 			}
-			if (enemyAttackHit)	//ends enemy's turn and switches enemy's next attack
+			else if (enemyAttackHit && playerHealthLost <= 0)	//ends enemy's turn and switches enemy's next attack
 			{
 				enemyAttack = static_cast<ENEMY_ATTACKS>((enemyAttack + 1) % NUM_EATTACKS);	//moves to the next attack
 				attackSelected = false;
 				playerTurn = true;
 				enemyTurn = false;
 				enemyAttackHit = false;
+				enemyAlrAttacked = false;
+				enemyAnimPlaying = false;
 				for (unsigned int i = 0; i < A_RUN + 1; ++i)	//reenabling the 3 main buttons
 				{
 					buttonList[i]->active = true;
@@ -662,7 +690,6 @@ void SceneMarinaBay::Update(double dt)
 				{
 					if (timer < 15)	//timer before going up
 					{
-						//if (dramaticEntry)
 						timer += 10 * dt;
 					}
 					else if (move < 0)
@@ -676,11 +703,11 @@ void SceneMarinaBay::Update(double dt)
 					}
 					else
 					{
-						//dramaticEntryDone = true;
 						movement = false;
 						goneDown = false;
 						idle = true;
-						timer = moveAngle = move = moveBack = 0;
+						timer = moveAngle = move = 0;
+						moveBack = 71.f;
 					}
 				}
 			}
