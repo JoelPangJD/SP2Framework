@@ -1,4 +1,7 @@
 #include "Menu.h"
+#include "GL\glew.h"
+#include "LoadTGA.h"
+#include "Utility.h"
 
 
 Menu::Menu()

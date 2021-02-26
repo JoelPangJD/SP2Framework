@@ -324,7 +324,7 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 						indialogue = true;
 
 					}
-					if ((*it)->gettype() == "pond" && inventory->getcurrentitem()->gettype() == "fishing rod")//using fishing rod on cat
+					if ((*it)->gettype() == "pond" && inventory->getcurrentitem()->gettype() == "fishing rod")//using fishing rod on the pond
 					{
 						return "Gardenminigame1";
 					}
