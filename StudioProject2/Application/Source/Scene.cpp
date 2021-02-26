@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include "SceneMuseum.h"
 #include "GL\glew.h"
 #include "Application.h"
 #include "LoadTGA.h"
@@ -298,6 +299,7 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 			name = "";
 			indialogue = true;
 		}
+
 	}
 	for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 	{
@@ -315,6 +317,7 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 				{
 					if ((*it)->gettype() == "cat" && inventory->getcurrentitem()->gettype() == "fish")//using fish on cat
 					{
+						CantUse = false;
 						inventory->removeitem(inventory->getcurrentitem());
 						inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 1, 0, "Marina Bay ticket", "MBS ticket", true));
 						dialogue.push_back("1Oh it gave me a ticket to the Marina Bay Sands.");
@@ -324,9 +327,39 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 						indialogue = true;
 
 					}
-					if ((*it)->gettype() == "pond" && inventory->getcurrentitem()->gettype() == "fishing rod")//using fishing rod on cat
+					if ((*it)->gettype() == "pond" && inventory->getcurrentitem()->gettype() == "fishing rod")//using fishing rod on the pond
 					{
+						CantUse = false;
 						return "Gardenminigame1";
+					}
+
+					//For scene museum, to place item
+					if ((*it)->gettype() == "place key" && inventory->getcurrentitem()->gettype() == "key")
+					{
+						CantUse = false;
+						place1 = true;
+						inventory->removeitem("key");
+					}
+
+					else if ((*it)->gettype() == "place flag" && inventory->getcurrentitem()->gettype() == "flag")
+					{
+						CantUse = false;
+						place2 = true;
+						inventory->removeitem("flag");
+					}
+
+					else if ((*it)->gettype() == "place box" && inventory->getcurrentitem()->gettype() == "box")
+					{
+						CantUse = false;
+						place3 = true;
+						inventory->removeitem("box");
+					}
+					else if (CantUse == true)
+					{
+						dialogue.push_back("1I'm not supposed to use it here.");
+						currentline = dialogue.begin();
+						name = "";
+						indialogue = true;
 					}
 				}
 			}
@@ -358,6 +391,16 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 				currentline = dialogue.begin(); //Currentline iteratior as the first line of dialogue
 				name = (*it)->getname(); //Set the name of the npc the player talks to
 				indialogue = true;//Set state to in dialogue
+
+				///FOR SCENE MUSEUM
+				if (place1 == true && place2 == true && place3 == true)
+				{
+					if ((*it)->gettype() == "before gathering item")
+					{
+						items.erase(it);
+						inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 1, 0, "changi pass", "Changi pass", true));
+					}
+				}
 				if (MarinaBay == true)
 				{
 					//shortening dialogue to not show the full length when talked to
