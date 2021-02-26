@@ -114,6 +114,7 @@ public:
 	bool gameStart;
 	bool gameEnd;
 	bool takeFlight = false;
+	bool collide;
 	float fps;
 
 	float rotateL;
@@ -122,7 +123,7 @@ public:
 	float movex;
 	float movez;
 	float camMove;
-	float minimize;
+	float planeX, planeZ;
 		
 	float scale = 1;
 
