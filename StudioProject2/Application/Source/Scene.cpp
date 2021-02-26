@@ -1,5 +1,4 @@
 #include "Scene.h"
-#include "SceneMuseum.h"
 #include "GL\glew.h"
 #include "Application.h"
 #include "LoadTGA.h"
@@ -79,8 +78,10 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 			currentname = name;
 		dialoguetext = dialoguetext.substr(1);
 		RenderNPCDialogue(dialoguetext, currentname, modelStack, viewStack, projectionStack, m_parameters);
-		if (cooldown <= 0 && Application::IsKeyPressed('E')) //Cooldown added to prevent spamming to pass the dialogues too fast
+		if (cooldown <= 0 && Application::IsKeyPressed('E') || FoundAnswer) //Cooldown added to prevent spamming to pass the dialogues too fast
 		{
+			Preview = false;
+			ShowAnswer = false;
 			cooldown = 0.4f;
 			currentline++;
 			if (currentline == dialogue.end())
@@ -199,7 +200,7 @@ void Scene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float 
 	}
 }
 
-void Scene::RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int sizey, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[])
+void Scene::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[])
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -282,7 +283,7 @@ void Scene::movement(Camera3 &camera, vector<Terrain*> terrains, double dt)
 	}
 }
 
-string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool MarinaBay)
+string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool MarinaBay)
 {
 	if (Application::IsKeyPressed('Q') && !(inventory->getstorage().empty())) //Use an item in inventory if inventory not empty
 	{
@@ -309,10 +310,27 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 				//just returns if its at the end of the dialogue but I still can't think of a better way to do this
 				return "battleStart";
 		}
-		if ((*it)->spherecollider(camera.target) && !indialogue && !ininventory) // Checks if the target is within a radius of an item and not in a dialogue
+		if ((*it)->spherecollider(camera.target) && !indialogue) // Checks if the target is within a radius of an item and not in a dialogue
 		{
-			if (Application::IsKeyPressed('Q')) //Q is use
+		    if (Application::IsKeyPressed('Q')) //Q is use
 			{
+				if ((*it)->gettype() == "gardentocity")
+				{
+					camera.position = Vector3(-85, 5, 0);
+					Application::SwitchScene = 0;
+				}
+
+				else if ((*it)->gettype() == "citytomuseum")
+				{
+					//The position here is in the scene before swtiching such that the player will not overlap when they return to the same scene
+					camera.position = Vector3(0, 3, -10); //Change the camera position to somewhere that doesn't overlap to prevent constantly moving back and forth
+					return "frontofmuseum"; //For the other scene you can follow the garden to city example as there is no minigame to trigger before hand
+				}
+
+				if ((*it)->gettype() == "exit")
+				{
+					ToExit = true;
+				}
 				if (!(inventory->getstorage().empty())) //For uses that rely on inventory, make sure the inventory is 
 				{
 					if ((*it)->gettype() == "cat" && inventory->getcurrentitem()->gettype() == "fish")//using fish on cat
@@ -332,8 +350,6 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 						CantUse = false;
 						return "Gardenminigame1";
 					}
-
-					//For scene museum, to place item
 					if ((*it)->gettype() == "place key" && inventory->getcurrentitem()->gettype() == "key")
 					{
 						CantUse = false;
@@ -392,7 +408,19 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 				name = (*it)->getname(); //Set the name of the npc the player talks to
 				indialogue = true;//Set state to in dialogue
 
-				///FOR SCENE MUSEUM
+				//////////////////////////////////////////FOR SCENE MUSEUM///////////////////////////////////////////////////////
+				if (EndGame1 == false)
+				{
+					if ((*it)->gettype() == "preview")
+					{
+						Preview = true;
+					}
+					if ((*it)->gettype() == "answer")
+					{
+						ShowAnswer = true;
+					}
+
+				}
 				if (place1 == true && place2 == true && place3 == true)
 				{
 					if ((*it)->gettype() == "before gathering item")
@@ -401,6 +429,7 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 						inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 1, 0, "changi pass", "Changi pass", true));
 					}
 				}
+				//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				if (MarinaBay == true)
 				{
 					//shortening dialogue to not show the full length when talked to

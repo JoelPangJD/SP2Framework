@@ -1,5 +1,6 @@
 stick|1Hello stick
 cat|1Hello cat|2Meow
+cat1|1Hello cat|2Meow
 pond|1Hello pond
 Mr.Sazz|1Good morning Mr.Sazz|2Oh hello there, have you finished the homework I gave you last week?|1Yes I have.
 Andy|1Yo! Andy.|2Yo whats up?|1Have you seen that new game released today? Wanna buy it together after school is over?|2Sure.
@@ -9,6 +10,7 @@ yarn|1Hello yarn
 andy|2Yo i saw Mr Tang at the end of the museum awhile ago. I think if you can give him some items he will reward you with something
 before gathering item|2Hello there are you enjoying the museum tour?|2If you did observe carefully, i have left 3 items around the museum.|2If you can bring back those 3 items, i will reward you with something
 after gathering item|2Hello there i see you have placed 3 items around me|2Very well i will reward you with this Changi Pass, bring some of your classmate with you!
+exit|2Hold the button to Exit the museum
 key|1I think i can pick this up
 flag|1I think i can pick this up
 box|1I think i can pick this up
@@ -31,4 +33,6 @@ Guide|2Welcome to Changi airport, board the plane for a flight exprience......WA
 stairs|1Press [E] to board the plane. [I] to move forward, [J] to move left, [L] to move right, [K] to move backward.
 badguy|1I should make sure I have at least one attack before fighting him.
 badguy2|2So, you really think you can take me.|1Mr.Sazz?|2Ah, you must've meant my worthless brother. |2Anyways, I might not be as good as my brother in physical combat, but I have something even greater than the limits of a human. Try and keep my pet entertained for a few seconds could you?| 
-badguy3|2Back for more are you? 
+badguy3|2Back for more are you?| 
+citytomuseum|1Hello museum 
+gardentocity|1Hello path

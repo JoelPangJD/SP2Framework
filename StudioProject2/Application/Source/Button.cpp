@@ -1,5 +1,6 @@
 #include "Button.h"
 #include "Application.h"
+#include <iostream>
 
 Button::Button()
 {
@@ -41,7 +42,8 @@ void Button::updateButton()
 			unsigned h = Application::GetWindowHeight();
 			float posX = x / 10;
 			float posY = 60 - y / 10;
-			if (posX > positionX && posX < (positionX + width) && posY > positionY && posY < (positionY + height)) {
+			if (posX > positionX && posX < (positionX + width) && posY > positionY && posY < (positionY + height)) 
+			{
 				clickedOn = true;
 				hold = true;
 			}

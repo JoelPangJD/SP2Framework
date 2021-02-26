@@ -133,7 +133,6 @@ private:
 	void RenderSkybox();
 
 	void RenderMinigame();
-	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 	void updateMinigame(double dt);
 
 	bool inDialogue;
