@@ -181,8 +181,8 @@ void SceneGarden::Init()
 	meshList[GEO_SPHERE]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[GEO_SPHERE]->material.kShininess = 1.f;
 
-	meshList[GEO_PLAYERYARN] = MeshBuilder::GenerateSphere("playerball", Color(1, 1, 1), 30, 30, 1);
-	meshList[GEO_OBJECTIVEYARN] = MeshBuilder::GenerateSphere("objective", Color(1, 1, 1), 10, 10, 10);
+	meshList[GEO_PLAYERYARN] = MeshBuilder::GenerateSphere("playerball", Color(0.5, 0.5, 0.5), 30, 30, 1);
+	meshList[GEO_OBJECTIVEYARN] = MeshBuilder::GenerateSphere("objective", Color(0.3, 0.3, 0.3), 30, 30, 1);
 
 	meshList[GEO_HEMISPHERE] = MeshBuilder::GenerateHemisphere("hemisphere", Color(1, 1, 1), 30, 30, 1);
 	meshList[GEO_CONE] = MeshBuilder::GenerateCone("cone", 1, 20, 30, Color(1, 1, 1));
@@ -265,8 +265,6 @@ void SceneGarden::Init()
 	terrains.push_back(new Terrain(Vector3(-124, 0, -129), 0, 29, 10, 3.5, 3.5, "tree2"));
 	terrains.push_back(new Terrain(Vector3(-120, 0, 32), 0, 24, 10, 3, 3, "tree2"));
 	terrains.push_back(new Terrain(Vector3(-123, 0, -42), 0, 31, 10, 3.5, 3.5, "tree2"));
-
-	//modelStack.Translate(0, -2.5, -247.50);
 
 	terrains.push_back(new Terrain(Vector3(0, -2.5, -247.50), 0, 1, 5, 200, 5, "pond"));
 	terrains.push_back(new Terrain(Vector3(0, -2.5, -52.50), 0, 1, 5, 200, 5, "pond"));
@@ -370,13 +368,18 @@ void SceneGarden::Update(double dt)
 				circlespeed = 2.f;
 				break;
 			case 6: //If case 7, minigame is won
-				cout << "minigame complete!"<< endl;
 				for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 				{
 					if ((*it)->gettype() == "fish")
 					{
 						inventory->additem((*it));
+						inventory->removeitem("fishing rod");
 						items.erase(items.begin()+(distance(items.begin(), it)));
+						dialogue.push_back("1The fishing rod broke.");
+						dialogue.push_back("1At least I got a fish.");
+						currentline = dialogue.begin();
+						name = "";
+						indialogue = true;
 						break;
 					}
 				}
@@ -396,6 +399,7 @@ void SceneGarden::Update(double dt)
 		Application::GetCursorPos(&cursorx, &cursory);
 		cursorx = cursorx / 10;
 		cursory = (60 - cursory / 10);
+		//Movements
 		if (playerx > cursorx + 0.1)
 			playerx -= 10 * dt;
 		else if (playerx < cursorx - 0.1)
@@ -404,11 +408,36 @@ void SceneGarden::Update(double dt)
 			playery -= 10 * dt;
 		else if(playery < cursory - 0.1)
 			playery += 10 * dt;
-		if ((playerx < objectivex + 2 && playerx > objectivex - 2)
-			&& (playery < objectivey + 2 && playery > objectivey - 2)) //If overlap with objective
+
+		//Collisions
+		for (int i = 0; i < 8; i++)
 		{
-			progress++;
+			if (playerx - 2.f < obstaclex[i] + obstaclewidth[i] &&
+				playerx + 2.f > obstaclex[i] - obstaclewidth[i] &&
+				playery - 2.f < obstacley[i] + obstacleheight[i] &&
+				playery + 2.f > obstacley[i] - obstacleheight[i])
+			{
+				float xdist;
+				float zdist;
+				if (playerx > obstaclex[i])
+					xdist = obstaclex[i] + (obstaclewidth[i]) - (playerx - 2.f);
+				else
+					xdist = obstaclex[i] - (obstaclewidth[i]) - (playerx + 2.f);
+				if (playery > obstacley[i])
+					zdist = obstacley[i] + (obstacleheight[i]) - (playery - 2.f);
+				else
+					zdist = obstacley[i] - (obstacleheight[i]) - (playery + 2.f);
+				if (abs(xdist) < abs(zdist))
+					playerx += xdist;
+				else
+					playery += zdist;
+			}
 		}
+
+		if ((playerx < objectivex + 3 && playerx > objectivex - 3)
+			&& (playery < objectivey + 3 && playery > objectivey - 3)) //If overlap with objective
+			progress++;
+		//Changes as progress is made in the minigame
 		switch (progress)
 		{
 		case 0:
@@ -445,6 +474,10 @@ void SceneGarden::Update(double dt)
 			inventory->removeitem("yarn");
 			inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 1, 0, "fishing line", "Fishing line", true));
 			minigame = 0;
+			dialogue.push_back("1The 'yarn' untangled into a fishing line.");
+			currentline = dialogue.begin();
+			name = "";
+			indialogue = true;
 		}
 	}
 	if (Application::IsKeyPressed('5'))
@@ -602,9 +635,12 @@ void SceneGarden::Renderminigame1()
 void SceneGarden::Renderminigame2()
 {
 	RenderMeshOnScreen(meshList[GEO_YARNBACKGROUND], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
-	RenderMeshOnScreen(meshList[GEO_SPHERE], playerx, playery,2, 2, modelStack, viewStack, projectionStack, m_parameters);
-	RenderMeshOnScreen(meshList[GEO_SPHERE], objectivex, objectivey, 1, 1, modelStack, viewStack, projectionStack, m_parameters);
-	RenderMeshOnScreen(meshList[GEO_QUAD], 50, 30, 10, 5, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMeshOnScreen(meshList[GEO_PLAYERYARN], playerx, playery,2, 2, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMeshOnScreen(meshList[GEO_OBJECTIVEYARN], objectivex, objectivey, 1, 1, modelStack, viewStack, projectionStack, m_parameters);
+	for (int i = 0; i < 4; i++)
+	{
+		RenderMeshOnScreen(meshList[GEO_QUAD], obstaclex[i], obstacley[i], obstaclewidth[i] * 2, obstacleheight[i] * 2, modelStack, viewStack, projectionStack, m_parameters);
+	}
 }
 
 void SceneGarden::Renderfish()
