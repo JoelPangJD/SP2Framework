@@ -426,10 +426,21 @@ void SceneMarinaBay::Update(double dt)
 			enemyTurn = false;
 			playerAttack = NO_ATTACK;
 			Application::enableMouse = false;
+			movement = attack = goneDown = false, idle = true;
+			move = moveAngle = timer = 0;
+			idleMouth = idleHands = idleBounce = idleNeck = idleHead = 0;
+			enemyAttackAngle = enemyAttackMove = 0;
+			idleBreath = enemyAttackScale = 1;
+			idleHandsDir = idleBounceDir = idleMouthDir = idleBreathDir = idleNeckDir = idleHeadDir = 1;
+			moveBack = 71.f;
 			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 			{
 				if ((*it)->gettype() == "badguy3")
 					(*it)->settype("badguy2");
+			}
+			for (unsigned int i = 0; i < A_RUN + 1; ++i)
+			{
+				buttonList[i]->active = true;
 			}
 		}
 		else if (triedToRun)
@@ -1753,20 +1764,22 @@ void SceneMarinaBay::Render()
 
 	if (firstEnter && camera.position.z >= posZ)
 	{
-		Scene::RenderNPCDialogue("So, you chased me all the way here. If you really think you can take me, then step forward but be prepared I'm not going to go down easy", "???", modelStack, viewStack, projectionStack, m_parameters);
+		RenderNPCDialogue("So, you chased me all the way here. If you really think you can take me, then step forward but be prepared I'm not going to go down easy", "???", modelStack, viewStack, projectionStack, m_parameters);
 	}
 	else if (fightLost)
 	{
 		if (attacksList.size() < 3)
-			Scene::RenderNPCDialogue("More attacks can be gained from the previous section. Also, a 2-on-1 makes it hard to run.", "Tips", modelStack, viewStack, projectionStack, m_parameters);
+			RenderNPCDialogue("More attacks can be gained from the previous section. Also, a 2-on-1 makes it hard to run.", "Tips", modelStack, viewStack, projectionStack, m_parameters);
 		else
-			Scene::RenderNPCDialogue("A 2-on-1 makes it quite hard to run.", "Tips", modelStack, viewStack, projectionStack, m_parameters);
+			RenderNPCDialogue("A 2-on-1 makes it quite hard to run.", "Tips", modelStack, viewStack, projectionStack, m_parameters);
 	}
 	else if (triedToRun)
-		Scene::RenderNPCDialogue("Nice try.", "Robber", modelStack, viewStack, projectionStack, m_parameters);
+		RenderNPCDialogue("Nice try.", "Robber", modelStack, viewStack, projectionStack, m_parameters);
 
 	if (fightIntro)
 		RenderMinigameIntro("This game is a turn-based gamemode, if your healthbar turns all red you'll lose. Similarly, if your opponent's bar turns all red they'll lose. You have access to a few options on the bottom of the screen that can be done in a turn, just click on the buttons and they will either show more actions or do an action that ends your turn.", "Turn-based fight", 4, modelStack, viewStack, projectionStack, m_parameters);
+	//else if (talkIntro)
+
 }
 
 string SceneMarinaBay::EnumToStr(ATTACK enumToConvert)	//function to convert enums from ATTACK to string

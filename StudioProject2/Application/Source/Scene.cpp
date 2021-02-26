@@ -200,7 +200,7 @@ void Scene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float 
 	}
 }
 
-void Scene::RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int sizey, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[])
+void Scene::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[])
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
