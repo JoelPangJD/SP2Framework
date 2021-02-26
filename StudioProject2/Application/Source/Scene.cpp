@@ -78,8 +78,10 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 			currentname = name;
 		dialoguetext = dialoguetext.substr(1);
 		RenderNPCDialogue(dialoguetext, currentname, modelStack, viewStack, projectionStack, m_parameters);
-		if (cooldown <= 0 && Application::IsKeyPressed('E')) //Cooldown added to prevent spamming to pass the dialogues too fast
+		if (cooldown <= 0 && Application::IsKeyPressed('E') || FoundAnswer) //Cooldown added to prevent spamming to pass the dialogues too fast
 		{
+			Preview = false;
+			ShowAnswer = false;
 			cooldown = 0.4f;
 			currentline++;
 			if (currentline == dialogue.end())
@@ -91,14 +93,14 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 	}
 	else
 	{
-		RenderMeshOnScreen(baseMeshList[GEO_INVENTORY], 8, 37, 33, 45, modelStack, viewStack, projectionStack, m_parameters);
+		RenderMeshOnScreen(baseMeshList[GEO_INVENTORY], 10, 37, 43, 45, modelStack, viewStack, projectionStack, m_parameters);
 		int ypos = 52;
 		vector<InteractableObject*> inventorycontent = inventory->getstorage();
 		for (std::vector<InteractableObject*>::iterator it = inventorycontent.begin(); it != inventorycontent.end(); it++)
 		{
 			if ((*it) == inventory->getcurrentitem())
 			{
-				RenderMeshOnScreen(baseMeshList[GEO_TEXTBOX], 6, ypos + 1, 10, 2, modelStack, viewStack, projectionStack, m_parameters);
+				RenderMeshOnScreen(baseMeshList[GEO_TEXTBOX], 8, ypos + 1, 14, 2, modelStack, viewStack, projectionStack, m_parameters);
 			}
 			RenderTextOnScreen(baseMeshList[GEO_TEXT], (*it)->getname(), Color(0, 0, 0), 2, 2, ypos, modelStack, viewStack, projectionStack, m_parameters);
 			ypos -= 2;
@@ -198,7 +200,7 @@ void Scene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float 
 	}
 }
 
-void Scene::RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int sizey, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[])
+void Scene::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[])
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -250,6 +252,7 @@ void Scene::RenderMinigameIntro(std::string MinigamedescriptionText, std::string
 	RenderMeshOnScreen(baseMeshList[GEO_TEXTBOX], 40, 30, 80, 50, modelStack, viewStack, projectionStack, m_parameters);
 	RenderMeshOnScreen(baseMeshList[GEO_HEADER], 40, 57, 60, 8, modelStack, viewStack, projectionStack, m_parameters);
 	RenderTextOnScreen(baseMeshList[GEO_TEXT], MinigamenameText, Color(0, 0, 0), 6, 38 - (MinigamenameText.size() * 1.5), 54, modelStack, viewStack, projectionStack, m_parameters);	//header text
+	RenderMeshOnScreen(baseMeshList[GEO_PRESSE], 76, 8, 7, 7, modelStack, viewStack, projectionStack, m_parameters);
 	string word;																	//automating text
 	int wordpos = 0, ypos = 50 - fontsize, last = MinigamedescriptionText.find_last_of(" ");
 	float xpos = 2.f;
@@ -280,7 +283,7 @@ void Scene::movement(Camera3 &camera, vector<Terrain*> terrains, double dt)
 	}
 }
 
-string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool MarinaBay)
+string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool MarinaBay)
 {
 	if (Application::IsKeyPressed('Q') && !(inventory->getstorage().empty())) //Use an item in inventory if inventory not empty
 	{
@@ -292,12 +295,90 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 			inventory->removeitem("stick");
 			inventory->removeitem("fishing line");
 			inventory->additem(new InteractableObject(Vector3(0,0,0),0,1,0,"fishing rod", "Fishing rod", true));
+			dialogue.push_back("1The stick and fishing line were combined into a fishing rod.");
+			currentline = dialogue.begin();
+			name = "";
+			indialogue = true;
 		}
+
 	}
 	for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 	{
-		if ((*it)->spherecollider(camera.target) && !indialogue && !ininventory) // Checks if the target is within a radius of an item and not in a dialogue
+		if (MarinaBay)
 		{
+			if ((*it)->gettype() == "badguy3" && currentline + 1 == dialogue.end())	
+				//just returns if its at the end of the dialogue but I still can't think of a better way to do this
+				return "battleStart";
+		}
+		if ((*it)->spherecollider(camera.target) && !indialogue) // Checks if the target is within a radius of an item and not in a dialogue
+		{
+		    if (Application::IsKeyPressed('Q')) //Q is use
+			{
+				if ((*it)->gettype() == "gardentocity")
+				{
+					camera.position = Vector3(-85, 5, 0);
+					Application::SwitchScene = 0;
+				}
+
+				else if ((*it)->gettype() == "citytomuseum")
+				{
+					//The position here is in the scene before swtiching such that the player will not overlap when they return to the same scene
+					camera.position = Vector3(0, 3, -10); //Change the camera position to somewhere that doesn't overlap to prevent constantly moving back and forth
+					return "frontofmuseum"; //For the other scene you can follow the garden to city example as there is no minigame to trigger before hand
+				}
+
+				if ((*it)->gettype() == "exit")
+				{
+					ToExit = true;
+				}
+				if (!(inventory->getstorage().empty())) //For uses that rely on inventory, make sure the inventory is 
+				{
+					if ((*it)->gettype() == "cat" && inventory->getcurrentitem()->gettype() == "fish")//using fish on cat
+					{
+						CantUse = false;
+						inventory->removeitem(inventory->getcurrentitem());
+						inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 1, 0, "Marina Bay ticket", "MBS ticket", true));
+						dialogue.push_back("1Oh it gave me a ticket to the Marina Bay Sands.");
+						dialogue.push_back("1I should be access that place now to find who stole my wallet");
+						currentline = dialogue.begin();
+						name = "";
+						indialogue = true;
+
+					}
+					if ((*it)->gettype() == "pond" && inventory->getcurrentitem()->gettype() == "fishing rod")//using fishing rod on the pond
+					{
+						CantUse = false;
+						return "Gardenminigame1";
+					}
+					if ((*it)->gettype() == "place key" && inventory->getcurrentitem()->gettype() == "key")
+					{
+						CantUse = false;
+						place1 = true;
+						inventory->removeitem("key");
+					}
+
+					else if ((*it)->gettype() == "place flag" && inventory->getcurrentitem()->gettype() == "flag")
+					{
+						CantUse = false;
+						place2 = true;
+						inventory->removeitem("flag");
+					}
+
+					else if ((*it)->gettype() == "place box" && inventory->getcurrentitem()->gettype() == "box")
+					{
+						CantUse = false;
+						place3 = true;
+						inventory->removeitem("box");
+					}
+					else if (CantUse == true)
+					{
+						dialogue.push_back("1I'm not supposed to use it here.");
+						currentline = dialogue.begin();
+						name = "";
+						indialogue = true;
+					}
+				}
+			}
 			if (Application::IsKeyPressed('F'))// F is look at
 			{
 				dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
@@ -320,27 +401,35 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 					indialogue = true;
 				}
 			}
-			else if (Application::IsKeyPressed('Q')) //Q is use
-			{
-				if (!(inventory->getstorage().empty())) //For uses that rely on inventory, make sure the inventory is 
-				{
-					if ((*it)->gettype() == "cat" && inventory->getcurrentitem()->gettype() == "fish")//using fish on cat
-					{
-						inventory->removeitem(inventory->getcurrentitem());
-							inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 1, 0, "Marina Bay ticket", "MBS ticket", true));
-					}
-					if ((*it)->gettype() == "pond" && inventory->getcurrentitem()->gettype() == "fishing rod")//using fishing rod on cat
-					{
-						return "Gardenminigame1";
-					}
-				}
-			}
 			else if (Application::IsKeyPressed('T')) //T is talk to
 			{
 				dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
 				currentline = dialogue.begin(); //Currentline iteratior as the first line of dialogue
 				name = (*it)->getname(); //Set the name of the npc the player talks to
 				indialogue = true;//Set state to in dialogue
+
+				//////////////////////////////////////////FOR SCENE MUSEUM///////////////////////////////////////////////////////
+				if (EndGame1 == false)
+				{
+					if ((*it)->gettype() == "preview")
+					{
+						Preview = true;
+					}
+					if ((*it)->gettype() == "answer")
+					{
+						ShowAnswer = true;
+					}
+
+				}
+				if (place1 == true && place2 == true && place3 == true)
+				{
+					if ((*it)->gettype() == "before gathering item")
+					{
+						items.erase(it);
+						inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 1, 0, "changi pass", "Changi pass", true));
+					}
+				}
+				//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				if (MarinaBay == true)
 				{
 					//shortening dialogue to not show the full length when talked to
@@ -353,6 +442,8 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 						(*it)->updatedialogue("robot2");
 					else if ((*it)->gettype() == "orc2")
 						(*it)->updatedialogue("orc3");
+					else if ((*it)->gettype() == "badguy2")
+						(*it)->updatedialogue("badguy3");
 					else if ((*it)->gettype() == "pool2")
 					{
 						(*it)->updatedialogue("pool");

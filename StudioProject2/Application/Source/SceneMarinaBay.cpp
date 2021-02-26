@@ -22,6 +22,7 @@ SceneMarinaBay::~SceneMarinaBay()
 
 void SceneMarinaBay::Init()
 {
+	//======Initialising Buttons========
 	buttonList.push_back(new Button(0, 11, 20, 5.5, true));	//attack
 	buttonList.push_back(new Button(0, 5.5, 20, 5.5, true));	//items
 	buttonList.push_back(new Button(0, 0, 20, 5.5, true));	//run
@@ -29,10 +30,6 @@ void SceneMarinaBay::Init()
 	buttonList.push_back(new Button(21, 0, 30, 8.25));	//attack2
 	buttonList.push_back(new Button(53, 8.25, 30, 8.25));	//attack3
 
-	//temp storage of attacks, will change for future minigame purposes
-	/*attacksList.push_back(BIG);
-	attacksList.push_back(ROCKET_PUNCH);
-	attacksList.push_back(MIND_POWERS);*/
 	//======Initialising variables========
 	pointerX = 2;
 	pointerY = 11;
@@ -42,8 +39,10 @@ void SceneMarinaBay::Init()
 	attackScale = 1.f;
 	playerTurn = true;
 	playerAttack = NO_ATTACK;
+	posZ = 200;
+	fightLost = false;
 	//dragon animations
-	movement = goneDown = attack = false, idle = true;
+	movement = attack = goneDown = false, idle = true;
 	move = moveAngle = timer = 0;
 	idleMouth = idleHands = idleBounce = idleNeck = idleHead = 0;
 	enemyAttackAngle = enemyAttackMove = 0;
@@ -263,6 +262,8 @@ void SceneMarinaBay::Init()
 		meshList[GEO_GIRL]->textureID = LoadTGA("Image//Marina//girl.tga");
 		meshList[GEO_ORC] = MeshBuilder::GenerateOBJMTL("Robot", "OBJ//Marina//defaultCharacter.obj", "OBJ//Marina//defaultCharacter.mtl");
 		meshList[GEO_ORC]->textureID = LoadTGA("Image//Marina//orc.tga");
+		meshList[GEO_BADGUY] = MeshBuilder::GenerateOBJMTL("MC", "OBJ//Marina//character.obj", "OBJ//Marina//defaultCharacter.mtl");
+		meshList[GEO_BADGUY]->textureID = LoadTGA("Image//CityCenter//teacher.tga");
 
 		//environment
 		meshList[GEO_WATER] = MeshBuilder::GenerateQuad("quad", 1.0f, 1.0f, Color(1, 1, 1), 10);
@@ -312,12 +313,13 @@ void SceneMarinaBay::Init()
 		//items/npcs
 		items.push_back(new InteractableObject(Vector3(-50, 5, -100), 90, 0.7, 7, "robot", "Robot", false));
 		items.push_back(new InteractableObject(Vector3(-22, 5, -160), 180, 0.7, 7, "girl", "Hostess", false));
-		//items.push_back(new InteractableObject(Vector3(0, 5, 250), 0, 0.7, 5, "badguy"));
+		items.push_back(new InteractableObject(Vector3(0, 5, 300), 0, 0.7, 5, "badguy", "Robber", false));
 		items.push_back(new InteractableObject(Vector3(-30, 5, 44), 180, 0.7, 7, "adventurer", "Adventurer", false));
 		items.push_back(new InteractableObject(Vector3(15, 5, -70), 270, 0.7, 7, "orc", "Orc", false));
 		items.push_back(new InteractableObject(Vector3(32, 5, 30), 0, 0.7, 5, "pool", "Infinity Pool", false));
 		items.push_back(new InteractableObject(Vector3(50, 5, -160), 0, 0.7, 7, "pool", "Infinity Pool", false));
 	}
+
 }
 
 
@@ -325,15 +327,20 @@ void SceneMarinaBay::Init()
 void SceneMarinaBay::Update(double dt)
 {
 	fps = 1.f / dt;
-	if (!fight)
+	if (!fight)	//not in fight
 	{
-		this->Scene::movement(camera, terrains, dt);
-		this->interact(camera, items, true);
+		if ((!firstEnter || camera.position.z<200) && !fightLost)	//dramatic first entry of bad guy not triggered yet
+			this->Scene::movement(camera, terrains, dt);
+		string trigger = this->interact(camera, items, true);
+		if (trigger == "battleStart" && !fightLost)
+		{
+			fight = true;
+			fightInit = true;
+		}
 	}
 	else
 	{
 		int count = 0;
-		//Application::enableMouse = true;	//temp soln
 		for (auto it = buttonList.begin(); it != buttonList.end(); ++it)
 		{
 			if ((*it)->active)
@@ -343,6 +350,7 @@ void SceneMarinaBay::Update(double dt)
 				{
 					playerAction = static_cast<ACTION_TYPE>(count);	//makes player action = the button number
 					actionSelected = true;
+					break;
 				}
 			}
 			++count;
@@ -385,447 +393,500 @@ void SceneMarinaBay::Update(double dt)
 	}
 	if (Application::IsKeyPressed('U'))
 		fight = false;
-	else if (Application::IsKeyPressed('Y'))
+	else if (Application::IsKeyPressed('Y') && cooldown<=0)
+	{
 		fight = true;
+		fightInit = true;
+		attacksList.push_back(BIG);
+		attacksList.push_back(ROCKET_PUNCH);
+		attacksList.push_back(MIND_POWERS);
+		cooldown = 1.f;
+	}
 	else if (Application::IsKeyPressed('N'))
 		hitboxshow = true;
 	else if (Application::IsKeyPressed('M'))
 		hitboxshow = false;
-
-	if (actionSelected && fight && !attackSelected)	//if action was selected and in fight and attack is not playing
+	else if (Application::IsKeyPressed('E'))
 	{
-		switch (playerAction)
+		if (firstEnter && camera.position.z >= posZ)
+			firstEnter = false;
+		else if (fightIntro && fight && cooldown<=0)
+			fightIntro = false;
+		else if (fightLost)		//resetting fight vars
 		{
-		case (A_ATTACK1):									//temporary solution
-			attackSelected = true;
-			for (unsigned int i = 0; i < buttonList.size(); ++i)
-			{
-				buttonList[i]->active = false;
-			}
-			fightSelected = false;
-			break;
-		case (A_ATTACK2):
-			attackSelected = true;
-			for (unsigned int i = 0; i < buttonList.size(); ++i)
-			{
-				buttonList[i]->active = false;
-			}
-			fightSelected = false;
-			break;
-		case (A_ATTACK3):
-			attackSelected = true;
-			for (unsigned int i = 0; i < buttonList.size(); ++i)
-			{
-				buttonList[i]->active = false;
-			}
-			fightSelected = false;
-			break;
-		case (A_ATTACK4):
-			attackSelected = true;
-			for (unsigned int i = 0; i < buttonList.size(); ++i)
-			{
-				buttonList[i]->active = false;
-			}
-			fightSelected = false;
-			break;
-		case (A_ATTACK):
-			fightSelected = true;
-			//enables the buttons after fight is selected depending on what has been unlocked
-			for (unsigned int i = 0; i < attacksList.size(); ++i)	
-			{
-				buttonList[i + A_ATTACK1]->active = true;
-			}
-			break;
-		case (A_ITEMS):			//if no time will just get rid of
-			itemsSelected = true;
-			break;
-		case (A_RUN):
-			fightDia = true;
-			fightText = "Placeholder :D";
-			break;
-		default:
-			cout << "playeraction broke";
-		}
-		actionSelected = false;
-	}
-
-	//player attack animations
-	if (attackSelected && playerTurn)		
-	{	//gets attack player is trying to execute
-		playerAttack = attacksList[playerAction - A_ATTACK1];
-		switch (playerAttack)
-		{
-		case (BIG):			//MC goes big
-			if (!attackHit)	//when attack hasnt hit enemy yet
-			{
-				if (attackScale < 8)		//go big
-					attackScale += 7 * dt;
-				else if (attackAngle < 90)		//rotate onto enemy
-					attackAngle += 600 * dt;
-				else
-					attackHit = true;		//has hit enemy
-			}
-			else
-			{
-				if (attackAngle > 0)
-					attackAngle -= 600 * dt;
-				else if (attackAngle < 0)	//so that the rotation doesnt go too far back
-					attackAngle = 0.f;
-				else if (attackScale > 1.f)
-					attackScale -= 7 * dt;
-				else			//resolution of attack
-				{
-					enemyHealthLost = 35.f;
-					attackHit = false;
-					playerTurn = false;
-					enemyTurn = true;
-					attackSelected = false;
-					playerAttack = NO_ATTACK;
-				}
-			}
-			break;
-		case (ROCKET_PUNCH):
-			if (!attackHit)
-			{
-				if (attackTranslateY < 30)
-					attackTranslateY += 30 * dt;	//goes up so it gets a good angle to hit 
-				else if (attackAngle < 90)
-					attackAngle += 100 * dt;
-				else if (attackTranslateZ < 150)
-					attackTranslateZ += 300 * dt;	//goes fast towards enemy
-				else
-				{
-					attackHit = true;
-					attackTranslateZ = 0.f;
-					attackTranslateY = 300.f;		//spawns it high above player
-					attackAngle = 0.f;
-				}
-			}
-			else
-			{
-				if (attackTranslateY > 0)
-					attackTranslateY -= 150 * dt;	//rapidly descends towards player
-				else
-				{
-					attackTranslateY = 0.f;			//resets value of arm and resolves attack
-					enemyHealthLost = 25.f;
-					attackHit = false;
-					playerTurn = false;
-					enemyTurn = true;
-					attackSelected = false;
-					playerAttack = NO_ATTACK;
-				}
-			}
-			break;
-		case (MIND_POWERS):
-			if (!attackHit)
-			{
-				if (attackTranslateY < 30 && attackTranslateZ<=0)
-				{
-					attackTranslateY += 30 * dt;
-				}
-				else if (attackTranslateZ < 100)
-				{
-					int attackSpeed = 400;
-					attackTranslateZ += attackSpeed * dt;
-					attackTranslateY -= attackSpeed * 0.25 * dt;
-				}
-				else
-				{
-					attackHit = true;
-					enemyHealthLost = 35.f;
-				}
-			}
-			else
-			{
-				attackTranslateY = 0;
-				attackTranslateZ = 0;
-				attackHit = false;
-				playerTurn = false;
-				enemyTurn = true;
-				attackSelected = false;
-				playerAttack = NO_ATTACK;
-			}
-		}
-	}
-	//enemy turn actions
-	else if (enemyTurn && enemyHealthLost<=0 && playerHealthLost<=0)	//if health not still decreasing
-	{
-		switch (enemyAttack)	//handles enemy attacks
-		{
-		case (SPEAR):
-			idle = false;
-			attack = true;
-			if (enemyAttackHit)
-				playerHealthLost = 20.f;
-			break;
-		case (DIG):			//dig attack requires more work 
-			movement = true;
-			idle = false;
-			if (enemyAttackHit)
-				playerHealthLost = 40.f;
-			break;
-		case (BITE):
-			bite = true;
-			idle = false;
-			if (enemyAttackHit)
-				playerHealthLost = 35.f;
-			break;
-		}
-		if (enemyAttackHit)	//ends enemy's turn and switches enemy's next attack
-		{
-			enemyAttack = static_cast<ENEMY_ATTACKS>((enemyAttack + 1) % NUM_EATTACKS);	//moves to the next attack
-			attackSelected = false;
+			fightLost = false;
+			fightOver = false;
+			enemyAttack = SPEAR;
+			enemyHealth = playerHealth = 0;
+			enemyHealthLost = playerHealthLost = 0;
+			enemyHealthPos = 20.f;
+			playerHealthPos = 60.f;
+			attackScale = 1.f;
 			playerTurn = true;
 			enemyTurn = false;
-			enemyAttackHit = false;
-			for (unsigned int i = 0; i < A_RUN + 1; ++i)	//reenabling the 3 main buttons
+			playerAttack = NO_ATTACK;
+			Application::enableMouse = false;
+			movement = attack = goneDown = false, idle = true;
+			move = moveAngle = timer = 0;
+			idleMouth = idleHands = idleBounce = idleNeck = idleHead = 0;
+			enemyAttackAngle = enemyAttackMove = 0;
+			idleBreath = enemyAttackScale = 1;
+			idleHandsDir = idleBounceDir = idleMouthDir = idleBreathDir = idleNeckDir = idleHeadDir = 1;
+			moveBack = 71.f;
+			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+			{
+				if ((*it)->gettype() == "badguy3")
+					(*it)->settype("badguy2");
+			}
+			for (unsigned int i = 0; i < A_RUN + 1; ++i)
 			{
 				buttonList[i]->active = true;
 			}
 		}
+		else if (triedToRun)
+		{
+			playerTurn = false;
+			enemyTurn = true;
+			triedToRun = false;
+		}
 	}
-	
-	//dragon animations
+
+	if (fight)
 	{
-		if (idle == true)
+		if (fightInit)
 		{
-			idleBounce += idleBounceDir * 10 * dt;
-			idleBreath += idleBreathDir * 0.1 * dt;
-			idleHands += idleHandsDir * 20 * dt;
-			idleMouth += idleMouthDir * 10 * dt;
-			idleNeck += idleNeckDir * 0.1 * dt;
-			idleHead += idleHeadDir * 10 * dt;
-
-			if (idleBounce > 10)
-				idleBounceDir = -1;
-			else if (idleBounce < 0)
-				idleBounceDir = 1;
-
-			if (idleBreath > 1.1)
-				idleBreathDir = -1;
-			else if (idleBreath < 1)
-				idleBreathDir = 1;
-
-			if (idleHands > 20)
-				idleHandsDir = -1;
-			else if (idleHands < 0)
-				idleHandsDir = 1;
-
-			if (idleMouth > 10)
-				idleMouthDir = -1;
-			else if (idleMouth < 0)
-				idleMouthDir = 1;
-
-			if (idleNeck > 0)
-				idleNeckDir = -1;
-			else if (idleNeck < -0.1)
-				idleNeckDir = 1;
-
-			if (idleHead > 10)
-				idleHeadDir = -1;
-			else if (idleHead < 0)
-				idleHeadDir = 1;
+			camera.Init(Vector3(90, 40, 240), Vector3(0, 8, 240), Vector3(0, 1, 0));
+			Application::enableMouse = true;
+			fightIntro = true;
+			cooldown = 0.5f;
+			fightInit = false;
 		}
-		else if (movement == true)
+
+
+		if (actionSelected && fight && !attackSelected)	//if action was selected and in fight and attack is not playing
 		{
-			if (goneDown == false)
+			switch (playerAction)
 			{
-				if (move > -100)
+			case (A_ATTACK1):									//temporary solution
+				attackSelected = true;
+				fightSelected = false;
+				break;
+			case (A_ATTACK2):
+				attackSelected = true;
+				fightSelected = false;
+				break;
+			case (A_ATTACK3):
+				attackSelected = true;
+				fightSelected = false;
+				break;
+			case (A_ATTACK):
+				fightSelected = true;
+				//enables the buttons after fight is selected depending on what has been unlocked
+				for (unsigned int i = 0; i < attacksList.size(); ++i)
 				{
-					move -= 50 * dt;
-					moveAngle += 45 * dt;
+					buttonList[i + A_ATTACK1]->active = true;
 				}
-				else
-				{
-					goneDown = true;
-					moveAngle = 45;
-				}
+				break;
+			case (A_ITEMS):			//if no time will just get rid of
+				itemsSelected = true;
+				break;
+			case (A_RUN):
+				triedToRun = true;
+				break;
+			default:
+				cout << "playeraction broke";
 			}
-			else	//after it has gone down
+			actionSelected = false;
+			if (playerAction > A_ITEMS)	//if doing an action that would end the turn
 			{
-				if (timer < 15)	//timer before going up
-					timer += 10 * dt;
-				else if (move < 0)
-					move += 50 * dt;
-				else
+				for (unsigned int i = 0; i < buttonList.size(); ++i)
 				{
-					enemyAttackHit = true;
-					moveAngle -= 70 * dt;
-					if (moveBack > 0)
-						moveBack -= 100 * dt;
-				}
-				if (moveAngle <= 0)
-				{
-					movement = false;
-					goneDown = false;
-					idle = true;
-					timer = moveAngle = move = moveBack = 0;
+					buttonList[i]->active = false;
 				}
 			}
 		}
-		else if (attack == true)
-		{
-			if (revert == true)	//goes to initial position
+
+		//player attack animations
+		if (attackSelected && playerTurn)
+		{	//gets attack player is trying to execute
+			playerAttack = attacksList[playerAction - A_ATTACK1];
+			switch (playerAttack)
 			{
-				enemyAttackAngle -= 20 * dt;
-				enemyAttackMove -= 20 * dt;
-				enemyAttackScale = 1;
-				if (enemyAttackAngle <= 0 && enemyAttackMove <= 0)
+			case (BIG):			//MC goes big
+				if (!attackHit)	//when attack hasnt hit enemy yet
 				{
-					attack = false;
-					revert = false;
-					idle = true;
-				}
-			}
-			else {
-				if (enemyAttackMove < 45)	//leans forward
-				{
-					enemyAttackAngle -= 50 * dt;
-					enemyAttackMove += 50 * dt;
-				}
-				else if (enemyAttackAngle < 45)	//sweeps
-				{
-					enemyAttackAngle += 500 * dt;
-					enemyAttackScale += 200 * dt;
+					if (attackScale < 8)		//go big
+						attackScale += 7 * dt;
+					else if (attackAngle < 90)		//rotate onto enemy
+						attackAngle += 600 * dt;
+					else
+						attackHit = true;		//has hit enemy
 				}
 				else
 				{
-					revert = true;
-					enemyAttackHit = true;
+					if (attackAngle > 0)
+						attackAngle -= 600 * dt;
+					else if (attackAngle < 0)	//so that the rotation doesnt go too far back
+						attackAngle = 0.f;
+					else if (attackScale > 1.f)
+						attackScale -= 7 * dt;
+					else			//resolution of attack
+					{
+						enemyHealthLost = 35.f;
+						attackHit = false;
+						playerTurn = false;
+						enemyTurn = true;
+						attackSelected = false;
+						playerAttack = NO_ATTACK;
+					}
+				}
+				break;
+			case (ROCKET_PUNCH):
+				if (!attackHit)
+				{
+					if (attackTranslateY < 30)
+						attackTranslateY += 30 * dt;	//goes up so it gets a good angle to hit 
+					else if (attackAngle < 90)
+						attackAngle += 100 * dt;
+					else if (attackTranslateZ < 150)
+						attackTranslateZ += 300 * dt;	//goes fast towards enemy
+					else
+					{
+						attackHit = true;
+						attackTranslateZ = 0.f;
+						attackTranslateY = 300.f;		//spawns it high above player
+						attackAngle = 0.f;
+					}
+				}
+				else
+				{
+					if (attackTranslateY > 0)
+						attackTranslateY -= 150 * dt;	//rapidly descends towards player
+					else
+					{
+						attackTranslateY = 0.f;			//resets value of arm and resolves attack
+						enemyHealthLost = 25.f;
+						attackHit = false;
+						playerTurn = false;
+						enemyTurn = true;
+						attackSelected = false;
+						playerAttack = NO_ATTACK;
+					}
+				}
+				break;
+			case (MIND_POWERS):
+				if (!attackHit)
+				{
+					if (attackTranslateY < 30 && attackTranslateZ <= 0)
+					{
+						attackTranslateY += 30 * dt;
+					}
+					else if (attackTranslateZ < 100)
+					{
+						int attackSpeed = 400;
+						attackTranslateZ += attackSpeed * dt;
+						attackTranslateY -= attackSpeed * 0.25 * dt;
+					}
+					else
+					{
+						attackHit = true;
+						enemyHealthLost = 35.f;
+					}
+				}
+				else
+				{
+					attackTranslateY = 0;
+					attackTranslateZ = 0;
+					attackHit = false;
+					playerTurn = false;
+					enemyTurn = true;
+					attackSelected = false;
+					playerAttack = NO_ATTACK;
 				}
 			}
 		}
-		else if (bite == true)
+		//enemy turn actions
+		else if (enemyTurn && enemyHealthLost <= 0 && playerHealthLost <= 0)	//if health not still decreasing
 		{
-			if (biteRearedBack == false)	//rearing back
+			if (!enemyAlrAttacked)
 			{
-				if (enemyAttackMove > -30)	//leans back
+				switch (enemyAttack)	//handles enemy attacks
 				{
-					enemyAttackMove -= 30 * dt;
+				case (SPEAR):
+					if (!enemyAnimPlaying)	//check to make sure animation isn't already playing
+					{
+						idle = false;
+						attack = true;
+						enemyAnimPlaying = true;
+					}
+					if (enemyAttackHit)
+					{
+						playerHealthLost = 20.f;
+						enemyAlrAttacked = true;
+					}
+					break;
+				case (DIG):			//dig attack requires more work 
+					if (!enemyAnimPlaying)
+					{
+						idle = false;
+						movement = true;
+						enemyAnimPlaying = true;
+					}
+					if (enemyAttackHit)
+					{
+						playerHealthLost = 40.f;
+						enemyAlrAttacked = true;
+					}
+					break;
+				case (BITE):
+					if (!enemyAnimPlaying)
+					{
+						idle = false;
+						bite = true;
+						enemyAnimPlaying = true;
+					}
+					if (enemyAttackHit)
+					{
+						playerHealthLost = 35.f;
+						enemyAlrAttacked = true;
+					}
+					break;
 				}
-				else
-					biteRearedBack = true;
 			}
-			else if (revert==false)			//rapidly lunges forward
+			else if (enemyAttackHit && playerHealthLost <= 0)	//ends enemy's turn and switches enemy's next attack
 			{
-				if (enemyAttackMove < 70)
+				enemyAttack = static_cast<ENEMY_ATTACKS>((enemyAttack + 1) % NUM_EATTACKS);	//moves to the next attack
+				attackSelected = false;
+				playerTurn = true;
+				enemyTurn = false;
+				enemyAttackHit = false;
+				enemyAlrAttacked = false;
+				enemyAnimPlaying = false;
+				for (unsigned int i = 0; i < A_RUN + 1; ++i)	//reenabling the 3 main buttons
 				{
-					enemyAttackMove += 300 * dt;
-					enemyAttackAngle += 70 * dt;
-				}
-				else
-				{
-					revert = true;
+					buttonList[i]->active = true;
 				}
 			}
-			else							//moving back to original position
-			{
-				if (enemyAttackAngle > -2)		//chomps jaw down
-				{
-					enemyAttackAngle -= 175 * dt;
-				}
-				else if (enemyAttackMove > 0)	//moves back to original position
-				{
+		}
 
-					enemyAttackMove -= 60 * dt;
-				}
-				else					//animation finished
+		//dragon animations
+		{
+			if (idle == true)
+			{
+				idleBounce += idleBounceDir * 10 * dt;
+				idleBreath += idleBreathDir * 0.1 * dt;
+				idleHands += idleHandsDir * 20 * dt;
+				idleMouth += idleMouthDir * 10 * dt;
+				idleNeck += idleNeckDir * 0.1 * dt;
+				idleHead += idleHeadDir * 10 * dt;
+
+				if (idleBounce > 10)
+					idleBounceDir = -1;
+				else if (idleBounce < 0)
+					idleBounceDir = 1;
+
+				if (idleBreath > 1.1)
+					idleBreathDir = -1;
+				else if (idleBreath < 1)
+					idleBreathDir = 1;
+
+				if (idleHands > 20)
+					idleHandsDir = -1;
+				else if (idleHands < 0)
+					idleHandsDir = 1;
+
+				if (idleMouth > 10)
+					idleMouthDir = -1;
+				else if (idleMouth < 0)
+					idleMouthDir = 1;
+
+				if (idleNeck > 0)
+					idleNeckDir = -1;
+				else if (idleNeck < -0.1)
+					idleNeckDir = 1;
+
+				if (idleHead > 10)
+					idleHeadDir = -1;
+				else if (idleHead < 0)
+					idleHeadDir = 1;
+			}
+			else if (movement == true)
+			{
+				if (goneDown == false)
 				{
-					enemyAttackHit = true;
-					bite = false;
-					revert = false;
-					biteRearedBack = false;
-					idle = true;
+					if (move > -100)
+					{
+						move -= 50 * dt;
+						moveAngle += 45 * dt;
+					}
+					else
+					{
+						goneDown = true;
+						moveAngle = 45;
+					}
 				}
+				else	//after it has gone down
+				{
+					if (timer < 15)	//timer before going up
+					{
+						timer += 10 * dt;
+					}
+					else if (move < 0)
+						move += 50 * dt;
+					else if (moveAngle > 0)
+					{
+						enemyAttackHit = true;
+						moveAngle -= 70 * dt;
+						if (moveBack > 0)
+							moveBack -= 100 * dt;
+					}
+					else
+					{
+						movement = false;
+						goneDown = false;
+						idle = true;
+						timer = moveAngle = move = 0;
+						moveBack = 71.f;
+					}
+				}
+			}
+			else if (attack == true)
+			{
+				if (revert == true)	//goes to initial position
+				{
+					enemyAttackAngle -= 20 * dt;
+					enemyAttackMove -= 20 * dt;
+					enemyAttackScale = 1;
+					if (enemyAttackAngle <= 0 && enemyAttackMove <= 0)
+					{
+						attack = false;
+						revert = false;
+						idle = true;
+					}
+				}
+				else {
+					if (enemyAttackMove < 45)	//leans forward
+					{
+						enemyAttackAngle -= 50 * dt;
+						enemyAttackMove += 50 * dt;
+					}
+					else if (enemyAttackAngle < 45)	//sweeps
+					{
+						enemyAttackAngle += 500 * dt;
+						enemyAttackScale += 200 * dt;
+					}
+					else
+					{
+						revert = true;
+						enemyAttackHit = true;
+					}
+				}
+			}
+			else if (bite == true)
+			{
+				if (biteRearedBack == false)	//rearing back
+				{
+					if (enemyAttackMove > -30)	//leans back
+					{
+						enemyAttackMove -= 30 * dt;
+					}
+					else
+						biteRearedBack = true;
+				}
+				else if (revert == false)			//rapidly lunges forward
+				{
+					if (enemyAttackMove < 70)
+					{
+						enemyAttackMove += 300 * dt;
+						enemyAttackAngle += 70 * dt;
+					}
+					else
+					{
+						revert = true;
+					}
+				}
+				else							//moving back to original position
+				{
+					if (enemyAttackAngle > -2)		//chomps jaw down
+					{
+						enemyAttackAngle -= 175 * dt;
+					}
+					else if (enemyAttackMove > 0)	//moves back to original position
+					{
+
+						enemyAttackMove -= 60 * dt;
+					}
+					else					//animation finished
+					{
+						enemyAttackHit = true;
+						bite = false;
+						revert = false;
+						biteRearedBack = false;
+						idle = true;
+					}
+				}
+			}
+		}
+
+		if (playerHealthLost > 0)
+		{	//health total will be as if it is equal to 100 so since the scaling of health is 20 the speed would be the same as health lost / 5
+			int speedOfHealthLost = 20.f;
+			playerHealthLost -= speedOfHealthLost * dt;
+			playerHealth += speedOfHealthLost * 0.2 * dt;
+			playerHealthPos += speedOfHealthLost * 0.1 * dt;	//dependent on health's scaling
+		}
+		else if (enemyHealthLost > 0)
+		{
+			int speedOfHealthLost = 20.f;
+			enemyHealthLost -= speedOfHealthLost * dt;
+			enemyHealth += speedOfHealthLost * 0.2 * dt;
+			enemyHealthPos -= speedOfHealthLost * 0.1 * dt;	//dependent on health's scaling
+		}
+		
+		//fight resolutions
+		if (playerHealth >= 20 || enemyHealth >= 20)
+		{
+			fightOver = true;
+			fight = false;
+
+			/*if (enemyHealth >= 20)
+				fightWon = true;
+			else*/
+			{
+				fightLost = true;
+				camera.Init(Vector3(-57, 8, 157), Vector3(-57, 8, 158), Vector3(0, 1, 0));
 			}
 		}
 	}
 
-	if (playerHealthLost > 0)
-	{	//health total will be as if it is equal to 100 so since the scaling of health is 20 the speed would be the same as health lost / 5
-		int speedOfHealthLost = 20.f;
-		playerHealthLost -= speedOfHealthLost * dt;
-		playerHealth += speedOfHealthLost * 0.2 * dt;
-		playerHealthPos += speedOfHealthLost * 0.1 * dt;	//dependent on health's scaling
-	}
-	else if (enemyHealthLost > 0)
+	for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 	{
-		int speedOfHealthLost = 20.f;
-		enemyHealthLost -= speedOfHealthLost * dt;
-		enemyHealth += speedOfHealthLost * 0.2 * dt;
-		enemyHealthPos -= speedOfHealthLost * 0.1 * dt;	//dependent on health's scaling
-	}
-
-	if (!punchAdded || !bigAdded || !mindAdded)	//checks if all the attacks have already been added or not
-	{
-		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+		if (!bigAdded && (*it)->gettype() == "girl2")	//adds big attack
 		{
-			if (!bigAdded && (*it)->gettype() == "girl2")	//adds big attack
-			{
-				attacksList.push_back(BIG);
-				inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Mushroom", "Mushroom", true));
-				bigAdded = true;
-			}
-			else if (!punchAdded && (*it)->gettype() == "robot2")	//adds punch attack
-			{
-				attacksList.push_back(ROCKET_PUNCH);
-				inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Robot Arm", "Robot Arm", true));
-				punchAdded = true;
-			}
-			else if (!mindAdded && (*it)->gettype() == "orc3")	//adds mind swords attack
-			{
-				attacksList.push_back(MIND_POWERS);
-				mindAdded = true;
-			}
+			attacksList.push_back(BIG);
+			inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Mushroom", "Mushroom", true));
+			bigAdded = true;
 		}
+		else if (!punchAdded && (*it)->gettype() == "robot2")	//adds punch attack
+		{
+			attacksList.push_back(ROCKET_PUNCH);
+			inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Robot Arm", "Robot Arm", true));
+			punchAdded = true;
+		}
+		else if (!mindAdded && (*it)->gettype() == "orc3")	//adds mind swords attack
+		{
+			attacksList.push_back(MIND_POWERS);
+			mindAdded = true;
+		}
+		if (attacksList.size() > 0 && (*it)->gettype() == "badguy")
+			(*it)->updatedialogue("badguy2");
+		else if (fightLost && (*it)->gettype() == "badguy3")
+			(*it)->settype("badguy2");	//changes type but not dialogue so players won't have to sit through everything
 	}
 
 	//==================Updating timers===========
 	if (cooldown > 0)
 		cooldown -= dt;
-}
-
-void SceneMarinaBay::RenderMesh(Mesh* mesh, bool enableLight)
-{
-	Mtx44 MVP, modelView, modelView_inverse_transpose;
-
-	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
-	glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-	modelView = viewStack.Top() * modelStack.Top();
-	glUniformMatrix4fv(m_parameters[U_MODELVIEW], 1, GL_FALSE, &modelView.a[0]);
-	if (enableLight && lighton == true)
-	{
-		glUniform1i(m_parameters[U_LIGHTENABLED], 1);
-		modelView_inverse_transpose = modelView.GetInverse().GetTranspose();
-		glUniformMatrix4fv(m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE], 1, GL_FALSE, &modelView_inverse_transpose.a[0]);
-
-		//load material
-		glUniform3fv(m_parameters[U_MATERIAL_AMBIENT], 1, &mesh->material.kAmbient.r);
-		glUniform3fv(m_parameters[U_MATERIAL_DIFFUSE], 1, &mesh->material.kDiffuse.r);
-		glUniform3fv(m_parameters[U_MATERIAL_SPECULAR], 1, &mesh->material.kSpecular.r);
-		glUniform1f(m_parameters[U_MATERIAL_SHININESS], mesh->material.kShininess);
-	}
-	else
-	{
-		glUniform1i(m_parameters[U_LIGHTENABLED], 0);
-	}
-	if (mesh->textureID > 0)
-	{
-		glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-		glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
-	}
-	else
-	{
-		glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 0);
-	}
-	mesh->Render(); //this line should only be called once
-	if (mesh->textureID > 0)
-	{
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
 }
 
 void SceneMarinaBay::RenderSkybox()
@@ -836,14 +897,14 @@ void SceneMarinaBay::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, -499);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_FRONT], false);
+	RenderMesh(meshList[GEO_FRONT], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, 499);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_BACK], false);
+	RenderMesh(meshList[GEO_BACK], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
@@ -851,7 +912,7 @@ void SceneMarinaBay::RenderSkybox()
 	modelStack.Rotate(-90, 1, 0, 0);
 	modelStack.Rotate(90, 0, 0, 1);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_BOTTOM], false);
+	RenderMesh(meshList[GEO_BOTTOM], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
@@ -859,139 +920,24 @@ void SceneMarinaBay::RenderSkybox()
 	modelStack.Rotate(90, 1, 0, 0);
 	modelStack.Rotate(-90, 0, 0, 1);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_TOP], false);
+	RenderMesh(meshList[GEO_TOP], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(499, 0, 0);
 	modelStack.Rotate(-90, 0, 1, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_RIGHT], false);
+	RenderMesh(meshList[GEO_RIGHT], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-499, 0, 0);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_LEFT], false);
+	RenderMesh(meshList[GEO_LEFT], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PopMatrix();
-}
-
-void SceneMarinaBay::RenderText(Mesh* mesh, std::string text, Color color)
-{
-	if (!mesh || mesh->textureID <= 0) //Proper error check
-		return;
-
-	//glDisable(GL_DEPTH_TEST);
-	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
-	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
-	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
-	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
-	for (unsigned i = 0; i < text.length(); ++i)
-	{
-		Mtx44 characterSpacing;
-		std::vector<std::pair<std::string, std::vector<int>>> result;
-		characterSpacing.SetToTranslation(i * 1.0f, 0, 0); //1.0f is the spacing of each character, you may change this value
-		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
-		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-
-		mesh->Render((unsigned)text[i] * 6, 6);
-	}
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
-	//glEnable(GL_DEPTH_TEST);
-}
-
-void SceneMarinaBay::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
-{
-	if (!mesh || mesh->textureID <= 0) //Proper error check
-		return;
-
-	glDisable(GL_DEPTH_TEST);
-	Mtx44 ortho;
-	ortho.SetToOrtho(0, 80, 0, 60, -10, 10); //size of screen UI
-	projectionStack.PushMatrix();
-	projectionStack.LoadMatrix(ortho);
-	viewStack.PushMatrix();
-	viewStack.LoadIdentity(); //No need camera for ortho mode
-	modelStack.PushMatrix();
-	modelStack.LoadIdentity(); //Reset modelStack
-	modelStack.Translate(x, y, 0);
-	modelStack.Scale(size, size, size);
-	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
-	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
-	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
-	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
-	for (unsigned i = 0; i < text.length(); ++i)
-	{
-		Mtx44 characterSpacing;
-		characterSpacing.SetToTranslation(0.5f + i * 0.5f, 0.5f, 0); //1.0f is the spacing of each character, you may change this value
-		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
-		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-
-		mesh->Render((unsigned)text[i] * 6, 6);
-	}
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
-	projectionStack.PopMatrix();
-	viewStack.PopMatrix();
-	modelStack.PopMatrix();
-	glEnable(GL_DEPTH_TEST);
-
-}
-
-void SceneMarinaBay::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey)
-{
-	glDisable(GL_DEPTH_TEST);
-	Mtx44 ortho;
-	ortho.SetToOrtho(0, 80, 0, 60, -10, 10); //size of screen UI
-	projectionStack.PushMatrix();
-	projectionStack.LoadMatrix(ortho);
-	viewStack.PushMatrix();
-	viewStack.LoadIdentity(); //No need camera for ortho mode
-	modelStack.PushMatrix();
-	modelStack.LoadIdentity();
-	modelStack.Translate(x, y, 0);
-	modelStack.Scale(sizex, sizey, 1);
-	RenderMesh(mesh, false); //UI should not have light
-	projectionStack.PopMatrix();
-	viewStack.PopMatrix();
-	modelStack.PopMatrix();
-	glEnable(GL_DEPTH_TEST);
-}
-
-void SceneMarinaBay::RenderNPCDialogue(std::string NPCText, std::string headerText)
-{
-	//float headerTextPos = 4.f;
-	RenderMeshOnScreen(meshList[GEO_HEADER], 14.75, 19.25, 30, 6);
-	//headerText.size()
-	RenderTextOnScreen(meshList[GEO_TEXT], headerText, Color(0, 0, 0), 4, x + 14.5 - (headerText.size()), 17);	//header text
-	RenderMeshOnScreen(meshList[GEO_TEXTBOX], 40, 8.75, 80, 17.5);
-	string word;																	//automating text
-	int wordpos = 0, ypos = 13, last = NPCText.find_last_of(" ");
-	float xpos = 2.f;
-	while (true)
-	{
-		word = NPCText.substr(wordpos, NPCText.find(" ", wordpos + 1) - wordpos);
-		if (xpos + word.length() * 1.5 + 1 > 80)		//if new word will exceed screensize
-		{
-			ypos -= 3;
-			xpos = 2;
-		}
-		RenderTextOnScreen(meshList[GEO_TEXT], word, Color(0, 0, 0), 3, xpos, ypos);
-		if (wordpos > last)
-			break;
-		wordpos += word.length() + 1;
-		xpos += 1.5 * word.length() + 1;
-	}
 }
 
 void SceneMarinaBay::Render()
@@ -1051,7 +997,7 @@ void SceneMarinaBay::Render()
 
 	//========================================================
 
-	RenderMesh(meshList[GEO_AXES], false);
+	RenderMesh(meshList[GEO_AXES], false, modelStack, viewStack, projectionStack, m_parameters);
 	
 	//infinity pool (to be changed to fix the need for face culling, maybe)
 	modelStack.PushMatrix();
@@ -1059,7 +1005,7 @@ void SceneMarinaBay::Render()
 	modelStack.Rotate(90, 1, 0, 0);
 	modelStack.Scale(30, 317, 1);
 	//glDisable(GL_CULL_FACE);
-	RenderMesh(meshList[GEO_WATER], true);
+	RenderMesh(meshList[GEO_WATER], true, modelStack, viewStack, projectionStack, m_parameters);
 	//glEnable(GL_CULL_FACE);
 	modelStack.PopMatrix();
 
@@ -1067,7 +1013,7 @@ void SceneMarinaBay::Render()
 	modelStack.PushMatrix();
 	modelStack.Translate(0, -27.7, 0);
 	modelStack.Scale(40, 25, 50);
-	RenderMesh(meshList[GEO_BOAT], true);
+	RenderMesh(meshList[GEO_BOAT], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	//renders all the items/npcs
@@ -1078,13 +1024,15 @@ void SceneMarinaBay::Render()
 		modelStack.Rotate((*it)->getangle(), 0, 1, 0);
 		modelStack.Scale((*it)->getscale(), (*it)->getscale(), (*it)->getscale());
 		if ((*it)->gettype() == "robot" || (*it)->gettype() == "robot2")
-			RenderMesh(meshList[GEO_ROBOT], true);
+			RenderMesh(meshList[GEO_ROBOT], true, modelStack, viewStack, projectionStack, m_parameters);
 		else if ((*it)->gettype() == "girl" || (*it)->gettype() == "girl2")
-			RenderMesh(meshList[GEO_GIRL], true);
+			RenderMesh(meshList[GEO_GIRL], true, modelStack, viewStack, projectionStack, m_parameters);
 		else if ((*it)->gettype() == "orc" || (*it)->gettype() == "orc2" || (*it)->gettype() == "orc3")
-			RenderMesh(meshList[GEO_ORC], true);
+			RenderMesh(meshList[GEO_ORC], true, modelStack, viewStack, projectionStack, m_parameters);
 		else if ((*it)->gettype() == "adventurer" || (*it)->gettype() == "adventurer2" || (*it)->gettype() == "adventurer3")
-			RenderMesh(meshList[GEO_ADVENTURER], true);
+			RenderMesh(meshList[GEO_ADVENTURER], true, modelStack, viewStack, projectionStack, m_parameters);
+		else if ((*it)->gettype()=="badguy" || (*it)->gettype()=="badguy2" || (*it)->gettype()=="badguy3")
+			RenderMesh(meshList[GEO_BADGUY], true, modelStack, viewStack, projectionStack, m_parameters);
 
 		modelStack.PopMatrix();
 		if (hitboxshow)
@@ -1092,11 +1040,13 @@ void SceneMarinaBay::Render()
 			modelStack.PushMatrix();
 			modelStack.Translate((*it)->getposition().x, (*it)->getposition().y + 5, (*it)->getposition().z);
 			modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
-			RenderMesh(meshList[GEO_SPHERE], false);
+			RenderMesh(meshList[GEO_SPHERE], false, modelStack, viewStack, projectionStack, m_parameters);
 			modelStack.PopMatrix();
 		}
 	}
 	
+
+
 	if (!fight)	//no need to be rendered while in fight
 	{	//infinity poolside
 		for (int z = 0; z > -170; z -= 30)
@@ -1105,7 +1055,7 @@ void SceneMarinaBay::Render()
 			modelStack.PushMatrix();
 			modelStack.Translate(23, 0, z);
 			modelStack.Scale(10, 20, 10);
-			RenderMesh(meshList[GEO_TREE], true);
+			RenderMesh(meshList[GEO_TREE], true, modelStack, viewStack, projectionStack, m_parameters);
 			modelStack.PopMatrix();
 
 			//all the chairs
@@ -1115,7 +1065,7 @@ void SceneMarinaBay::Render()
 			modelStack.Translate(23, 0, z + 5);
 			modelStack.Rotate(-90, 0, 1, 0);
 			modelStack.Scale(0.2, 0.2, 0.2);
-			RenderMesh(meshList[GEO_CHAIR], true);
+			RenderMesh(meshList[GEO_CHAIR], true, modelStack, viewStack, projectionStack, m_parameters);
 			modelStack.PopMatrix();
 
 			//chair in the middle of trees
@@ -1123,7 +1073,7 @@ void SceneMarinaBay::Render()
 			modelStack.Translate(23, 0, z + 15);
 			modelStack.Rotate(-90, 0, 1, 0);
 			modelStack.Scale(0.2, 0.2, 0.2);
-			RenderMesh(meshList[GEO_CHAIR], true);
+			RenderMesh(meshList[GEO_CHAIR], true, modelStack, viewStack, projectionStack, m_parameters);
 			modelStack.PopMatrix();
 
 			//chair directly before the tree
@@ -1131,12 +1081,14 @@ void SceneMarinaBay::Render()
 			modelStack.Translate(23, 0, z - 5);
 			modelStack.Rotate(-90, 0, 1, 0);
 			modelStack.Scale(0.2, 0.2, 0.2);
-			RenderMesh(meshList[GEO_CHAIR], true);
+			RenderMesh(meshList[GEO_CHAIR], true, modelStack, viewStack, projectionStack, m_parameters);
 			modelStack.PopMatrix();
 		}
 		
 	}
 	
+
+
 	if (fight)
 	{
 		//mc
@@ -1146,17 +1098,15 @@ void SceneMarinaBay::Render()
 		{
 			//mc body
 			modelStack.PushMatrix();
-			//modelStack.Translate(0, 0, 200);
 			if (playerAttack == BIG)
 			{
 				modelStack.Rotate(attackAngle, 1, 0, 0);
 				modelStack.Scale(attackScale, attackScale, attackScale);
 			}
-			RenderMesh(meshList[GEO_MC], true);
+			RenderMesh(meshList[GEO_MC], true, modelStack, viewStack, projectionStack, m_parameters);
 			modelStack.PopMatrix();
-			//still testing
+
 			modelStack.PushMatrix();
-			//modelStack.Translate(2.7, 12.3, 0);
 			if (playerAttack == BIG)
 			{
 				modelStack.Rotate(attackAngle, 1, 0, 0);
@@ -1167,7 +1117,7 @@ void SceneMarinaBay::Render()
 				modelStack.Translate(0, attackTranslateY, attackTranslateZ);
 				modelStack.Rotate(-attackAngle, 1, 0, 0);
 			}
-			RenderMesh(meshList[GEO_ARM], true);
+			RenderMesh(meshList[GEO_ARM], true, modelStack, viewStack, projectionStack, m_parameters);
 			modelStack.PopMatrix();
 
 			//sword
@@ -1183,7 +1133,7 @@ void SceneMarinaBay::Render()
 						modelStack.Rotate(90, 0, 1, 0);
 						modelStack.Rotate(100, 0, 0, 1);
 						modelStack.Scale(2, 2, 2);
-						RenderMesh(meshList[GEO_SWORD], true);
+						RenderMesh(meshList[GEO_SWORD], true, modelStack, viewStack, projectionStack, m_parameters);
 						modelStack.PopMatrix();
 					}
 				}
@@ -1223,7 +1173,7 @@ void SceneMarinaBay::Render()
 				modelStack.Scale(10, 10, 10);
 				meshList[GEO_SPHERE]->material.kAmbient.Set(0.886, 0.788, 0.569);
 				meshList[GEO_SPHERE]->material.kDiffuse.Set(0.886, 0.788, 0.569);
-				RenderMesh(meshList[GEO_SPHERE], true);
+				RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 				{
 					//bottom connecting body
 					{
@@ -1234,7 +1184,7 @@ void SceneMarinaBay::Render()
 						modelStack.Scale(0.96, 4.6, 0.96);
 						meshList[GEO_FRUSTUM]->material.kAmbient.Set(0.886, 0.788, 0.569);
 						meshList[GEO_FRUSTUM]->material.kDiffuse.Set(0.886, 0.788, 0.569);
-						RenderMesh(meshList[GEO_FRUSTUM], true);
+						RenderMesh(meshList[GEO_FRUSTUM], true, modelStack, viewStack, projectionStack, m_parameters);
 						modelStack.PopMatrix();
 					}
 
@@ -1245,7 +1195,7 @@ void SceneMarinaBay::Render()
 						modelStack.Rotate(moveAngle * 1.5, 0, 0, 1);
 					modelStack.Rotate(0, 0, 0, 1);
 					modelStack.Scale(0.6, 0.6, 0.6);
-					RenderMesh(meshList[GEO_SPHERE], true);
+					RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 					{
 						//middle spine
 						modelStack.PushMatrix();
@@ -1258,7 +1208,7 @@ void SceneMarinaBay::Render()
 						modelStack.Scale(1., 2., 1.);
 						meshList[GEO_CYLINDER]->material.kAmbient.Set(0.886, 0.788, 0.569);
 						meshList[GEO_CYLINDER]->material.kDiffuse.Set(0.886, 0.788, 0.569);
-						RenderMesh(meshList[GEO_CYLINDER], true);
+						RenderMesh(meshList[GEO_CYLINDER], true, modelStack, viewStack, projectionStack, m_parameters);
 						modelStack.PopMatrix();
 
 
@@ -1274,7 +1224,7 @@ void SceneMarinaBay::Render()
 						else if (bite == true)
 							modelStack.Rotate(enemyAttackMove, 0, 0, 1);
 						modelStack.Rotate(0, 0, 0, 1);
-						RenderMesh(meshList[GEO_SPHERE], true);
+						RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 						{
 							int arms = 1;
 							for (int i = 0; i < 2; ++i)
@@ -1286,14 +1236,14 @@ void SceneMarinaBay::Render()
 									modelStack.Rotate(-moveAngle, 0, 0, 1);
 								modelStack.Rotate(arms * -30, 1, 0, 0);
 								modelStack.Scale(0.5, 0.8, 0.5);
-								RenderMesh(meshList[GEO_SPHERE], true);
+								RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 								{
 									//lower upperarm
 									modelStack.PushMatrix();
 									modelStack.Translate(0, -1.5, 0);
 									modelStack.Rotate(90, 1, 1, 0);
 									modelStack.Scale(0.8, 0.7, 0.8);
-									RenderMesh(meshList[GEO_SPHERE], true);
+									RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 									modelStack.PopMatrix();
 
 									//elbow joint
@@ -1305,14 +1255,14 @@ void SceneMarinaBay::Render()
 									}
 									modelStack.Scale(1, 0.625, 1);
 									modelStack.Scale(0.5, 0.5, 0.5);
-									RenderMesh(meshList[GEO_SPHERE], true);
+									RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 									{
 										//forearm
 										modelStack.PushMatrix();
 										modelStack.Translate(2, -1.0, 0);
 										modelStack.Rotate(60, 0, 0, 1);
 										modelStack.Scale(1.1, 2.5, 1.1);
-										RenderMesh(meshList[GEO_SPHERE], true);
+										RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 										modelStack.PopMatrix();
 
 										//knuckle
@@ -1320,7 +1270,7 @@ void SceneMarinaBay::Render()
 										modelStack.Translate(3.7, -2.0, 0);
 										modelStack.Rotate(120, 0, 0, 1);
 										modelStack.Scale(0.8, 0.8, 0.8);
-										RenderMesh(meshList[GEO_SPHERE], true);
+										RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 										{
 											//hand
 											modelStack.PushMatrix();
@@ -1328,28 +1278,28 @@ void SceneMarinaBay::Render()
 											modelStack.Scale(2.5, 1, 2.5);
 											meshList[GEO_CUBE]->material.kAmbient.Set(0.921, 0.808, 0.616);
 											meshList[GEO_CUBE]->material.kDiffuse.Set(0.921, 0.808, 0.616);
-											RenderMesh(meshList[GEO_CUBE], true);
+											RenderMesh(meshList[GEO_CUBE], true, modelStack, viewStack, projectionStack, m_parameters);
 											{
 												//first finger
 												modelStack.PushMatrix();
 												modelStack.Translate(-.5, .0, 0);
 												modelStack.Rotate(90, 0, 0, 1);
 												modelStack.Scale(0.5, 0.5, 0.1);
-												RenderMesh(meshList[GEO_CYLINDER], true);
+												RenderMesh(meshList[GEO_CYLINDER], true, modelStack, viewStack, projectionStack, m_parameters);
 												modelStack.PopMatrix();
 
 												modelStack.PushMatrix();
 												modelStack.Translate(-.5, .0, 0.4);
 												modelStack.Rotate(90, 0, 0, 1);
 												modelStack.Scale(0.5, 0.5, 0.1);
-												RenderMesh(meshList[GEO_CYLINDER], true);
+												RenderMesh(meshList[GEO_CYLINDER], true, modelStack, viewStack, projectionStack, m_parameters);
 												modelStack.PopMatrix();
 
 												modelStack.PushMatrix();
 												modelStack.Translate(-.5, .0, -0.4);
 												modelStack.Rotate(90, 0, 0, 1);
 												modelStack.Scale(0.5, 0.5, 0.1);
-												RenderMesh(meshList[GEO_CYLINDER], true);
+												RenderMesh(meshList[GEO_CYLINDER], true, modelStack, viewStack, projectionStack, m_parameters);
 												modelStack.PopMatrix();
 											}
 											modelStack.PopMatrix();
@@ -1369,7 +1319,7 @@ void SceneMarinaBay::Render()
 								modelStack.Translate(idleNeck, idleNeck, idleNeck);
 							modelStack.Rotate(-73, 0, 0, 1);
 							modelStack.Scale(1., 3.5, 1.);
-							RenderMesh(meshList[GEO_FRUSTUM], true);
+							RenderMesh(meshList[GEO_FRUSTUM], true, modelStack, viewStack, projectionStack, m_parameters);
 							modelStack.PopMatrix();
 
 							//neck joint
@@ -1389,7 +1339,7 @@ void SceneMarinaBay::Render()
 							}
 							modelStack.Rotate(0, 0, 0, 1);
 							modelStack.Scale(.7, .7, .7);
-							RenderMesh(meshList[GEO_SPHERE], true);
+							RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 							{
 								//head
 								modelStack.PushMatrix();
@@ -1405,7 +1355,7 @@ void SceneMarinaBay::Render()
 										modelStack.Scale(0.1, 3.5, 0.1);
 										meshList[GEO_CYLINDER]->material.kAmbient.Set(0.53, 0.36, 0.24);
 										meshList[GEO_CYLINDER]->material.kDiffuse.Set(0.53, 0.36, 0.24);
-										RenderMesh(meshList[GEO_CYLINDER], true);
+										RenderMesh(meshList[GEO_CYLINDER], true, modelStack, viewStack, projectionStack, m_parameters);
 										{
 											//connecting cone/spear head depending
 											modelStack.PushMatrix();
@@ -1414,7 +1364,7 @@ void SceneMarinaBay::Render()
 											modelStack.Scale(1, 0.142, 1);
 											meshList[GEO_CONE]->material.kAmbient.Set(0.77, 0.78, 0.78);
 											meshList[GEO_CONE]->material.kDiffuse.Set(0.77, 0.78, 0.78);
-											RenderMesh(meshList[GEO_CONE], true);
+											RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);
 											modelStack.PopMatrix();
 										}
 										modelStack.PopMatrix();
@@ -1432,14 +1382,14 @@ void SceneMarinaBay::Render()
 										modelStack.Scale(1, 0.6, 0.8);
 										meshList[GEO_CUBE]->material.kAmbient.Set(0.835, 0.682, 0.529);
 										meshList[GEO_CUBE]->material.kDiffuse.Set(0.835, 0.682, 0.529);
-										RenderMesh(meshList[GEO_CUBE], true);
+										RenderMesh(meshList[GEO_CUBE], true, modelStack, viewStack, projectionStack, m_parameters);
 										{
 											//middle lower lip
 											modelStack.PushMatrix();
 											modelStack.Translate(1., -0.6, 0);
 											modelStack.Rotate(-20, 0, 0, 1);
 											modelStack.Scale(2.5, 0.15, 0.3);
-											RenderMesh(meshList[GEO_CUBE], true);
+											RenderMesh(meshList[GEO_CUBE], true, modelStack, viewStack, projectionStack, m_parameters);
 											{
 												//tongue
 												modelStack.PushMatrix();
@@ -1447,7 +1397,7 @@ void SceneMarinaBay::Render()
 												modelStack.Scale(0.2, 1, 1);
 												meshList[GEO_HEMISPHERE]->material.kAmbient.Set(0.380, 0.278, 0.314);
 												meshList[GEO_HEMISPHERE]->material.kDiffuse.Set(0.380, 0.278, 0.314);
-												RenderMesh(meshList[GEO_HEMISPHERE], true);
+												RenderMesh(meshList[GEO_HEMISPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 												modelStack.PopMatrix();
 
 												//lower teeth
@@ -1462,21 +1412,21 @@ void SceneMarinaBay::Render()
 													modelStack.Translate(0.1, 0.4, 0.9 * teeth);
 													modelStack.Scale(0.1, 0.1, 0.1);	//to make it really small
 													modelStack.Scale(0.5, 10, 1);
-													RenderMesh(meshList[GEO_CONE], true);	//back tooth
+													RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//back tooth
 													modelStack.PopMatrix();
 
 													modelStack.PushMatrix();
 													modelStack.Translate(0.15, 0.4, 0.8 * teeth);
 													modelStack.Scale(0.1, 0.1, 0.1);
 													modelStack.Scale(0.5, 5, 1);
-													RenderMesh(meshList[GEO_CONE], true);	//2nd back tooth
+													RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//2nd back tooth
 													modelStack.PopMatrix();
 
 													modelStack.PushMatrix();
 													modelStack.Translate(0.4, 0.4, 0.4 * teeth);
 													modelStack.Scale(0.1, 0.1, 0.1);
 													modelStack.Scale(0.5, 5, 1);
-													RenderMesh(meshList[GEO_CONE], true);	//front tooth
+													RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//front tooth
 													modelStack.PopMatrix();
 												}
 											}
@@ -1488,7 +1438,7 @@ void SceneMarinaBay::Render()
 											modelStack.Rotate(-20, 0, 0, 1);
 											modelStack.Rotate(10, 0, 1, 0);
 											modelStack.Scale(2.3, 0.15, 0.3);
-											RenderMesh(meshList[GEO_CUBE], true);
+											RenderMesh(meshList[GEO_CUBE], true, modelStack, viewStack, projectionStack, m_parameters);
 											modelStack.PopMatrix();
 
 											//right lower lip(?)
@@ -1497,7 +1447,7 @@ void SceneMarinaBay::Render()
 											modelStack.Rotate(-20, 0, 0, 1);
 											modelStack.Rotate(-10, 0, 1, 0);
 											modelStack.Scale(2.3, 0.15, 0.3);
-											RenderMesh(meshList[GEO_CUBE], true);
+											RenderMesh(meshList[GEO_CUBE], true, modelStack, viewStack, projectionStack, m_parameters);
 											modelStack.PopMatrix();
 										}
 										modelStack.PopMatrix();
@@ -1514,7 +1464,7 @@ void SceneMarinaBay::Render()
 										modelStack.Rotate(-30, 0, 0, 1);
 										modelStack.Rotate(sides * 10, 0, 1, 0);
 										modelStack.Scale(1, 0.6, 0.4);
-										RenderMesh(meshList[GEO_CUBE], true);
+										RenderMesh(meshList[GEO_CUBE], true, modelStack, viewStack, projectionStack, m_parameters);
 										modelStack.PopMatrix();
 									}
 
@@ -1528,7 +1478,7 @@ void SceneMarinaBay::Render()
 										modelStack.Scale(1.3, 0.6, 1);
 										meshList[GEO_CUBE]->material.kAmbient.Set(0.886, 0.788, 0.569);	//making it the top shiny colour
 										meshList[GEO_CUBE]->material.kDiffuse.Set(0.886, 0.788, 0.569);
-										RenderMesh(meshList[GEO_CUBE], true);
+										RenderMesh(meshList[GEO_CUBE], true, modelStack, viewStack, projectionStack, m_parameters);
 										{
 											modelStack.PushMatrix();
 											modelStack.Scale(0.769, 1, 1);	//making everything smaller
@@ -1546,7 +1496,7 @@ void SceneMarinaBay::Render()
 													modelStack.Scale(0.15, 0.2, 0.15);
 													meshList[GEO_SPHERE]->material.kAmbient.Set(0.984, 0.827, 0.494);
 													meshList[GEO_SPHERE]->material.kDiffuse.Set(0.984, 0.827, 0.494);
-													RenderMesh(meshList[GEO_SPHERE], true);
+													RenderMesh(meshList[GEO_SPHERE], true, modelStack, viewStack, projectionStack, m_parameters);
 													modelStack.PopMatrix();
 												}
 
@@ -1554,7 +1504,7 @@ void SceneMarinaBay::Render()
 												modelStack.PushMatrix();
 												modelStack.Translate(1., -0.2, 0);
 												modelStack.Scale(2.7, 0.15, 0.4);
-												RenderMesh(meshList[GEO_CUBE], true);
+												RenderMesh(meshList[GEO_CUBE], true, modelStack, viewStack, projectionStack, m_parameters);
 
 												//upper teeth
 												{
@@ -1570,7 +1520,7 @@ void SceneMarinaBay::Render()
 														modelStack.Rotate(180, 1, 0, 0);
 														modelStack.Scale(0.1, 0.5, 0.1);
 														modelStack.Scale(0.5, 5, 2);
-														RenderMesh(meshList[GEO_CONE], true);	//front tooth
+														RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//front tooth
 														modelStack.PopMatrix();
 
 														modelStack.PushMatrix();
@@ -1578,7 +1528,7 @@ void SceneMarinaBay::Render()
 														modelStack.Rotate(180, 1, 0, 0);
 														modelStack.Scale(0.1, 0.5, 0.1);
 														modelStack.Scale(1, 7, 2);
-														RenderMesh(meshList[GEO_CONE], true);	//large back tooth
+														RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//large back tooth
 														modelStack.PopMatrix();
 
 														modelStack.PushMatrix();
@@ -1586,7 +1536,7 @@ void SceneMarinaBay::Render()
 														modelStack.Rotate(180, 1, 0, 0);
 														modelStack.Scale(0.1, 0.5, 0.1);
 														modelStack.Scale(0.7, 5, 2);
-														RenderMesh(meshList[GEO_CONE], true);	//back tooth
+														RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//back tooth
 														modelStack.PopMatrix();
 													}
 												}
@@ -1604,7 +1554,7 @@ void SceneMarinaBay::Render()
 														modelStack.Rotate(180, 1, 0, 0);
 														modelStack.Scale(0.1, 0.5, 0.1);
 														modelStack.Scale(0.5, 5, 1.15);
-														RenderMesh(meshList[GEO_CONE], true);	//front bottom spike
+														RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//front bottom spike
 														modelStack.PopMatrix();
 
 														modelStack.PushMatrix();
@@ -1612,7 +1562,7 @@ void SceneMarinaBay::Render()
 														modelStack.Rotate(180, 1, 0, 0);
 														modelStack.Scale(0.1, 0.5, 0.1);
 														modelStack.Scale(0.6, 5, 1.2);
-														RenderMesh(meshList[GEO_CONE], true);	//front mid bottom spike
+														RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//front mid bottom spike
 														modelStack.PopMatrix();
 
 														modelStack.PushMatrix();
@@ -1620,7 +1570,7 @@ void SceneMarinaBay::Render()
 														modelStack.Rotate(180, 1, 0, 0);
 														modelStack.Scale(0.1, 0.5, 0.1);
 														modelStack.Scale(0.6, 5, 1.25);
-														RenderMesh(meshList[GEO_CONE], true);	//back mid bottom spike
+														RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//back mid bottom spike
 														modelStack.PopMatrix();
 
 														modelStack.PushMatrix();
@@ -1628,7 +1578,7 @@ void SceneMarinaBay::Render()
 														modelStack.Rotate(180, 1, 0, 0);
 														modelStack.Scale(0.1, 0.5, 0.1);
 														modelStack.Scale(0.6, 5, 1.3);
-														RenderMesh(meshList[GEO_CONE], true);	//back bottom spike
+														RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//back bottom spike
 														modelStack.PopMatrix();
 
 														modelStack.PushMatrix();
@@ -1636,7 +1586,7 @@ void SceneMarinaBay::Render()
 														modelStack.Rotate(90, 0, 0, 1);
 														modelStack.Scale(0.1, 0.5, 0.1);
 														modelStack.Scale(8, 0.5, 3);
-														RenderMesh(meshList[GEO_CONE], true);	//bottom back spike
+														RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//bottom back spike
 														modelStack.PopMatrix();
 
 														modelStack.PushMatrix();
@@ -1644,7 +1594,7 @@ void SceneMarinaBay::Render()
 														modelStack.Rotate(90, 0, 0, 1);
 														modelStack.Scale(0.1, 0.5, 0.1);
 														modelStack.Scale(15, 1.1, 5);
-														RenderMesh(meshList[GEO_CONE], true);	//top back spike
+														RenderMesh(meshList[GEO_CONE], true, modelStack, viewStack, projectionStack, m_parameters);	//top back spike
 														modelStack.PopMatrix();
 													}
 												}
@@ -1661,7 +1611,7 @@ void SceneMarinaBay::Render()
 													modelStack.Translate(0.8, -0.2, sides * 0.31);
 													modelStack.Rotate(sides * 10, 0, 1, 0);
 													modelStack.Scale(2.7, 0.15, 0.4);
-													RenderMesh(meshList[GEO_CUBE], true);
+													RenderMesh(meshList[GEO_CUBE], true, modelStack, viewStack, projectionStack, m_parameters);
 													modelStack.PopMatrix();
 												}
 											}
@@ -1670,7 +1620,7 @@ void SceneMarinaBay::Render()
 											modelStack.PushMatrix();
 											modelStack.Translate(1.4, 0.15, 0);
 											modelStack.Scale(1.8, 0.6, 0.35);
-											RenderMesh(meshList[GEO_SLOPE], true);
+											RenderMesh(meshList[GEO_SLOPE], true, modelStack, viewStack, projectionStack, m_parameters);
 											modelStack.PopMatrix();
 
 											//sides of sloped part of face
@@ -1687,9 +1637,9 @@ void SceneMarinaBay::Render()
 												modelStack.Rotate(sides * -35, 1, 0, 0);
 												modelStack.Scale(1.8, 0.7, 1);
 												if (i == 0)
-													RenderMesh(meshList[GEO_TRIANGLEBACK], true);
+													RenderMesh(meshList[GEO_TRIANGLEBACK], true, modelStack, viewStack, projectionStack, m_parameters);
 												else
-													RenderMesh(meshList[GEO_TRIANGLE], true);
+													RenderMesh(meshList[GEO_TRIANGLE], true, modelStack, viewStack, projectionStack, m_parameters);
 												modelStack.PopMatrix();
 											}
 											modelStack.PopMatrix();
@@ -1708,7 +1658,7 @@ void SceneMarinaBay::Render()
 										modelStack.Rotate(-35, 0, 0, 1);
 										modelStack.Rotate(sides * 10, 0, 1, 0);
 										modelStack.Scale(1.3, 0.6, 0.6);
-										RenderMesh(meshList[GEO_CUBE], true);
+										RenderMesh(meshList[GEO_CUBE], true, modelStack, viewStack, projectionStack, m_parameters);
 										modelStack.PopMatrix();
 									}
 								}
@@ -1729,18 +1679,9 @@ void SceneMarinaBay::Render()
 					modelStack.Translate(23, 1, 0);
 					modelStack.Rotate(45, 0, 1, 0);
 					modelStack.Scale(enemyAttackScale, enemyAttackScale, enemyAttackScale);
-					RenderMesh(meshList[GEO_CRESCENT], false);
+					RenderMesh(meshList[GEO_CRESCENT], false, modelStack, viewStack, projectionStack, m_parameters);
 					modelStack.PopMatrix();
 				}
-				//circle for his position
-				/*else if (finale == true)
-				{
-					modelStack.PushMatrix();
-					modelStack.Translate(camera.position.x, 1, camera.position.z);
-					modelStack.Scale(4, 1, 4);
-					RenderMesh(meshList[GEO_CIRCLE], false);
-					modelStack.PopMatrix();
-				}*/
 			}
 			modelStack.PopMatrix();
 		}
@@ -1753,7 +1694,7 @@ void SceneMarinaBay::Render()
 			modelStack.PushMatrix();
 			modelStack.Translate((*it)->getposition().x + x, (*it)->getposition().y + (*it)->getheight() * 0.5, (*it)->getposition().z + z);
 			modelStack.Scale((*it)->getxwidth(), (*it)->getheight(), (*it)->getzwidth());
-			RenderMesh(meshList[GEO_CUBE], false);
+			RenderMesh(meshList[GEO_CUBE], false, modelStack, viewStack, projectionStack, m_parameters);
 			modelStack.PopMatrix();
 		}
 	}
@@ -1762,31 +1703,40 @@ void SceneMarinaBay::Render()
 	if (fight && !attackSelected)
 	{
 		//enemy
-		RenderTextOnScreen(meshList[GEO_TEXT], "Evil Guy", Color(0, 1, 0), 5, 0, 55);
-		RenderMeshOnScreen(meshList[GEO_HEALTH], 10, 53, 20, 2);
-		RenderMeshOnScreen(meshList[GEO_LOSTHEALTH], enemyHealthPos, 53, enemyHealth, 2);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Evil Guy", Color(0, 1, 0), 5, 0, 55, modelStack, viewStack, projectionStack, m_parameters);
+		RenderMeshOnScreen(meshList[GEO_HEALTH], 10, 53, 20, 2, modelStack, viewStack, projectionStack, m_parameters);
+		RenderMeshOnScreen(meshList[GEO_LOSTHEALTH], enemyHealthPos, 53, enemyHealth, 2, modelStack, viewStack, projectionStack, m_parameters);
 		//MC
-		RenderTextOnScreen(meshList[GEO_TEXT], "You", Color(0, 1, 0), 5, 72, 55);
-		RenderMeshOnScreen(meshList[GEO_HEALTH], 70, 53, 20, 2);
-		RenderMeshOnScreen(meshList[GEO_LOSTHEALTH], playerHealthPos, 53, playerHealth, 2);
+		RenderTextOnScreen(meshList[GEO_TEXT], "You", Color(0, 1, 0), 5, 72, 55, modelStack, viewStack, projectionStack, m_parameters);
+		RenderMeshOnScreen(meshList[GEO_HEALTH], 70, 53, 20, 2, modelStack, viewStack, projectionStack, m_parameters);
+		RenderMeshOnScreen(meshList[GEO_LOSTHEALTH], playerHealthPos, 53, playerHealth, 2, modelStack, viewStack, projectionStack, m_parameters);
 		if (playerTurn)
 		{
 			//fighting layout
-			RenderMeshOnScreen(meshList[GEO_LAYOUT], 40, 15, 80, 30);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Attack", Color(0, 0, 0), 4, 4, 11);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Items", Color(0, 0, 0), 4, 4, 6);
-			RenderTextOnScreen(meshList[GEO_TEXT], "Run", Color(0, 0, 0), 4, 4, 1);
-			RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(0, 0, 0), 4, pointerX, pointerY);
-			if (fightSelected)	//not too sure how to make it automatic with attacks enum and based on size of attacksunlocked yet 
-			{
-				RenderTextOnScreen(meshList[GEO_TEXT], "Big", Color(0, 0, 0), 4, 25, 9.5);	//attack1
-				RenderTextOnScreen(meshList[GEO_TEXT], "Rocket Punch", Color(0, 0, 0), 4, 25, 2.5);	//attack2
-				RenderTextOnScreen(meshList[GEO_TEXT], "Mind Powers", Color(0, 0, 0), 4, 55, 9.5);	//attack2
+			RenderMeshOnScreen(meshList[GEO_LAYOUT], 40, 15, 80, 30, modelStack, viewStack, projectionStack, m_parameters);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Attack", Color(0, 0, 0), 4, 4, 11, modelStack, viewStack, projectionStack, m_parameters);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Items", Color(0, 0, 0), 4, 4, 6, modelStack, viewStack, projectionStack, m_parameters);
+			RenderTextOnScreen(meshList[GEO_TEXT], "Run", Color(0, 0, 0), 4, 4, 1, modelStack, viewStack, projectionStack, m_parameters);
+			RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(0, 0, 0), 4, pointerX, pointerY, modelStack, viewStack, projectionStack, m_parameters);
+			if (fightSelected)	
+			{	
+				string attack1 = EnumToStr(attacksList[0]);
+				RenderTextOnScreen(meshList[GEO_TEXT], attack1, Color(0, 0, 0), 4, 25, 9.5, modelStack, viewStack, projectionStack, m_parameters);
+				if (attacksList.size() > 1)	//checks if theres 2 attacks in the vector
+				{
+					string attack2 = EnumToStr(attacksList[1]);
+					RenderTextOnScreen(meshList[GEO_TEXT], attack2, Color(0, 0, 0), 4, 25, 2.5, modelStack, viewStack, projectionStack, m_parameters);
+				}
+				if (attacksList.size() > 2)	//check for 3 attacks in vector
+				{
+					string attack3 = EnumToStr(attacksList[2]);
+					RenderTextOnScreen(meshList[GEO_TEXT], attack3, Color(0, 0, 0), 4, 55, 9.5, modelStack, viewStack, projectionStack, m_parameters);
+				}
 			}
 			else if (itemsSelected)
 			{
-				RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder3", Color(0, 0, 0), 4, 25, 8);
-				RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder4", Color(0, 0, 0), 4, 25, 8);
+				RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder3", Color(0, 0, 0), 4, 25, 8, modelStack, viewStack, projectionStack, m_parameters);
+				RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder4", Color(0, 0, 0), 4, 25, 8, modelStack, viewStack, projectionStack, m_parameters);
 			}
 		}
 		/*for (auto it = buttonList.begin(); it != buttonList.end(); ++it)
@@ -1809,6 +1759,39 @@ void SceneMarinaBay::Render()
 	else if (!fight)
 	{
 		Scene::RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
+	}
+
+
+	if (firstEnter && camera.position.z >= posZ)
+	{
+		RenderNPCDialogue("So, you chased me all the way here. If you really think you can take me, then step forward but be prepared I'm not going to go down easy", "???", modelStack, viewStack, projectionStack, m_parameters);
+	}
+	else if (fightLost)
+	{
+		if (attacksList.size() < 3)
+			RenderNPCDialogue("More attacks can be gained from the previous section. Also, a 2-on-1 makes it hard to run.", "Tips", modelStack, viewStack, projectionStack, m_parameters);
+		else
+			RenderNPCDialogue("A 2-on-1 makes it quite hard to run.", "Tips", modelStack, viewStack, projectionStack, m_parameters);
+	}
+	else if (triedToRun)
+		RenderNPCDialogue("Nice try.", "Robber", modelStack, viewStack, projectionStack, m_parameters);
+
+	if (fightIntro)
+		RenderMinigameIntro("This game is a turn-based gamemode, if your healthbar turns all red you'll lose. Similarly, if your opponent's bar turns all red they'll lose. You have access to a few options on the bottom of the screen that can be done in a turn, just click on the buttons and they will either show more actions or do an action that ends your turn.", "Turn-based fight", 4, modelStack, viewStack, projectionStack, m_parameters);
+	//else if (talkIntro)
+
+}
+
+string SceneMarinaBay::EnumToStr(ATTACK enumToConvert)	//function to convert enums from ATTACK to string
+{
+	switch (enumToConvert)
+	{
+	case (BIG):
+		return "BIG";
+	case (ROCKET_PUNCH):
+		return "ROCKET PUNCH";
+	case (MIND_POWERS):
+		return "MIND POWERS";
 	}
 }
 

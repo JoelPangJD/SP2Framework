@@ -1,17 +1,17 @@
 # Blender MTL File: 'None'
 # Material Count: 5
 
-newmtl asphalt.002
+newmtl asphalt
 Kd 0.431373 0.454902 0.529412
 
-newmtl asphaltEdge.002
+newmtl asphaltEdge
 Kd 0.321569 0.337255 0.396078
 
-newmtl line.002
+newmtl line
 Kd 0.549020 0.576471 0.678431
 
-newmtl pavement.004
+newmtl pavement
 Kd 0.756863 0.756863 0.800000
 
-newmtl pavement.005
+newmtl pavement.001
 Kd 0.756863 0.756863 0.800000

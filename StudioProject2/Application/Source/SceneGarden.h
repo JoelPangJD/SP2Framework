@@ -55,6 +55,8 @@ class SceneGarden : public Scene
 		GEO_GAZEBO,
 		GEO_TREE1,
 		GEO_TREE2,
+		GEO_LILY1,
+		GEO_LILY2,
 		NUM_GEOMETRY,
 
 	};
@@ -127,6 +129,10 @@ public:
 	double cursorx = 0, cursory = 0;
 	float playerx = 40, playery = 30;
 	float objectivex, objectivey;
+	float obstaclex[8] = { 50.f,30.f,60.f,20.f,40.f,40.f,-1.f,81.f };
+	float obstacley[8] = { 45.f,45.f,20.f,15.f,61.f,-1.f,30.f,30.f };
+	float obstaclewidth[8] = { 2.f,20.f,20.f,2.f,80.f,80.f,1.f,1.f };
+	float obstacleheight[8] = { 15.f,2.f,2.f,15.f,1.f,1.f,60.f,60.f };
 
 	SceneGarden();
 	SceneGarden(Inventory* inventory);
@@ -146,13 +152,6 @@ private:
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];	
 	Material materialList[M_TOTAL];
-
-	//Variables for text
-	//std::ostringstream interacttext;
-	//bool indialogue;
-	//vector<string> dialogue;
-	//vector<string>::iterator currentline;
-	//string name;
 
 	float movex = 0, movez = 0;
 	float scale = 1;

@@ -68,6 +68,12 @@ private:
 	};
 
 	bool riddleStarted = false, riddleSolved = false;	//only for MarinaBay because I can't think of a better method
+
+protected: //for SceneMuseum 
+	bool place1 = false;
+	bool place2 = false;
+	bool place3 = false;
+
 public:
 	Scene();
 	~Scene() {}
@@ -84,20 +90,27 @@ public:
 	//Variables for text
 	std::ostringstream interacttext;
 	bool indialogue = false;
-	bool ininventory = false;
+	bool CantUse = true;
 	vector<string> dialogue;
 	vector<string>::iterator currentline;
 	string name;
+
+	//For scene museum
+	bool EndGame1 = false;
+	bool Preview = false;
+	bool ShowAnswer = false;
+	bool FoundAnswer = false;
+	bool ToExit = false;
 
 	void RenderMesh(Mesh* mesh, bool enableLight, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
 	void RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
 	void RenderText(Mesh* mesh, std::string text, Color color, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
-	void RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int sizey, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
+	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
 	void RenderNPCDialogue(std::string NPCText, std::string headerText, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
 	void RenderMinigameIntro(std::string MinigamedescriptionText, std::string MinigamenameText, float fontsize, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]); // pass minigame name, description and description font size, try fontsize 6 
 	void movement(Camera3 &camera, vector<Terrain*> terrains, double dt);
-	string interact(Camera3 camera, vector<InteractableObject*>& items, bool MarinaBay = false);	//bool is just so that the other scenes don't waste time checking
+	string interact(Camera3 &camera, vector<InteractableObject*>& items, bool MarinaBay = false);	//bool is just so that the other scenes don't waste time checking
 	//returns a string to trigger scene specific actions
 };
 
