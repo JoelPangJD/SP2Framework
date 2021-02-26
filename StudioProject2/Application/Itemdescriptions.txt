@@ -10,6 +10,7 @@ teacher|1Andy told me to talk to him, maybe i should...
 flag|1It's a Singapore flag, its looks so bright.
 key|1It's a key, it seems like it is close to 100 years old
 box|1It's a box, a box in a museum?
+exit|1I think i have to hold the button to exit the museum
 rickshaw|1It's a 1940's rickshaw, heard from my grandpa he used to transport people with this
 elephant|1It's an elephant.|1I heard in the early 1990, some national servicemen spotted 3 elephants in Pulau Tekong, hence the autorities tried to relocate the elephants to Johor Bahru.|1However they attempted many times as the Elephants were reluctant to relocate from Pulau Tekong.|1 In the end, the elephant got relocated in Johor Bahru and the autorities got praised by their actions.
 yarn|1For a ball of yarn that doesn't look very soft|1On closer inspection that looks more like fishing line

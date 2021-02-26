@@ -292,14 +292,15 @@ void SceneMuseum::Init()
 	terrains.push_back(new Terrain(Vector3(371.538, 0, 62.02704), 0, 22, 10, 3, 20, "Wall"));
 	terrains.push_back(new Terrain(Vector3(261.7488, 0, -205.3159), 0, 22, 10, 218.204, 3, "Wall"));
 	//Door hitbox 
-	terrains.push_back(new Terrain(Vector3(-272.215, 0, 73.66698), 0, 22, 10, 218.204, 3, "Door")); //+19
+	terrains.push_back(new Terrain(Vector3(-272.215, 0, 73.66698), 0, 22, 10, 218.204, 3, "door")); //+19
 	//DECORATION HITBOX
 	terrains.push_back(new Terrain(Vector3(90.2891, 20, -205.542), 0, 22, 10, 228.204, 3, "Elephant hitbox"));
 	terrains.push_back(new Terrain(Vector3(97.15, 0, 163.717), 0, 22, 10, 218.204, 3, "Rickshaw hitbox"));
 
 	//Items vector
 	items.push_back(new InteractableObject(Vector3(-210.785, 16.0715, 78.3848), 0, 0, 30, "preview", "preview for game2", false));
-	items.push_back(new InteractableObject(Vector3(-283.869, 16.0715, 95.1478), 0, 0, 20, "answer", "to answer", false));
+	items.push_back(new InteractableObject(Vector3(-283.869, 16.0715, 95.1478), 0, 0, 30, "answer", "to answer", false));
+	items.push_back(new InteractableObject(Vector3(-265.813, 23, -87.885), 0, 0, 30, "exit", "Exit", false));
 	items.push_back(new InteractableObject(Vector3(-104.012, 0, 5.04312), 0, 5, 20, "box", "boxy", true));
 	items.push_back(new InteractableObject(Vector3(12.7309, 0, 5.72924), 0, 0.75, 20, "andy", "Andy", false));
 	items.push_back(new InteractableObject(Vector3(268.052, 0, -108.232), 0, 5, 20, "before gathering item", "Mr tang", false));
@@ -318,18 +319,18 @@ void SceneMuseum::Init()
 	meshList[GEO_GROUND] = MeshBuilder::GenerateQuad("ground", Color(1, 1, 1), 1.0f);
 	meshList[GEO_GROUND]->textureID = LoadTGA("Image//Museum//wood.tga");
 
-	//Button for exit museum
-	button.positionX = 40.7;
-	button.positionY = 34.4;
-	button.width = 10.8;
-	button.height = 18.5;
+	//Button for game 1
+	button.positionX = 44.7;
+	button.positionY = 43;
+	button.width = 9.3;
+	button.height = 16;
 	button.active = true;
 	button.hold = false;
 
 
 
-
-	button2.positionX = 58.9;
+	//Button for exit museum
+	button2.positionX = 58.7;
 	button2.positionY = 0.5;
 	button2.width = 17.9;
 	button2.height = 17.4;
@@ -368,32 +369,54 @@ void SceneMuseum::Update(double dt)
 		TranslateFlagDirectional *= -1; // changes direction
 	}
 
-	if (ShowPreview == false || CorrectAnswer == true)
+	if (Preview == false || FoundAnswer == true)
 	{
 		Application::enableMouse = false;
 		movement(camera, terrains, dt);
 		//interact(camera, items);
 
 	}
+	//for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+	//{
+	//	if ((*it)->gettype() == "exit")
+	//	{
+	//		if (Application::IsKeyPressed('Q'))
+	//		{
+	//			ToExit = true;
+	//		}
+	//	}
+	//}
+
 	if (MousePreview == true)
 	{
-		if (EndGame1 == false)
+		if (EndGame1 == false) //Button for the First Game
 		{
 			button.updateButton();
+			Application::enableMouse = true;
 			if (button.clickedOn)
 			{
 				Application::enableMouse = false;
-				CorrectAnswer = true;
-				terrains.erase(terrains.begin() + 19);
+				FoundAnswer = true;
+				for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
+				{
+					if ((*it)->gettype() == "door")
+					{
+						terrains.erase(it);
+						break;
+					}
+				}
+				//terrains.erase(terrains.begin() + 19);
 				ShowFirstGame = false;
 				Continue = true;
-				indialogue = false;
+				//indialogue = false;
 				std::cout << "Hit!" << std::endl;
 			}
 		}
-		if (EndGame2 == false && EndGame1 == true)
+		else if(ToExit)
 		{
 			button2.updateButton();
+			Application::enableMouse = true;
+			std::cout << "Hit!" << std::endl;
 			if (button2.hold)
 			{
 				AddSize += 10 * dt;
@@ -403,8 +426,12 @@ void SceneMuseum::Update(double dt)
 
 				if (MoveX > 36.9 && AddSize > 73)
 				{
+					AddSize = 0;
+					MoveX = 0;
+					Application::enableMouse = false;
 					StartTheHoldingGame = false;
 					MousePreview = false;
+					ToExit = false;
 					Application::SwitchScene = 0;
 				}
 			}
@@ -897,126 +924,167 @@ void SceneMuseum::RenderWalls()
 	modelStack.PopMatrix();
 }
 
+//void SceneMuseum::StartGame1()
+//{
+//	if (EndGame1 == false)
+//	{
+//		if (camera.position.x < -192.129 && camera.position.x > -225 && camera.position.z > 90 && camera.position.z < 100)
+//		{
+//			//std::cout << "YOURE HERE" << std::endl;
+//			RenderInteractableText();
+//			RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
+//			if (Application::IsKeyPressed('T'))
+//			{
+//				ShowPreview = true;
+//				MousePreview = true;
+//			}
+//			if (ShowPreview == true && Application::IsKeyPressed('R'))
+//			{
+//				ShowPreview = false;
+//				MousePreview = true;
+//				indialogue = false;
+//			}
+//			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+//			{
+//				if ((*it)->spherecollider(camera.target))
+//				{
+//					int interacttype = (*it)->interact();
+//					if (interacttext.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
+//					{
+//						if (interacttype == 1 || ShowPreview == true)// 1 is look at
+//						{
+//							GameCam1 = camera;
+//							RenderingText = true;
+//							Application::enableMouse = true;
+//							//Goes to some orange background to view image
+//							camera.Init(Vector3(-270.713, 10, 100), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
+//							RenderMeshOnScreen(meshList[GEO_MINIPIC1], 70, 25, 80, 70);
+//
+//							dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
+//							currentline = dialogue.begin(); //Currentline is set at the look at description
+//							indialogue = true;//Set state to in dialogue
+//						}
+//						if ((*it)->gettype() == "preview")
+//						{
+//							interacttext << "Preview";
+//							break;
+//						}
+//					}
+//				}
+//			}
+//		}
+//		if (camera.position.x < -262 && camera.position.x > -280 && camera.position.z > 90 && camera.position.z < 116)
+//		{
+//			//std::cout << "YOURE HERE" << std::endl;
+//			RenderInteractableText();
+//			if (Application::IsKeyPressed('T') && ShowPreview == false)
+//			{
+//				ShowFirstGame = true;
+//				MousePreview = true;
+//				GameTisPressed = true;
+//			}
+//			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+//			{
+//				if ((*it)->spherecollider(camera.target))
+//				{
+//					int interacttype = (*it)->interact();
+//					if (interacttext.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
+//					{
+//						if (interacttype == 1 || ShowFirstGame == true)// 
+//						{
+//							GameCam1 = camera;
+//							RenderingText = true;
+//							Application::enableMouse = true;
+//							//Goes to some orange background to view image
+//							camera.Init(Vector3(-270.713, 10, 100), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
+//							RenderMeshOnScreen(meshList[GEO_SELECTION], 70, 25, 80, 70);
+//
+//							dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
+//							currentline = dialogue.begin(); //Currentline is set at the look at description
+//							indialogue = true;//Set state to in dialogue
+//						}
+//						if ((*it)->gettype() == "answer")
+//						{
+//							interacttext << "Answer";
+//							break;
+//						}
+//					}
+//				}
+//			}
+//		}
+//
+//		if (ShowPreview == true)
+//		{
+//			GameCam1 = camera;
+//			RenderingText = true;
+//			Application::enableMouse = true;
+//			//Goes to some orange background to view image
+//			camera.Init(Vector3(-220.713, 10, 95), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
+//			RenderMeshOnScreen(meshList[GEO_MINIPIC1], 40, 30, 20, 10);
+//		}
+//
+//		if (Continue == true)
+//		{
+//			MousePreview = false;
+//			EndGame1 = true;
+//			items.erase(items.begin());
+//			items.erase(items.begin());
+//			/*-210.785, 16.0715, 75.3848
+//			- 283.869, 16.0715, 95.1478*/
+//		}
+//		//if (ShowFirstGame == true)
+//		//{
+//		//	GameCam1 = camera;
+//		//	RenderingText = true;
+//		//	Application::enableMouse = true;
+//		//	//Goes to some orange background to view image
+//		//	camera.Init(Vector3(-270.713, 10, 100), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
+//		//	RenderMeshOnScreen(meshList[GEO_SELECTION], 70, 25, 80, 70);
+//		//}
+//		RenderGame1UI();
+//	}
+//
+//}
+
 void SceneMuseum::StartGame1()
 {
-	if (EndGame1 == false)
+	if (!EndGame1)
 	{
-		if (camera.position.x < -192.129 && camera.position.x > -225 && camera.position.z > 90 && camera.position.z < 100)
+		RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
+		interact(camera, items);
+		if (Preview)
 		{
-			//std::cout << "YOURE HERE" << std::endl;
-			RenderInteractableText();
-			if (Application::IsKeyPressed('T'))
-			{
-				ShowPreview = true;
-				MousePreview = true;
-			}
-			if (ShowPreview == true && Application::IsKeyPressed('R'))
-			{
-				ShowPreview = false;
-				MousePreview = true;
-				indialogue = false;
-			}
-			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
-			{
-				if ((*it)->spherecollider(camera.target))
-				{
-					int interacttype = (*it)->interact();
-					if (interacttext.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
-					{
-						if (interacttype == 1 || ShowPreview == true)// 1 is look at
-						{
-							GameCam1 = camera;
-							RenderingText = true;
-							Application::enableMouse = true;
-							//Goes to some orange background to view image
-							camera.Init(Vector3(-270.713, 10, 100), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
-							RenderMeshOnScreen(meshList[GEO_MINIPIC1], 70, 25, 80, 70);
-
-							dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
-							currentline = dialogue.begin(); //Currentline is set at the look at description
-							indialogue = true;//Set state to in dialogue
-						}
-						if ((*it)->gettype() == "preview")
-						{
-							interacttext << "Preview";
-							break;
-						}
-					}
-				}
-			}
-		}
-		if (camera.position.x < -262 && camera.position.x > -280 && camera.position.z > 90 && camera.position.z < 116)
-		{
-			//std::cout << "YOURE HERE" << std::endl;
-			RenderInteractableText();
-			if (Application::IsKeyPressed('T') && ShowPreview == false)
-			{
-				ShowFirstGame = true;
-				MousePreview = true;
-				GameTisPressed = true;
-			}
-			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
-			{
-				if ((*it)->spherecollider(camera.target))
-				{
-					int interacttype = (*it)->interact();
-					if (interacttext.str() == ""); //If there's nothing object the highlighted for interactions, add it in 
-					{
-						if (interacttype == 1 || ShowFirstGame == true)// 1 is look at
-						{
-							GameCam1 = camera;
-							RenderingText = true;
-							Application::enableMouse = true;
-							//Goes to some orange background to view image
-							camera.Init(Vector3(-270.713, 10, 100), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
-							RenderMeshOnScreen(meshList[GEO_SELECTION], 70, 25, 80, 70);
-
-							dialogue = (*it)->lookat; //Set the dialogue vector to that of the current object
-							currentline = dialogue.begin(); //Currentline is set at the look at description
-							indialogue = true;//Set state to in dialogue
-						}
-						if ((*it)->gettype() == "answer")
-						{
-							interacttext << "Answer";
-							break;
-						}
-					}
-				}
-			}
-		}
-
-		if (ShowPreview == true)
-		{
-			GameCam1 = camera;
-			RenderingText = true;
-			Application::enableMouse = true;
-			//Goes to some orange background to view image
+			RenderMeshOnScreen(meshList[GEO_MINIPIC1], 50, 40, 30, 30);
 			camera.Init(Vector3(-220.713, 10, 95), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
-			RenderMeshOnScreen(meshList[GEO_MINIPIC1], 40, 30, 20, 10);
 		}
-
-		if (Continue == true)
+		else if (ShowAnswer)
+		{
+			MousePreview = true;
+			RenderMeshOnScreen(meshList[GEO_SELECTION], 70, 35, 70, 60);
+			camera.Init(Vector3(-220.713, 10, 95), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
+		}
+		else if (FoundAnswer)
 		{
 			MousePreview = false;
+			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); ++it)
+			{
+				std::cout << (*it)->gettype() << std::endl;
+				if ((*it)->gettype() == "preview")
+				{
+					items.erase(it);
+					it = items.begin();
+				}
+				if ((*it)->gettype() == "answer")
+				{
+					items.erase(it);
+					break;
+				}
+			}
 			EndGame1 = true;
-			items.erase(items.begin());
-			items.erase(items.begin());
-			/*-210.785, 16.0715, 75.3848
-			- 283.869, 16.0715, 95.1478*/
 		}
-		//if (ShowFirstGame == true)
-		//{
-		//	GameCam1 = camera;
-		//	RenderingText = true;
-		//	Application::enableMouse = true;
-		//	//Goes to some orange background to view image
-		//	camera.Init(Vector3(-270.713, 10, 100), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
-		//	RenderMeshOnScreen(meshList[GEO_SELECTION], 70, 25, 80, 70);
-		//}
-		RenderGame1UI();
 	}
-
 }
+
 
 void SceneMuseum::StartGame2()
 {
@@ -1034,33 +1102,49 @@ void SceneMuseum::StartGame2()
 
 void SceneMuseum::ExitMuseum()
 {
-	if (camera.position.x < -258 && camera.position.x > -267 && camera.position.z < -24.3 && camera.position.z > -83)
+	RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
+	interact(camera, items);
+	if (ToExit)
 	{
-		RenderInteractableText();
-		StartExit();
+		MousePreview = true;
+		GameCam1 = camera;
+		//Application::enableMouse = true;
+		//Goes to some orange background to view image
+		camera.Init(Vector3(-260, 10, 10), Vector3(220.717, 5, 241.881), Vector3(0, 1, 0));
+		RenderMeshOnScreen(meshList[GEO_PIC], 40, 30, 80, 65);
+		RenderMeshOnScreen(meshList[GEO_BOX], 4 + MoveX, 29, 3 + AddSize, 8.9);
 	}
-
 }
 
-void SceneMuseum::StartExit()
-{
-	if (EndHoldingGame == false)
-	{
-		if (StartTheHoldingGame == true)
-		{
-			MousePreview = true;
-			Application::enableMouse = true;
-			GameCam1 = camera;
-			//Application::enableMouse = true;
-			//Goes to some orange background to view image
-			camera.Init(Vector3(-260, 10, 10), Vector3(220.717, 5, 241.881), Vector3(0, 1, 0));
-			RenderMeshOnScreen(meshList[GEO_PIC], 40, 30, 80, 65);
-			RenderMeshOnScreen(meshList[GEO_BOX], 4 + MoveX, 29, 3 + AddSize, 8.9);
-		}
-
-	}
-
-}
+//void SceneMuseum::ExitMuseum()
+//{
+//	if (camera.position.x < -258 && camera.position.x > -267 && camera.position.z < -24.3 && camera.position.z > -83)
+//	{
+//		RenderInteractableText();
+//		StartExit();
+//	}
+//
+//}
+//
+//void SceneMuseum::StartExit()
+//{
+//	if (EndHoldingGame == false)
+//	{
+//		if (StartTheHoldingGame == true)
+//		{
+//			MousePreview = true;
+//			Application::enableMouse = true;
+//			GameCam1 = camera;
+//			//Application::enableMouse = true;
+//			//Goes to some orange background to view image
+//			camera.Init(Vector3(-260, 10, 10), Vector3(220.717, 5, 241.881), Vector3(0, 1, 0));
+//			RenderMeshOnScreen(meshList[GEO_PIC], 40, 30, 80, 65);
+//			RenderMeshOnScreen(meshList[GEO_BOX], 4 + MoveX, 29, 3 + AddSize, 8.9);
+//		}
+//
+//	}
+//
+//}
 
 void SceneMuseum::RenderGame1UI()
 {
@@ -1396,7 +1480,7 @@ void SceneMuseum::Render()
 	RenderMesh(meshList[GEO_PIC], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
-	//For interactable items
+	//For interactable items Game 2
 	for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 	{
 		modelStack.PushMatrix();
@@ -1432,7 +1516,7 @@ void SceneMuseum::Render()
 
 	StartGame1();
 	StartGame2();
-	StartExit();
+	//StartExit();
 	ExitMuseum();
 }
 

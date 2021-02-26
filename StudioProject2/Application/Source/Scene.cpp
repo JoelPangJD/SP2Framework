@@ -1,5 +1,4 @@
 #include "Scene.h"
-#include "SceneMuseum.h"
 #include "GL\glew.h"
 #include "Application.h"
 #include "LoadTGA.h"
@@ -79,8 +78,10 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 			currentname = name;
 		dialoguetext = dialoguetext.substr(1);
 		RenderNPCDialogue(dialoguetext, currentname, modelStack, viewStack, projectionStack, m_parameters);
-		if (cooldown <= 0 && Application::IsKeyPressed('E')) //Cooldown added to prevent spamming to pass the dialogues too fast
+		if (cooldown <= 0 && Application::IsKeyPressed('E') || FoundAnswer) //Cooldown added to prevent spamming to pass the dialogues too fast
 		{
+			Preview = false;
+			ShowAnswer = false;
 			cooldown = 0.4f;
 			currentline++;
 			if (currentline == dialogue.end())
@@ -311,8 +312,12 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 		}
 		if ((*it)->spherecollider(camera.target) && !indialogue && !ininventory) // Checks if the target is within a radius of an item and not in a dialogue
 		{
-			if (Application::IsKeyPressed('Q')) //Q is use
+		    if (Application::IsKeyPressed('Q')) //Q is use
 			{
+				if ((*it)->gettype() == "exit")
+				{
+					ToExit = true;
+				}
 				if (!(inventory->getstorage().empty())) //For uses that rely on inventory, make sure the inventory is 
 				{
 					if ((*it)->gettype() == "cat" && inventory->getcurrentitem()->gettype() == "fish")//using fish on cat
@@ -332,8 +337,6 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 						CantUse = false;
 						return "Gardenminigame1";
 					}
-
-					//For scene museum, to place item
 					if ((*it)->gettype() == "place key" && inventory->getcurrentitem()->gettype() == "key")
 					{
 						CantUse = false;
@@ -392,7 +395,19 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 				name = (*it)->getname(); //Set the name of the npc the player talks to
 				indialogue = true;//Set state to in dialogue
 
-				///FOR SCENE MUSEUM
+				//////////////////////////////////////////FOR SCENE MUSEUM///////////////////////////////////////////////////////
+				if (EndGame1 == false)
+				{
+					if ((*it)->gettype() == "preview")
+					{
+						Preview = true;
+					}
+					if ((*it)->gettype() == "answer")
+					{
+						ShowAnswer = true;
+					}
+
+				}
 				if (place1 == true && place2 == true && place3 == true)
 				{
 					if ((*it)->gettype() == "before gathering item")
@@ -401,6 +416,7 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 						inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 1, 0, "changi pass", "Changi pass", true));
 					}
 				}
+				//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				if (MarinaBay == true)
 				{
 					//shortening dialogue to not show the full length when talked to

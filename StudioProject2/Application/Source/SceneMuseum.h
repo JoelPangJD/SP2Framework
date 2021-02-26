@@ -195,18 +195,18 @@ private:
 	bool CorrectAnswer = false;
 
 	//1st game
-	bool ShowPreview = false;
+	//bool ShowPreview = false;
 	bool ShowFirstGame = false;
 	void StartGame1();
-	bool EndGame1 = false;
+	//bool EndGame1 = false;
 	bool Continue = false;
 
 	//Exit Museum
-	void StartExit();
+	//void StartExit();
 	void ExitMuseum();
 	bool EndHoldingGame = false;
 	bool StartTheHoldingGame = false;
-	bool ToExit = false;
+
 
 	//2nd game
 	void StartGame2();

@@ -96,6 +96,13 @@ public:
 	vector<string>::iterator currentline;
 	string name;
 
+	//For scene museum
+	bool EndGame1 = false;
+	bool Preview = false;
+	bool ShowAnswer = false;
+	bool FoundAnswer = false;
+	bool ToExit = false;
+
 	void RenderMesh(Mesh* mesh, bool enableLight, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
 	void RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
 	void RenderText(Mesh* mesh, std::string text, Color color, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
