@@ -55,6 +55,8 @@ class SceneGarden : public Scene
 		GEO_GAZEBO,
 		GEO_TREE1,
 		GEO_TREE2,
+		GEO_LILY1,
+		GEO_LILY2,
 		NUM_GEOMETRY,
 
 	};

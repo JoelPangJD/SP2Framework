@@ -283,7 +283,7 @@ void Scene::movement(Camera3 &camera, vector<Terrain*> terrains, double dt)
 	}
 }
 
-string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool MarinaBay)
+string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool MarinaBay)
 {
 	if (Application::IsKeyPressed('Q') && !(inventory->getstorage().empty())) //Use an item in inventory if inventory not empty
 	{
@@ -310,10 +310,23 @@ string Scene::interact(Camera3 camera, vector<InteractableObject*>& items, bool 
 				//just returns if its at the end of the dialogue but I still can't think of a better way to do this
 				return "battleStart";
 		}
-		if ((*it)->spherecollider(camera.target) && !indialogue && !ininventory) // Checks if the target is within a radius of an item and not in a dialogue
+		if ((*it)->spherecollider(camera.target) && !indialogue) // Checks if the target is within a radius of an item and not in a dialogue
 		{
 		    if (Application::IsKeyPressed('Q')) //Q is use
 			{
+				if ((*it)->gettype() == "gardentocity")
+				{
+					camera.position = Vector3(-85, 5, 0);
+					Application::SwitchScene = 0;
+				}
+
+				else if ((*it)->gettype() == "citytomuseum")
+				{
+					//The position here is in the scene before swtiching such that the player will not overlap when they return to the same scene
+					camera.position = Vector3(0, 3, -10); //Change the camera position to somewhere that doesn't overlap to prevent constantly moving back and forth
+					return "frontofmuseum"; //For the other scene you can follow the garden to city example as there is no minigame to trigger before hand
+				}
+
 				if ((*it)->gettype() == "exit")
 				{
 					ToExit = true;

@@ -90,7 +90,6 @@ public:
 	//Variables for text
 	std::ostringstream interacttext;
 	bool indialogue = false;
-	bool ininventory = false;
 	bool CantUse = true;
 	vector<string> dialogue;
 	vector<string>::iterator currentline;
@@ -111,7 +110,7 @@ public:
 	void RenderNPCDialogue(std::string NPCText, std::string headerText, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
 	void RenderMinigameIntro(std::string MinigamedescriptionText, std::string MinigamenameText, float fontsize, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]); // pass minigame name, description and description font size, try fontsize 6 
 	void movement(Camera3 &camera, vector<Terrain*> terrains, double dt);
-	string interact(Camera3 camera, vector<InteractableObject*>& items, bool MarinaBay = false);	//bool is just so that the other scenes don't waste time checking
+	string interact(Camera3 &camera, vector<InteractableObject*>& items, bool MarinaBay = false);	//bool is just so that the other scenes don't waste time checking
 	//returns a string to trigger scene specific actions
 };
 

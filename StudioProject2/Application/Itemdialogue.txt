@@ -1,5 +1,6 @@
 stick|1Hello stick
 cat|1Hello cat|2Meow
+cat1|1Hello cat|2Meow
 pond|1Hello pond
 Mr.Sazz|1Good morning Mr.Sazz|2Oh hello there, have you finished the homework I gave you last week?|1Yes I have.
 Andy|1Yo! Andy.|2Yo whats up?|1Have you seen that new game released today? Wanna buy it together after school is over?|2Sure.
@@ -33,3 +34,5 @@ stairs|1Press [E] to board the plane. [I] to move forward, [J] to move left, [L]
 badguy|1I should make sure I have at least one attack before fighting him.
 badguy2|2So, you really think you can take me.|1Mr.Sazz?|2Ah, you must've meant my worthless brother. |2Anyways, I might not be as good as my brother in physical combat, but I have something even greater than the limits of a human. Try and keep my pet entertained for a few seconds could you?| 
 badguy3|2Back for more are you? 
+citytomuseum|1Hello museum
+gardentocity|1Hello path

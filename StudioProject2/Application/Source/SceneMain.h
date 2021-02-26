@@ -31,12 +31,11 @@ class SceneMain : public Scene
 		GEO_INVENTORY,
 		GEO_TEXT,
 		GEO_TREE,
-		GEO_ROADTILESTRAIGHT,
-		GEO_ROADSTRAIGHTBARRIER,
+		GEO_ROADSTRAIGHT,
 		GEO_ROADCROSS,
-		GEO_ROADCROSSBARRIER,
-		GEO_ROADCURVESTRAIGHT,
-		GEO_ROADCURVESTRAIGHTBARRIER,
+		GEO_ROADCURVESPLITRIGHT,
+		GEO_ROAD4WAY,
+		GEO_ROADJUNCTION,
 		GEO_MUSEUM,
 		GEO_MBS,
 		GEO_CHANGI,
@@ -127,7 +126,6 @@ private:
 	void RenderSkybox();
 
 	void RenderMinigame();
-	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 	void updateMinigame(double dt);
 
 	bool inDialogue;
