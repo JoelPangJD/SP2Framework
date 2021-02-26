@@ -314,26 +314,20 @@ void SceneMain::Update(double dt)
 			cooldown = 1.5;
 		}
 		else if (inFrontofChangi) {
-			/*if (Scene::inventory->getcurrentitem() != nullptr) {
-				locked = true;
-			}
-			else if (Scene::inventory->getcurrentitem()->getname() == "Changi Airport card place holder") {*/
+			if (Scene::inventory->checkinventory("Changi Airport card place holder")){
 				Application::SwitchScene = 2;
-			/*}
+			}
 			else {
 				locked = true;
-			}*/
+			}
 		}
 		else if (inFrontofMarina) {
-			/*if (Scene::inventory->getcurrentitem() != nullptr) {
-				locked = true;
-			}
-			else if (Scene::inventory->getcurrentitem()->getname() == "Marina Bay card place holder") {*/
+			if (Scene::inventory->checkinventory("Marina Bay ticket")) {
 				Application::SwitchScene = 3;
-			/*}
+			}
 			else {
 				locked = true;
-			}*/
+			}
 		}
 		else if (inFrontofGarden) {
 			Application::SwitchScene = 4;
@@ -730,7 +724,7 @@ void SceneMain::Render()
 
 	//condition checking
 	if (locked) {
-		RenderNPCDialogue("It seems that I do not have the item required to open this door", "Player Name");
+		RenderNPCDialogue("It seems that I do not have the item required to open this door.", "Player Name");
 		inDialogue = true;
 	}
 
