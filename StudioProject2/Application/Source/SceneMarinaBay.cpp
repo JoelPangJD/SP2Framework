@@ -22,9 +22,10 @@ void SceneMarinaBay::Init()
 	buttonList.push_back(new Button(0, 11, 20, 5.5, true));	//attack
 	buttonList.push_back(new Button(0, 5.5, 20, 5.5, true));	//items
 	buttonList.push_back(new Button(0, 0, 20, 5.5, true));	//run
-	buttonList.push_back(new Button(21, 8.25, 30, 8.25));	//attack1
-	buttonList.push_back(new Button(21, 0, 30, 8.25));	//attack2
-	buttonList.push_back(new Button(53, 8.25, 30, 8.25));	//attack3
+	//only these three because only 3 are used
+	buttonList.push_back(new Button(21, 8.25, 30, 8.25));	//top left button of right side
+	buttonList.push_back(new Button(21, 0, 30, 8.25));	//bottom left button of right side
+	buttonList.push_back(new Button(53, 8.25, 30, 8.25));	//top right button of right side
 
 	//======Initialising variables========
 	talkIntro = true;
@@ -46,6 +47,7 @@ void SceneMarinaBay::Init()
 	idleBreath = enemyAttackScale = 1;
 	idleHandsDir = idleBounceDir = idleMouthDir = idleBreathDir = idleNeckDir = idleHeadDir = 1;
 	moveBack = 71.f;
+	itemsList.push_back(POTION);
 	//======Matrix stack========
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
@@ -403,6 +405,7 @@ void SceneMarinaBay::Update(double dt)
 		hitboxshow = true;
 	else if (Application::IsKeyPressed('M'))
 		hitboxshow = false;
+	//not a debug key
 	else if (Application::IsKeyPressed('E'))
 	{
 		if (firstEnter && camera.position.z >= posZ)
@@ -498,8 +501,8 @@ void SceneMarinaBay::Update(double dt)
 				fightSelected = true;
 				//enables the buttons after fight is selected depending on what has been unlocked
 				for (unsigned int i = 0; i < attacksList.size(); ++i)
-				{
-					buttonList[i + A_ATTACK1]->active = true;
+				{	//making buttons active starting from top left 
+					buttonList[i + A_RUN + 1]->active = true;
 				}
 				break;
 			case (A_ITEMS):			//if no time will just get rid of
@@ -896,7 +899,7 @@ void SceneMarinaBay::Update(double dt)
 			inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Robot Arm", "Robot Arm", true));
 			punchAdded = true;
 		}
-		else if (!mindAdded && (*it)->gettype() == "orc3")	//adds mind swords attack
+		else if (!mindAdded && (*it)->gettype() == "orc2")	//adds mind swords attack
 		{
 			attacksList.push_back(MIND_POWERS);
 			mindAdded = true;
@@ -1048,7 +1051,7 @@ void SceneMarinaBay::Render()
 			RenderMesh(meshList[GEO_ROBOT], true, modelStack, viewStack, projectionStack, m_parameters);
 		else if ((*it)->gettype() == "girl" || (*it)->gettype() == "girl2")
 			RenderMesh(meshList[GEO_GIRL], true, modelStack, viewStack, projectionStack, m_parameters);
-		else if ((*it)->gettype() == "orc" || (*it)->gettype() == "orc2" || (*it)->gettype() == "orc3")
+		else if ((*it)->gettype() == "orc" || (*it)->gettype() == "orc2")
 			RenderMesh(meshList[GEO_ORC], true, modelStack, viewStack, projectionStack, m_parameters);
 		else if ((*it)->gettype() == "adventurer" || (*it)->gettype() == "adventurer2" || (*it)->gettype() == "adventurer3")
 			RenderMesh(meshList[GEO_ADVENTURER], true, modelStack, viewStack, projectionStack, m_parameters);
@@ -1817,6 +1820,19 @@ string SceneMarinaBay::EnumToStr(ATTACK enumToConvert)	//function to convert enu
 		return "ROCKET PUNCH";
 	case (MIND_POWERS):
 		return "MIND POWERS";
+	case (NO_ATTACK):
+		return "";
+	}
+}
+
+string SceneMarinaBay::EnumToStr(ITEMS enumToConvert)
+{
+	switch (enumToConvert)
+	{
+	case (POTION):
+		return "POTION";
+	case (NO_ITEM):
+		return "";
 	}
 }
 

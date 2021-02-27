@@ -135,6 +135,11 @@ class SceneMarinaBay : public Scene
 		MIND_POWERS,
 		NO_ATTACK,
 	};
+	enum ITEMS
+	{
+		POTION,
+		NO_ITEM,
+	};
 	enum ENEMY_ATTACKS
 	{
 		SPEAR,
@@ -169,6 +174,7 @@ private:
 
 	vector<Button*> buttonList;		//button list, button positions are the same as the action enums
 	vector<ATTACK> attacksList;		//players current attacksList 
+	vector<ITEMS> itemsList;		//players items list in fight
 	vector<Terrain*> terrains;		//terrain list
 	vector<InteractableObject*> items;	//objects/npcs list
 
@@ -202,6 +208,7 @@ private:
 	void RenderSkybox();
 	//function to convert enums from ATTACK to string
 	string EnumToStr(ATTACK enumToConvert);
+	string EnumToStr(ITEMS enumToConvert);
 };
 
 #endif
