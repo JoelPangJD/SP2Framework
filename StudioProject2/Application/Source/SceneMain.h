@@ -143,7 +143,6 @@ private:
 	void RenderMinigame();
 	void updateMinigame(double dt);
 
-	string name;
 	float cooldown;
 
 	float translateCarX, translateCarZ, rotateCarY;

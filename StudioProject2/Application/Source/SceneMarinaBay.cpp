@@ -28,7 +28,7 @@ void SceneMarinaBay::Init()
 	buttonList.push_back(new Button(53, 8.25, 30, 8.25));	//top right button of right side
 
 	//======Initialising variables========
-	talkIntro = true;
+	talkIntro = false;	//to change
 	pointerX = 2;
 	pointerY = 11;
 	enemyHealthPos = 20.f;
@@ -274,6 +274,7 @@ void SceneMarinaBay::Init()
 		meshList[GEO_WATER]->material.kAmbient.Set(0.3f, 0.3f, 0.3f);
 		meshList[GEO_TALLTREE] = MeshBuilder::GenerateOBJMTL("tree", "OBJ//Marina//big_tree.obj", "OBJ//Marina//big_tree.mtl");
 		meshList[GEO_CHAIR] = MeshBuilder::GenerateOBJMTL("chair", "OBJ//Marina//modifiedchair.obj", "OBJ//Marina//modifiedchair.mtl");
+		meshList[GEO_FOUNTAIN] = MeshBuilder::GenerateOBJMTL("fountain", "OBJ//Marina//fountain.obj", "OBJ//Marina//fountain.mtl");
 
 		//fight
 		meshList[GEO_LAYOUT] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
@@ -307,7 +308,8 @@ void SceneMarinaBay::Init()
 		}
 		terrains.push_back(new Terrain(Vector3(0, 0, 115), 0, 1, 10, 92, 140, "captain's space"));
 		terrains.push_back(new Terrain(Vector3(47, 0, 0), 0, 1, 10, 30, 320, "infinity pool"));
-		terrains.push_back(new Terrain(Vector3(27, 0, -70), 0, 1, 10, 20, 180, "infinity pool"));
+		terrains.push_back(new Terrain(Vector3(27, 0, -70), 0, 1, 10, 20, 180, "infinity poolside"));
+		terrains.push_back(new Terrain(Vector3(-22, 0, -64), 0, 1, 10, 32, 32, "fountain"));
 
 		//items/npcs
 		items.push_back(new InteractableObject(Vector3(-50, 5, -100), 90, 0.7, 7, "robot", "Robot", false));
@@ -315,8 +317,9 @@ void SceneMarinaBay::Init()
 		items.push_back(new InteractableObject(Vector3(0, 5, 300), 0, 0.7, 5, "badguy", "Thief", false));
 		items.push_back(new InteractableObject(Vector3(-30, 5, 44), 180, 0.7, 7, "adventurer", "Adventurer", false));
 		items.push_back(new InteractableObject(Vector3(15, 5, -70), 270, 0.7, 7, "orc", "Orc", false));
-		items.push_back(new InteractableObject(Vector3(32, 5, 30), 0, 0.7, 5, "pool", "Infinity Pool", false));
-		items.push_back(new InteractableObject(Vector3(50, 5, -160), 0, 0.7, 7, "pool", "Infinity Pool", false));
+		items.push_back(new InteractableObject(Vector3(32, 5, 30), 0, 0.7, 5, "pool", "'Infinity' Pool", false));
+		items.push_back(new InteractableObject(Vector3(50, 5, -160), 0, 0.7, 7, "pool", "'Infinity' Pool", false));
+		items.push_back(new InteractableObject(Vector3(-22, 0, -64), 0, 1, 20, "fountain", "Fountain", false));
 	}
 
 }
@@ -458,6 +461,8 @@ void SceneMarinaBay::Update(double dt)
 				}
 			}
 			//render the gameWin menu here
+			Scene::inmenu = true;
+			Scene::GameWin = true;
 		}
 		else if (triedToRun)
 		{
@@ -872,12 +877,12 @@ void SceneMarinaBay::Update(double dt)
 					(*it)->settype("badguy2");
 			}
 
-			if (enemyHealth >= 20)
+			if (enemyHealth >= 20)		//player won
 			{
 				fightWon = true;
 				camera = prevCam;
 			}
-			else
+			else						//player lost
 			{
 				fightLost = true;	//spawns player away from boss
 				camera.Init(Vector3(-57, 8, 157), Vector3(-57, 8, 158), Vector3(0, 1, 0));
@@ -1028,9 +1033,9 @@ void SceneMarinaBay::Render()
 	modelStack.Translate(47, 0.0001, 0);
 	modelStack.Rotate(90, 1, 0, 0);
 	modelStack.Scale(30, 317, 1);
-	//glDisable(GL_CULL_FACE);
+	glDisable(GL_CULL_FACE);
 	RenderMesh(meshList[GEO_WATER], true, modelStack, viewStack, projectionStack, m_parameters);
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	modelStack.PopMatrix();
 
 	//boat
@@ -1108,7 +1113,12 @@ void SceneMarinaBay::Render()
 			RenderMesh(meshList[GEO_CHAIR], true, modelStack, viewStack, projectionStack, m_parameters);
 			modelStack.PopMatrix();
 		}
-		
+		//fountain
+		modelStack.PushMatrix();
+		modelStack.Translate(-22 + x, 0, -64 + z);
+		modelStack.Scale(15, 25, 15);
+		RenderMesh(meshList[GEO_FOUNTAIN], true, modelStack, viewStack, projectionStack, m_parameters);
+		modelStack.PopMatrix();
 	}
 	
 

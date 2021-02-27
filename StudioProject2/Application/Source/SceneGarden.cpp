@@ -230,7 +230,6 @@ void SceneGarden::Init()
 	meshList[GEO_TREE2] = MeshBuilder::GenerateOBJMTL("tree2", "OBJ//garden//tree_fat.obj", "OBJ//garden//tree.mtl");
 
 	meshList[GEO_LILY1] = MeshBuilder::GenerateOBJMTL("lily1", "OBJ//garden//lily1.obj", "OBJ//garden//lily1.mtl");
-	//meshList[GEO_LILY2] = MeshBuilder::GenerateOBJMTL("lily2", "OBJ//garden//lily2.obj", "OBJ//garden//lily2.mtl");
 
 	meshList[GEO_CAT] = MeshBuilder::GenerateOBJMTL("cat", "OBJ//garden//cat.obj", "OBJ//garden//cat.mtl");
 	meshList[GEO_CAT]->textureID = LoadTGA("Image//garden//cat.tga");
@@ -727,10 +726,9 @@ void SceneGarden::Render()
 	//Skybox
 	RenderSkybox();
 
-	//========================================================
 	modelStack.LoadIdentity();
 
-	RenderMesh(meshList[GEO_AXES], false, modelStack, viewStack, projectionStack, m_parameters);
+	//RenderMesh(meshList[GEO_AXES], false, modelStack, viewStack, projectionStack, m_parameters);
 
 	//Render interactable items
 	{
@@ -759,14 +757,6 @@ void SceneGarden::Render()
 				RenderMesh(meshList[GEO_YARN], true, modelStack, viewStack, projectionStack, m_parameters);
 			}
 			modelStack.PopMatrix();
-			if (hitboxshow)
-			{
-				modelStack.PushMatrix();
-				modelStack.Translate((*it)->getposition().x, (*it)->getposition().y, (*it)->getposition().z);
-				modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
-				RenderMesh(meshList[GEO_SPHERE], false, modelStack, viewStack, projectionStack, m_parameters);
-				modelStack.PopMatrix();
-			}
 		}
 	}
 
@@ -869,14 +859,6 @@ void SceneGarden::Render()
 				RenderMesh(meshList[GEO_TREE1], true, modelStack, viewStack, projectionStack, m_parameters);
 			else if ((*it)->gettype() == "tree2")
 				RenderMesh(meshList[GEO_TREE2], true, modelStack, viewStack, projectionStack, m_parameters);
-			if (hitboxshow)
-			{
-				modelStack.PopMatrix();
-				modelStack.PushMatrix();
-				modelStack.Translate((*it)->getposition().x, (*it)->getposition().y + (*it)->getheight()*0.5, (*it)->getposition().z);
-				modelStack.Scale((*it)->getxwidth(), (*it)->getheight(), (*it)->getzwidth());
-				RenderMesh(meshList[GEO_CUBE], false, modelStack, viewStack, projectionStack, m_parameters);
-			}
 			modelStack.PopMatrix();
 		}
 	}
@@ -1000,12 +982,6 @@ void SceneGarden::Render()
 		RenderMesh(meshList[GEO_LILY1], true, modelStack, viewStack, projectionStack, m_parameters);
 		modelStack.PopMatrix();
 	}
-	//modelStack.PushMatrix();
-	//modelStack.Translate(movex, 0, movez); //-70,-100
-	////modelStack.Rotate(0, 0, 1, 0);
-	//modelStack.Scale(scale,scale,scale);//1.5
-	//RenderMesh(meshList[GEO_LILY1], true, modelStack, viewStack, projectionStack, m_parameters);
-	//modelStack.PopMatrix();
 
 	if (minigame == 0)
 		RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);

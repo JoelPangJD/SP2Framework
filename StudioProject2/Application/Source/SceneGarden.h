@@ -117,8 +117,6 @@ class SceneGarden : public Scene
 
 public:
 	Camera3 camera;
-	bool lighton = true;
-	bool hitboxshow = false;
 	float cooldown = 0; //cooldown time for actions
 	float fps;
 	//Minigame variables
