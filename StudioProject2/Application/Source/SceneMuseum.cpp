@@ -320,28 +320,11 @@ void SceneMuseum::Init()
 	meshList[GEO_GROUND]->textureID = LoadTGA("Image//Museum//wood.tga");
 
 	//Button for game 1
-	button.positionX = 44.7;
-	button.positionY = 43;
-	button.width = 9.3;
-	button.height = 16;
-	button.active = true;
-	button.hold = false;
-
+	button.setButton(44.7, 43, 9.3, 16);
 
 
 	//Button for exit museum
-	button2.positionX = 58.7;
-	button2.positionY = 0.5;
-	button2.width = 17.9;
-	button2.height = 17.4;
-	button2.active = true;
-	button2.hold = false;
-
-
-
-	
-
-
+	button2.setButton(58.7, 0.5, 17.9, 17.4);
 
 }
 

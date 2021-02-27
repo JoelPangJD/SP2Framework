@@ -34,7 +34,7 @@ void Button::setButton(float positionX, float positionY, float width, float heig
 	this->height = height;
 	clickedOn = false;
 	bLButtonState = true;
-	active = false;
+	active = true;
 	hold = false;
 }
 

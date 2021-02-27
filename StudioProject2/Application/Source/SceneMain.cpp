@@ -235,10 +235,7 @@ void SceneMain::Init()
 		else {
 			width = 15;
 		}
-		gridButton[i].positionX = grids[i]->x - width / 2;
-		gridButton[i].positionY = grids[i]->y - height / 2;
-		gridButton[i].width = width;
-		gridButton[i].height = height;
+		gridButton[i].setButton(grids[i]->x - width / 2, grids[i]->y - height / 2, width, height);
 		gridButton[i].active = true;
 		colorGrid[i] = "Red";
 	}

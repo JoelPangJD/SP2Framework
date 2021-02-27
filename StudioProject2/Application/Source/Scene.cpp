@@ -31,34 +31,10 @@ Scene::Scene()
 	baseMeshList[GEO_WIN] = MeshBuilder::GenerateQuad("Game win screen", Color(1, 1, 1), 1.0f);
 	baseMeshList[GEO_WIN]->textureID = LoadTGA("Image//gamewin.tga");
 
-	GameWinButton.positionX = 14.5;
-	GameWinButton.positionY = 3;
-	GameWinButton.width = 48.6;
-	GameWinButton.height = 7.8;
-	GameWinButton.active = true;
-	GameWinButton.hold = false;
-
-	HelpButton.positionX = 26.6;
-	HelpButton.positionY = 26;
-	HelpButton.width = 24.3;
-	HelpButton.height = 5.2;
-	HelpButton.active = true;
-	HelpButton.hold = false;
-
-	EndGameButton.positionX = 26.6;
-	EndGameButton.positionY = 16.3;
-	EndGameButton.width = 24.4;
-	EndGameButton.height = 5.7;
-	EndGameButton.active = true;
-	EndGameButton.hold = false;
-
-	ResumeButton.positionX = 26.6;
-	ResumeButton.positionY = 34.9;
-	ResumeButton.width = 24.4;
-	ResumeButton.height = 5;
-	ResumeButton.active = true;
-	ResumeButton.hold = false;
-
+	GameWinButton.setButton(14.5, 3, 48.6, 7.8);
+	HelpButton.setButton(26.6, 26, 24.3, 5.2);
+	EndGameButton.setButton(26.6, 16.3, 24.4, 5.7);
+	ResumeButton.setButton(26.6, 34.9, 24.4, 5);
 	startMenu[0].setButton(28.3, 31.3, 24.1, 7.9);
 	startMenu[1].setButton(28.3, 15.3, 24.1, 7.9);
 }
@@ -77,6 +53,9 @@ void Scene::UpdateStartMenu()
 	if (startMenu[0].isClickedOn()) {
 		start = false;
 		Application::enableMouse = false;
+	}
+	if (startMenu[1].isClickedOn()) {
+		Application::GameEnd = true;
 	}
 	//static bool bLButtonState = true;
 	//if (Application::IsMousePressed(0) && (bLButtonState))
