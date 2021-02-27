@@ -31,6 +31,8 @@ class SceneMain : public Scene
 		GEO_FRONT,
 		GEO_BACK,
 
+		//other necessary things
+		GEO_GROUNDMESH,
 		GEO_INVENTORY,
 		GEO_TEXT,
 		GEO_HEADER,
@@ -45,8 +47,6 @@ class SceneMain : public Scene
 		GEO_ROADCURVED,
 		GEO_ROADINTERSECT,
 
-		GEO_TREE,
-
 		//buildings
 		GEO_MUSEUM,
 		GEO_MBS,
@@ -56,12 +56,15 @@ class SceneMain : public Scene
 		GEO_BUILDING2,
 		GEO_BUILDING3,
 
-
-		GEO_LAMP,
-		GEO_GROUNDMESH,
+		//minigame
 		GEO_PANEL,
 		GEO_RED,
 		GEO_GREEN,
+
+		//decoration
+		GEO_TREE,
+		GEO_LAMP,
+		GEO_CAR,
 		GEO_TEACHER,
 		GEO_FRIEND,
 		NUM_GEOMETRY,
@@ -142,6 +145,9 @@ private:
 
 	string name;
 	float cooldown;
+
+	float translateCarX, translateCarZ, rotateCarY;
+	void updateCar(double dt);
 
 	std::vector<InteractableObject*> items;
 	std::vector<Terrain*> wall;

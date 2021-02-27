@@ -100,3 +100,7 @@ void Menu::renderHelp()
 
 }
 
+void Menu::renderGameWin()
+{
+
+}
