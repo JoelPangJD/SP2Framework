@@ -409,6 +409,17 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 							CantUse = false;
 							return "Gardenminigame1";
 						}
+						if ((inventory->getcurrentitem()->gettype() == "Orb") && (*it)->gettype() == "orc")
+						{	//uses translator orb on orc
+							CantUse = false;
+							dialogue.push_back("2Hello, young one.You require my aid in your fight yes ? My people are a pacifistic bunch so I cannot aid you in combat but I can bestow upon you my gifts temporarily.");
+							dialogue.push_back("2This will allow you to wield telekinetic powers for a limited time and create very short-lived material objects, it is up to you what you choose to do with it.");
+							dialogue.push_back("1Wow, I never knew you orcs were this cool.Thanks!");
+							currentline = dialogue.begin();
+							name = "Orc";
+							indialogue = true;
+							(*it)->updatedialogue("orc2");
+						}
 						if ((*it)->gettype() == "place key" && inventory->getcurrentitem()->gettype() == "key")
 						{
 							CantUse = false;
@@ -499,8 +510,6 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 						}
 						else if ((*it)->gettype() == "robot")
 							(*it)->updatedialogue("robot2");
-						else if ((*it)->gettype() == "orc2")
-							(*it)->updatedialogue("orc3");
 						else if ((*it)->gettype() == "badguy2")
 							(*it)->updatedialogue("badguy3");
 						else if ((*it)->gettype() == "pool2")
@@ -532,8 +541,6 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 						inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Sword", "Sword", true));
 						inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Orb", "Orb", true));
 					}
-					else if ((*it)->gettype() == "orc" && riddleSolved)
-						(*it)->updatedialogue("orc2");
 				}
 				break;
 			}
