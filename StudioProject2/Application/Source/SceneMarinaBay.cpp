@@ -235,17 +235,17 @@ void SceneMarinaBay::Init()
 
 		//Skybox quads
 		meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.0f);
-		meshList[GEO_LEFT]->textureID = LoadTGA("Image//left.tga");
+		meshList[GEO_LEFT]->textureID = LoadTGA("Image//Marina//negx.tga");
 		meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.0f);
-		meshList[GEO_RIGHT]->textureID = LoadTGA("Image//right.tga");
+		meshList[GEO_RIGHT]->textureID = LoadTGA("Image//Marina//posx.tga");
 		meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.0f);
-		meshList[GEO_FRONT]->textureID = LoadTGA("Image//front.tga");
+		meshList[GEO_FRONT]->textureID = LoadTGA("Image//Marina//posz.tga");
 		meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.0f);
-		meshList[GEO_BACK]->textureID = LoadTGA("Image//back.tga");
+		meshList[GEO_BACK]->textureID = LoadTGA("Image//Marina//negz.tga");
 		meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.0f);
-		meshList[GEO_TOP]->textureID = LoadTGA("Image//top.tga");
+		meshList[GEO_TOP]->textureID = LoadTGA("Image//Marina//posy.tga");
 		meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
-		meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//bottom.tga");
+		meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//Marina//negy.tga");
 		//main boat
 		meshList[GEO_BOAT] = MeshBuilder::GenerateOBJMTL("boat", "OBJ//Marina//boat2.obj", "OBJ//Marina//boat.mtl");
 
@@ -448,6 +448,7 @@ void SceneMarinaBay::Update(double dt)
 			playerTurn = false;
 			enemyTurn = true;
 			triedToRun = false;
+			fightSelected = false;
 		}
 	}
 
@@ -892,7 +893,7 @@ void SceneMarinaBay::Update(double dt)
 void SceneMarinaBay::RenderSkybox()
 {
 	modelStack.PushMatrix();
-	modelStack.Translate(camera.position.x, camera.position.y + 200, camera.position.z);
+	modelStack.Translate(camera.position.x, camera.position.y, camera.position.z);
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, -499);
@@ -910,7 +911,6 @@ void SceneMarinaBay::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Translate(0, -499, 0);
 	modelStack.Rotate(-90, 1, 0, 0);
-	modelStack.Rotate(90, 0, 0, 1);
 	modelStack.Scale(1000, 1000, 1000);
 	RenderMesh(meshList[GEO_BOTTOM], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
@@ -918,7 +918,6 @@ void SceneMarinaBay::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 499, 0);
 	modelStack.Rotate(90, 1, 0, 0);
-	modelStack.Rotate(-90, 0, 0, 1);
 	modelStack.Scale(1000, 1000, 1000);
 	RenderMesh(meshList[GEO_TOP], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();

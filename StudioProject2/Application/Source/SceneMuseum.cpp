@@ -298,7 +298,7 @@ void SceneMuseum::Init()
 	terrains.push_back(new Terrain(Vector3(97.15, 0, 163.717), 0, 22, 10, 218.204, 3, "Rickshaw hitbox"));
 
 	//Items vector
-	items.push_back(new InteractableObject(Vector3(-210.785, 16.0715, 78.3848), 0, 0, 30, "preview", "preview for game2", false));
+	items.push_back(new InteractableObject(Vector3(-210.785, 16.0715, 78.3848), 0, 0, 30, "preview", "preview for game", false));
 	items.push_back(new InteractableObject(Vector3(-283.869, 16.0715, 95.1478), 0, 0, 30, "answer", "to answer", false));
 	items.push_back(new InteractableObject(Vector3(-265.813, 23, -87.885), 0, 0, 30, "exit", "Exit", false));
 	items.push_back(new InteractableObject(Vector3(-104.012, 0, 5.04312), 0, 5, 20, "box", "boxy", true));
@@ -336,6 +336,11 @@ void SceneMuseum::Init()
 	button2.height = 17.4;
 	button2.active = true;
 	button2.hold = false;
+
+	menu.posX = 20;
+	menu.posY = 20;
+	menu.width = 100;
+	menu.height =120;
 
 	
 
@@ -376,6 +381,8 @@ void SceneMuseum::Update(double dt)
 		//interact(camera, items);
 
 	}
+
+	menu.renderHelp();
 	//for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 	//{
 	//	if ((*it)->gettype() == "exit")
@@ -1368,6 +1375,8 @@ void SceneMuseum::Render()
 	RenderSkybox();
 
 	RenderMesh(meshList[GEO_AXES], false, modelStack, viewStack, projectionStack, m_parameters);
+
+	menu.renderMenuScreen();
 
 	RenderWalls();
 

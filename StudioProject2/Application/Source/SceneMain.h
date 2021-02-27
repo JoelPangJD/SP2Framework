@@ -43,11 +43,20 @@ class SceneMain : public Scene
 		GEO_ROAD4WAY,
 		GEO_ROADJUNCTION,
 		GEO_ROADCURVED,
+		GEO_ROADINTERSECT,
 
 		GEO_TREE,
+
+		//buildings
 		GEO_MUSEUM,
 		GEO_MBS,
 		GEO_CHANGI,
+		GEO_BUILDING,
+		GEO_BUILDING1,
+		GEO_BUILDING2,
+		GEO_BUILDING3,
+
+
 		GEO_LAMP,
 		GEO_GROUNDMESH,
 		GEO_PANEL,
@@ -55,9 +64,6 @@ class SceneMain : public Scene
 		GEO_GREEN,
 		GEO_TEACHER,
 		GEO_FRIEND,
-		GEO_BUILDING,
-		GEO_BUILDING1,
-		GEO_BUILDING2,
 		NUM_GEOMETRY,
 	};
 	enum UNIFORM_TYPE
@@ -126,7 +132,6 @@ private:
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
 
-	bool inFrontofMuseum, inFrontofChangi, inFrontofMarina, inFrontofGarden;
 	bool minigameMuseum/*, minigameChangi, minigameMarina, minigameGarden*/;
 	bool firstEnter, firstRender, walletNotGone;
 
@@ -135,7 +140,6 @@ private:
 	void RenderMinigame();
 	void updateMinigame(double dt);
 
-	bool inDialogue;
 	string name;
 	float cooldown;
 
@@ -145,7 +149,7 @@ private:
 	Vector3* grids[9];
 	Button gridButton[9];
 	std::string colorGrid[9];
-	bool pass, locked;
+	bool pass;
 };
 
 #endif

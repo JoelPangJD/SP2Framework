@@ -7,7 +7,7 @@
 #include "MeshBuilder.h"
 
 
-class Menu : public Scene
+class Menu
 {
 	enum GEOMETRY_TYPE
 	{
@@ -27,16 +27,19 @@ private:
 	MS modelStack, viewStack, projectionStack;
 	unsigned m_parameters[U_TOTAL];
 
-	float posX, posY, width, height;
 
 public:
 	Camera3 camera;
 	Menu();
 	Menu(float _posX, float _posY, float _width, float _height);
 	~Menu();
+	void RenderMesh(Mesh* mesh, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
+	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
 	void renderMenuScreen();
 	void renderPause();
 	void renderHelp();
 
+	bool pause = false;
 
+	float posX, posY, width, height;
 };
