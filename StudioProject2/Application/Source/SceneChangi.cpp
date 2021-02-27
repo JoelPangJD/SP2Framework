@@ -285,7 +285,7 @@ void SceneChangi::Update(double dt)
 		welcome = false;
 	}
 
-	if (camera.position.x == -2800)
+	if (camera.position.x == -4500)
 	{
 		gameEnd = true;
 	}
@@ -300,6 +300,10 @@ void SceneChangi::Update(double dt)
 		(planeX + 33) >= -4230 && (planeX - 33) <= -4170 && (planeZ + 50) >= 9 && (planeZ - 50) <= -9 || (planeX + 33) >= -4230 && (planeX - 33) <= -4170 && (planeZ + 50) >= -91 && (planeZ - 50) <= -109 )
 	{
 		std::cout << "Collided" << std::endl;
+		collide = true;
+	}
+	else {
+		collide = false;
 	}
 	
 	camMove = 1;
@@ -533,6 +537,7 @@ void SceneChangi::RenderEntity()
 		}
 		else {
 			camera.position.x = camera.position.x;
+			modelStack.Translate(planeX, 17 + autoMove, planeZ);
 		}
 		planeX = 10 + movex + autoMove;
 		planeZ = -6.5 + movez;
@@ -786,8 +791,8 @@ void SceneChangi::RenderWords()
 		RenderTextOnScreen(meshList[GEO_TEXT], "Unidentified projectile has been detected", Color(1, 0, 0), 3.5, 2, 12);
 		RenderTextOnScreen(meshList[GEO_TEXT], "Dodge incoming enemy missiles", Color(1, 0, 0), 4, 3, 7);
 		RenderTextOnScreen(meshList[GEO_TEXT], "[F] to take off ", Color(1, 0, 0), 5, 3.5, 2);
-		
-		if (Application::IsKeyPressed('F') )
+
+		if (Application::IsKeyPressed('F'))
 		{
 
 			camera.position.x = 100;
@@ -799,8 +804,13 @@ void SceneChangi::RenderWords()
 		}
 	}
 
-	if (gameEnd == true) {
+	if (gameEnd == true && camera.position.x == 4500) {
 		RenderTextOnScreen(meshList[GEO_TEXT], "Goodjob, you make it out.", Color(1, 0, 0), 4, 4, 7);
+	}
+
+	if (collide == true) {
+		gameEnd = true;
+	RenderTextOnScreen(meshList[GEO_TEXT], "GAME OVER", Color(1, 0, 0), 4, 4, 7);
 	}
 }
 
