@@ -477,7 +477,7 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 					else if ((*it)->gettype() == "citytochangi")
 					{
 						camera.position = Vector3(0, 3, 48);
-						if (Scene::inventory->checkinventory("Changi airport card placeholder")) {
+						if (Scene::inventory->checkinventory("changi pass")) {
 							Application::SwitchScene = 2;
 						}
 						else {
