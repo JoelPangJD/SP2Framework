@@ -224,8 +224,20 @@ void SceneMuseum::Init()
 	meshList[GEO_MINIPIC1]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
 	meshList[GEO_MINIPIC1]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[GEO_MINIPIC1]->material.kShininess = 1.f;
-	meshList[GEO_SELECTION] = MeshBuilder::GenerateQuad("Answer for color blind photo", Color(1, 1, 1), 1.0f);
-	meshList[GEO_SELECTION]->textureID = LoadTGA("Image//Museum//selection.tga");
+	meshList[GEO_DISPLAYMINIPIC1] = MeshBuilder::GenerateQuad("Display of Minigame pic1", Color(1, 1, 1), 1.0f);
+	meshList[GEO_DISPLAYMINIPIC1]->textureID = LoadTGA("Image//Museum//DisplayMain.tga");
+	meshList[GEO_DISPLAYMINIPIC1]->material.kAmbient.Set(0.8f, 0.8f, 0.8f);
+	meshList[GEO_DISPLAYMINIPIC1]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
+	meshList[GEO_DISPLAYMINIPIC1]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
+	meshList[GEO_DISPLAYMINIPIC1]->material.kShininess = 1.f;
+	meshList[GEO_SHOWANSWER] = MeshBuilder::GenerateQuad("show answer", Color(1, 1, 1), 1.0f);
+	meshList[GEO_SHOWANSWER]->textureID = LoadTGA("Image//Museum//ShowAnswer.tga");
+	meshList[GEO_SHOWANSWER]->material.kAmbient.Set(0.8f, 0.8f, 0.8f);
+	meshList[GEO_SHOWANSWER]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
+	meshList[GEO_SHOWANSWER]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
+	meshList[GEO_SHOWANSWER]->material.kShininess = 1.f;
+	meshList[GEO_SELECTION] = MeshBuilder::GenerateQuad("Answer", Color(1, 1, 1), 1.0f);
+	meshList[GEO_SELECTION]->textureID = LoadTGA("Image//Museum//AnswerScreen.tga");
 	meshList[GEO_SELECTION]->material.kAmbient.Set(0.8f, 0.8f, 0.8f);
 	meshList[GEO_SELECTION]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
 	meshList[GEO_SELECTION]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
@@ -322,11 +334,11 @@ void SceneMuseum::Init()
 	meshList[GEO_GROUND]->textureID = LoadTGA("Image//Museum//wood.tga");
 
 	//Button for game 1
-	button.setButton(44.7, 43, 9.3, 16);
+	button.setButton(26.3, 32.9, 28.9, 16);
 
 
 	//Button for exit museum
-	button2.setButton(58.7, 0.5, 17.9, 17.4);
+	button2.setButton(58.7, 0.5, 16.4, 16.4);
 
 }
 
@@ -724,14 +736,14 @@ void SceneMuseum::StartGame1()
 		{
 			RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 			interact(camera, items);
-			if (Preview)
+			if (Preview && !inmenu)
 			{
-				RenderMeshOnScreen(meshList[GEO_MINIPIC1], 40, 30, 40, 30, modelStack, viewStack, projectionStack, m_parameters);
+				RenderMeshOnScreen(meshList[GEO_DISPLAYMINIPIC1], 45, 20, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
 				camera.Init(Vector3(-210, 10, 125), Vector3(-200, 10, 125), Vector3(0, 1, 0));
 			}
-			else if (ShowAnswer)
+			else if (ShowAnswer && !inmenu)
 			{
-				RenderMeshOnScreen(meshList[GEO_SELECTION], 70, 35, 70, 60, modelStack, viewStack, projectionStack, m_parameters);
+				RenderMeshOnScreen(meshList[GEO_SELECTION], 40, 25, 70, 60, modelStack, viewStack, projectionStack, m_parameters);
 				camera.Init(Vector3(-210, 10, 125), Vector3(-200, 10, 125), Vector3(0, 1, 0));
 				MousePreview = true;
 			}
@@ -1008,7 +1020,7 @@ void SceneMuseum::Render()
 	modelStack.Translate(-283.869, 16.0715, 95.1478);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(35, 35, 45);
-	RenderMesh(meshList[GEO_SELECTION], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_SHOWANSWER], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	//Game2 OBJ

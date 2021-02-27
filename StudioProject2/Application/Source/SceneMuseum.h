@@ -67,6 +67,8 @@ class SceneMuseum : public Scene
 		GEO_MINIPIC1,
 		GEO_MINIPIC2,
 		GEO_SELECTION,
+		GEO_SHOWANSWER,
+		GEO_DISPLAYMINIPIC1,
 		//GAME 2
 		GEO_PIC,
 		GEO_BOX,
