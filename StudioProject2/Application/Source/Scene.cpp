@@ -436,6 +436,7 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 							inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 1, 0, "Marina Bay ticket", "MBS ticket", true));
 							dialogue.push_back("1Oh it gave me a ticket to the Marina Bay Sands.");
 							dialogue.push_back("1I should be access that place now to find who stole my wallet");
+							(*it)->updatedescription("cat1");
 							currentline = dialogue.begin();
 							name = "";
 							indialogue = true;

@@ -1,31 +1,31 @@
 stick|1It's a stick|1Looks suprisingly sturdy too...
-cat|1The cat looks like it has a ticket to the marina bay sand on it|1Maybe if I catch a fish from the pond I can trade for it...
-cat1|1It looks pretty satisfied now
-fish|1They swim around so carefree
-pond|1There are several fish in there|1If I could find a stick and some line I might be able to make a fishing rod to catch them
+cat|1The cat looks like it has a ticket to the marina bay sand on it.|1Maybe if I catch a fish from the pond I can trade for it...
+cat1|1It looks pretty satisfied now.
+fish|1They swim around so carefree.
+pond|1There are several fish in there.|1If I could find a stick and some line I might be able to make a fishing rod to catch them.
 answer|1Looks like i need to choose the correct image....
 preview|1Hmmm some sort of color picture....
 Mr.Sazz|1Mr Sazz, One of the most annoying teachers in my school...
 Andy|1My best friend that was with me since we were 8.|1I trust him alot.
-andy|1Oh it's Andy, what brings him here?|1I think i should talk to him
+andy|1Oh it's Andy, what brings him here?|1I think i should talk to him.
 teacher|1Andy told me to talk to him, maybe i should...
 flag|1It's a Singapore flag, its looks so bright.
-key|1It's a key, it seems like it is close to 100 years old
+key|1It's a key, it seems like it is close to 100 years old.
 box|1It's a box, a box in a museum?
-exit|1I think i have to hold the button to exit the museum
-rickshaw|1It's a 1940's rickshaw, heard from my grandpa he used to transport people with this
+exit|1I think i have to hold the button to exit the museum.
+rickshaw|1It's a 1940's rickshaw, heard from my grandpa he used to transport people with this.
 elephant|1It's an elephant.|1I heard in the early 1990, some national servicemen spotted 3 elephants in Pulau Tekong, hence the autorities tried to relocate the elephants to Johor Bahru.|1However they attempted many times as the Elephants were reluctant to relocate from Pulau Tekong.|1 In the end, the elephant got relocated in Johor Bahru and the autorities got praised by their actions.
-yarn|1For a ball of yarn that doesn't look very soft|1On closer inspection that looks more like fishing line
+yarn|1For a ball of yarn that doesn't look very soft.|1On closer inspection that looks more like fishing line.
 Guide|1Tour guide for Changi Airport.
 girl|1Looks to be the hostess of this place.|1I should probably try and ask her for help.
-girl2|1I've already asked her for help
+girl2|1I've already asked her for help.
 robot|1It's a robot cleaner.
 orc|1It's an orc.|1Usually they're quite aggressive but due to some orc rights movements, some of their kind has been accepted as pacifists and can now be within human areas with no consequence.
 adventurer|1Another human. Looks like he's been through his fair share of adventures.
 Guide|1Tour guide for Changi Airport.
 stairs|2A plane with passengers, hmm where is the pilot though?.|2 Press [Q] to board the plane.
-gardentocity|1That path leads back to the city center
-citytomuseum|1That leads to the museum
+gardentocity|1That path leads back to the city center.
+citytomuseum|1That leads to the museum.
 citytochangi|1Changi Airport seems to be right ahead.
 citytomarina|1This path leads to Marina Bay Sands.
 citytogarden|1Looks like Botanic Garden is in this direction.
