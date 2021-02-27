@@ -113,6 +113,7 @@ public:
 	bool atStairs;
 	bool gameStart;
 	bool gameEnd;
+	bool addMap;
 	bool takeFlight = false;
 	bool collide;
 	float fps;

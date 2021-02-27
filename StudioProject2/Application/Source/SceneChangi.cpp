@@ -290,7 +290,7 @@ void SceneChangi::Update(double dt)
 		welcome = false;
 	}
 
-	if (camera.position.x == -4500)
+	if (camera.position.x == -4300)
 	{
 		gameEnd = true;
 	}
@@ -307,9 +307,6 @@ void SceneChangi::Update(double dt)
 		std::cout << "Collided" << std::endl;
 		collide = true;
 	}
-	/*else {
-		collide = false;
-	}*/
 	
 	camMove = 1;
 }
@@ -382,7 +379,7 @@ void SceneChangi::Render()
 	//========================================================
 	modelStack.LoadIdentity();
 
-	RenderMesh(meshList[GEO_AXES], false);
+	//RenderMesh(meshList[GEO_AXES], false);
 
 	RenderRoad();
 	RenderGroundMesh();
@@ -541,7 +538,6 @@ void SceneChangi::RenderEntity()
 			camera.position.x = camera.position.x - camMove;
 		}
 		else {
-			//camera.position.x = camera.position.x;
 			modelStack.Translate(0, 17 + autoMove, 0);
 		}
 		planeX = 10 + movex + autoMove;
@@ -588,7 +584,6 @@ void SceneChangi::RenderEntity()
 	if (renderStairs != false) {
 		modelStack.PushMatrix();
 		modelStack.Translate(-40, 2, 36);
-		//modelStack.Rotate(-90, 0, 1, 0);
 		modelStack.Scale(0.2, 0.2, 0.2);
 		RenderMesh(meshList[GEO_STAIRCAR], true);
 		modelStack.PopMatrix();
@@ -599,7 +594,6 @@ void SceneChangi::RenderEntity()
 		modelStack.PushMatrix();
 		modelStack.Translate(-100, 0, 60);
 		modelStack.Rotate(-90, 0, 1, 0);
-		//modelStack.Scale(2, 2, 2);
 		RenderMesh(meshList[GEO_WOMAN], true);
 		modelStack.PopMatrix();
 	}
@@ -632,8 +626,6 @@ void SceneChangi::RenderText(Mesh* mesh, std::string text, Color color)
 	{
 		Mtx44 characterSpacing;
 		std::vector<std::pair<std::string, std::vector<int>>> result;
-		//std::ifstream myFile("Fontdata.csv");
-		//if (!myFile.is_open()) throw std::runtime_error("Could not open file");
 
 		characterSpacing.SetToTranslation(i * 1.0f, 0, 0); //1.0f is the spacing of each character, you may change this value
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
@@ -761,20 +753,6 @@ void SceneChangi::RenderRoad()
 
 void SceneChangi::RenderWords()
 {
-	std::stringstream ssX;
-	std::stringstream ssY;
-	std::stringstream ssZ;
-	ssX.precision(3);
-	ssX << "X: " << camera.position.x;
-	ssY.precision(3);
-	ssY << "Y: " << camera.position.y;
-	ssZ.precision(3);
-	ssZ << "Z: " << camera.position.z;
-	modelStack.PushMatrix();
-	modelStack.Scale(6, 6, 6);
-	RenderTextOnScreen(meshList[GEO_TEXT], ssX.str() + ssY.str() + ssZ.str(), Color(0, 1, 0), 4, 0, 13);
-	modelStack.PopMatrix();
-
 	modelStack.PushMatrix();
 	modelStack.Translate(-100, 20, 53);
 	modelStack.Rotate(-90, 0, 1, 0);
@@ -782,17 +760,8 @@ void SceneChangi::RenderWords()
 	RenderText(meshList[GEO_TEXT], "Touch me", Color(1, 0, 0));
 	modelStack.PopMatrix();
 
-	//if (welcome == true) {
-	//	RenderTextOnScreen(meshList[GEO_TEXT], "Welcome to Changi airport! ", Color(1, 0, 0), 4 , 4, 7);
-	//	RenderTextOnScreen(meshList[GEO_TEXT], "Board the plane for a flight expirence. ", Color(1, 0, 0), 3, 5, 6);
-	//}
-
-	//if (atStairs == true) {
-	//	RenderTextOnScreen(meshList[GEO_TEXT], "Press E to board the plane! ", Color(1, 0, 0), 4, 3, 7);
-	//}
-
 	if (gameStart == true) {
-		RenderMinigameIntro("Use [I],[J],[K],[L] to move the plane. Dodge incoming missiles, 1 is enough to kill you", "Escape", 6, modelStack, viewStack, projectionStack, m_parameters);
+		RenderMinigameIntro("Use [I],[J],[K],[L] to move the plane. Dodge incoming missiles, 1 is enough to kill you. ", "Escape", 6, modelStack, viewStack, projectionStack, m_parameters);
 
 		if (Application::IsKeyPressed('E'))
 		{
@@ -806,14 +775,21 @@ void SceneChangi::RenderWords()
 		}
 	}
 
-	if (gameEnd == true && camera.position.x == -4500) {
+	if (gameEnd == true && camera.position.x == -4300) {
 		RenderTextOnScreen(meshList[GEO_TEXT], "Goodjob, you make it out.", Color(1, 0, 0), 4, 4, 7);
-		RenderTextOnScreen(meshList[GEO_TEXT], "[ENTER] Bck to main", Color(1, 0, 0), 4, 4, 6);
+		RenderTextOnScreen(meshList[GEO_TEXT], "[ENTER] Bck to main", Color(1, 0, 0), 4, 5, 6);
+		
+	}
+
+	if (camera.position.x == -4299) {
+		inventory->additem(new InteractableObject(Vector3(-4500, 0, 0), 0, 2, 10, "Map", "Map", false));
 	}
 
 	if (collide == true) {
 		gameEnd = true;
-		RenderTextOnScreen(meshList[GEO_TEXT], "GAME OVER", Color(1, 0, 0), 4, 6, 7);
+		
+		RenderTextOnScreen(meshList[GEO_TEXT], "[GAME OVER]", Color(1, 0, 0), 4, 7.3, 7);
+		RenderTextOnScreen(meshList[GEO_TEXT], "[R] to retry.", Color(1, 0, 0), 4, 7, 6);
 		if (Application::IsKeyPressed('R')) {
 			takeFlight = false;
 			gameStart = false;
@@ -821,9 +797,6 @@ void SceneChangi::RenderWords()
 			gameEnd = false;
 			renderStairs = true;
 			renderDoorman = true;
-			/*camera.position.x = -300;
-			camera.position.y = 2;
-			camera.position.z = 100;*/
 			camera.Init(Vector3(-204, 10.3, 60), Vector3(0, 4.34, 0), Vector3(0, 1, 0));
 			movex = 0;
 			movez = 0;
@@ -838,112 +811,112 @@ void SceneChangi::RenderMissile()
 {
 	//=============================================================================================
 	modelStack.PushMatrix();
-	modelStack.Translate(-700 /*- autoMove*/, 30, 100);
+	modelStack.Translate(-700, 30, 100);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(6, 6, 6);
 	RenderMesh(meshList[GEO_MISSILE], true);
 	modelStack.PopMatrix();
 	//=============================================================================================
 	modelStack.PushMatrix();
-	modelStack.Translate(-700 /*- autoMove*/, 30, -100);
+	modelStack.Translate(-700, 30, -100);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(6, 6, 6);
 	RenderMesh(meshList[GEO_MISSILE], true);
 	modelStack.PopMatrix();
 	//=============================================================================================
 	modelStack.PushMatrix();
-	modelStack.Translate(-1200 /*- autoMove*/, 30, 100);
+	modelStack.Translate(-1200, 30, 100);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(6, 6, 6);
 	RenderMesh(meshList[GEO_MISSILE], true);
 	modelStack.PopMatrix();
 	//=============================================================================================
 	modelStack.PushMatrix();
-	modelStack.Translate(-1200 /*- autoMove*/, 30, 0);
+	modelStack.Translate(-1200, 30, 0);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(6, 6, 6);
 	RenderMesh(meshList[GEO_MISSILE], true);
 	modelStack.PopMatrix();
 	//=============================================================================================
 	modelStack.PushMatrix();
-	modelStack.Translate(-1700 /*- autoMove*/, 30, 100);
+	modelStack.Translate(-1700, 30, 100);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(6, 6, 6);
 	RenderMesh(meshList[GEO_MISSILE], true);
 	modelStack.PopMatrix();
 	//=============================================================================================
 	modelStack.PushMatrix();
-	modelStack.Translate(-1700 /*- autoMove*/, 30, -100);
+	modelStack.Translate(-1700, 30, -100);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(6, 6, 6);
 	RenderMesh(meshList[GEO_MISSILE], true);
 	modelStack.PopMatrix();
 	//=============================================================================================
 	modelStack.PushMatrix();
-	modelStack.Translate(-2200 /*- autoMove*/, 30, -100);
+	modelStack.Translate(-2200, 30, -100);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(6, 6, 6);
 	RenderMesh(meshList[GEO_MISSILE], true);
 	modelStack.PopMatrix();
 	//=============================================================================================
 	modelStack.PushMatrix();
-	modelStack.Translate(-2200 /*- autoMove*/, 30, 0);
+	modelStack.Translate(-2200, 30, 0);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(6, 6, 6);
 	RenderMesh(meshList[GEO_MISSILE], true);
 	modelStack.PopMatrix();
 	//=============================================================================================
 	modelStack.PushMatrix();
-	modelStack.Translate(-2700 /*- autoMove*/, 30, -100);
+	modelStack.Translate(-2700, 30, -100);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(6, 6, 6);
 	RenderMesh(meshList[GEO_MISSILE], true);
 	modelStack.PopMatrix();
 	//=============================================================================================
 	modelStack.PushMatrix();
-	modelStack.Translate(-2700 /*- autoMove*/, 30, 100);
+	modelStack.Translate(-2700, 30, 100);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(6, 6, 6);
 	RenderMesh(meshList[GEO_MISSILE], true);
 	modelStack.PopMatrix();
 	//=============================================================================================
 	modelStack.PushMatrix();
-	modelStack.Translate(-3200 /*- autoMove*/, 30, 100);
+	modelStack.Translate(-3200, 30, 100);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(6, 6, 6);
 	RenderMesh(meshList[GEO_MISSILE], true);
 	modelStack.PopMatrix();
 	//=============================================================================================
 	modelStack.PushMatrix();
-	modelStack.Translate(-3200 /*- autoMove*/, 30, 0);
+	modelStack.Translate(-3200, 30, 0);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(6, 6, 6);
 	RenderMesh(meshList[GEO_MISSILE], true);
 	modelStack.PopMatrix();
 	//=============================================================================================
 	modelStack.PushMatrix();
-	modelStack.Translate(-3700 /*- autoMove*/, 30, 100);
+	modelStack.Translate(-3700, 30, 100);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(6, 6, 6);
 	RenderMesh(meshList[GEO_MISSILE], true);
 	modelStack.PopMatrix();
 	//=============================================================================================
 	modelStack.PushMatrix();
-	modelStack.Translate(-3700 /*- autoMove*/, 30, -100);
+	modelStack.Translate(-3700, 30, -100);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(6, 6, 6);
 	RenderMesh(meshList[GEO_MISSILE], true);
 	modelStack.PopMatrix();
 	//=============================================================================================
 	modelStack.PushMatrix();
-	modelStack.Translate(-4200 /*- autoMove*/, 30, 0);
+	modelStack.Translate(-4200, 30, 0);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(6, 6, 6);
 	RenderMesh(meshList[GEO_MISSILE], true);
 	modelStack.PopMatrix();
 	//=============================================================================================
 	modelStack.PushMatrix();
-	modelStack.Translate(-4200 /*- autoMove*/, 30, -100);
+	modelStack.Translate(-4200, 30, -100);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(6, 6, 6);
 	RenderMesh(meshList[GEO_MISSILE], true);
