@@ -314,6 +314,13 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 		{
 		    if (Application::IsKeyPressed('Q')) //Q is use
 			{
+				///For scenemusem///
+				if ((*it)->gettype() == "exit")
+				{
+					ToExit = true;
+				}
+				///////////////
+
 				if ((*it)->gettype() == "gardentocity")
 				{
 					camera.position = Vector3(-85, 5, 0);
@@ -327,10 +334,6 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 					return "frontofmuseum"; //For the other scene you can follow the garden to city example as there is no minigame to trigger before hand
 				}
 
-				if ((*it)->gettype() == "exit")
-				{
-					ToExit = true;
-				}
 				if (!(inventory->getstorage().empty())) //For uses that rely on inventory, make sure the inventory is 
 				{
 					if ((*it)->gettype() == "cat" && inventory->getcurrentitem()->gettype() == "fish")//using fish on cat

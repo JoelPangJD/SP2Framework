@@ -298,7 +298,7 @@ void SceneMuseum::Init()
 	terrains.push_back(new Terrain(Vector3(97.15, 0, 163.717), 0, 22, 10, 218.204, 3, "Rickshaw hitbox"));
 
 	//Items vector
-	items.push_back(new InteractableObject(Vector3(-210.785, 16.0715, 78.3848), 0, 0, 30, "preview", "preview for game2", false));
+	items.push_back(new InteractableObject(Vector3(-210.785, 16.0715, 78.3848), 0, 0, 30, "preview", "preview for game", false));
 	items.push_back(new InteractableObject(Vector3(-283.869, 16.0715, 95.1478), 0, 0, 30, "answer", "to answer", false));
 	items.push_back(new InteractableObject(Vector3(-265.813, 23, -87.885), 0, 0, 30, "exit", "Exit", false));
 	items.push_back(new InteractableObject(Vector3(-104.012, 0, 5.04312), 0, 5, 20, "box", "boxy", true));

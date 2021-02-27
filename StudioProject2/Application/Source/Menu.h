@@ -37,6 +37,4 @@ public:
 	void renderMenuScreen();
 	void renderPause();
 	void renderHelp();
-
-
 };
