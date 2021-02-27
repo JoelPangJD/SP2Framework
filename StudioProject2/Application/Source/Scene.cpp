@@ -57,23 +57,6 @@ void Scene::UpdateStartMenu()
 	if (startMenu[1].isClickedOn()) {
 		Application::GameEnd = true;
 	}
-	//static bool bLButtonState = true;
-	//if (Application::IsMousePressed(0) && (bLButtonState))
-	//{
-	//	double x, y;
-	//	Application::GetCursorPos(&x, &y);
-	//	unsigned w = Application::GetWindowWidth();
-	//	unsigned h = Application::GetWindowHeight();
-	//	float posX = x / 10;
-	//	float posY = 60 - y / 10;
-	//	std::cout << "posX = " << posX << std::endl;
-	//	std::cout << "posY = " << posY << std::endl;
-	//	bLButtonState = false;
-	//}
-	//else if (!Application::IsMousePressed(0) && !bLButtonState)
-	//{
-	//	bLButtonState = true;
-	//}
 }
 
 void Scene::RenderMesh(Mesh* mesh, bool enableLight, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[])
@@ -180,10 +163,8 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 			currentname = name;
 		dialoguetext = dialoguetext.substr(1);
 		RenderNPCDialogue(dialoguetext, currentname, modelStack, viewStack, projectionStack, m_parameters);
-		if (cooldown <= 0 && Application::IsKeyPressed('E') || FoundAnswer) //Cooldown added to prevent spamming to pass the dialogues too fast
+		if (cooldown <= 0 && Application::IsKeyPressed('E')) //Cooldown added to prevent spamming to pass the dialogues too fast
 		{
-			Preview = false;
-			ShowAnswer = false;
 			cooldown = 0.4f;
 			currentline++;
 			if (currentline == dialogue.end())
@@ -428,6 +409,14 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 					{
 						ToExit = true;
 					}
+					else if ((*it)->gettype() == "preview")
+					{
+						Preview = true;
+					}
+					else if ((*it)->gettype() == "answer")
+					{
+						ShowAnswer = true;
+					}
 					///////////////
 
 					if ((*it)->gettype() == "gardentocity")
@@ -587,28 +576,16 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 					name = (*it)->getname(); //Set the name of the npc the player talks to
 					indialogue = true;//Set state to in dialogue
 
-					//////////////////////////////////////////FOR SCENE MUSEUM///////////////////////////////////////////////////////
-					if (EndGame1 == false)
-					{
-						if ((*it)->gettype() == "preview")
-						{
-							Preview = true;
-						}
-						if ((*it)->gettype() == "answer")
-						{
-							ShowAnswer = true;
-						}
-
-					}
+					//Scene museum
 					if (place1 == true && place2 == true && place3 == true)
 					{
 						if ((*it)->gettype() == "before gathering item")
 						{
-							items.erase(it);
+							(*it)->updatedialogue("after gathering item");
 							inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 1, 0, "changi pass", "Changi pass", true));
 						}
 					}
-					//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 					if (MarinaBay == true)
 					{
 						//shortening dialogue to not show the full length when talked to
