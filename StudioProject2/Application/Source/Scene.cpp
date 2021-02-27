@@ -7,6 +7,7 @@
 #include "MeshBuilder.h"
 #include <Mtx44.h>
 
+
 Scene::Scene()
 {
 	baseMeshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
@@ -36,6 +37,27 @@ Scene::Scene()
 	GameWinButton.height = 7.8;
 	GameWinButton.active = true;
 	GameWinButton.hold = false;
+
+	HelpButton.positionX = 26.6;
+	HelpButton.positionY = 26;
+	HelpButton.width = 24.3;
+	HelpButton.height = 5.2;
+	HelpButton.active = true;
+	HelpButton.hold = false;
+
+	EndGameButton.positionX = 26.6;
+	EndGameButton.positionY = 16.3;
+	EndGameButton.width = 24.4;
+	EndGameButton.height = 5.7;
+	EndGameButton.active = true;
+	EndGameButton.hold = false;
+
+	ResumeButton.positionX = 26.6;
+	ResumeButton.positionY = 34.9;
+	ResumeButton.width = 24.4;
+	ResumeButton.height = 5;
+	ResumeButton.active = true;
+	ResumeButton.hold = false;
 
 }
 
@@ -92,23 +114,42 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 		if (Pause)
 		{
 			RenderMeshOnScreen(baseMeshList[GEO_PAUSE], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
+			ResumeButton.updateButton();
+			HelpButton.updateButton();
+			EndGameButton.updateButton();
+			Application::enableMouse = true;		
+			if (ResumeButton.isClickedOn()) //if resume button is being clicked
+			{
+				Application::enableMouse = false;
+				inmenu = false;
+			}
+			if (HelpButton.isClickedOn()) //if help button is being clicked 
+			{
+				Application::enableMouse = false;
+				Help = true;
+				Pause = false;
+			}
+			if (EndGameButton.isClickedOn()) // if end button is being clicked
+			{
+				Application::GameEnd = true;
+			}
 			return;
 		}
-		else if (Help)//Help is called
+		if (Help)//Render help screen
 		{
 			RenderMeshOnScreen(baseMeshList[GEO_HELP], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
 			return;
 		}
-		else if (Menu)
+		if (Menu) // Render menu screen
 		{
 			RenderMeshOnScreen(baseMeshList[GEO_MENU], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
 			return;
 		}
 
-		else if (GameWin)
+		if (GameWin)//Render GameWin screen
 		{
-			GameWinButton.updateButton();
 			RenderMeshOnScreen(baseMeshList[GEO_WIN], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
+			GameWinButton.updateButton();
 			Application::enableMouse = true;
 			if (GameWinButton.isClickedOn())
 			{
@@ -116,6 +157,7 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 			}
 			return;
 		}
+
 
 		
 		//switch (menutype)

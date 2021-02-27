@@ -104,13 +104,17 @@ public:
 	string name;
 
 	//For UI buttons
+	Button ResumeButton;
 	Button GameWinButton;
+	Button EndGameButton;
+	Button HelpButton;
 
 	//For Menu,pause and help
 	bool Menu = false;
 	bool Pause = false;
 	bool Help = false;
 	bool GameWin = false;
+	bool EndGame = false;
 
 
 	//For scene museum
