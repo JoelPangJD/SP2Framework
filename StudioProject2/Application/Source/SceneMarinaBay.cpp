@@ -467,7 +467,7 @@ void SceneMarinaBay::Update(double dt)
 					break;
 				}
 			}
-			//render the gameWin menu here
+			//calls vars to render the gameWin menu in renderUI
 			Scene::inmenu = true;
 			Scene::GameWin = true;
 		}
@@ -475,7 +475,7 @@ void SceneMarinaBay::Update(double dt)
 
 	if (fight)
 	{
-		if (fightInit)
+		if (fightInit)	//when fight first triggers
 		{
 			prevCam = camera;
 			camera.Init(Vector3(90, 40, 240), Vector3(0, 8, 240), Vector3(0, 1, 0));
@@ -485,7 +485,6 @@ void SceneMarinaBay::Update(double dt)
 			fightInit = false;
 			prevItemsList = itemsList;
 		}
-
 
 		if (actionSelected && fight && !attackSelected)	//if action was selected and in fight and attack is not playing
 		{
@@ -543,7 +542,7 @@ void SceneMarinaBay::Update(double dt)
 					attackSelected = true;
 					fightSelected = false;
 				}
-				else	//items
+				else if (playerAction >= A_ITEM1 && playerAction <= A_ITEM2)	//items
 				{
 					itemChosen = true;
 					itemsSelected = false;
