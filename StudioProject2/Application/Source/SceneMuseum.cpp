@@ -1055,6 +1055,8 @@ void SceneMuseum::StartGame1()
 	{
 		RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 		interact(camera, items);
+		inmenu = true;
+		GameWin = true;
 		if (Preview)
 		{
 			RenderMeshOnScreen(meshList[GEO_MINIPIC1], 50, 40, 30, 30);

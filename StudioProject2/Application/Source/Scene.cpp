@@ -97,6 +97,7 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 		else if (Menu)
 		{
 			RenderMeshOnScreen(baseMeshList[GEO_MENU], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
+			return;
 		}
 
 		else if (GameWin)
@@ -348,7 +349,7 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 	if (Application::IsKeyPressed(VK_ESCAPE) && !inmenu) //Enter pause screen
 	{
 		inmenu = true;
-		GameWin = true;
+		Help = true;
 	}
 	if (!inmenu)
 	{
