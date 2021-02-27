@@ -120,8 +120,7 @@ public:
 	float rotateL;
 	float rotateR;
 	float autoMove ;
-	float movex;
-	float movez;
+	float movex, movez;
 	float camMove;
 	float planeX, planeZ;
 		

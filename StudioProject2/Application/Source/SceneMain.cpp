@@ -8,6 +8,8 @@
 #include <Mtx44.h>
 #include"MeshBuilder.h"
 
+#define PI 3.141592
+
 SceneMain::SceneMain()
 {
 }
@@ -204,9 +206,13 @@ void SceneMain::Init()
 	meshList[GEO_ROADJUNCTION] = MeshBuilder::GenerateOBJMTL("roadjunction", "OBJ//CityCenter//road_junction.obj", "OBJ//CityCenter//road_junction.mtl");
 	meshList[GEO_ROADCURVED] = MeshBuilder::GenerateOBJMTL("roadcurved", "OBJ//CityCenter//road_curved.obj", "OBJ//CityCenter//road_curved.mtl");
 	meshList[GEO_ROADINTERSECT] = MeshBuilder::GenerateOBJMTL("roadintersect", "OBJ//CityCenter//road_intersection.obj", "OBJ//CityCenter//road_intersection.mtl");
+	meshList[GEO_CAR] = MeshBuilder::GenerateOBJMTL("roadintersect", "OBJ//CityCenter//car.obj", "OBJ//CityCenter//car.mtl");
 
 	minigameMuseum = false;
 	firstEnter = firstRender = walletNotGone = true;
+	rotateCarY = 180;
+	translateCarX = 0;
+	translateCarZ = 100;
 
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
@@ -229,7 +235,7 @@ void SceneMain::Init()
 		else {
 			width = 15;
 		}
-		gridButton[i].positionX = grids[i]->x - width/2;
+		gridButton[i].positionX = grids[i]->x - width / 2;
 		gridButton[i].positionY = grids[i]->y - height / 2;
 		gridButton[i].width = width;
 		gridButton[i].height = height;
@@ -332,6 +338,8 @@ void SceneMain::Update(double dt)
 		}
 		updateMinigame(dt);
 	}
+	updateCar(dt);
+
 }
 
 
@@ -448,6 +456,41 @@ void SceneMain::updateMinigame(double dt)
 		}
 	}
 
+}
+
+void SceneMain::updateCar(double dt)
+{
+	if (translateCarZ > 77.5) {
+		translateCarZ -= 10 * float(dt);
+		if (translateCarZ <= 77.5)
+			translateCarZ = 77.5;
+	}
+	else if ((rotateCarY <270) && (translateCarX > -5)) {
+		rotateCarY += 25 * float(dt);
+		if (rotateCarY >= 270)
+			rotateCarY = 270;
+		translateCarX = -5 - 5.f * cos(rotateCarY * PI / 180);
+		translateCarZ = 77.5 + 2.5f *  sin(rotateCarY * PI / 180);
+	}
+	else if (translateCarX > -50) {
+		translateCarX -= 10 * float(dt);
+		if (translateCarX <= -50)
+			translateCarX = -50;
+	}
+	else if (rotateCarY > 180) {
+		rotateCarY -= 25 * float(dt);
+		if (rotateCarY <= 180)
+			rotateCarY = 180;
+		translateCarX = -50 + 10.f * cos(rotateCarY * PI / 180);
+		translateCarZ = 67.5 - 7.5f * sin(rotateCarY * PI / 180);
+	}
+	else {
+		translateCarZ -= 10 * float(dt);
+		if (translateCarZ < -150) {
+			translateCarZ = 100;
+			translateCarX = 0;
+		}
+	}
 }
 
 void SceneMain::Render()
@@ -614,7 +657,14 @@ void SceneMain::Render()
 	modelStack.Translate(-57.5, 0, -57.5);
 	modelStack.Scale(5, 5, 5);
 	modelStack.Rotate(90, 0, 1, 0);
-	RenderMesh(meshList[GEO_ROADCURVED], true, modelStack, viewStack, projectionStack, m_parameters);
+	RenderMesh(meshList[GEO_ROADCURVESPLITRIGHT], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-60, 0, -120);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(115, 5, 5);
+	RenderMesh(meshList[GEO_ROADSTRAIGHT], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
@@ -661,6 +711,13 @@ void SceneMain::Render()
 	modelStack.Rotate(-90, 0, 1, 0);
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_ROADINTERSECT], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(translateCarX, 0, translateCarZ);
+	modelStack.Scale(3, 3, 3);
+	modelStack.Rotate(rotateCarY, 0, 1, 0);
+	RenderMesh(meshList[GEO_CAR], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();

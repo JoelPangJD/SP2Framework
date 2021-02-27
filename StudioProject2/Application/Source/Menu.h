@@ -74,8 +74,15 @@ public:
 	//void renderMenuScreen();
 	//void renderPause();
 	//void renderHelp();
+	//void RenderMesh(Mesh* mesh, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
+	//void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
+	//void renderMenuScreen();
+	//void renderPause();
+	//void renderHelp();
+	void renderGameWin();
 
 	bool pause = false;
+	bool gameWin = false;
 
 	float posX, posY, width, height;
 };

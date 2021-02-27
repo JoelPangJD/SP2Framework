@@ -16,14 +16,13 @@ rickshaw|1It's a 1940's rickshaw, heard from my grandpa he used to transport peo
 elephant|1It's an elephant.|1I heard in the early 1990, some national servicemen spotted 3 elephants in Pulau Tekong, hence the autorities tried to relocate the elephants to Johor Bahru.|1However they attempted many times as the Elephants were reluctant to relocate from Pulau Tekong.|1 In the end, the elephant got relocated in Johor Bahru and the autorities got praised by their actions.
 yarn|1For a ball of yarn that doesn't look very soft|1On closer inspection that looks more like fishing line
 Guide|1Tour guide for Changi Airport.
-stairs|1Press [E] to board the plane. [I] to move forward, [J] to move left, [L] to move right, [K] to move backward.
 girl|1Looks to be the hostess of this place.|1I should probably try and ask her for help.
 girl2|1I've already asked her for help
 robot|1It's a robot cleaner.
 orc|1It's an orc.|1Usually they're quite aggressive but due to some orc rights movements, some of their kind has been accepted as pacifists and can now be within human areas with no consequence.
 adventurer|1Another human. Looks like he's been through his fair share of adventures.
 Guide|1Tour guide for Changi Airport.
-stairs|1Press [E] to board the plane. [I] to move forward, [J] to move left, [L] to move right, [K] to move backward.
+stairs|2A plane with passengers, hmm where is the pilot though?.|2 Press [Q] to board the plane.
 gardentocity|1That path leads back to the city center
 citytomuseum|1That leads to the museum
 citytochangi|1Changi Airport seems to be right ahead.

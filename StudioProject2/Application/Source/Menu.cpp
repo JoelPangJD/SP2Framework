@@ -62,3 +62,7 @@ Menu::~Menu()
 //	}
 //}
 
+void Menu::renderGameWin()
+{
+
+}
