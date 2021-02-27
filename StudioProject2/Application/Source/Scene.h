@@ -102,10 +102,13 @@ public:
 	vector<string> dialogue;
 	vector<string>::iterator currentline;
 	string name;
-	Button button;
+
+	//For UI buttons
+	Button GameWinButton;
 
 	//For Menu,pause and help
 	bool Menu = false;
+	bool Pause = false;
 	bool Help = false;
 	bool GameWin = false;
 

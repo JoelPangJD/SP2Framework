@@ -30,12 +30,12 @@ Scene::Scene()
 	baseMeshList[GEO_WIN] = MeshBuilder::GenerateQuad("Game win screen", Color(1, 1, 1), 1.0f);
 	baseMeshList[GEO_WIN]->textureID = LoadTGA("Image//gamewin.tga");
 
-	button.positionX = 14.5;
-	button.positionY = 3;
-	button.width = 48.6;
-	button.height = 7.8;
-	button.active = true;
-	button.hold = false;
+	GameWinButton.positionX = 14.5;
+	GameWinButton.positionY = 3;
+	GameWinButton.width = 48.6;
+	GameWinButton.height = 7.8;
+	GameWinButton.active = true;
+	GameWinButton.hold = false;
 
 }
 
@@ -89,7 +89,12 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 {
 	if (inmenu)
 	{
-		if (Help)//Help is called
+		if (Pause)
+		{
+			RenderMeshOnScreen(baseMeshList[GEO_PAUSE], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
+			return;
+		}
+		else if (Help)//Help is called
 		{
 			RenderMeshOnScreen(baseMeshList[GEO_HELP], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
 			return;
@@ -102,10 +107,10 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 
 		else if (GameWin)
 		{
-			button.updateButton();
+			GameWinButton.updateButton();
 			RenderMeshOnScreen(baseMeshList[GEO_WIN], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
 			Application::enableMouse = true;
-			if (button.isClickedOn())
+			if (GameWinButton.isClickedOn())
 			{
 				Menu = true;
 			}
@@ -349,7 +354,7 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 	if (Application::IsKeyPressed(VK_ESCAPE) && !inmenu) //Enter pause screen
 	{
 		inmenu = true;
-		Help = true;
+		Pause = true;
 	}
 	if (!inmenu)
 	{
