@@ -445,7 +445,12 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 					else if ((*it)->gettype() == "citytogarden")
 					{
 						camera.position = Vector3(0, 3, -48);
-						Application::SwitchScene = 4;
+						if (Scene::inventory->checkinventory("Map")) {
+							Application::SwitchScene = 4;
+						}
+						else {
+							return "locked";
+						}
 					}
 					else if ((*it)->gettype() == "citytomarina")
 					{
