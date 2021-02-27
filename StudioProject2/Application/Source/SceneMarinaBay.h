@@ -178,7 +178,7 @@ private:
 	vector<Button*> buttonList;		//button list, button positions are the same as the action enums
 	vector<ATTACK> attacksList;		//players current attacksList 
 	vector<ITEMS> itemsList;		//players items list in fight
-	vector<ITEMS> prevItemsList;
+	vector<ITEMS> prevItemsList;	//vector to store the players previous item list in case they lose
 	vector<Terrain*> terrains;		//terrain list
 	vector<InteractableObject*> items;	//objects/npcs list
 
@@ -190,7 +190,7 @@ private:
 	//vars to check whether the attacks have already been added
 	bool bigAdded = false, punchAdded = false, mindAdded = false;
 	//vars for when first entering badguy's range and minigame intros
-	bool firstEnter = true, fightIntro, talkIntro, triedToRun;
+	bool firstEnter = true, fightIntro, talkIntro;
 	int posZ;
 	//fight vars
 	bool fight = false, fightInit, fightWon, fightLost, fightOver, fightDia, playerTurn, enemyTurn, fightSelected, itemsSelected, itemChosen, backSelected, attackSelected, actionSelected, attackHit;

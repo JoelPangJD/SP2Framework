@@ -465,14 +465,6 @@ void SceneMarinaBay::Update(double dt)
 			Scene::inmenu = true;
 			Scene::GameWin = true;
 		}
-		else if (triedToRun)
-		{
-			playerTurn = false;
-			enemyTurn = true;
-			triedToRun = false;
-			fightSelected = false;
-			itemsSelected = false;
-		}
 	}
 
 	if (fight)
@@ -545,8 +537,15 @@ void SceneMarinaBay::Update(double dt)
 					buttonList[i + A_RUN + 1]->active = true;
 				}
 				break;
-			case (A_RUN):
-				triedToRun = true;
+			case (A_RUN):	//doesn't give them a chance to run and ends player's turn
+				playerTurn = false;
+				enemyTurn = true;
+				fightSelected = false;
+				itemsSelected = false;
+				dialogue.push_back("2Nice try.");
+				currentline = dialogue.begin();
+				name = "Thief";
+				indialogue = true;
 				break;
 			default:
 				cout << "playeraction broke";
@@ -667,10 +666,23 @@ void SceneMarinaBay::Update(double dt)
 			switch (playerItem)
 			{
 			case (MED_KIT):
-				playerHealthGained = 100.f;
+				if (playerHealth > 0)	//player not at full health
+					playerHealthGained = 100.f;
+				else
+				{
+					dialogue.push_back("1I'm already at full health!");
+					currentline = dialogue.begin();
+					name = "";
+					indialogue = true;
+				}
 				break;
 			case (SAND):
 				enemyHealthGained = 15.f;
+				dialogue.push_back("2...Why did you think that would help?");
+				currentline = dialogue.begin();
+				name = "Thief";
+				indialogue = true;
+				break;
 			}
 			//removes the item
 			for (std::vector<ITEMS>::iterator it = itemsList.begin(); it != itemsList.end(); it++)
@@ -688,8 +700,9 @@ void SceneMarinaBay::Update(double dt)
 			itemChosen = false;
 		}
 		//enemy turn actions
-		else if (enemyTurn && enemyHealthLost <= 0 && playerHealthLost <= 0 && enemyHealthGained <= 0 && playerHealthGained <= 0)	
-		//if health not still decreasing/increasing
+		else if (enemyTurn && enemyHealthLost <= 0 && playerHealthLost <= 0 && enemyHealthGained <= 0 && playerHealthGained <= 0 
+		&& dialogue.empty())
+		//if health not still decreasing/increasing and there is no dialogue
 		{
 			if (!enemyAlrAttacked)
 			{
@@ -999,7 +1012,7 @@ void SceneMarinaBay::Update(double dt)
 		if (attacksList.size() > 0 && (*it)->gettype() == "badguy")
 			(*it)->updatedialogue("badguy2");
 		else if (fightLost && (*it)->gettype() == "badguy3")
-			(*it)->settype("badguy2");	//changes type but not dialogue so players won't have to sit through everything
+			(*it)->settype("badguy2");	//changes type but not dialogue so players won't have to sit through dialogue again
 	}
 
 	//==================Updating timers===========
@@ -1857,10 +1870,8 @@ void SceneMarinaBay::Render()
 				}
 			}
 		}
-		/*for (auto it = buttonList.begin(); it != buttonList.end(); ++it)
-			RenderMeshOnScreen(meshList[GEO_QUAD], (*it)->positionX + (*it)->width * 0.5, (*it)->positionY + (*it)->height * 0.5, (*it)->width, (*it)->height);*/
 	}
-	else if (!fight)
+	if (!fight || !dialogue.empty())	//when not in fight or there is dialogue
 	{
 		Scene::RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 	}
@@ -1882,9 +1893,6 @@ void SceneMarinaBay::Render()
 	//winning the fight
 	else if (fightWon)
 		RenderNPCDialogue("Agh, you've killed my prized possession. It is my loss. Take your wallet back.", "Thief", modelStack, viewStack, projectionStack, m_parameters);
-	//running
-	else if (triedToRun)
-		RenderNPCDialogue("Nice try.", "Thief", modelStack, viewStack, projectionStack, m_parameters);
 
 	//TO REMOVE IF NO TIME
 	////text from specific conditions
