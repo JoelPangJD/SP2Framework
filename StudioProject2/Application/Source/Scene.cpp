@@ -27,6 +27,15 @@ Scene::Scene()
 	baseMeshList[GEO_PAUSE]->textureID = LoadTGA("Image//helpscreen.tga");
 	baseMeshList[GEO_HELP] = MeshBuilder::GenerateQuad("Help", Color(1, 1, 1), 1.0f);
 	baseMeshList[GEO_HELP]->textureID = LoadTGA("Image//helpscreen.tga");
+	baseMeshList[GEO_WIN] = MeshBuilder::GenerateQuad("Game win screen", Color(1, 1, 1), 1.0f);
+	baseMeshList[GEO_WIN]->textureID = LoadTGA("Image//gamewin.tga");
+
+	button.positionX = 14.5;
+	button.positionY = 3;
+	button.width = 48.6;
+	button.height = 7.8;
+	button.active = true;
+	button.hold = false;
 
 }
 
@@ -76,21 +85,39 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 {
 	if (inmenu)
 	{
-		switch (menutype)
+		if (Help)//Help is called
 		{
-		case 0:
-			RenderMeshOnScreen(baseMeshList[GEO_MENU], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
-			break;
-		case 1:
-			RenderMeshOnScreen(baseMeshList[GEO_PAUSE], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
-			break;
-		case 2:
 			RenderMeshOnScreen(baseMeshList[GEO_HELP], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
-			break;
-		default:
-			break;
+			return;
 		}
-		return;//Don't render the rest of UI when in a menu
+		else if (GameWin)
+		{
+			button.updateButton();
+			RenderMeshOnScreen(baseMeshList[GEO_WIN], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
+			Application::enableMouse = true;
+			if (button.isClickedOn())
+			{
+				Help = true;
+			}
+			return;
+		}
+
+		
+		//switch (menutype)
+		//{
+		//case 0:
+		//	RenderMeshOnScreen(baseMeshList[GEO_MENU], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
+		//	break;
+		//case 1:
+		//	RenderMeshOnScreen(baseMeshList[GEO_PAUSE], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
+		//	break;
+		//case 2:
+		//	RenderMeshOnScreen(baseMeshList[GEO_HELP], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
+		//	break;
+		//default:
+		//	break;
+		//}
+		//return;//Don't render the rest of UI when in a menu
 	}
 	if (indialogue)
 	{
@@ -309,10 +336,10 @@ void Scene::movement(Camera3 &camera, vector<Terrain*> terrains, double dt)
 
 string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool MarinaBay)
 {
-	if (Application::IsKeyPressed('P') && !inmenu) //Enter pause screen
+	if (Application::IsKeyPressed(VK_ESCAPE) && !inmenu) //Enter pause screen
 	{
 		inmenu = true;
-		menutype = 1;
+		GameWin = true;
 	}
 	if (!inmenu)
 	{
@@ -542,7 +569,7 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 	//Interactions while in menu
 	else
 	{
-		if (Application::IsKeyPressed('E') && menutype == 1)
+		if (Application::IsKeyPressed('E'))
 			inmenu = false;
 	}
 	return ""; //if no special actions occur, return an empty string

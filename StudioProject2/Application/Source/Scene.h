@@ -6,6 +6,7 @@
 #include "Terrain.h"
 #include "InteractableObject.h"
 #include "Camera3.h"
+#include "Button.h"
 
 class Scene
 {
@@ -19,6 +20,7 @@ private:
 		GEO_PAUSE,
 		GEO_HELP,
 		GEO_MENU,
+		GEO_WIN,
 
 		//text 
 		GEO_TEXT,
@@ -100,6 +102,12 @@ public:
 	vector<string> dialogue;
 	vector<string>::iterator currentline;
 	string name;
+	Button button;
+
+	//For Menu,pause and help
+	bool Help = false;
+	bool GameWin = false;
+
 
 	//For scene museum
 	bool EndGame1 = false;
