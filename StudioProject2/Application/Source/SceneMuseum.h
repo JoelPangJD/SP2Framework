@@ -14,6 +14,7 @@
 #include "InteractableObject.h"
 #include "Inventory.h"
 #include "Button.h"
+#include "Menu.h"
 
 
 class SceneMuseum : public Scene
@@ -153,6 +154,7 @@ private:
 	Camera3 GameCam1;
 	Button button;
 	Button button2;
+	Menu menu;
 	MS modelStack, viewStack, projectionStack; //The matrix stacks
 	unsigned m_parameters[U_TOTAL];
 	unsigned m_vertexArrayID;
