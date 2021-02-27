@@ -38,8 +38,10 @@ public:
 	void renderMenuScreen();
 	void renderPause();
 	void renderHelp();
+	void renderGameWin();
 
 	bool pause = false;
+	bool gameWin = false;
 
 	float posX, posY, width, height;
 };
