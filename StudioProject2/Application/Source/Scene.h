@@ -105,6 +105,7 @@ public:
 	Button button;
 
 	//For Menu,pause and help
+	bool Menu = false;
 	bool Help = false;
 	bool GameWin = false;
 
@@ -115,6 +116,8 @@ public:
 	bool ShowAnswer = false;
 	bool FoundAnswer = false;
 	bool ToExit = false;
+
+	void StartMenu();
 
 	void RenderMesh(Mesh* mesh, bool enableLight, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
 	void RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);

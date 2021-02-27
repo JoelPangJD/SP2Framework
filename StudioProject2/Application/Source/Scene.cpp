@@ -39,6 +39,10 @@ Scene::Scene()
 
 }
 
+void Scene::StartMenu()
+{
+}
+
 void Scene::RenderMesh(Mesh* mesh, bool enableLight, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[])
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
@@ -90,6 +94,11 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 			RenderMeshOnScreen(baseMeshList[GEO_HELP], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
 			return;
 		}
+		else if (Menu)
+		{
+			RenderMeshOnScreen(baseMeshList[GEO_MENU], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
+		}
+
 		else if (GameWin)
 		{
 			button.updateButton();
@@ -97,7 +106,7 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 			Application::enableMouse = true;
 			if (button.isClickedOn())
 			{
-				Help = true;
+				Menu = true;
 			}
 			return;
 		}
