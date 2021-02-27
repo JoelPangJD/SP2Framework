@@ -27,6 +27,7 @@ void SceneMarinaBay::Init()
 	buttonList.push_back(new Button(53, 8.25, 30, 8.25));	//attack3
 
 	//======Initialising variables========
+	talkIntro = true;
 	pointerX = 2;
 	pointerY = 11;
 	enemyHealthPos = 20.f;
@@ -325,7 +326,7 @@ void SceneMarinaBay::Update(double dt)
 	fps = 1.f / dt;
 	if (!fight)	//not in fight
 	{
-		if ((!firstEnter || camera.position.z<200) && !fightLost)	//dramatic first entry of bad guy not triggered yet
+		if ((!firstEnter || camera.position.z<200) && !fightLost && !talkIntro)	//dramatic first entry of bad guy not triggered yet
 			this->Scene::movement(camera, terrains, dt);
 		string trigger = this->interact(camera, items, true);
 		if (trigger == "battleStart" && !fightLost && !fightOver)
@@ -406,8 +407,10 @@ void SceneMarinaBay::Update(double dt)
 	{
 		if (firstEnter && camera.position.z >= posZ)
 			firstEnter = false;
-		else if (fightIntro && fight && cooldown<=0)
+		else if (fightIntro && fight && cooldown <= 0)
 			fightIntro = false;
+		else if (talkIntro && cooldown <= 0)
+			talkIntro = false;
 		else if (fightLost)		//resetting fight vars
 		{
 			fightLost = false;
@@ -1798,6 +1801,8 @@ void SceneMarinaBay::Render()
 
 	if (fightIntro)
 		RenderMinigameIntro("This game is a turn-based gamemode, if your healthbar turns all red you'll lose. Similarly, if your opponent's bar turns all red they'll lose. You have access to a few options on the bottom of the screen that can be done in a turn, just click on the buttons and they will either show more actions or do an action that ends your turn.", "Turn-based fight", 4, modelStack, viewStack, projectionStack, m_parameters);
+	else if (talkIntro)
+		RenderMinigameIntro("This game is a minigame where you talk to NPCs and try to convince them to help you by giving you attacks to fight the thief with some of them having conditions to give it to you. There are 3 attacks in total to get, good luck!","Talking", 4, modelStack, viewStack, projectionStack, m_parameters);
 	//else if (talkIntro)
 
 }
