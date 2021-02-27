@@ -220,6 +220,8 @@ void SceneChangi::Init()
 	terrains.push_back(new Terrain(Vector3(10.3, 10.3, 398), 0, 0, 0, 70, 35, "police"));
 	terrains.push_back(new Terrain(Vector3(10.3, 10.3, 347), 0, 0, 0, 80, 38, "ambulance"));
 	terrains.push_back(new Terrain(Vector3(10.3, 10.3, 294), 0, 0, 0, 75, 38, "firetruck"));
+
+	collide = false;
 }
 
 
@@ -305,9 +307,9 @@ void SceneChangi::Update(double dt)
 		std::cout << "Collided" << std::endl;
 		collide = true;
 	}
-	else {
+	/*else {
 		collide = false;
-	}
+	}*/
 	
 	camMove = 1;
 }
@@ -539,8 +541,8 @@ void SceneChangi::RenderEntity()
 			camera.position.x = camera.position.x - camMove;
 		}
 		else {
-			camera.position.x = camera.position.x;
-			modelStack.Translate(10, 17 + autoMove, planeZ);
+			//camera.position.x = camera.position.x;
+			modelStack.Translate(0, 17 + autoMove, 0);
 		}
 		planeX = 10 + movex + autoMove;
 		planeZ = -6.5 + movez;
@@ -806,11 +808,29 @@ void SceneChangi::RenderWords()
 
 	if (gameEnd == true && camera.position.x == -4500) {
 		RenderTextOnScreen(meshList[GEO_TEXT], "Goodjob, you make it out.", Color(1, 0, 0), 4, 4, 7);
+		RenderTextOnScreen(meshList[GEO_TEXT], "[ENTER] Bck to main", Color(1, 0, 0), 4, 4, 6);
 	}
 
 	if (collide == true) {
 		gameEnd = true;
-	RenderTextOnScreen(meshList[GEO_TEXT], "GAME OVER", Color(1, 0, 0), 4, 6, 7);
+		RenderTextOnScreen(meshList[GEO_TEXT], "GAME OVER", Color(1, 0, 0), 4, 6, 7);
+		if (Application::IsKeyPressed('R')) {
+			takeFlight = false;
+			gameStart = false;
+			collide = false;
+			gameEnd = false;
+			renderStairs = true;
+			renderDoorman = true;
+			/*camera.position.x = -300;
+			camera.position.y = 2;
+			camera.position.z = 100;*/
+			camera.Init(Vector3(-204, 10.3, 60), Vector3(0, 4.34, 0), Vector3(0, 1, 0));
+			movex = 0;
+			movez = 0;
+			planeX = 10;
+			planeZ = -6.5;
+			autoMove = 0;
+		}
 	}
 }
 
