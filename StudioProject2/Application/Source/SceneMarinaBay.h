@@ -147,7 +147,6 @@ public:
 	bool lighton = true;
 	float fps;
 
-	SceneMarinaBay();
 	SceneMarinaBay(Inventory* inventory);
 	~SceneMarinaBay();
 
@@ -164,6 +163,7 @@ private:
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
 	float x, z, scale=1.f;
+	Camera3 prevCam;
 
 	float cooldown = 0; //cooldown time for actions
 
@@ -174,15 +174,7 @@ private:
 
 	ACTION_TYPE playerAction, enemyAction;
 	ATTACK playerAttack;
-	ENEMY_ATTACKS enemyAttack;
-	std::string fightText, dialogueText;	//to get rid of probably
-	
-	//variables for dialogue
-	std::ostringstream interacttext;
-	bool indialogue;
-	vector<string> dialogue;
-	vector<string>::iterator currentline;
-	string name;
+	ENEMY_ATTACKS enemyAttack;	
 	
 	//vars to check whether the attacks have already been added
 	bool bigAdded = false, punchAdded = false, mindAdded = false;

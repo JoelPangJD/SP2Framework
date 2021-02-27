@@ -16,6 +16,10 @@ private:
 		GEO_INVENTORY,
 		GEO_ACTIONS,
 		GEO_PRESSE,
+		GEO_PAUSE,
+		GEO_HELP,
+		GEO_MENU,
+
 		//text 
 		GEO_TEXT,
 		GEO_TEXTBOX,
@@ -90,6 +94,8 @@ public:
 	//Variables for text
 	std::ostringstream interacttext;
 	bool indialogue = false;
+	bool inmenu = false;
+	int menutype; // 0 for main menu, 1 for pause menu, 2 for helps screen
 	bool CantUse = true;
 	vector<string> dialogue;
 	vector<string>::iterator currentline;
@@ -112,6 +118,7 @@ public:
 	void movement(Camera3 &camera, vector<Terrain*> terrains, double dt);
 	string interact(Camera3 &camera, vector<InteractableObject*>& items, bool MarinaBay = false);	//bool is just so that the other scenes don't waste time checking
 	//returns a string to trigger scene specific actions
+
 };
 
 #endif

@@ -30,9 +30,12 @@ adventurer3|2Infinity? That makes a lot of sense. Aight as promised here's my sw
 pool|1Hello infinity pool
 pool2|1Hello infinity po-wait...|1"You find me behind the stars; or in a sixth, seventh, or third it takes something round, a computer, and me to make pie i am bigger than anything you can think of what am i ??"|1The answer's infinity! I should tell this to the old guy quickly.
 Guide|2Welcome to Changi airport, board the plane for a flight exprience......WAIT|2Oh no! Outsiders fired missiles coming towards the airport.|2 Can u help to drive the plane to safety? Please...
-stairs|1Press [E] to board the plane. [I] to move forward, [J] to move left, [L] to move right, [K] to move backward.
+stairs|1Hope this ride will go well.
 badguy|1I should make sure I have at least one attack before fighting him.
 badguy2|2So, you really think you can take me.|1Mr.Sazz?|2Ah, you must've meant my worthless brother. |2Anyways, I might not be as good as my brother in physical combat, but I have something even greater than the limits of a human. Try and keep my pet entertained for a few seconds could you?| 
 badguy3|2Back for more are you?| 
-citytomuseum|1Hello museum 
+citytomuseum|1Hello museum
+citytogarden|1The garden seems nice
+citytochangi|1Airplanes hmmm.
+citytomarina|1Woah, thats quite big.
 gardentocity|1Hello path

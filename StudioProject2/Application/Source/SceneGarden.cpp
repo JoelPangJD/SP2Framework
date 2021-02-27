@@ -182,7 +182,7 @@ void SceneGarden::Init()
 	meshList[GEO_SPHERE]->material.kShininess = 1.f;
 
 	meshList[GEO_PLAYERYARN] = MeshBuilder::GenerateSphere("playerball", Color(0.5, 0.5, 0.5), 30, 30, 1);
-	meshList[GEO_OBJECTIVEYARN] = MeshBuilder::GenerateSphere("objective", Color(0.3, 0.5, 0.3), 30, 30, 1);
+	meshList[GEO_OBJECTIVEYARN] = MeshBuilder::GenerateSphere("objective", Color(0.5, 0.3, 0.3), 30, 30, 1);
 
 	meshList[GEO_HEMISPHERE] = MeshBuilder::GenerateHemisphere("hemisphere", Color(1, 1, 1), 30, 30, 1);
 	meshList[GEO_CONE] = MeshBuilder::GenerateCone("cone", 1, 20, 30, Color(1, 1, 1));
@@ -489,58 +489,6 @@ void SceneGarden::Update(double dt)
 			indialogue = true;
 		}
 	}
-	if (Application::IsKeyPressed('5'))
-	{
-		light[0].type = Light::LIGHT_POINT;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-	else if (Application::IsKeyPressed('6'))
-	{
-		//to do: switch light type to DIRECTIONAL and pass the information to shader
-		light[0].type = Light::LIGHT_DIRECTIONAL;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-	else if (Application::IsKeyPressed('7'))
-	{
-		//to do: switch light type to SPOT and pass the information to shader
-		light[0].type = Light::LIGHT_SPOT;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-	if (Application::IsKeyPressed('1'))
-		glEnable(GL_CULL_FACE);
-	else if (Application::IsKeyPressed('2'))
-		glDisable(GL_CULL_FACE);
-	else if (Application::IsKeyPressed('3'))
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //default fill mode
-	else if (Application::IsKeyPressed('4'))
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //wireframe mode
-	if (Application::IsKeyPressed('Z'))
-		lighton = false;						//to test whether colours and stuff are working properly
-	else if (Application::IsKeyPressed('X'))
-		lighton = true;
-
-	if (Application::IsKeyPressed('C') && minigame != 0) //exit minigame
-	{
-		Application::enableMouse = false;
-		camera = prevcamera;
-		minigame = 0;
-	}
-	else if (Application::IsKeyPressed('V') && minigame == 0) //Enter minigame
-	{
-		prevcamera = camera;
-		camera.Init(Vector3(0, 50, -150), Vector3(0, 0, -150), Vector3(0, 0, 1));
-		progress = 0;
-		minigame = 1;
-	}
-	else if (Application::IsKeyPressed('B') && minigame == 0) //Enter minigame
-	{
-		prevcamera = camera;
-		camera.Init(Vector3(0, 150, 50), Vector3(0, 0, 50), Vector3(0, 0, 1));
-		Application::enableMouse = true;
-		progress = 0;
-		minigame = 4;
-	}
-
 	if (Application::IsKeyPressed('I'))
 		movez += 10 * dt;
 	if (Application::IsKeyPressed('K'))
@@ -797,7 +745,7 @@ void SceneGarden::Render()
 				modelStack.Rotate(-90, 1, 0, 0);
 				RenderMesh(meshList[GEO_STICK], true, modelStack, viewStack, projectionStack, m_parameters);
 			}
-			if ((*it)->gettype() == "cat")
+			if ((*it)->gettype() == "cat" || (*it)->gettype() == "cat1")
 			{
 				modelStack.Rotate(-90, 1, 0, 0);
 				RenderMesh(meshList[GEO_CAT], true, modelStack, viewStack, projectionStack, m_parameters);

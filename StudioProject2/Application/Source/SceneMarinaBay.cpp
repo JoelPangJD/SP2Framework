@@ -7,10 +7,6 @@
 #include <Mtx44.h>
 #include"MeshBuilder.h"
 
-SceneMarinaBay::SceneMarinaBay()
-{
-}
-
 SceneMarinaBay::SceneMarinaBay(Inventory* inventory)
 {
 	this->inventory = inventory;
@@ -31,6 +27,7 @@ void SceneMarinaBay::Init()
 	buttonList.push_back(new Button(53, 8.25, 30, 8.25));	//attack3
 
 	//======Initialising variables========
+	talkIntro = true;
 	pointerX = 2;
 	pointerY = 11;
 	enemyHealthPos = 20.f;
@@ -235,17 +232,17 @@ void SceneMarinaBay::Init()
 
 		//Skybox quads
 		meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.0f);
-		meshList[GEO_LEFT]->textureID = LoadTGA("Image//left.tga");
+		meshList[GEO_LEFT]->textureID = LoadTGA("Image//Marina//negx.tga");
 		meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.0f);
-		meshList[GEO_RIGHT]->textureID = LoadTGA("Image//right.tga");
+		meshList[GEO_RIGHT]->textureID = LoadTGA("Image//Marina//posx.tga");
 		meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.0f);
-		meshList[GEO_FRONT]->textureID = LoadTGA("Image//front.tga");
+		meshList[GEO_FRONT]->textureID = LoadTGA("Image//Marina//posz.tga");
 		meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.0f);
-		meshList[GEO_BACK]->textureID = LoadTGA("Image//back.tga");
+		meshList[GEO_BACK]->textureID = LoadTGA("Image//Marina//negz.tga");
 		meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.0f);
-		meshList[GEO_TOP]->textureID = LoadTGA("Image//top.tga");
+		meshList[GEO_TOP]->textureID = LoadTGA("Image//Marina//posy.tga");
 		meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
-		meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//bottom.tga");
+		meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//Marina//negy.tga");
 		//main boat
 		meshList[GEO_BOAT] = MeshBuilder::GenerateOBJMTL("boat", "OBJ//Marina//boat2.obj", "OBJ//Marina//boat.mtl");
 
@@ -313,7 +310,7 @@ void SceneMarinaBay::Init()
 		//items/npcs
 		items.push_back(new InteractableObject(Vector3(-50, 5, -100), 90, 0.7, 7, "robot", "Robot", false));
 		items.push_back(new InteractableObject(Vector3(-22, 5, -160), 180, 0.7, 7, "girl", "Hostess", false));
-		items.push_back(new InteractableObject(Vector3(0, 5, 300), 0, 0.7, 5, "badguy", "Robber", false));
+		items.push_back(new InteractableObject(Vector3(0, 5, 300), 0, 0.7, 5, "badguy", "Thief", false));
 		items.push_back(new InteractableObject(Vector3(-30, 5, 44), 180, 0.7, 7, "adventurer", "Adventurer", false));
 		items.push_back(new InteractableObject(Vector3(15, 5, -70), 270, 0.7, 7, "orc", "Orc", false));
 		items.push_back(new InteractableObject(Vector3(32, 5, 30), 0, 0.7, 5, "pool", "Infinity Pool", false));
@@ -329,10 +326,10 @@ void SceneMarinaBay::Update(double dt)
 	fps = 1.f / dt;
 	if (!fight)	//not in fight
 	{
-		if ((!firstEnter || camera.position.z<200) && !fightLost)	//dramatic first entry of bad guy not triggered yet
+		if ((!firstEnter || camera.position.z<200) && !fightLost && !talkIntro)	//dramatic first entry of bad guy not triggered yet
 			this->Scene::movement(camera, terrains, dt);
 		string trigger = this->interact(camera, items, true);
-		if (trigger == "battleStart" && !fightLost)
+		if (trigger == "battleStart" && !fightLost && !fightOver)
 		{
 			fight = true;
 			fightInit = true;
@@ -410,8 +407,10 @@ void SceneMarinaBay::Update(double dt)
 	{
 		if (firstEnter && camera.position.z >= posZ)
 			firstEnter = false;
-		else if (fightIntro && fight && cooldown<=0)
+		else if (fightIntro && fight && cooldown <= 0)
 			fightIntro = false;
+		else if (talkIntro && cooldown <= 0)
+			talkIntro = false;
 		else if (fightLost)		//resetting fight vars
 		{
 			fightLost = false;
@@ -443,11 +442,26 @@ void SceneMarinaBay::Update(double dt)
 				buttonList[i]->active = true;
 			}
 		}
+		else if (fightWon)
+		{
+			Application::enableMouse = true;
+			fightWon = false;
+			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+			{
+				if ((*it)->gettype() == "badguy2")
+				{
+					items.erase(items.begin() + distance(items.begin(), it));
+					break;
+				}
+			}
+			//render the gameWin menu here
+		}
 		else if (triedToRun)
 		{
 			playerTurn = false;
 			enemyTurn = true;
 			triedToRun = false;
+			fightSelected = false;
 		}
 	}
 
@@ -455,6 +469,7 @@ void SceneMarinaBay::Update(double dt)
 	{
 		if (fightInit)
 		{
+			prevCam = camera;
 			camera.Init(Vector3(90, 40, 240), Vector3(0, 8, 240), Vector3(0, 1, 0));
 			Application::enableMouse = true;
 			fightIntro = true;
@@ -848,12 +863,20 @@ void SceneMarinaBay::Update(double dt)
 		{
 			fightOver = true;
 			fight = false;
-
-			/*if (enemyHealth >= 20)
-				fightWon = true;
-			else*/
+			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 			{
-				fightLost = true;
+				if ((*it)->gettype() == "badguy3")
+					(*it)->settype("badguy2");
+			}
+
+			if (enemyHealth >= 20)
+			{
+				fightWon = true;
+				camera = prevCam;
+			}
+			else
+			{
+				fightLost = true;	//spawns player away from boss
 				camera.Init(Vector3(-57, 8, 157), Vector3(-57, 8, 158), Vector3(0, 1, 0));
 			}
 		}
@@ -892,7 +915,7 @@ void SceneMarinaBay::Update(double dt)
 void SceneMarinaBay::RenderSkybox()
 {
 	modelStack.PushMatrix();
-	modelStack.Translate(camera.position.x, camera.position.y + 200, camera.position.z);
+	modelStack.Translate(camera.position.x, camera.position.y, camera.position.z);
 
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 0, -499);
@@ -910,7 +933,6 @@ void SceneMarinaBay::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Translate(0, -499, 0);
 	modelStack.Rotate(-90, 1, 0, 0);
-	modelStack.Rotate(90, 0, 0, 1);
 	modelStack.Scale(1000, 1000, 1000);
 	RenderMesh(meshList[GEO_BOTTOM], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
@@ -918,7 +940,6 @@ void SceneMarinaBay::RenderSkybox()
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 499, 0);
 	modelStack.Rotate(90, 1, 0, 0);
-	modelStack.Rotate(-90, 0, 0, 1);
 	modelStack.Scale(1000, 1000, 1000);
 	RenderMesh(meshList[GEO_TOP], false, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
@@ -1703,7 +1724,7 @@ void SceneMarinaBay::Render()
 	if (fight && !attackSelected)
 	{
 		//enemy
-		RenderTextOnScreen(meshList[GEO_TEXT], "Evil Guy", Color(0, 1, 0), 5, 0, 55, modelStack, viewStack, projectionStack, m_parameters);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Dragon", Color(0, 1, 0), 5, 0, 55, modelStack, viewStack, projectionStack, m_parameters);
 		RenderMeshOnScreen(meshList[GEO_HEALTH], 10, 53, 20, 2, modelStack, viewStack, projectionStack, m_parameters);
 		RenderMeshOnScreen(meshList[GEO_LOSTHEALTH], enemyHealthPos, 53, enemyHealth, 2, modelStack, viewStack, projectionStack, m_parameters);
 		//MC
@@ -1773,11 +1794,15 @@ void SceneMarinaBay::Render()
 		else
 			RenderNPCDialogue("A 2-on-1 makes it quite hard to run.", "Tips", modelStack, viewStack, projectionStack, m_parameters);
 	}
+	else if (fightWon)
+		RenderNPCDialogue("Agh, you've killed my prized possession. It is my loss. Take your wallet back.", "Thief", modelStack, viewStack, projectionStack, m_parameters);
 	else if (triedToRun)
-		RenderNPCDialogue("Nice try.", "Robber", modelStack, viewStack, projectionStack, m_parameters);
+		RenderNPCDialogue("Nice try.", "Thief", modelStack, viewStack, projectionStack, m_parameters);
 
 	if (fightIntro)
 		RenderMinigameIntro("This game is a turn-based gamemode, if your healthbar turns all red you'll lose. Similarly, if your opponent's bar turns all red they'll lose. You have access to a few options on the bottom of the screen that can be done in a turn, just click on the buttons and they will either show more actions or do an action that ends your turn.", "Turn-based fight", 4, modelStack, viewStack, projectionStack, m_parameters);
+	else if (talkIntro)
+		RenderMinigameIntro("This game is a minigame where you talk to NPCs and try to convince them to help you by giving you attacks to fight the thief with some of them having conditions to give it to you. There are 3 attacks in total to get, good luck!","Talking", 4, modelStack, viewStack, projectionStack, m_parameters);
 	//else if (talkIntro)
 
 }

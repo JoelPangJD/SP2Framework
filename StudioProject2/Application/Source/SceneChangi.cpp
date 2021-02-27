@@ -209,7 +209,7 @@ void SceneChangi::Init()
 	meshList[GEO_ROADARROW] = MeshBuilder::GenerateOBJMTL("roadArrow", "OBJ//Changi//arrowRoad.obj", "OBJ//Changi//arrowRoad.mtl");
 
 	items.push_back(new InteractableObject(Vector3(-100, 0, 60), 0, 2, 20, "Guide", "Guide", false));
-	items.push_back(new InteractableObject(Vector3(-40, 10.3, 72), 0, 2, 20, "stairs", "Stairs", false));
+	items.push_back(new InteractableObject(Vector3(-40, 10.3, 72), 0, 2, 30, "stairs", "Stairs", false));
 
 	terrains.push_back(new Terrain(Vector3(-84.8, 10.3, 115), 0, 0, 0, 8, 70, "Wall"));
 	terrains.push_back(new Terrain(Vector3(-84.8, 10.3, -115), 0, 0, 0, 8, 70, "Wall"));
@@ -256,11 +256,13 @@ void SceneChangi::Update(double dt)
 
 	if (camera.position.x <= -30 && camera.position.x >= -50 && camera.position.z > 60 && camera.position.z < 90) {
 		atStairs = true;
-		if (Application::IsKeyPressed('E'))
+		if (Application::IsKeyPressed('Q'))
 		{
+			
 			use = true;
 			renderStairs = false;
 			renderDoorman = false;
+
 		}
 	}
 	else
@@ -271,6 +273,7 @@ void SceneChangi::Update(double dt)
 
 	if (camera.position.x == -18 && camera.position.y == 51 && camera.position.z == 0) {
 		gameStart = true;
+
 	}
 	else
 	{
@@ -285,7 +288,7 @@ void SceneChangi::Update(double dt)
 		welcome = false;
 	}
 
-	if (camera.position.x == -2800)
+	if (camera.position.x == -4500)
 	{
 		gameEnd = true;
 	}
@@ -300,6 +303,10 @@ void SceneChangi::Update(double dt)
 		(planeX + 33) >= -4230 && (planeX - 33) <= -4170 && (planeZ + 50) >= 9 && (planeZ - 50) <= -9 || (planeX + 33) >= -4230 && (planeX - 33) <= -4170 && (planeZ + 50) >= -91 && (planeZ - 50) <= -109 )
 	{
 		std::cout << "Collided" << std::endl;
+		collide = true;
+	}
+	else {
+		collide = false;
 	}
 	
 	camMove = 1;
@@ -533,6 +540,7 @@ void SceneChangi::RenderEntity()
 		}
 		else {
 			camera.position.x = camera.position.x;
+			modelStack.Translate(10, 17 + autoMove, planeZ);
 		}
 		planeX = 10 + movex + autoMove;
 		planeZ = -6.5 + movez;
@@ -782,12 +790,9 @@ void SceneChangi::RenderWords()
 	//}
 
 	if (gameStart == true) {
-		RenderTextOnScreen(meshList[GEO_TEXT], "WARNING!!! ", Color(1, 0, 0), 8, 3, 6);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Unidentified projectile has been detected", Color(1, 0, 0), 3.5, 2, 12);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Dodge incoming enemy missiles", Color(1, 0, 0), 4, 3, 7);
-		RenderTextOnScreen(meshList[GEO_TEXT], "[F] to take off ", Color(1, 0, 0), 5, 3.5, 2);
-		
-		if (Application::IsKeyPressed('F') )
+		RenderMinigameIntro("Use [I],[J],[K],[L] to move the plane. Dodge incoming missiles, 1 is enough to kill you", "Escape", 6, modelStack, viewStack, projectionStack, m_parameters);
+
+		if (Application::IsKeyPressed('E'))
 		{
 
 			camera.position.x = 100;
@@ -799,8 +804,13 @@ void SceneChangi::RenderWords()
 		}
 	}
 
-	if (gameEnd == true) {
+	if (gameEnd == true && camera.position.x == -4500) {
 		RenderTextOnScreen(meshList[GEO_TEXT], "Goodjob, you make it out.", Color(1, 0, 0), 4, 4, 7);
+	}
+
+	if (collide == true) {
+		gameEnd = true;
+	RenderTextOnScreen(meshList[GEO_TEXT], "GAME OVER", Color(1, 0, 0), 4, 6, 7);
 	}
 }
 

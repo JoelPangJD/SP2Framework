@@ -8,6 +8,8 @@
 #include <Mtx44.h>
 #include"MeshBuilder.h"
 
+#define PI 3.141592
+
 SceneMain::SceneMain()
 {
 }
@@ -198,14 +200,19 @@ void SceneMain::Init()
 	meshList[GEO_BUILDING] = MeshBuilder::GenerateOBJMTL("building", "OBJ//CityCenter//building.obj", "OBJ//CityCenter//building.mtl");
 	meshList[GEO_BUILDING1] = MeshBuilder::GenerateOBJMTL("building1", "OBJ//CityCenter//building1.obj", "OBJ//CityCenter//building1.mtl");
 	meshList[GEO_BUILDING2] = MeshBuilder::GenerateOBJMTL("building2", "OBJ//CityCenter//building2.obj", "OBJ//CityCenter//building2.mtl");
+	meshList[GEO_BUILDING3] = MeshBuilder::GenerateOBJMTL("building3", "OBJ//CityCenter//building3.obj", "OBJ//CityCenter//building3.mtl");
 	meshList[GEO_ROADCURVESPLITRIGHT] = MeshBuilder::GenerateOBJMTL("road_curvesplitright", "OBJ//CityCenter//road_curvesplitright.obj", "OBJ//CityCenter//road_curvesplitright.mtl");
 	meshList[GEO_ROAD4WAY] = MeshBuilder::GenerateOBJMTL("road4way", "OBJ//CityCenter//road_4way.obj", "OBJ//CityCenter//road_4way.mtl");
 	meshList[GEO_ROADJUNCTION] = MeshBuilder::GenerateOBJMTL("roadjunction", "OBJ//CityCenter//road_junction.obj", "OBJ//CityCenter//road_junction.mtl");
 	meshList[GEO_ROADCURVED] = MeshBuilder::GenerateOBJMTL("roadcurved", "OBJ//CityCenter//road_curved.obj", "OBJ//CityCenter//road_curved.mtl");
+	meshList[GEO_ROADINTERSECT] = MeshBuilder::GenerateOBJMTL("roadintersect", "OBJ//CityCenter//road_intersection.obj", "OBJ//CityCenter//road_intersection.mtl");
+	meshList[GEO_CAR] = MeshBuilder::GenerateOBJMTL("roadintersect", "OBJ//CityCenter//car.obj", "OBJ//CityCenter//car.mtl");
 
-	inFrontofMuseum = inFrontofChangi = inFrontofGarden = inFrontofMarina = false;
 	minigameMuseum = false;
 	firstEnter = firstRender = walletNotGone = true;
+	rotateCarY = 180;
+	translateCarX = 0;
+	translateCarZ = 100;
 
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
@@ -228,7 +235,7 @@ void SceneMain::Init()
 		else {
 			width = 15;
 		}
-		gridButton[i].positionX = grids[i]->x - width/2;
+		gridButton[i].positionX = grids[i]->x - width / 2;
 		gridButton[i].positionY = grids[i]->y - height / 2;
 		gridButton[i].width = width;
 		gridButton[i].height = height;
@@ -236,18 +243,18 @@ void SceneMain::Init()
 		colorGrid[i] = "Red";
 	}
 	pass = false;
-	locked = false;
 	items.push_back(new InteractableObject(Vector3(-2, 2, 0), 0, 2, 4, "Mr.Sazz", "Mr.Sazz", false));
 	items.push_back(new InteractableObject(Vector3(6, 1, 5), 0, 2, 3, "Andy", "Andy", false));
-	items.push_back(new InteractableObject(Vector3(23, 3, 0), 0, 1, 8, "citytomuseum", "To the museum", false)); //The rest of the code is in the scene.cpp under the press 'Q'
-																												//Don't forget to add a description and talk to in the text file
-																												//Delete these comments after you are done
+	items.push_back(new InteractableObject(Vector3(23, 3, 0), 0, 1, 10, "citytomuseum", "To the museum", false)); 
+	items.push_back(new InteractableObject(Vector3(0, 3, 58), 0, 1, 10, "citytochangi", "To Changi Airport", false));
+	items.push_back(new InteractableObject(Vector3(-48, 3, 0), 0, 1, 10, "citytomarina", "To Marina Bay Sands", false));
+	items.push_back(new InteractableObject(Vector3(0, 3, -58), 0, 1, 10, "citytogarden", "To Botanic Garden", false));
 
 	//wall.push_back(new Terrain(Vector3(26, 0, 0), 0, 1, 50, 1, "wall"));
 	wall.push_back(new Terrain(Vector3(70, 0, 0), 0, 0, 0, 20, 150.f, "Wall"));
 	wall.push_back(new Terrain(Vector3(-60, 0, 0), 0, 0, 0, 20, 150.f, "Wall"));
 	wall.push_back(new Terrain(Vector3(0, 0, 70), 0, 0, 0, 150.f, 20, "Wall"));
-	wall.push_back(new Terrain(Vector3(0, 0, -35), 0, 0, 0, 150.f, 20, "Wall"));
+	wall.push_back(new Terrain(Vector3(0, 0, -70), 0, 0, 0, 150.f, 20, "Wall"));
 	wall.push_back(new Terrain(Vector3(7, 0, 7), 0, 10, 0, 4.f, 4.f, "tree"));
 	wall.push_back(new Terrain(Vector3(-7, 0, 7), 0, 10, 0, 4.f, 4.f, "tree"));
 	wall.push_back(new Terrain(Vector3(7, 0, -7), 0, 10, 0, 4.f, 4.f, "tree"));
@@ -257,9 +264,10 @@ void SceneMain::Init()
 	wall.push_back(new Terrain(Vector3(-2, 0, 0), -90, 0.3, 0, 2.f, 2.f, "teacher"));
 	wall.push_back(new Terrain(Vector3(37.5, 0, 0), 90, 25, 0, 23.f, 32.f, "museum"));
 	wall.push_back(new Terrain(Vector3(28, 0, -35), 90, 25, 0, 23.f, 24.f, "building"));
-	wall.push_back(new Terrain(Vector3(-28, 0, 35), 90, 25, 0, 23.f, 24.f, "building"));
-	wall.push_back(new Terrain(Vector3(-35, 0, -35), -90, 25, 0, 23.f, 32.f, "building1"));
+	wall.push_back(new Terrain(Vector3(-28, 0, 15), 90, 25, 0, 23.f, 24.f, "building"));
+	wall.push_back(new Terrain(Vector3(-30, 0, -30), -90, 35, 0, 31.f, 46.f, "building1"));
 	wall.push_back(new Terrain(Vector3(30, 0, 55), 90, 25, 0, 23.f, 44.f, "building2"));
+	wall.push_back(new Terrain(Vector3(-28, 0, 45), 90, 25, 0, 34.f, 34.f, "building3"));
 }
 
 
@@ -306,69 +314,18 @@ void SceneMain::Update(double dt)
 			walletNotGone = false;
 		}
 
-		//if (inDialogue) {
-		//	inDialogue = false;
-		//	locked = false;
-		//}
 	}
 
-	//You can put this into the scene.cpp function
-	if (Application::IsKeyPressed('Q')) {
-		if (inFrontofMuseum == true) {
-			minigameMuseum = true;
-			cooldown = 1.5;
-		}
-		else if (inFrontofChangi) {
-			if (Scene::inventory->checkinventory("Changi Airport card place holder")){
-				Application::SwitchScene = 2;
-			}
-			else {
-				locked = true;
-			}
-		}
-		else if (inFrontofMarina) {
-			if (Scene::inventory->checkinventory("Marina Bay ticket")) {
-				Application::SwitchScene = 3;
-			}
-			else {
-				locked = true;
-			}
-		}
-		else if (inFrontofGarden) {
-			Application::SwitchScene = 4;
-		}
-	}
-	//if ((camera.position.x >= 18) && (camera.position.x <= 27.5) && (camera.position.z >= -3) && (camera.position.z <= 3)) {
-	//	inFrontofMuseum = true;
-	//}
 	if (trigger == "frontofmuseum")
 	{
-		inFrontofMuseum = true;
 		minigameMuseum = true;
 		cooldown = 1.5;
 	}
-	else
-		inFrontofMuseum = false;
-	if(trigger == "locked") { //Use the interact code return to return the lock condition instead of locked bool
+	if(trigger == "locked") {
 			dialogue.push_back("1It seems that I do not have the item required to open this door.");
 			currentline = dialogue.begin();
 			name = "";
 			indialogue = true;
-		}
-	// The radius seems to be
-	if ((camera.position.x >= -3) && (camera.position.x <= 3) && (camera.position.z >= 18) && (camera.position.z <= 27.5)) {
-		inFrontofChangi = true;
-	}
-	else if ((camera.position.x <= -43) && (camera.position.x >= -52.5) && (camera.position.z >= -3) && (camera.position.z <= 3)) {
-		inFrontofMarina = true;
-	}
-	else if ((camera.position.x >= -3) && (camera.position.x <= 3) && (camera.position.z <= -18) && (camera.position.z >= -27.5)) {
-		inFrontofGarden = true;
-	}
-	else {
-		inFrontofChangi = false;
-		inFrontofMarina = false;
-		inFrontofGarden = false;
 	}
 
 	//minigame for entering museum
@@ -381,7 +338,7 @@ void SceneMain::Update(double dt)
 		}
 		updateMinigame(dt);
 	}
-
+	updateCar(dt);
 
 }
 
@@ -501,6 +458,41 @@ void SceneMain::updateMinigame(double dt)
 
 }
 
+void SceneMain::updateCar(double dt)
+{
+	if (translateCarZ > 77.5) {
+		translateCarZ -= 10 * float(dt);
+		if (translateCarZ <= 77.5)
+			translateCarZ = 77.5;
+	}
+	else if ((rotateCarY <270) && (translateCarX > -5)) {
+		rotateCarY += 25 * float(dt);
+		if (rotateCarY >= 270)
+			rotateCarY = 270;
+		translateCarX = -5 - 5.f * cos(rotateCarY * PI / 180);
+		translateCarZ = 77.5 + 2.5f *  sin(rotateCarY * PI / 180);
+	}
+	else if (translateCarX > -50) {
+		translateCarX -= 10 * float(dt);
+		if (translateCarX <= -50)
+			translateCarX = -50;
+	}
+	else if (rotateCarY > 180) {
+		rotateCarY -= 25 * float(dt);
+		if (rotateCarY <= 180)
+			rotateCarY = 180;
+		translateCarX = -50 + 10.f * cos(rotateCarY * PI / 180);
+		translateCarZ = 67.5 - 7.5f * sin(rotateCarY * PI / 180);
+	}
+	else {
+		translateCarZ -= 10 * float(dt);
+		if (translateCarZ < -150) {
+			translateCarZ = 100;
+			translateCarX = 0;
+		}
+	}
+}
+
 void SceneMain::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -614,20 +606,29 @@ void SceneMain::Render()
 			RenderMesh(meshList[GEO_BUILDING1], true, modelStack, viewStack, projectionStack, m_parameters);
 		else if ((*it)->gettype() == "building2")
 			RenderMesh(meshList[GEO_BUILDING2], true, modelStack, viewStack, projectionStack, m_parameters);
+		else if ((*it)->gettype() == "building3")
+			RenderMesh(meshList[GEO_BUILDING3], true, modelStack, viewStack, projectionStack, m_parameters);
 		modelStack.PopMatrix();
 	}
 	
 
 	modelStack.PushMatrix();
-	modelStack.Translate(0, 0, 35);
-	modelStack.Scale(5, 5, 55);
+	modelStack.Translate(0, 0, 40);
+	modelStack.Scale(5, 5, 65);
 	modelStack.Rotate(90, 0, 1, 0);
 	RenderMesh(meshList[GEO_ROADSTRAIGHT], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(0, 0, -17.5);
-	modelStack.Scale(5, 5, 20);
+	modelStack.Translate(0, 0, 110);
+	modelStack.Scale(5, 5, 65);
+	modelStack.Rotate(90, 0, 1, 0);
+	RenderMesh(meshList[GEO_ROADSTRAIGHT], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 0, -32.5);
+	modelStack.Scale(5, 5, 50);
 	modelStack.Rotate(90, 0, 1, 0);
 	RenderMesh(meshList[GEO_ROADSTRAIGHT], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
@@ -653,6 +654,20 @@ void SceneMain::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
+	modelStack.Translate(-57.5, 0, -57.5);
+	modelStack.Scale(5, 5, 5);
+	modelStack.Rotate(90, 0, 1, 0);
+	RenderMesh(meshList[GEO_ROADCURVESPLITRIGHT], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-60, 0, -120);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(115, 5, 5);
+	RenderMesh(meshList[GEO_ROADSTRAIGHT], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
 	modelStack.Translate(-60, 0, 0);
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_ROAD4WAY], true, modelStack, viewStack, projectionStack, m_parameters);
@@ -666,26 +681,66 @@ void SceneMain::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-7, 0, -30);
+	modelStack.Translate(-27.5, 0, 75);
+	modelStack.Scale(50, 5, 5);
+	RenderMesh(meshList[GEO_ROADSTRAIGHT], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-27.5, 0, -60);
+	modelStack.Scale(50, 5, 5);
+	RenderMesh(meshList[GEO_ROADSTRAIGHT], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-60, 0, -35);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(35, 5, 5);
+	RenderMesh(meshList[GEO_ROADSTRAIGHT], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 0, 75);
+	modelStack.Rotate(-90, 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROADINTERSECT], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 0, -60);
+	modelStack.Rotate(-90, 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROADINTERSECT], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(translateCarX, 0, translateCarZ);
+	modelStack.Scale(3, 3, 3);
+	modelStack.Rotate(rotateCarY, 0, 1, 0);
+	RenderMesh(meshList[GEO_CAR], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-7, 0, -70);
 	modelStack.Scale(10, 10, 10);
 	RenderMesh(meshList[GEO_TREE], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(7, 0, -33);
+	modelStack.Translate(7, 0, -73);
 	modelStack.Scale(10, 10, 10);
 	RenderMesh(meshList[GEO_TREE], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(1, 0, -38);
+	modelStack.Translate(1, 0, -78);
 	modelStack.Scale(10, 10, 10);
 	RenderMesh(meshList[GEO_TREE], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 
 	modelStack.PushMatrix();
-	modelStack.Translate(2.5, 9, 27.4);
+	modelStack.Translate(2.5, 9, 62.4);
 	modelStack.Scale(2, 2, 2);
 	modelStack.Rotate(180, 0, 1, 0);
 	RenderText(meshList[GEO_TEXT], "Changi Airport", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
@@ -699,7 +754,7 @@ void SceneMain::Render()
 	modelStack.PopMatrix();
 	
 	modelStack.PushMatrix();
-	modelStack.Translate(-2.5, 9, -27.4);
+	modelStack.Translate(-2.5, 9, -62.4);
 	modelStack.Scale(2, 2, 2);
 	RenderText(meshList[GEO_TEXT], "Botanic Garden", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
@@ -709,67 +764,8 @@ void SceneMain::Render()
 	modelStack.Scale(2, 2, 2);
 	modelStack.Rotate(-90, 0, 1, 0);
 	RenderText(meshList[GEO_TEXT], "Museum", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
-
-	
-	//condition checking
-	if (inFrontofMuseum) {
-		modelStack.PushMatrix();
-		modelStack.Translate(0.35, -2, -0.29);
-		modelStack.Scale(0.7, 0.7, 1);
-		RenderText(meshList[GEO_TEXT], "Q to", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
-
-		modelStack.PushMatrix();
-		modelStack.Translate(-0.2, -1, 0);
-		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
-
-		modelStack.PopMatrix();
-		modelStack.PopMatrix();
-	}
 	modelStack.PopMatrix();
 
-	if (inFrontofChangi) {
-		modelStack.PushMatrix();
-		modelStack.Translate(0.4, 4, 27.4);
-		modelStack.Scale(1, 1, 1);
-		modelStack.Rotate(180, 0, 1, 0);
-		RenderText(meshList[GEO_TEXT], "Q to", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
-
-		modelStack.PushMatrix();
-		modelStack.Translate(-0.2, -1, 0);
-		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
-
-		modelStack.PopMatrix();
-		modelStack.PopMatrix();
-	}
-
-	if (inFrontofMarina) {
-		modelStack.PushMatrix();
-		modelStack.Translate(-52.4, 4, 0.4);
-		modelStack.Scale(1, 1, 1);
-		modelStack.Rotate(90, 0, 1, 0);
-		RenderText(meshList[GEO_TEXT], "Q to", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
-
-		modelStack.PushMatrix();
-		modelStack.Translate(-0.2, -1, 0);
-		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
-
-		modelStack.PopMatrix();
-		modelStack.PopMatrix();
-	}
-
-	if (inFrontofGarden) {
-		modelStack.PushMatrix();
-		modelStack.Translate(-0.4, 4, -27.4);
-		modelStack.Scale(1, 1, 1);
-		RenderText(meshList[GEO_TEXT], "Q to", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
-
-		modelStack.PushMatrix();
-		modelStack.Translate(-0.2, -1, 0);
-		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
-
-		modelStack.PopMatrix();
-		modelStack.PopMatrix();
-	}
 
 	
 	if (firstEnter == true) {
@@ -788,7 +784,10 @@ void SceneMain::Render()
 		indialogue = true;
 		walletNotGone = false;
 	}
-	
+	//if (locked) {
+	//	dialogue.push_back("1")
+	//}
+
 	RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 
 	if (minigameMuseum == true) {
