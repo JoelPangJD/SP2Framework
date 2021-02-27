@@ -761,7 +761,7 @@ void SceneChangi::RenderWords()
 	modelStack.PopMatrix();
 
 	if (gameStart == true) {
-		RenderMinigameIntro("Use [I],[J],[K],[L] to move the plane. Dodge incoming missiles, 1 is enough to kill you. ", "Escape", 6, modelStack, viewStack, projectionStack, m_parameters);
+		RenderMinigameIntro("Use [I],[J],[K],[L] to move the plane. Dodge incoming missiles, 1 is enough to kill you. You will be awarded with a map of garden.", "Escape", 6, modelStack, viewStack, projectionStack, m_parameters);
 
 		if (Application::IsKeyPressed('E'))
 		{
