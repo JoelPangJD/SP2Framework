@@ -16,7 +16,6 @@ flag|1I think i can pick this up.
 box|1I think i can pick this up.
 elephant|1I think i should read up more on this "Runaway Elephant".
 rickshaw|1I think i shall ask my grandpa how was the experience pulling this Rickshaw.
-yarn|1Hello yarn.
 girl|2Hello there! What brings you to the Marina Bay Sands Skypark?|1A guy here stole my wallet and I need to get it back.|2Oh, terribly sorry to hear that. I might not be able to help much but I do have this mushroom from a man in a red cap earlier. Maybe you can use it.|1Thank you very much.|2Perhaps the other guests might be willing to lend you help as well?
 girl2|2Maybe the other guests could help?
 robot|2Beep boop. How may I be of service?|1A guy here stole my wallet and I'm trying to get it back but I don't really have much to fight him with.|2Fighting is beyond my protocol. However, I could modify you to be better at fighting if your consent is given.|1Sure, robot parts sound awesome.|2Done.|1Oh thanks, wonder what this will be able to do?
@@ -33,6 +32,7 @@ stairs|1Hope this ride will go well.
 badguy|1I should make sure I have at least one attack before fighting him.
 badguy2|2So, you really think you can take me.|1Mr.Sazz?|2Ah, you must've meant my worthless brother.|2Anyways, I might not be as good as my brother in physical combat, but I have something even greater than the limits of a human. Try and keep my pet entertained for a few seconds could you?| 
 badguy3|2Back for more are you?| 
+fountain|1Hello fountain.
 citytomuseum|1Hello museum.
 citytogarden|1The garden seems nice.
 citytochangi|1Airplanes hmmm.

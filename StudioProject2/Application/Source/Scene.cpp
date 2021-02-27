@@ -149,6 +149,7 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 		if (Help)//Render help screen
 		{
 			RenderMeshOnScreen(baseMeshList[GEO_HELP], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
+			RenderMeshOnScreen(baseMeshList[GEO_PRESSE], 76, 3, 7, 7, modelStack, viewStack, projectionStack, m_parameters);
 			return;
 		}
 		if (Menu) // Render menu screen
@@ -168,24 +169,6 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 			}
 			return;
 		}
-
-
-		
-		//switch (menutype)
-		//{
-		//case 0:
-		//	RenderMeshOnScreen(baseMeshList[GEO_MENU], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
-		//	break;
-		//case 1:
-		//	RenderMeshOnScreen(baseMeshList[GEO_PAUSE], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
-		//	break;
-		//case 2:
-		//	RenderMeshOnScreen(baseMeshList[GEO_HELP], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
-		//	break;
-		//default:
-		//	break;
-		//}
-		//return;//Don't render the rest of UI when in a menu
 	}
 	if (indialogue)
 	{

@@ -776,10 +776,11 @@ void SceneMain::Render()
 
 
 		if (firstEnter == true) {
-			if (camera.position.x > -14) {
-				dialogue.push_back("2Welcome to the city tour, you can press T to talk to people or interact with objects, F to observe, G to pick up items. Finally you can press E to end or continue the converstaion.");
+			{
+				dialogue.push_back("2Welcome to the city tour, you can press T to talk to, F to observe, G to pick up items and E to continue conversations.");
+				dialogue.push_back("2Finally, you can use the up and down arrow keys to navigate your inventory and Q to use items.");
+				name = "Mr.Sazz";
 				currentline = dialogue.begin();
-				Scene::name = "Mr.Sazz";
 				indialogue = true;
 				firstEnter = false;
 			}
@@ -787,7 +788,7 @@ void SceneMain::Render()
 		if ((walletNotGone) && (!firstEnter) && (cooldown <= 0)) {
 			dialogue.push_back("1Wait, my pocket is lighter now... My wallet is gone? I have to find my wallet.");
 			currentline = dialogue.begin();
-			Scene::name = "";
+			name = "";
 			indialogue = true;
 			walletNotGone = false;
 		}
@@ -806,6 +807,10 @@ void SceneMain::Render()
 
 void SceneMain::Exit()
 {
+	for (auto it = wall.begin(); it != wall.end(); ++it)
+		delete (*it);
+	for (auto it = items.begin(); it != items.end(); ++it)
+		delete (*it);
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 	glDeleteProgram(m_programID);
 }
