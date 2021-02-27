@@ -47,7 +47,8 @@ void SceneMarinaBay::Init()
 	idleBreath = enemyAttackScale = 1;
 	idleHandsDir = idleBounceDir = idleMouthDir = idleBreathDir = idleNeckDir = idleHeadDir = 1;
 	moveBack = 71.f;
-	itemsList.push_back(POTION);
+	itemsList.push_back(MED_KIT);
+	itemsList.push_back(SAND);
 	//======Matrix stack========
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
@@ -470,6 +471,7 @@ void SceneMarinaBay::Update(double dt)
 			enemyTurn = true;
 			triedToRun = false;
 			fightSelected = false;
+			itemsSelected = false;
 		}
 	}
 
@@ -483,14 +485,19 @@ void SceneMarinaBay::Update(double dt)
 			fightIntro = true;
 			cooldown = 0.5f;
 			fightInit = false;
+			prevItemsList = itemsList;
 		}
 
 
 		if (actionSelected && fight && !attackSelected)	//if action was selected and in fight and attack is not playing
 		{
+			if (itemsSelected && playerAction > A_RUN)
+			{	//if items are selected and player chose an action that is not the main 3 as items and attacks share the same buttons as they take the same locations
+				playerAction = static_cast<ACTION_TYPE>(playerAction + A_ITEM1 - A_RUN - 1);
+			}
 			switch (playerAction)
 			{
-			case (A_ATTACK1):									//temporary solution
+			case (A_ATTACK1):					
 				attackSelected = true;
 				fightSelected = false;
 				break;
@@ -502,8 +509,22 @@ void SceneMarinaBay::Update(double dt)
 				attackSelected = true;
 				fightSelected = false;
 				break;
+			case (A_ITEM1):
+				itemChosen = true;
+				itemsSelected = false;
+				break;
+			case (A_ITEM2):
+				itemChosen = true;
+				itemsSelected = false;
+				break;
 			case (A_ATTACK):
 				fightSelected = true;
+				itemsSelected = false;
+				//turns off item buttons
+				for (unsigned int i = 0; i < itemsList.size(); ++i)
+				{
+					buttonList[i + A_RUN + 1]->active = false;
+				}
 				//enables the buttons after fight is selected depending on what has been unlocked
 				for (unsigned int i = 0; i < attacksList.size(); ++i)
 				{	//making buttons active starting from top left 
@@ -512,6 +533,17 @@ void SceneMarinaBay::Update(double dt)
 				break;
 			case (A_ITEMS):			//if no time will just get rid of
 				itemsSelected = true;
+				fightSelected = false;
+				//turns off all of attack buttons
+				for (unsigned int i = 0; i < attacksList.size(); ++i)
+				{	
+					buttonList[i + A_RUN + 1]->active = false;
+				}
+				//turns on item buttons
+				for (unsigned int i = 0; i < itemsList.size(); ++i)
+				{	
+					buttonList[i + A_RUN + 1]->active = true;
+				}
 				break;
 			case (A_RUN):
 				triedToRun = true;
@@ -628,8 +660,36 @@ void SceneMarinaBay::Update(double dt)
 				}
 			}
 		}
+		//player item chosen
+		else if (itemChosen && playerTurn)
+		{
+			playerItem = itemsList[playerAction - A_ITEM1];
+			switch (playerItem)
+			{
+			case (MED_KIT):
+				playerHealthGained = 100.f;
+				break;
+			case (SAND):
+				enemyHealthGained = 15.f;
+			}
+			//removes the item
+			for (std::vector<ITEMS>::iterator it = itemsList.begin(); it != itemsList.end(); it++)
+			{
+				if ((*it) == playerItem)
+				{
+					itemsList.erase(itemsList.begin() + distance(itemsList.begin(), it));
+					break;
+				}
+			}
+			//moves to enemy's turn
+			playerTurn = false;
+			enemyTurn = true;
+			itemsSelected = false;
+			itemChosen = false;
+		}
 		//enemy turn actions
-		else if (enemyTurn && enemyHealthLost <= 0 && playerHealthLost <= 0)	//if health not still decreasing
+		else if (enemyTurn && enemyHealthLost <= 0 && playerHealthLost <= 0 && enemyHealthGained <= 0 && playerHealthGained <= 0)	
+		//if health not still decreasing/increasing
 		{
 			if (!enemyAlrAttacked)
 			{
@@ -858,12 +918,38 @@ void SceneMarinaBay::Update(double dt)
 			playerHealth += speedOfHealthLost * 0.2 * dt;
 			playerHealthPos += speedOfHealthLost * 0.1 * dt;	//dependent on health's scaling
 		}
+		else if (playerHealthGained > 0)
+		{
+			if (playerHealth <= 0)	//if player already at full health
+				playerHealthGained = 0;
+			else
+			{
+				int speedOfHealthGained = 20.f;
+				playerHealthGained -= speedOfHealthGained * dt;
+				//minus as it moves back to its original position
+				playerHealth -= speedOfHealthGained * 0.2 * dt;
+				playerHealthPos -= speedOfHealthGained * 0.1 * dt;	
+			}
+		}
 		else if (enemyHealthLost > 0)
 		{
 			int speedOfHealthLost = 20.f;
 			enemyHealthLost -= speedOfHealthLost * dt;
 			enemyHealth += speedOfHealthLost * 0.2 * dt;
 			enemyHealthPos -= speedOfHealthLost * 0.1 * dt;	//dependent on health's scaling
+		}
+		else if (enemyHealthGained > 0)
+		{
+			if (enemyHealth <= 0)	//if enemy already at full health
+				enemyHealthGained = 0;
+			else
+			{
+				int speedOfHealthGained = 20.f;
+				enemyHealthGained -= speedOfHealthGained * dt;
+				//minus as it moves back to its original position
+				enemyHealth -= speedOfHealthGained * 0.2 * dt;
+				enemyHealthPos += speedOfHealthGained * 0.1 * dt;
+			}
 		}
 		
 		//fight resolutions
@@ -886,6 +972,7 @@ void SceneMarinaBay::Update(double dt)
 			{
 				fightLost = true;	//spawns player away from boss
 				camera.Init(Vector3(-57, 8, 157), Vector3(-57, 8, 158), Vector3(0, 1, 0));
+				itemsList = prevItemsList;
 			}
 		}
 	}
@@ -1001,25 +1088,10 @@ void SceneMarinaBay::Render()
 		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
 	}
 
-	//LIGHT1====================================================
-	if (light[1].type == Light::LIGHT_DIRECTIONAL)
-	{
-		Vector3 lightDir(light[1].position.x, light[1].position.y, light[1].position.z);
-		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightDirection_cameraspace.x);
-	}
-	else if (light[1].type == Light::LIGHT_SPOT)
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
-		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * light[1].spotDirection;
-		glUniform3fv(m_parameters[U_LIGHT1_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-	}
-	else
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
-		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
-	}
+	//DIRECTIONAL LIGHT1====================================================
+	Vector3 lightDir(light[1].position.x, light[1].position.y, light[1].position.z);
+	Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
+	glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightDirection_cameraspace.x);
 
 	//Skybox
 	RenderSkybox();
@@ -1045,37 +1117,9 @@ void SceneMarinaBay::Render()
 	RenderMesh(meshList[GEO_BOAT], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
-	//renders all the items/npcs
-	for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
-	{
-		modelStack.PushMatrix();						//minus 5 to make the hitbox line up properly
-		modelStack.Translate((*it)->getposition().x, (*it)->getposition().y - 5, (*it)->getposition().z);
-		modelStack.Rotate((*it)->getangle(), 0, 1, 0);
-		modelStack.Scale((*it)->getscale(), (*it)->getscale(), (*it)->getscale());
-		if ((*it)->gettype() == "robot" || (*it)->gettype() == "robot2")
-			RenderMesh(meshList[GEO_ROBOT], true, modelStack, viewStack, projectionStack, m_parameters);
-		else if ((*it)->gettype() == "girl" || (*it)->gettype() == "girl2")
-			RenderMesh(meshList[GEO_GIRL], true, modelStack, viewStack, projectionStack, m_parameters);
-		else if ((*it)->gettype() == "orc" || (*it)->gettype() == "orc2")
-			RenderMesh(meshList[GEO_ORC], true, modelStack, viewStack, projectionStack, m_parameters);
-		else if ((*it)->gettype() == "adventurer" || (*it)->gettype() == "adventurer2" || (*it)->gettype() == "adventurer3")
-			RenderMesh(meshList[GEO_ADVENTURER], true, modelStack, viewStack, projectionStack, m_parameters);
-		else if ((*it)->gettype()=="badguy" || (*it)->gettype()=="badguy2" || (*it)->gettype()=="badguy3")
-			RenderMesh(meshList[GEO_BADGUY], true, modelStack, viewStack, projectionStack, m_parameters);
-
-		modelStack.PopMatrix();
-		if (hitboxshow)
-		{
-			modelStack.PushMatrix();
-			modelStack.Translate((*it)->getposition().x, (*it)->getposition().y + 5, (*it)->getposition().z);
-			modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
-			RenderMesh(meshList[GEO_SPHERE], false, modelStack, viewStack, projectionStack, m_parameters);
-			modelStack.PopMatrix();
-		}
-	}
 	
 
-
+	//if not in fight
 	if (!fight)	//no need to be rendered while in fight
 	{	//infinity poolside
 		for (int z = 0; z > -170; z -= 30)
@@ -1114,16 +1158,44 @@ void SceneMarinaBay::Render()
 			modelStack.PopMatrix();
 		}
 		//fountain
+		//separated from other items due to irregular scaling
 		modelStack.PushMatrix();
-		modelStack.Translate(-22 + x, 0, -64 + z);
+		modelStack.Translate(-22, 0, -64);
 		modelStack.Scale(15, 25, 15);
 		RenderMesh(meshList[GEO_FOUNTAIN], true, modelStack, viewStack, projectionStack, m_parameters);
 		modelStack.PopMatrix();
+
+		//renders most of the items/npcs
+		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+		{
+			modelStack.PushMatrix();						//minus 5 to make the hitbox line up properly
+			modelStack.Translate((*it)->getposition().x, (*it)->getposition().y - 5, (*it)->getposition().z);
+			modelStack.Rotate((*it)->getangle(), 0, 1, 0);
+			modelStack.Scale((*it)->getscale(), (*it)->getscale(), (*it)->getscale());
+			if ((*it)->gettype() == "robot" || (*it)->gettype() == "robot2")
+				RenderMesh(meshList[GEO_ROBOT], true, modelStack, viewStack, projectionStack, m_parameters);
+			else if ((*it)->gettype() == "girl" || (*it)->gettype() == "girl2")
+				RenderMesh(meshList[GEO_GIRL], true, modelStack, viewStack, projectionStack, m_parameters);
+			else if ((*it)->gettype() == "orc" || (*it)->gettype() == "orc2")
+				RenderMesh(meshList[GEO_ORC], true, modelStack, viewStack, projectionStack, m_parameters);
+			else if ((*it)->gettype() == "adventurer" || (*it)->gettype() == "adventurer2" || (*it)->gettype() == "adventurer3")
+				RenderMesh(meshList[GEO_ADVENTURER], true, modelStack, viewStack, projectionStack, m_parameters);
+			else if ((*it)->gettype() == "badguy" || (*it)->gettype() == "badguy2" || (*it)->gettype() == "badguy3")
+				RenderMesh(meshList[GEO_BADGUY], true, modelStack, viewStack, projectionStack, m_parameters);
+
+			modelStack.PopMatrix();
+			if (hitboxshow)
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate((*it)->getposition().x, (*it)->getposition().y + 5, (*it)->getposition().z);
+				modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
+				RenderMesh(meshList[GEO_SPHERE], false, modelStack, viewStack, projectionStack, m_parameters);
+				modelStack.PopMatrix();
+			}
+		}
 	}
-	
-
-
-	if (fight)
+	//if in fight
+	else
 	{
 		//mc
 		modelStack.PushMatrix();
@@ -1733,7 +1805,7 @@ void SceneMarinaBay::Render()
 		}
 	}
 	
-	//text stuff
+	//text and layouts
 	if (fight && !attackSelected)
 	{
 		//enemy
@@ -1751,10 +1823,10 @@ void SceneMarinaBay::Render()
 			RenderTextOnScreen(meshList[GEO_TEXT], "Attack", Color(0, 0, 0), 4, 4, 11, modelStack, viewStack, projectionStack, m_parameters);
 			RenderTextOnScreen(meshList[GEO_TEXT], "Items", Color(0, 0, 0), 4, 4, 6, modelStack, viewStack, projectionStack, m_parameters);
 			RenderTextOnScreen(meshList[GEO_TEXT], "Run", Color(0, 0, 0), 4, 4, 1, modelStack, viewStack, projectionStack, m_parameters);
-			RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(0, 0, 0), 4, pointerX, pointerY, modelStack, viewStack, projectionStack, m_parameters);
+			RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(0, 0, 0), 4, pointerX, pointerY, modelStack, viewStack, projectionStack, m_parameters);	  //to potentially remove
 			if (fightSelected)	
 			{	
-				string attack1 = EnumToStr(attacksList[0]);
+				string attack1 = EnumToStr(attacksList[0]);	//no need to check cause there will always be at least one attack
 				RenderTextOnScreen(meshList[GEO_TEXT], attack1, Color(0, 0, 0), 4, 25, 9.5, modelStack, viewStack, projectionStack, m_parameters);
 				if (attacksList.size() > 1)	//checks if theres 2 attacks in the vector
 				{
@@ -1769,55 +1841,103 @@ void SceneMarinaBay::Render()
 			}
 			else if (itemsSelected)
 			{
-				RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder3", Color(0, 0, 0), 4, 25, 8, modelStack, viewStack, projectionStack, m_parameters);
-				RenderTextOnScreen(meshList[GEO_TEXT], "Placeholder4", Color(0, 0, 0), 4, 25, 8, modelStack, viewStack, projectionStack, m_parameters);
+				if (itemsList.size() == 0)	//if theres no items
+				{
+					RenderTextOnScreen(meshList[GEO_TEXT], "NO ITEMS", Color(0, 0, 0), 4, 25, 9.5, modelStack, viewStack, projectionStack, m_parameters);
+				}
+				else	//at least one button
+				{
+					string item1 = EnumToStr(itemsList[0]);
+					RenderTextOnScreen(meshList[GEO_TEXT], item1, Color(0, 0, 0), 4, 25, 9.5, modelStack, viewStack, projectionStack, m_parameters);
+				}
+				if (itemsList.size() > 1)	//more than one item
+				{
+					string item2 = EnumToStr(itemsList[1]);
+					RenderTextOnScreen(meshList[GEO_TEXT], item2, Color(0, 0, 0), 4, 25, 2.5, modelStack, viewStack, projectionStack, m_parameters);
+				}
 			}
 		}
 		/*for (auto it = buttonList.begin(); it != buttonList.end(); ++it)
 			RenderMeshOnScreen(meshList[GEO_QUAD], (*it)->positionX + (*it)->width * 0.5, (*it)->positionY + (*it)->height * 0.5, (*it)->width, (*it)->height);*/
-		
-
-		/*double x, y;
-		Application::GetCursorPos(&x, &y);
-		unsigned w = Application::GetWindowWidth();
-		unsigned h = Application::GetWindowHeight();
-		float posX = x / 10;
-		float posY = 60 - y / 10;
-		std::ostringstream ss;
-		ss << "x: " << posX;
-		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 29);
-		ss.str("");
-		ss << "y: " << posY;
-		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 35, 27);*/
 	}
 	else if (!fight)
 	{
 		Scene::RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 	}
 
-
+	//text from specific conditions
+	//first meeting bad guy
 	if (firstEnter && camera.position.z >= posZ)
 	{
 		RenderNPCDialogue("So, you chased me all the way here. If you really think you can take me, then step forward but be prepared I'm not going to go down easy", "???", modelStack, viewStack, projectionStack, m_parameters);
 	}
+	//losing the fight 
 	else if (fightLost)
 	{
 		if (attacksList.size() < 3)
-			RenderNPCDialogue("More attacks can be gained from the previous section. Also, a 2-on-1 makes it hard to run.", "Tips", modelStack, viewStack, projectionStack, m_parameters);
+			RenderNPCDialogue("More attacks can be gained from the previous section. Also, a 2-on-1 makes it hard to run and throwing sand at something made out of sand is a bad idea.", "Tips", modelStack, viewStack, projectionStack, m_parameters);
 		else
-			RenderNPCDialogue("A 2-on-1 makes it quite hard to run.", "Tips", modelStack, viewStack, projectionStack, m_parameters);
+			RenderNPCDialogue("A 2-on-1 makes it quite hard to run. Also, throwing sand at something made out of sand is a bad idea", "Tips", modelStack, viewStack, projectionStack, m_parameters);
 	}
+	//winning the fight
 	else if (fightWon)
 		RenderNPCDialogue("Agh, you've killed my prized possession. It is my loss. Take your wallet back.", "Thief", modelStack, viewStack, projectionStack, m_parameters);
+	//running
 	else if (triedToRun)
 		RenderNPCDialogue("Nice try.", "Thief", modelStack, viewStack, projectionStack, m_parameters);
 
+	//TO REMOVE IF NO TIME
+	////text from specific conditions
+	////first meeting bad guy
+	//if (firstEnter && camera.position.z >= posZ)
+	//{
+	//	dialogue.push_back("2So, you chased me all the way here. If you really think you can take me, then step forward but be prepared I'm not going to go down easy.");
+	//	currentline = dialogue.begin();
+	//	name = "???";
+	//	indialogue = true;
+	//}
+	////losing the fight 
+	//else if (fightLost)
+	//{
+	//	if (attacksList.size() < 3)
+	//	{
+	//		dialogue.push_back("2More attacks can still be gained from the previous section. Also, a 2-on-1 makes it hard to run.");
+	//		currentline = dialogue.begin();
+	//		name = "Tips";
+	//		indialogue = true;
+	//	}
+	//	else
+	//	{
+	//		dialogue.push_back("2A 2-on-1 makes it hard to run.");
+	//		currentline = dialogue.begin();
+	//		name = "Tips";
+	//		indialogue = true;
+	//	}
+	//}
+	////winning the fight
+	//else if (fightWon)
+	//{
+	//	dialogue.push_back("2Agh, you've killed my prized possession. It is my loss. Take your wallet back.");
+	//	currentline = dialogue.begin();
+	//	name = "Mr.Sazz's Bro";
+	//	indialogue = true;
+	//}
+	////running
+	//else if (triedToRun)
+	//{
+	//	dialogue.push_back("2Nice try.");
+	//	currentline = dialogue.begin();
+	//	name = "Mr.Sazz's Bro";
+	//	indialogue = true;
+	//}
+
+	//minigame intros
+	//fighting intro
 	if (fightIntro)
 		RenderMinigameIntro("This game is a turn-based gamemode, if your healthbar turns all red you'll lose. Similarly, if your opponent's bar turns all red they'll lose. You have access to a few options on the bottom of the screen that can be done in a turn, just click on the buttons and they will either show more actions or do an action that ends your turn.", "Turn-based fight", 4, modelStack, viewStack, projectionStack, m_parameters);
+	//talking minigame intro
 	else if (talkIntro)
 		RenderMinigameIntro("This game is a minigame where you talk to NPCs and try to convince them to help you by giving you attacks to fight the thief with some of them having conditions to give it to you. There are 3 attacks in total to get, good luck!","Talking", 4, modelStack, viewStack, projectionStack, m_parameters);
-	//else if (talkIntro)
-
 }
 
 string SceneMarinaBay::EnumToStr(ATTACK enumToConvert)	//function to convert enums from ATTACK to string
@@ -1830,20 +1950,20 @@ string SceneMarinaBay::EnumToStr(ATTACK enumToConvert)	//function to convert enu
 		return "ROCKET PUNCH";
 	case (MIND_POWERS):
 		return "MIND POWERS";
-	case (NO_ATTACK):
-		return "";
 	}
+	return "";
 }
 
 string SceneMarinaBay::EnumToStr(ITEMS enumToConvert)
 {
 	switch (enumToConvert)
 	{
-	case (POTION):
-		return "POTION";
-	case (NO_ITEM):
-		return "";
+	case (MED_KIT):
+		return "MED KIT";
+	case (SAND):
+			return "SAND";
 	}
+	return "";
 }
 
 void SceneMarinaBay::Exit()
