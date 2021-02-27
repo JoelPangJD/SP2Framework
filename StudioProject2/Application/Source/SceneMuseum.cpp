@@ -337,10 +337,7 @@ void SceneMuseum::Init()
 	button2.active = true;
 	button2.hold = false;
 
-	menu.posX = 20;
-	menu.posY = 20;
-	menu.width = 100;
-	menu.height =120;
+
 
 	
 
@@ -382,7 +379,6 @@ void SceneMuseum::Update(double dt)
 
 	}
 
-	menu.renderHelp();
 	//for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 	//{
 	//	if ((*it)->gettype() == "exit")
@@ -605,10 +601,10 @@ void SceneMuseum::Update(double dt)
 
 	}
 
-	if (Application::IsKeyPressed('T') && EndGame1 == true && camera.position.x < -258 && camera.position.x > -267 && camera.position.z < -24.3 && camera.position.z > -83)
-	{
-		StartTheHoldingGame = true;
-	}
+	//if (Application::IsKeyPressed('T') && EndGame1 == true && camera.position.x < -258 && camera.position.x > -267 && camera.position.z < -24.3 && camera.position.z > -83)
+	//{
+	//	StartTheHoldingGame = true;
+	//}
 
 
 }
@@ -1087,6 +1083,7 @@ void SceneMuseum::StartGame1()
 					break;
 				}
 			}
+			FoundAnswer = false;
 			EndGame1 = true;
 		}
 	}
@@ -1373,10 +1370,6 @@ void SceneMuseum::Render()
 
 	//Skybox
 	RenderSkybox();
-
-	RenderMesh(meshList[GEO_AXES], false, modelStack, viewStack, projectionStack, m_parameters);
-
-	menu.renderMenuScreen();
 
 	RenderWalls();
 
