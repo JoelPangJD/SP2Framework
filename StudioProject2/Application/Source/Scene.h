@@ -106,7 +106,7 @@ public:
 	void RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
 	void RenderText(Mesh* mesh, std::string text, Color color, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
-	void RenderMeshOnScreen(Mesh* mesh, float x, float y, int sizex, int sizey, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
+	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
 	void RenderNPCDialogue(std::string NPCText, std::string headerText, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
 	void RenderMinigameIntro(std::string MinigamedescriptionText, std::string MinigamenameText, float fontsize, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]); // pass minigame name, description and description font size, try fontsize 6 
 	void movement(Camera3 &camera, vector<Terrain*> terrains, double dt);

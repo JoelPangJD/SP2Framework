@@ -201,6 +201,7 @@ void SceneMain::Init()
 	meshList[GEO_ROADCURVESPLITRIGHT] = MeshBuilder::GenerateOBJMTL("road_curvesplitright", "OBJ//CityCenter//road_curvesplitright.obj", "OBJ//CityCenter//road_curvesplitright.mtl");
 	meshList[GEO_ROAD4WAY] = MeshBuilder::GenerateOBJMTL("road4way", "OBJ//CityCenter//road_4way.obj", "OBJ//CityCenter//road_4way.mtl");
 	meshList[GEO_ROADJUNCTION] = MeshBuilder::GenerateOBJMTL("roadjunction", "OBJ//CityCenter//road_junction.obj", "OBJ//CityCenter//road_junction.mtl");
+	meshList[GEO_ROADCURVED] = MeshBuilder::GenerateOBJMTL("roadcurved", "OBJ//CityCenter//road_curved.obj", "OBJ//CityCenter//road_curved.mtl");
 
 	inFrontofMuseum = inFrontofChangi = inFrontofGarden = inFrontofMarina = false;
 	minigameMuseum = false;
@@ -255,7 +256,10 @@ void SceneMain::Init()
 	wall.push_back(new Terrain(Vector3(6, 0, 5), -90, 0.26, 0, 2.f, 2.f, "Andy"));
 	wall.push_back(new Terrain(Vector3(-2, 0, 0), -90, 0.3, 0, 2.f, 2.f, "teacher"));
 	wall.push_back(new Terrain(Vector3(37.5, 0, 0), 90, 25, 0, 23.f, 32.f, "museum"));
-	wall.push_back(new Terrain(Vector3(-35, 0, -35), 90, 25, 0, 23.f, 32.f, "building1"));
+	wall.push_back(new Terrain(Vector3(28, 0, -35), 90, 25, 0, 23.f, 24.f, "building"));
+	wall.push_back(new Terrain(Vector3(-28, 0, 35), 90, 25, 0, 23.f, 24.f, "building"));
+	wall.push_back(new Terrain(Vector3(-35, 0, -35), -90, 25, 0, 23.f, 32.f, "building1"));
+	wall.push_back(new Terrain(Vector3(30, 0, 55), 90, 25, 0, 23.f, 44.f, "building2"));
 }
 
 
@@ -345,6 +349,12 @@ void SceneMain::Update(double dt)
 	}
 	else
 		inFrontofMuseum = false;
+	if(trigger == "locked") { //Use the interact code return to return the lock condition instead of locked bool
+			dialogue.push_back("1It seems that I do not have the item required to open this door.");
+			currentline = dialogue.begin();
+			name = "";
+			indialogue = true;
+		}
 	// The radius seems to be
 	if ((camera.position.x >= -3) && (camera.position.x <= 3) && (camera.position.z >= 18) && (camera.position.z <= 27.5)) {
 		inFrontofChangi = true;
@@ -598,6 +608,12 @@ void SceneMain::Render()
 			RenderMesh(meshList[GEO_TEACHER], true, modelStack, viewStack, projectionStack, m_parameters);
 		else if ((*it)->gettype() == "museum")
 			RenderMesh(meshList[GEO_MUSEUM], true, modelStack, viewStack, projectionStack, m_parameters);
+		else if ((*it)->gettype() == "building")
+			RenderMesh(meshList[GEO_BUILDING], true, modelStack, viewStack, projectionStack, m_parameters);
+		else if ((*it)->gettype() == "building1")
+			RenderMesh(meshList[GEO_BUILDING1], true, modelStack, viewStack, projectionStack, m_parameters);
+		else if ((*it)->gettype() == "building2")
+			RenderMesh(meshList[GEO_BUILDING2], true, modelStack, viewStack, projectionStack, m_parameters);
 		modelStack.PopMatrix();
 	}
 	
@@ -622,7 +638,6 @@ void SceneMain::Render()
 	RenderMesh(meshList[GEO_ROADCROSS], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
-
 	modelStack.PushMatrix();
 	modelStack.Translate(-55, 0, 0);
 	modelStack.Scale(5, 5, 5);
@@ -630,12 +645,24 @@ void SceneMain::Render()
 	RenderMesh(meshList[GEO_ROADJUNCTION], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	modelStack.Translate(-57.5, 0, 72.5);
+	modelStack.Scale(5, 5, 5);
+	modelStack.Rotate(180, 0, 1, 0);
+	RenderMesh(meshList[GEO_ROADCURVED], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(-60, 0, 0);
 	modelStack.Scale(5, 5, 5);
-	modelStack.Rotate(180, 0, 1, 0);
 	RenderMesh(meshList[GEO_ROAD4WAY], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-60, 0, 35);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(65, 5, 5);
+	RenderMesh(meshList[GEO_ROADSTRAIGHT], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
@@ -655,43 +682,6 @@ void SceneMain::Render()
 	modelStack.Scale(10, 10, 10);
 	RenderMesh(meshList[GEO_TREE], true, modelStack, viewStack, projectionStack, m_parameters);
 	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(28, 0, -35);
-	modelStack.Scale(25, 25, 25);
-	modelStack.Rotate(90, 0, 1, 0);
-	RenderMesh(meshList[GEO_BUILDING], true, modelStack, viewStack, projectionStack, m_parameters);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(-28, 0, 35);
-	modelStack.Scale(25, 25, 25);
-	modelStack.Rotate(90, 0, 1, 0);
-	RenderMesh(meshList[GEO_BUILDING], true, modelStack, viewStack, projectionStack, m_parameters);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(-35, 0, -35);
-	modelStack.Scale(25, 25, 25);
-	modelStack.Rotate(-90, 0, 1, 0);
-	RenderMesh(meshList[GEO_BUILDING1], true, modelStack, viewStack, projectionStack, m_parameters);
-	modelStack.PopMatrix(); 
-
-	modelStack.PushMatrix();
-	modelStack.Translate(30, 0, 55);
-	modelStack.Scale(25, 25, 25);
-	modelStack.Rotate(90, 0, 1, 0);
-	RenderMesh(meshList[GEO_BUILDING2], true, modelStack, viewStack, projectionStack, m_parameters);
-	modelStack.PopMatrix();
-
-	//condition checking
-	if (locked) {
-		dialogue.push_back("1It seems that I do not have the item required to open this door.");
-		currentline = dialogue.begin();
-		name = "";
-		indialogue = true;
-	}
-
 
 
 	modelStack.PushMatrix();
@@ -720,7 +710,8 @@ void SceneMain::Render()
 	modelStack.Rotate(-90, 0, 1, 0);
 	RenderText(meshList[GEO_TEXT], "Museum", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
 
-
+	
+	//condition checking
 	if (inFrontofMuseum) {
 		modelStack.PushMatrix();
 		modelStack.Translate(0.35, -2, -0.29);
