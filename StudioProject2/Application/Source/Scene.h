@@ -73,8 +73,6 @@ private:
 		U_TOTAL,
 	};
 
-	bool riddleStarted = false, riddleSolved = false;	//only for MarinaBay because I can't think of a better method
-
 protected: //for SceneMuseum 
 	bool place1 = false;
 	bool place2 = false;
@@ -98,7 +96,6 @@ public:
 	bool indialogue = false;
 	bool inmenu = false;
 	int menutype; // 0 for main menu, 1 for pause menu, 2 for helps screen
-	bool CantUse = true;
 	vector<string> dialogue;
 	vector<string>::iterator currentline;
 	string name;
