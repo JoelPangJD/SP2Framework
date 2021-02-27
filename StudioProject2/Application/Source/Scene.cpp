@@ -541,23 +541,27 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 						}
 
 						//Scene Museum
-						else if ((*it)->gettype() == "place key" && inventory->getcurrentitem()->gettype() == "key")
+						if ((*it)->gettype() == "place key" && inventory->getcurrentitem()->gettype() == "key")
 						{
+							CantUse = false;
 							place1 = true;
 							inventory->removeitem("key");
 						}
+
 						else if ((*it)->gettype() == "place flag" && inventory->getcurrentitem()->gettype() == "flag")
 						{
+							CantUse = false;
 							place2 = true;
 							inventory->removeitem("flag");
 						}
 
 						else if ((*it)->gettype() == "place box" && inventory->getcurrentitem()->gettype() == "box")
 						{
+							CantUse = false;
 							place3 = true;
 							inventory->removeitem("box");
 						}
-						else
+						else if (CantUse == true)
 						{
 							dialogue.push_back("1I'm not supposed to use it here.");
 							currentline = dialogue.begin();
