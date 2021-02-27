@@ -272,30 +272,32 @@ void SceneMuseum::Init()
 	meshList[GEO_PICBOX]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[GEO_PICBOX]->material.kShininess = 1.f;
 	//VECTORS FOR WALLS TO CHECK HITBOX
-	terrains.push_back(new Terrain(Vector3(45, 0, -119.707), 0, 0, 0, 3, 220.66, "Wall"));
+	terrains.push_back(new Terrain(Vector3(46, 0, -119.707), 0, 0, 0, 3, 220.66, "Wall"));
 	terrains.push_back(new Terrain(Vector3(93.77, 0, -243.091), 0, 0, 0, 70.626, 3, "Wall"));
 	terrains.push_back(new Terrain(Vector3(152.5, 0, -120.507), 0, 0, 0, 3, 220.430, "Wall"));
-	terrains.push_back(new Terrain(Vector3(206.5, 0, -12), 0, 0, 0, 110.721, 3, "Wall"));
+	terrains.push_back(new Terrain(Vector3(206.5, 0, -10.8), 0, 0, 0, 110.721, 3, "Wall"));
 	terrains.push_back(new Terrain(Vector3(-107.9315, 0, 72), 0, 22, 10, 300.9754, 4.5, "Wall"));
 	terrains.push_back(new Terrain(Vector3(42, 0, 130), 0, 22, 10, 3, 115.732, "Wall"));
 	terrains.push_back(new Terrain(Vector3(97.606, 0, 206.3716), 0, 22, 10, 100, 3, "Wall"));
-	terrains.push_back(new Terrain(Vector3(260, 0, 71.5), 0, 22, 10, 221.105, 3, "Wall"));
+	terrains.push_back(new Terrain(Vector3(260, 0, 70.479), 0, 22, 10, 221.105, 3, "Wall"));
 	terrains.push_back(new Terrain(Vector3(153.5, 0, 130), 0, 22, 10, 3, 125, "Wall"));
 	terrains.push_back(new Terrain(Vector3(-101.273, 0, -10.2017), 0, 22, 10, 295.839, 3, "Wall"));
 	terrains.push_back(new Terrain(Vector3(-246.153, 0, -20.2017), 0, 22, 10, 3, 21.1293, "Wall"));
-	terrains.push_back(new Terrain(Vector3(-246.153, 0, -80.2017), 0, 22, 10, 3, 19.1293, "Wall"));
+	terrains.push_back(new Terrain(Vector3(-246.153 + movex , 0, -55.374), 0, 22, 10, 3, 84, "Wall"));
 	terrains.push_back(new Terrain(Vector3(-265.3887, 0, -89.354), 0, 22, 10, 39.725, 3, "Wall"));
 	terrains.push_back(new Terrain(Vector3(-284.3725, 0, 84.472), 0, 22, 10, 3, 351.252, "Wall"));
 	terrains.push_back(new Terrain(Vector3(-236.308, 0, 260.323), 0, 22, 10, 98.564, 3, "Wall"));
 	terrains.push_back(new Terrain(Vector3(-186.628, 0, 168.187), 0, 22, 10, 3, 190.936, "Wall"));
-	terrains.push_back(new Terrain(Vector3(371.538, 0, -100.3729), 0, 22, 10, 3, 223.8275, "Wall"));
+	terrains.push_back(new Terrain(Vector3(371.538, 0, -100.3729), 0, 22, 10, 3, 223.8275 , "Wall"));
+	terrains.push_back(new Terrain(Vector3(371.538, 0, -36.144), 0, 22, 10, 3, 223.8275, "Wall"));
 	terrains.push_back(new Terrain(Vector3(371.538, 0, 62.02704), 0, 22, 10, 3, 20, "Wall"));
+	terrains.push_back(new Terrain(Vector3(261.7488, 0, -205.3159), 0, 22, 10, 218.204, 3, "Wall"));
 	terrains.push_back(new Terrain(Vector3(261.7488, 0, -205.3159), 0, 22, 10, 218.204, 3, "Wall"));
 	//Door hitbox 
 	terrains.push_back(new Terrain(Vector3(-272.215, 0, 73.66698), 0, 22, 10, 218.204, 3, "door")); //+19
 	//DECORATION HITBOX
-	terrains.push_back(new Terrain(Vector3(90.2891, 20, -205.542), 0, 22, 10, 228.204, 3, "Elephant hitbox"));
-	terrains.push_back(new Terrain(Vector3(97.15, 0, 163.717), 0, 22, 10, 218.204, 3, "Rickshaw hitbox"));
+	terrains.push_back(new Terrain(Vector3(90.2891, 20, -196.527), 0, 22, 10, 228.204, 3, "Elephant hitbox"));
+	terrains.push_back(new Terrain(Vector3(97.15, 0, 151.471), 0, 22, 10, 218.204, 3, "Rickshaw hitbox"));
 
 	//Items vector
 	items.push_back(new InteractableObject(Vector3(-210.785, 16.0715, 78.3848), 0, 0, 30, "preview", "preview for game", false));
@@ -718,8 +720,8 @@ void SceneMuseum::RenderWalls()
 	//{
 	//	modelStack.PushMatrix();
 	//	modelStack.Translate((*it)->getposition().x + movex, (*it)->getposition().y + (*it)->getheight() * 0.5, (*it)->getposition().z + movez);
-	//	modelStack.Scale((*it)->getxwidth(), (*it)->getheight() + 100, (*it)->getzwidth());
-	//	RenderMesh(meshList[GEO_CUBE], false);
+	//	modelStack.Scale((*it)->getxwidth() + scale, (*it)->getheight() + 100, (*it)->getzwidth());
+	//	RenderMesh(meshList[GEO_CUBE], false, modelStack, viewStack, projectionStack, m_parameters);
 	//	modelStack.PopMatrix();
 	//}
 	modelStack.PushMatrix();
@@ -1055,6 +1057,7 @@ void SceneMuseum::StartGame1()
 	{
 		RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 		interact(camera, items);
+
 		if (Preview)
 		{
 			RenderMeshOnScreen(meshList[GEO_MINIPIC1], 50, 40, 30, 30);
@@ -1065,6 +1068,10 @@ void SceneMuseum::StartGame1()
 			MousePreview = true;
 			RenderMeshOnScreen(meshList[GEO_SELECTION], 70, 35, 70, 60);
 			camera.Init(Vector3(-220.713, 10, 95), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
+		}
+		else if (!FoundAnswer)
+		{
+			Application::enableMouse = false;
 		}
 		else if (FoundAnswer)
 		{
