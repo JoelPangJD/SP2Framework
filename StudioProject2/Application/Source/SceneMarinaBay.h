@@ -139,7 +139,8 @@ class SceneMarinaBay : public Scene
 	};
 	enum ITEMS
 	{
-		POTION,
+		MED_KIT,
+		SAND,
 		NO_ITEM,
 	};
 	enum ENEMY_ATTACKS
@@ -177,11 +178,13 @@ private:
 	vector<Button*> buttonList;		//button list, button positions are the same as the action enums
 	vector<ATTACK> attacksList;		//players current attacksList 
 	vector<ITEMS> itemsList;		//players items list in fight
+	vector<ITEMS> prevItemsList;
 	vector<Terrain*> terrains;		//terrain list
 	vector<InteractableObject*> items;	//objects/npcs list
 
 	ACTION_TYPE playerAction, enemyAction;
 	ATTACK playerAttack;
+	ITEMS playerItem;
 	ENEMY_ATTACKS enemyAttack;	
 	
 	//vars to check whether the attacks have already been added
@@ -190,8 +193,8 @@ private:
 	bool firstEnter = true, fightIntro, talkIntro, triedToRun;
 	int posZ;
 	//fight vars
-	bool fight = false, fightInit, fightWon, fightLost, fightOver, fightDia, playerTurn, enemyTurn, fightSelected, itemsSelected, backSelected, attackSelected, actionSelected, attackHit;
-	float pointerX, pointerY, playerHealth, playerHealthPos, playerHealthLost, enemyHealth, enemyHealthPos, enemyHealthLost;
+	bool fight = false, fightInit, fightWon, fightLost, fightOver, fightDia, playerTurn, enemyTurn, fightSelected, itemsSelected, itemChosen, backSelected, attackSelected, actionSelected, attackHit;
+	float pointerX, pointerY, playerHealth, playerHealthPos, playerHealthLost, playerHealthGained, enemyHealth, enemyHealthPos, enemyHealthLost, enemyHealthGained;
 	//player's
 	float attackScale, attackAngle, attackTranslateY, attackTranslateZ;
 	//dragon enemy's 
