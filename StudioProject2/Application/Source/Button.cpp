@@ -26,6 +26,18 @@ Button::~Button()
 {
 }
 
+void Button::setButton(float positionX, float positionY, float width, float height)
+{
+	this->positionX = positionX;
+	this->positionY = positionY;
+	this->width = width;
+	this->height = height;
+	clickedOn = false;
+	bLButtonState = true;
+	active = false;
+	hold = false;
+}
+
 bool Button::isClickedOn()
 {
 	return clickedOn;

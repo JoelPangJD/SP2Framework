@@ -120,7 +120,10 @@ public:
 	bool FoundAnswer = false;
 	bool ToExit = false;
 
-	void StartMenu();
+	void RenderStartMenu(MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
+	void UpdateStartMenu();
+	Button startMenu[2];
+	bool start = true;
 
 	void RenderMesh(Mesh* mesh, bool enableLight, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
 	void RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
