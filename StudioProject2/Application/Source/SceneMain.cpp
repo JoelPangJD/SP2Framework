@@ -332,8 +332,6 @@ void SceneMain::Update(double dt)
 		}
 		updateMinigame(dt);
 	}
-
-
 }
 
 

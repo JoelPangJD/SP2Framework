@@ -382,7 +382,7 @@ void SceneMuseum::Update(double dt)
 
 	}
 
-	menu.renderHelp();
+	//menu.renderHelp();
 	//for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 	//{
 	//	if ((*it)->gettype() == "exit")
@@ -1376,7 +1376,7 @@ void SceneMuseum::Render()
 
 	RenderMesh(meshList[GEO_AXES], false, modelStack, viewStack, projectionStack, m_parameters);
 
-	menu.renderMenuScreen();
+	//menu.renderMenuScreen();
 
 	RenderWalls();
 
