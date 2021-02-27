@@ -23,6 +23,8 @@ public:
 	void Run();
 	void Exit();
 
+	static bool GameEnd;
+
 
 private:
 

@@ -7,6 +7,7 @@
 #include "MeshBuilder.h"
 #include <Mtx44.h>
 
+
 Scene::Scene()
 {
 	baseMeshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
@@ -30,17 +31,49 @@ Scene::Scene()
 	baseMeshList[GEO_WIN] = MeshBuilder::GenerateQuad("Game win screen", Color(1, 1, 1), 1.0f);
 	baseMeshList[GEO_WIN]->textureID = LoadTGA("Image//gamewin.tga");
 
-	button.positionX = 14.5;
-	button.positionY = 3;
-	button.width = 48.6;
-	button.height = 7.8;
-	button.active = true;
-	button.hold = false;
-
+	GameWinButton.setButton(14.5, 3, 48.6, 7.8);
+	HelpButton.setButton(26.6, 26, 24.3, 5.2);
+	EndGameButton.setButton(26.6, 16.3, 24.4, 5.7);
+	ResumeButton.setButton(26.6, 34.9, 24.4, 5);
+	startMenu[0].setButton(28.3, 31.3, 24.1, 7.9);
+	startMenu[1].setButton(28.3, 15.3, 24.1, 7.9);
 }
 
-void Scene::StartMenu()
+void Scene::RenderStartMenu(MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[])
 {
+	RenderMeshOnScreen(baseMeshList[GEO_MENU], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
+}
+
+void Scene::UpdateStartMenu()
+{
+	Application::enableMouse = true;
+	startMenu[1].active = startMenu[0].active = true;
+	startMenu[0].updateButton();
+	startMenu[1].updateButton();
+	if (startMenu[0].isClickedOn()) {
+		start = false;
+		Application::enableMouse = false;
+	}
+	if (startMenu[1].isClickedOn()) {
+		Application::GameEnd = true;
+	}
+	//static bool bLButtonState = true;
+	//if (Application::IsMousePressed(0) && (bLButtonState))
+	//{
+	//	double x, y;
+	//	Application::GetCursorPos(&x, &y);
+	//	unsigned w = Application::GetWindowWidth();
+	//	unsigned h = Application::GetWindowHeight();
+	//	float posX = x / 10;
+	//	float posY = 60 - y / 10;
+	//	std::cout << "posX = " << posX << std::endl;
+	//	std::cout << "posY = " << posY << std::endl;
+	//	bLButtonState = false;
+	//}
+	//else if (!Application::IsMousePressed(0) && !bLButtonState)
+	//{
+	//	bLButtonState = true;
+	//}
 }
 
 void Scene::RenderMesh(Mesh* mesh, bool enableLight, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[])
@@ -89,28 +122,53 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 {
 	if (inmenu)
 	{
-		if (Help)//Help is called
+		if (Pause)
+		{
+			RenderMeshOnScreen(baseMeshList[GEO_PAUSE], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
+			ResumeButton.updateButton();
+			HelpButton.updateButton();
+			EndGameButton.updateButton();
+			Application::enableMouse = true;		
+			if (ResumeButton.isClickedOn()) //if resume button is being clicked
+			{
+				Application::enableMouse = false;
+				inmenu = false;
+			}
+			if (HelpButton.isClickedOn()) //if help button is being clicked 
+			{
+				Application::enableMouse = false;
+				Help = true;
+				Pause = false;
+			}
+			if (EndGameButton.isClickedOn()) // if end button is being clicked
+			{
+				Application::GameEnd = true;
+			}
+			return;
+		}
+		if (Help)//Render help screen
 		{
 			RenderMeshOnScreen(baseMeshList[GEO_HELP], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
 			return;
 		}
-		else if (Menu)
+		if (Menu) // Render menu screen
 		{
 			RenderMeshOnScreen(baseMeshList[GEO_MENU], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
 			return;
 		}
 
-		else if (GameWin)
+		if (GameWin)//Render GameWin screen
 		{
-			button.updateButton();
 			RenderMeshOnScreen(baseMeshList[GEO_WIN], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
+			GameWinButton.updateButton();
 			Application::enableMouse = true;
-			if (button.isClickedOn())
+			if (GameWinButton.isClickedOn())
 			{
 				Menu = true;
 			}
 			return;
 		}
+
 
 		
 		//switch (menutype)
@@ -349,7 +407,7 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 	if (Application::IsKeyPressed(VK_ESCAPE) && !inmenu) //Enter pause screen
 	{
 		inmenu = true;
-		Help = true;
+		Pause = true;
 	}
 	if (!inmenu)
 	{
@@ -419,7 +477,7 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 					else if ((*it)->gettype() == "citytochangi")
 					{
 						camera.position = Vector3(0, 3, 48);
-						if (Scene::inventory->checkinventory("Changi airport card placeholder")) {
+						if (Scene::inventory->checkinventory("changi pass")) {
 							Application::SwitchScene = 2;
 						}
 						else {
@@ -427,11 +485,11 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 						}
 					}
 
-					if (!(inventory->getstorage().empty())) //For uses that rely on inventory, make sure the inventory is 
+					if (!(inventory->getstorage().empty())) //For uses that rely on inventory, make sure the inventory isn't empty
 					{
+						//SceneGarden
 						if ((*it)->gettype() == "cat" && inventory->getcurrentitem()->gettype() == "fish")//using fish on cat
 						{
-							CantUse = false;
 							inventory->removeitem(inventory->getcurrentitem());
 							inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 1, 0, "Marina Bay ticket", "MBS ticket", true));
 							dialogue.push_back("1Oh it gave me a ticket to the Marina Bay Sands.");
@@ -442,43 +500,64 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 							indialogue = true;
 
 						}
-						if ((*it)->gettype() == "pond" && inventory->getcurrentitem()->gettype() == "fishing rod")//using fishing rod on the pond
+						else if ((*it)->gettype() == "pond" && inventory->getcurrentitem()->gettype() == "fishing rod")//using fishing rod on the pond
 						{
-							CantUse = false;
 							return "Gardenminigame1";
 						}
-						if ((inventory->getcurrentitem()->gettype() == "Orb") && (*it)->gettype() == "orc")
+
+						//Scene MarinaBay
+						else if ((inventory->getcurrentitem()->gettype() == "Orb") && (*it)->gettype() == "orc")
 						{	//uses translator orb on orc
-							CantUse = false;
-							dialogue.push_back("2Hello, young one.You require my aid in your fight yes ? My people are a pacifistic bunch so I cannot aid you in combat but I can bestow upon you my gifts temporarily.");
+							dialogue.push_back("2Hello, young one.You require my aid in your fight yes? My people are a pacifistic bunch so I cannot aid you in combat but I can bestow upon you my gifts temporarily.");
 							dialogue.push_back("2This will allow you to wield telekinetic powers for a limited time and create very short-lived material objects, it is up to you what you choose to do with it.");
-							dialogue.push_back("1Wow, I never knew you orcs were this cool.Thanks!");
+							dialogue.push_back("1Wow, I never knew you orcs were this cool. Thanks!");
 							currentline = dialogue.begin();
 							name = "Orc";
 							indialogue = true;
 							(*it)->updatedialogue("orc2");
 						}
-						if ((*it)->gettype() == "place key" && inventory->getcurrentitem()->gettype() == "key")
+						else if ((inventory->getcurrentitem()->gettype() == "Riddle") && (*it)->gettype() == "pool")
+						{	//solving the riddle by using it on the pool
+							dialogue.push_back("1You find me behind the stars; or in a sixth, seventh, or third it takes something round, a computer, and me to make pie i am bigger than anything you can think of what am i ??"); 
+							dialogue.push_back("1The answer's infinity! I should tell this to the old guy quickly.");
+							currentline = dialogue.begin();
+							name = "";
+							indialogue = true;
+							inventory->removeitem("Riddle");
+							inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Riddle Answer", "Riddle Answer", true));
+						}
+						else if ((inventory->getcurrentitem()->gettype() == "Riddle Answer") && (*it)->gettype() == "adventurer2")
+						{	//bringing the riddle answer to the adventurer
+							dialogue.push_back("2Infinity ? That makes a lot of sense.Aight as promised here's my sword.");
+							dialogue.push_back("2Also, since you've helped me so much, take this translator orb I have spare.");
+							dialogue.push_back("1This sword seems a bit too heavy for me but maybe I could use the orb somewhere instead?");
+							currentline = dialogue.begin();
+							name = "Adventurer";
+							indialogue = true;
+							inventory->removeitem("Riddle Answer");
+							inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Sword", "Sword", true));
+							inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Orb", "Orb", true));
+							(*it)->updatedialogue("adventurer3");
+						}
+
+						//Scene Museum
+						else if ((*it)->gettype() == "place key" && inventory->getcurrentitem()->gettype() == "key")
 						{
-							CantUse = false;
 							place1 = true;
 							inventory->removeitem("key");
 						}
-
 						else if ((*it)->gettype() == "place flag" && inventory->getcurrentitem()->gettype() == "flag")
 						{
-							CantUse = false;
 							place2 = true;
 							inventory->removeitem("flag");
 						}
 
 						else if ((*it)->gettype() == "place box" && inventory->getcurrentitem()->gettype() == "box")
 						{
-							CantUse = false;
 							place3 = true;
 							inventory->removeitem("box");
 						}
-						else if (CantUse == true)
+						else
 						{
 							dialogue.push_back("1I'm not supposed to use it here.");
 							currentline = dialogue.begin();
@@ -559,27 +638,12 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 						else if ((*it)->gettype() == "adventurer")
 						{
 							(*it)->updatedialogue("adventurer2");
-							riddleStarted = true;
+							inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Riddle", "Riddle", true));
 						}
 					}
 				}
 				else if (interacttext.str() == "") //if the text for highlighted object is empty 
 					interacttext << (*it)->getname();
-				if (MarinaBay == true)
-				{
-					if ((*it)->gettype() == "pool" && riddleStarted)
-					{
-						(*it)->updatedialogue("pool2");
-						(*it)->updatedescription("pool2");
-						riddleSolved = true;
-					}
-					else if ((*it)->gettype() == "adventurer2" && riddleSolved)
-					{
-						(*it)->updatedialogue("adventurer3");
-						inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Sword", "Sword", true));
-						inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Orb", "Orb", true));
-					}
-				}
 				break;
 			}
 		}

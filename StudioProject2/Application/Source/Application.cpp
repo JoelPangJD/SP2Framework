@@ -52,6 +52,8 @@ bool Application::enableMouse = false;//enable cursor to show or not to show
 
 unsigned Application::m_width;
 unsigned Application::m_height;
+bool Application::GameEnd = false;//End the game
+
 void resize_callback(GLFWwindow* window, int w, int h)
 {
 	Application::m_width = w;
@@ -154,7 +156,7 @@ void Application::Run()
 	scene0->Init();
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
-	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_END))
+	while (!glfwWindowShouldClose(m_window) && !GameEnd)
 	{
 		if (IsKeyPressed(VK_F1)) {
 			SwitchScene = 1;

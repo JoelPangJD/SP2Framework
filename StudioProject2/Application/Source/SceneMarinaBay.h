@@ -17,6 +17,7 @@ class SceneMarinaBay : public Scene
 {
 	enum GEOMETRY_TYPE
 	{
+		//shapes
 		GEO_AXES = 0,
 		GEO_QUAD,
 		GEO_CUBE,
@@ -56,6 +57,7 @@ class SceneMarinaBay : public Scene
 		GEO_TALLTREE,
 		GEO_WATER,
 		GEO_CHAIR,
+		GEO_FOUNTAIN,
 
 		//fight specific
 		GEO_LAYOUT,
