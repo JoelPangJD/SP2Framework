@@ -154,7 +154,6 @@ private:
 	Camera3 GameCam1;
 	Button button;
 	Button button2;
-	Menu menu;
 	MS modelStack, viewStack, projectionStack; //The matrix stacks
 	unsigned m_parameters[U_TOTAL];
 	unsigned m_vertexArrayID;
