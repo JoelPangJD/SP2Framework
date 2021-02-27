@@ -73,10 +73,12 @@ private:
 		U_TOTAL,
 	};
 
-protected: //for SceneMuseum 
+protected: 
+	//for SceneMuseum 
 	bool place1 = false;
 	bool place2 = false;
 	bool place3 = false;
+
 
 public:
 	Scene();

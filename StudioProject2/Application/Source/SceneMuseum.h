@@ -196,11 +196,7 @@ private:
 	bool CorrectAnswer = false;
 
 	//1st game
-	//bool ShowPreview = false;
-	bool ShowFirstGame = false;
 	void StartGame1();
-	//bool EndGame1 = false;
-	bool Continue = false;
 
 	//Exit Museum
 	//void StartExit();
@@ -213,10 +209,15 @@ private:
 	void StartGame2();
 	bool EndGame2 = false;
 
+	//All introduction text
+	bool RenderIntruction1 = true;
+	bool RenderIntruction2= true;
+	bool RenderIntruction3 = true;
+	bool RenderIntruction4 = true;
+
 	//void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
 	void RenderWalls();
-	void RenderGame1UI();
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderNPCDialogue(std::string NPCText, std::string headerText);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);

@@ -364,6 +364,26 @@ void SceneMuseum::Update(double dt)
 
 	}
 
+	if (Application::IsKeyPressed('E'))
+	{
+		if (RenderIntruction1)
+		{
+			RenderIntruction1 = false;
+		}
+		else if (RenderIntruction2 && EndGame1)
+		{
+			RenderIntruction2 = false;
+		}
+		else if (RenderIntruction3 && place1 && place2 && place3)
+		{
+			RenderIntruction3 = false;
+		}
+		else if (RenderIntruction4 && ToExit)
+		{
+			RenderIntruction4 = false;
+		}
+	}
+
 	if (MousePreview == true)
 	{
 		if (EndGame1 == false) //Button for the First Game
@@ -382,11 +402,6 @@ void SceneMuseum::Update(double dt)
 						break;
 					}
 				}
-				//terrains.erase(terrains.begin() + 19);
-				ShowFirstGame = false;
-				Continue = true;
-				//indialogue = false;
-				std::cout << "Hit!" << std::endl;
 			}
 		}
 		else if(ToExit)
@@ -408,6 +423,7 @@ void SceneMuseum::Update(double dt)
 					Application::enableMouse = false;
 					StartTheHoldingGame = false;
 					MousePreview = false;
+					RenderIntruction4 = true;
 					ToExit = false;
 					Application::SwitchScene = 0;
 				}
@@ -772,43 +788,50 @@ void SceneMuseum::StartGame1()
 {
 	if (!EndGame1)
 	{
-		RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
-		interact(camera, items);
+		if (RenderIntruction1)
+		{
+			RenderMinigameIntro("Look at the image at Preview and choose the correct image to unlock the door.", "Introduction", 3, modelStack, viewStack, projectionStack, m_parameters);
+		}
+		else
+		{
+			RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
+			interact(camera, items);
 
-		if (Preview)
-		{
-			RenderMeshOnScreen(meshList[GEO_MINIPIC1], 50, 40, 30, 30);
-			camera.Init(Vector3(-220.713, 10, 95), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
-		}
-		else if (ShowAnswer)
-		{
-			MousePreview = true;
-			RenderMeshOnScreen(meshList[GEO_SELECTION], 70, 35, 70, 60);
-			camera.Init(Vector3(-220.713, 10, 95), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
-		}
-		else if (!FoundAnswer)
-		{
-			Application::enableMouse = false;
-		}
-		else if (FoundAnswer)
-		{
-			MousePreview = false;
-			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); ++it)
+			if (Preview)
 			{
-				std::cout << (*it)->gettype() << std::endl;
-				if ((*it)->gettype() == "preview")
-				{
-					items.erase(it);
-					it = items.begin();
-				}
-				if ((*it)->gettype() == "answer")
-				{
-					items.erase(it);
-					break;
-				}
+				RenderMeshOnScreen(meshList[GEO_MINIPIC1], 50, 40, 30, 30);
+				camera.Init(Vector3(-220.713, 10, 95), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
 			}
-			FoundAnswer = false;
-			EndGame1 = true;
+			else if (ShowAnswer)
+			{
+				MousePreview = true;
+				RenderMeshOnScreen(meshList[GEO_SELECTION], 70, 35, 70, 60);
+				camera.Init(Vector3(-220.713, 10, 95), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
+			}
+			else if (!FoundAnswer)
+			{
+				Application::enableMouse = false;
+			}
+			else if (FoundAnswer)
+			{
+				MousePreview = false;
+				for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); ++it)
+				{
+					std::cout << (*it)->gettype() << std::endl;
+					if ((*it)->gettype() == "preview")
+					{
+						items.erase(it);
+						it = items.begin();
+					}
+					if ((*it)->gettype() == "answer")
+					{
+						items.erase(it);
+						break;
+					}
+				}
+				FoundAnswer = false;
+				EndGame1 = true;
+			}
 		}
 	}
 }
@@ -818,11 +841,35 @@ void SceneMuseum::StartGame2()
 {
 	if (EndGame2 == false && EndGame1 == true)
 	{
-		RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
-		interact(camera, items);
-		if (place1 == true && place2 == true && place3 == true)
+		if (RenderIntruction2)
 		{
-			std::cout << "YOU PLACED ALL" << std::endl;
+			RenderMinigameIntro("Good job! Now go to the end of the musem and talk to Mr Tang, he will tell you to gather 3 items. Gather 3 items and make sure to place them IN THE CORRECT ORDER around him and he will grant you the Changi pass for the next scene.", "Introduction", 3, modelStack, viewStack, projectionStack, m_parameters);
+		}
+		else
+		{
+			RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
+			interact(camera, items);
+			if (ToExit) // If player want to go back city center
+			{
+				if (RenderIntruction4)
+				{
+					RenderMinigameIntro("Hold the button to exit the museum.", "Security", 3, modelStack, viewStack, projectionStack, m_parameters);
+				}
+				else
+				{
+					MousePreview = true;
+					GameCam1 = camera;
+					//Application::enableMouse = true;
+					//Goes to some orange background to view image
+					camera.Init(Vector3(-260, 10, 10), Vector3(220.717, 5, 241.881), Vector3(0, 1, 0));
+					RenderMeshOnScreen(meshList[GEO_PIC], 40, 30, 80, 65);
+					RenderMeshOnScreen(meshList[GEO_BOX], 4 + MoveX, 29, 3 + AddSize, 8.9);
+				}
+			}
+			if (place1 == true && place2 == true && place3 == true)
+			{
+				EndGame2 = true;
+			}
 		}
 		
 	}
@@ -830,63 +877,52 @@ void SceneMuseum::StartGame2()
 
 void SceneMuseum::ExitMuseum()
 {
-	RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
-	interact(camera, items);
-	if (ToExit)
+	if (EndGame2 == true && EndGame1 == true && !RenderIntruction1 && !RenderIntruction2)
 	{
-		MousePreview = true;
-		GameCam1 = camera;
-		//Application::enableMouse = true;
-		//Goes to some orange background to view image
-		camera.Init(Vector3(-260, 10, 10), Vector3(220.717, 5, 241.881), Vector3(0, 1, 0));
-		RenderMeshOnScreen(meshList[GEO_PIC], 40, 30, 80, 65);
-		RenderMeshOnScreen(meshList[GEO_BOX], 4 + MoveX, 29, 3 + AddSize, 8.9);
-	}
-}
-
-void SceneMuseum::RenderGame1UI()
-{
-	if (indialogue)
-	{
-		string dialoguetext = (*currentline);
-		string currentname;
-		if (dialoguetext[0] == '1')
-			currentname = "Player name";
-		else if (dialoguetext[0] == '2')
-			currentname = name;
-		dialoguetext = dialoguetext.substr(1);
-		RenderNPCDialogue(dialoguetext, currentname);
-		if (cooldown <= 0 && Application::IsKeyPressed('Z')) //Cooldown added to prevent spamming to pass the dialogues too fast
+		if (RenderIntruction3)
 		{
-			cooldown = 1;
-			currentline++;
-			if (currentline == dialogue.end())
+			RenderMinigameIntro("Nicely Done! Now go to Mr Tang and get your Changi Pass.", "Introduction", 3, modelStack, viewStack, projectionStack, m_parameters);
+		}
+		else
+		{
+			RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
+			interact(camera, items);
+			if (ToExit)
 			{
-				indialogue = false;
-				dialogue.clear();
+				if (RenderIntruction4)
+				{
+					RenderMinigameIntro("Hold the button to exit the museum.", "Security", 3, modelStack, viewStack, projectionStack, m_parameters);
+				}
+				else
+				{
+					MousePreview = true;
+					GameCam1 = camera;
+					//Application::enableMouse = true;
+					//Goes to some orange background to view image
+					camera.Init(Vector3(-260, 10, 10), Vector3(220.717, 5, 241.881), Vector3(0, 1, 0));
+					RenderMeshOnScreen(meshList[GEO_PIC], 40, 30, 80, 65);
+					RenderMeshOnScreen(meshList[GEO_BOX], 4 + MoveX, 29, 3 + AddSize, 8.9);
+				}
 			}
 		}
 	}
-	else
-	{
-		modelStack.PushMatrix();
-		RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
-		int ypos = 52;
-		vector<InteractableObject*> inventorycontent = inventory->getstorage();
-		for (std::vector<InteractableObject*>::iterator it = inventorycontent.begin(); it != inventorycontent.end(); it++)
-		{
-			RenderTextOnScreen(meshList[GEO_TEXT], (*it)->gettype(), Color(0, 0, 0), 2, 2, ypos);
-			ypos -= 2;
-
-		}
-		std::ostringstream ss;
-		ss << "FPS: " << fps;
-		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 58, 68);
-		RenderTextOnScreen(meshList[GEO_TEXT], interacttext.str(), Color(0.5, 0.5, 0.5), 5, 40 - (interacttext.str().length()), 30);
-		interacttext.str("");
-		modelStack.PopMatrix();
-	}
+	//if (EndGame2 == false && EndGame1 == true && !RenderIntruction2)
+	//{
+	//	RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
+	//	interact(camera, items);
+	//	if (ToExit)
+	//	{
+	//		MousePreview = true;
+	//		GameCam1 = camera;
+	//		//Application::enableMouse = true;
+	//		//Goes to some orange background to view image
+	//		camera.Init(Vector3(-260, 10, 10), Vector3(220.717, 5, 241.881), Vector3(0, 1, 0));
+	//		RenderMeshOnScreen(meshList[GEO_PIC], 40, 30, 80, 65);
+	//		RenderMeshOnScreen(meshList[GEO_BOX], 4 + MoveX, 29, 3 + AddSize, 8.9);
+	//	}
+	//}
 }
+
 
 void SceneMuseum::RenderText(Mesh* mesh, std::string text, Color color)
 {
