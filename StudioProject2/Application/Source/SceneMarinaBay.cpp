@@ -311,15 +311,20 @@ void SceneMarinaBay::Init()
 		terrains.push_back(new Terrain(Vector3(47, 0, 0), 0, 1, 10, 30, 320, "infinity pool"));
 		terrains.push_back(new Terrain(Vector3(27, 0, -70), 0, 1, 10, 20, 180, "infinity poolside"));
 		terrains.push_back(new Terrain(Vector3(-22, 0, -64), 0, 1, 10, 32, 32, "fountain"));
+		terrains.push_back(new Terrain(Vector3(-50, 5, -100), 0, 0.7, 7, 7, "robot"));
+		terrains.push_back(new Terrain(Vector3(-22, 5, -160), 0, 0.7, 7, 7, "girl"));
+		terrains.push_back(new Terrain(Vector3(0, 5, 300), 0, 0.7, 7, 7, "badguy"));
+		terrains.push_back(new Terrain(Vector3(-30, 5, 44), 0, 0.7, 7, 7, "adventurer"));
+		terrains.push_back(new Terrain(Vector3(15, 5, -70), 0, 0.7, 7, 7, "orc"));
 
 		//items/npcs
-		items.push_back(new InteractableObject(Vector3(-50, 5, -100), 90, 0.7, 7, "robot", "Robot", false));
-		items.push_back(new InteractableObject(Vector3(-22, 5, -160), 180, 0.7, 7, "girl", "Hostess", false));
-		items.push_back(new InteractableObject(Vector3(0, 5, 300), 0, 0.7, 5, "badguy", "Thief", false));
-		items.push_back(new InteractableObject(Vector3(-30, 5, 44), 180, 0.7, 7, "adventurer", "Adventurer", false));
-		items.push_back(new InteractableObject(Vector3(15, 5, -70), 270, 0.7, 7, "orc", "Orc", false));
-		items.push_back(new InteractableObject(Vector3(32, 5, 30), 0, 0.7, 5, "pool", "'Infinity' Pool", false));
-		items.push_back(new InteractableObject(Vector3(50, 5, -160), 0, 0.7, 7, "pool", "'Infinity' Pool", false));
+		items.push_back(new InteractableObject(Vector3(-50, 5, -100), 90, 0.7, 12, "robot", "Robot", false));
+		items.push_back(new InteractableObject(Vector3(-22, 5, -160), 180, 0.7, 12, "girl", "Hostess", false));
+		items.push_back(new InteractableObject(Vector3(0, 5, 300), 0, 0.7, 12, "badguy", "Thief", false));
+		items.push_back(new InteractableObject(Vector3(-30, 5, 44), 180, 0.7, 12, "adventurer", "Adventurer", false));
+		items.push_back(new InteractableObject(Vector3(15, 5, -70), 270, 0.7, 12, "orc", "Orc", false));
+		items.push_back(new InteractableObject(Vector3(32, 5, 32), 0, 0.7, 15, "pool", "'Infinity' Pool", false));
+		items.push_back(new InteractableObject(Vector3(50, 5, -160), 0, 0.7, 17, "pool", "'Infinity' Pool", false));
 		items.push_back(new InteractableObject(Vector3(-22, 0, -64), 0, 1, 20, "fountain", "Fountain", false));
 		items.push_back(new InteractableObject(Vector3(0, 0, -220), 0, 1, 40, "ledge", "Ledge", false));
 	}

@@ -167,10 +167,14 @@ void Camera3::Update(double dt)
 void Camera3::Updatepos(double dt)
 {
 	static float speed = 25.f;
-	if (Application::SwitchScene == 2) {
+	if (Application::SwitchScene == 1) {
 		speed = 50.f;
 	}
-	else if (Application::SwitchScene == 1)
+	else if (Application::SwitchScene == 2)
+	{
+		speed = 50.f;
+	}
+	else if (Application::SwitchScene == 3)
 	{
 		speed = 50.f;
 	}
