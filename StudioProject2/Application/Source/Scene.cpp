@@ -22,9 +22,9 @@ Scene::Scene()
 	baseMeshList[GEO_PRESSE] = MeshBuilder::GenerateQuad("pressE", Color(1, 1, 1), 1.0f);
 	baseMeshList[GEO_PRESSE]->textureID = LoadTGA("Image//pressE.tga");
 	baseMeshList[GEO_MENU] = MeshBuilder::GenerateQuad("Menu", Color(1, 1, 1), 1.0f);
-	baseMeshList[GEO_MENU]->textureID = LoadTGA("Image//menu.tga");
+	baseMeshList[GEO_MENU]->textureID = LoadTGA("Image//start.tga");
 	baseMeshList[GEO_PAUSE] = MeshBuilder::GenerateQuad("Pause", Color(1, 1, 1), 1.0f);
-	baseMeshList[GEO_PAUSE]->textureID = LoadTGA("Image//helpscreen.tga");
+	baseMeshList[GEO_PAUSE]->textureID = LoadTGA("Image//pause.tga");
 	baseMeshList[GEO_HELP] = MeshBuilder::GenerateQuad("Help", Color(1, 1, 1), 1.0f);
 	baseMeshList[GEO_HELP]->textureID = LoadTGA("Image//helpscreen.tga");
 
