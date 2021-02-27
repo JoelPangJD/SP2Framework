@@ -26,13 +26,13 @@ adventurer|2Hey there, young chap what's got you so high strung?|1Guy, bad, wall
 adventurer2|2Figured it out yet?
 adventurer3|2Infinity? That makes a lot of sense. Aight as promised here's my sword.|2Also, since you've helped me so much, take this translator orb I have spare.|1This sword seems a bit too heavy for me but maybe I could use the orb instead?
 pool|1Hello infinity pool.
-pool2|1Hello infinity po-wait...|1"You find me behind the stars; or in a sixth, seventh, or third it takes something round, a computer, and me to make pie i am bigger than anything you can think of what am i ??"|1The answer's infinity! I should tell this to the old guy quickly.
 Guide|2Welcome to Changi airport, board the plane for a flight exprience......WAIT|2Oh no! Outsiders fired missiles coming towards the airport.|2 Can u help to drive the plane to safety? Please...
 stairs|1Hope this ride will go well.
 badguy|1I should make sure I have at least one attack before fighting him.
 badguy2|2So, you really think you can take me.|1Mr.Sazz?|2Ah, you must've meant my worthless brother.|2Anyways, I might not be as good as my brother in physical combat, but I have something even greater than the limits of a human. Try and keep my pet entertained for a few seconds could you?| 
 badguy3|2Back for more are you?| 
 fountain|1Hello fountain.
+ledge|1Hello ledge.|2Hello, esteemed guest.|1...
 citytomuseum|1Hello museum.
 citytogarden|1The garden seems nice.
 citytochangi|1Airplanes hmmm.

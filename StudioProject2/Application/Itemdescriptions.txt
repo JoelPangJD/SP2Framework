@@ -29,6 +29,7 @@ citytomuseum|1That leads to the museum.
 citytochangi|1Changi Airport seems to be right ahead.
 citytomarina|1This path leads to Marina Bay Sands.
 citytogarden|1Looks like Botanic Garden is in this direction.
-pool|1It's a really long pool known as an infinity pool.|1An infinity pool is a reflecting or swimming pool where the water flows over one or more edges, producing a visual effect of water with no boundary.|1This infinity pool in particular is the world's longest elevated pool with it being 150m long.
-fountain|1It's a fountain. 
-badguy|1This guy just did a whole monologue towards me while facing the opposite direction so he's definitely the one who stole my wallet.|1He looks a lot likre Mr.Sazz but last I checked Mr.Sazz had 2 arms so maybe they're related?
+pool|1It's a really long pool known as an infinity pool.|1An infinity pool is a reflecting or swimming pool where the water flows over one or more edges, producing a visual effect of water with no boundary.|1This infinity pool in particular is the world's longest elevated pool with it being an impressive 150m long.
+fountain|1It's a fountain.
+badguy|1This guy just did a whole monologue towards me while facing the opposite direction so he's definitely the one who stole my wallet.|1He looks a lot like Mr.Sazz but last I checked Mr.Sazz had 2 arms so maybe they're related?
+ledge|1This ledge might seem dangerous but there's actually invisible walls here set up by the owners.|1They also change the surroundings with the walls every so often due to people complaining about the view being too repetitive. For some reason, they chose the top of a mountain today.

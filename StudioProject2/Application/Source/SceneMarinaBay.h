@@ -194,18 +194,26 @@ private:
 	int posZ;
 	//fight vars
 	bool fight = false, fightInit, fightWon, fightLost, fightOver, fightDia, playerTurn, enemyTurn, fightSelected, itemsSelected, itemChosen, backSelected, attackSelected, actionSelected, attackHit;
+	
+	//health vars
 	float pointerX, pointerY, playerHealth, playerHealthPos, playerHealthLost, playerHealthGained, enemyHealth, enemyHealthPos, enemyHealthLost, enemyHealthGained;
+	
 	//player's
 	float attackScale, attackAngle, attackTranslateY, attackTranslateZ;
+	
 	//dragon enemy's 
 	bool enemyAttackHit, enemyAlrAttacked, enemyAnimPlaying;
+	
 	//idle
 	float idleHands, idleBounce, idleMouth, idleBreath, idleNeck, idleHead;
 	int idleHandsDir, idleBounceDir, idleMouthDir, idleBreathDir, idleNeckDir, idleHeadDir;
+	
 	//spear/bite
 	float enemyAttackAngle, enemyAttackMove, enemyAttackScale;
+	
 	//going down thing
 	float move, moveAngle, timer, moveBack;
+	
 	//animation bools
 	bool movement, goneDown, idle, attack, revert, bite, biteRearedBack;
 	bool hitboxshow;

@@ -321,6 +321,7 @@ void SceneMarinaBay::Init()
 		items.push_back(new InteractableObject(Vector3(32, 5, 30), 0, 0.7, 5, "pool", "'Infinity' Pool", false));
 		items.push_back(new InteractableObject(Vector3(50, 5, -160), 0, 0.7, 7, "pool", "'Infinity' Pool", false));
 		items.push_back(new InteractableObject(Vector3(-22, 0, -64), 0, 1, 20, "fountain", "Fountain", false));
+		items.push_back(new InteractableObject(Vector3(0, 0, -220), 0, 1, 40, "ledge", "Ledge", false));
 	}
 
 }
@@ -489,26 +490,6 @@ void SceneMarinaBay::Update(double dt)
 			}
 			switch (playerAction)
 			{
-			case (A_ATTACK1):					
-				attackSelected = true;
-				fightSelected = false;
-				break;
-			case (A_ATTACK2):
-				attackSelected = true;
-				fightSelected = false;
-				break;
-			case (A_ATTACK3):
-				attackSelected = true;
-				fightSelected = false;
-				break;
-			case (A_ITEM1):
-				itemChosen = true;
-				itemsSelected = false;
-				break;
-			case (A_ITEM2):
-				itemChosen = true;
-				itemsSelected = false;
-				break;
 			case (A_ATTACK):
 				fightSelected = true;
 				itemsSelected = false;
@@ -547,12 +528,22 @@ void SceneMarinaBay::Update(double dt)
 				name = "Thief";
 				indialogue = true;
 				break;
-			default:
-				cout << "playeraction broke";
 			}
 			actionSelected = false;
 			if (playerAction > A_ITEMS)	//if doing an action that would end the turn
 			{
+				//to remove the need to add a case for every attack/item
+				if (playerAction >= A_ATTACK1 && playerAction <= A_ATTACK3)	//if an attack is chosen
+				{
+					attackSelected = true;
+					fightSelected = false;
+				}
+				else	//items
+				{
+					itemChosen = true;
+					itemsSelected = false;
+				}
+				//turns all the buttons off
 				for (unsigned int i = 0; i < buttonList.size(); ++i)
 				{
 					buttonList[i]->active = false;
@@ -924,6 +915,7 @@ void SceneMarinaBay::Update(double dt)
 			}
 		}
 
+		//checks to change player/enemy's health accordingly
 		if (playerHealthLost > 0)
 		{	//health total will be as if it is equal to 100 so since the scaling of health is 20 the speed would be the same as health lost / 5
 			int speedOfHealthLost = 20.f;
@@ -965,7 +957,7 @@ void SceneMarinaBay::Update(double dt)
 			}
 		}
 		
-		//fight resolutions
+		//end of fight resolutions
 		if (playerHealth >= 20 || enemyHealth >= 20)
 		{
 			fightOver = true;
