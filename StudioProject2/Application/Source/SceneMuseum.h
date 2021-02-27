@@ -164,13 +164,6 @@ private:
 	std::vector<InteractableObject*> items;
 	std::vector<Terrain*> terrains;
 
-	//Variables for text
-	std::ostringstream interacttext;
-	bool indialogue;
-	vector<string> dialogue;
-	vector<string>::iterator currentline;
-	string name;
-
 	float movex = 0;
 	float movez = 0;
 
@@ -196,7 +189,7 @@ private:
 	bool CorrectAnswer = false;
 
 	//1st game
-	//bool ShowPreview = false;
+	bool Minigameintro = true;
 	bool ShowFirstGame = false;
 	void StartGame1();
 	//bool EndGame1 = false;
@@ -216,13 +209,6 @@ private:
 	//void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
 	void RenderWalls();
-	void RenderGame1UI();
-	void RenderText(Mesh* mesh, std::string text, Color color);
-	void RenderNPCDialogue(std::string NPCText, std::string headerText);
-	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey);
-	void RenderInteractableText();
-
 };
 
 #endif
