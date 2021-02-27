@@ -295,7 +295,7 @@ void SceneMuseum::Init()
 	terrains.push_back(new Terrain(Vector3(153.5, 0, 130), 0, 22, 10, 3, 125, "Wall"));
 	terrains.push_back(new Terrain(Vector3(-101.273, 0, -10.2017), 0, 22, 10, 295.839, 3, "Wall"));
 	terrains.push_back(new Terrain(Vector3(-246.153, 0, -20.2017), 0, 22, 10, 3, 21.1293, "Wall"));
-	terrains.push_back(new Terrain(Vector3(-246.153 + movex , 0, -55.374), 0, 22, 10, 3, 84, "Wall"));
+	terrains.push_back(new Terrain(Vector3(-246.153, 0, -55.374), 0, 22, 10, 3, 84, "Wall"));
 	terrains.push_back(new Terrain(Vector3(-265.3887, 0, -89.354), 0, 22, 10, 39.725, 3, "Wall"));
 	terrains.push_back(new Terrain(Vector3(-284.3725, 0, 84.472), 0, 22, 10, 3, 351.252, "Wall"));
 	terrains.push_back(new Terrain(Vector3(-236.308, 0, 260.323), 0, 22, 10, 98.564, 3, "Wall"));
@@ -820,13 +820,13 @@ void SceneMuseum::StartGame2()
 	{
 		if (RenderIntruction2)
 		{
-			RenderMinigameIntro("Good job! Now go to the end of the musem and talk to Mr Tang, he will tell you to gather 3 items. Gather 3 items and make sure to place them IN THE CORRECT ORDER around him and he will grant you the Changi pass for the next scene.", "Introduction", 3, modelStack, viewStack, projectionStack, m_parameters);
+			RenderMinigameIntro("Good job! Now go to the end of the musem and talk to Mr Tang, he will tell you to gather 3 items. Gather 3 items and MAKE SURE TO PLACE THEM IN THE CORRECT ORDER around him. Use the arrow key to navigate through your inventory. He will grant you the Changi pass for the next scene afterwards.", "Introduction", 3, modelStack, viewStack, projectionStack, m_parameters);
 		}
 		else
 		{
 			RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 			interact(camera, items);
-			if (ToExit) // If player want to go back city center
+			if (ToExit && !inmenu) // If player want to go back city center
 			{
 				if (RenderIntruction4)
 				{
@@ -863,7 +863,7 @@ void SceneMuseum::ExitMuseum()
 		{
 			RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 			interact(camera, items);
-			if (ToExit)
+			if (ToExit && !inmenu)
 			{
 				if (RenderIntruction4)
 				{
