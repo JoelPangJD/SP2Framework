@@ -445,6 +445,13 @@ void SceneMarinaBay::Update(double dt)
 			idleBreath = enemyAttackScale = 1;
 			idleHandsDir = idleBounceDir = idleMouthDir = idleBreathDir = idleNeckDir = idleHeadDir = 1;
 			moveBack = 71.f;
+			enemyAttackHit = false;
+			enemyAlrAttacked = false;
+			enemyAnimPlaying = false;
+			revert = false;
+			bite = false;
+			revert = false;
+			biteRearedBack = false;
 			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 			{
 				if ((*it)->gettype() == "badguy3")
@@ -556,7 +563,7 @@ void SceneMarinaBay::Update(double dt)
 		}
 
 		//player attack animations
-		if (attackSelected && playerTurn)
+		if (attackSelected && playerTurn && !enemyAnimPlaying)
 		{	//gets attack player is trying to execute
 			playerAttack = attacksList[playerAction - A_ATTACK1];
 			switch (playerAttack)
@@ -655,7 +662,7 @@ void SceneMarinaBay::Update(double dt)
 			}
 		}
 		//player item chosen
-		else if (itemChosen && playerTurn)
+		else if (itemChosen && playerTurn && !enemyAnimPlaying)
 		{
 			playerItem = itemsList[playerAction - A_ITEM1];
 			switch (playerItem)
@@ -744,7 +751,7 @@ void SceneMarinaBay::Update(double dt)
 					break;
 				}
 			}
-			else if (enemyAttackHit && playerHealthLost <= 0)	//ends enemy's turn and switches enemy's next attack
+			else if (enemyAttackHit && playerHealthLost <= 0 && !enemyAnimPlaying)	//ends enemy's turn and switches enemy's next attack
 			{
 				enemyAttack = static_cast<ENEMY_ATTACKS>((enemyAttack + 1) % NUM_EATTACKS);	//moves to the next attack
 				attackSelected = false;
@@ -752,7 +759,6 @@ void SceneMarinaBay::Update(double dt)
 				enemyTurn = false;
 				enemyAttackHit = false;
 				enemyAlrAttacked = false;
-				enemyAnimPlaying = false;
 				for (unsigned int i = 0; i < A_RUN + 1; ++i)	//reenabling the 3 main buttons
 				{
 					buttonList[i]->active = true;
@@ -818,7 +824,7 @@ void SceneMarinaBay::Update(double dt)
 				}
 				else	//after it has gone down
 				{
-					if (timer < 15)	//timer before going up
+					if (timer < 10)	//timer before going up
 					{
 						timer += 10 * dt;
 					}
@@ -838,6 +844,7 @@ void SceneMarinaBay::Update(double dt)
 						idle = true;
 						timer = moveAngle = move = 0;
 						moveBack = 71.f;
+						enemyAnimPlaying = false;
 					}
 				}
 			}
@@ -845,14 +852,15 @@ void SceneMarinaBay::Update(double dt)
 			{
 				if (revert == true)	//goes to initial position
 				{
-					enemyAttackAngle -= 20 * dt;
-					enemyAttackMove -= 20 * dt;
+					enemyAttackAngle -= 30 * dt;
+					enemyAttackMove -= 30 * dt;
 					enemyAttackScale = 1;
 					if (enemyAttackAngle <= 0 && enemyAttackMove <= 0)
 					{
 						attack = false;
 						revert = false;
 						idle = true;
+						enemyAnimPlaying = false;
 					}
 				}
 				else {
@@ -894,6 +902,7 @@ void SceneMarinaBay::Update(double dt)
 					else
 					{
 						revert = true;
+						enemyAttackHit = true;
 					}
 				}
 				else							//moving back to original position
@@ -904,16 +913,15 @@ void SceneMarinaBay::Update(double dt)
 					}
 					else if (enemyAttackMove > 0)	//moves back to original position
 					{
-
 						enemyAttackMove -= 60 * dt;
 					}
 					else					//animation finished
 					{
-						enemyAttackHit = true;
 						bite = false;
 						revert = false;
 						biteRearedBack = false;
 						idle = true;
+						enemyAnimPlaying = false;
 					}
 				}
 			}
