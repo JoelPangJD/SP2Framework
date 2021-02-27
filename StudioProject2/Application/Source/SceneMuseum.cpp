@@ -419,7 +419,6 @@ void SceneMuseum::Update(double dt)
 				Preview = false;
 				ShowAnswer = false;
 				ShowFirstGame = false;
-				Continue = true;
 				std::cout << "Hit!" << std::endl;
 			}
 		}
@@ -716,6 +715,7 @@ void SceneMuseum::RenderWalls()
 void SceneMuseum::StartGame1()
 {
 	if (!EndGame1)
+	{
 		if (RenderIntruction1)
 		{
 			RenderMinigameIntro("Look at the image at Preview and choose the correct image to unlock the door.", "Introduction", 3, modelStack, viewStack, projectionStack, m_parameters);
@@ -724,21 +724,16 @@ void SceneMuseum::StartGame1()
 		{
 			RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 			interact(camera, items);
-
 			if (Preview)
 			{
-				RenderMeshOnScreen(meshList[GEO_MINIPIC1], 50, 40, 30, 30);
-				camera.Init(Vector3(-220.713, 10, 95), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
+				RenderMeshOnScreen(meshList[GEO_MINIPIC1], 40, 30, 40, 30, modelStack, viewStack, projectionStack, m_parameters);
+				camera.Init(Vector3(-210, 10, 125), Vector3(-200, 10, 125), Vector3(0, 1, 0));
 			}
 			else if (ShowAnswer)
 			{
+				RenderMeshOnScreen(meshList[GEO_SELECTION], 70, 35, 70, 60, modelStack, viewStack, projectionStack, m_parameters);
+				camera.Init(Vector3(-210, 10, 125), Vector3(-200, 10, 125), Vector3(0, 1, 0));
 				MousePreview = true;
-				RenderMeshOnScreen(meshList[GEO_SELECTION], 70, 35, 70, 60);
-				camera.Init(Vector3(-220.713, 10, 95), Vector3(220.717, 40, 241.881), Vector3(0, 1, 0));
-			}
-			else if (!FoundAnswer)
-			{
-				Application::enableMouse = false;
 			}
 			else if (FoundAnswer)
 			{
@@ -759,17 +754,18 @@ void SceneMuseum::StartGame1()
 				}
 				FoundAnswer = false;
 				EndGame1 = true;
+
 			}
 		}
 	}
 }
-		RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);	
+		/*RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);	
 		if (Minigameintro && (Preview || ShowAnswer))
 		{
 			camera.Init(Vector3(-210, 10, 125), Vector3(-200, 10, 125), Vector3(0, 1, 0));
 			RenderMinigameIntro("Observe the pictures and click on the one in answer that matches the one in preview. You can press [E] to stop observing the picture.", "Picture match", 6, modelStack, viewStack, projectionStack, m_parameters);
 		}
-		else if (Preview)
+		if (Preview)
 		{
 			RenderMeshOnScreen(meshList[GEO_MINIPIC1], 40, 30, 40, 30, modelStack, viewStack, projectionStack, m_parameters);
 			camera.Init(Vector3(-210, 10, 125), Vector3(-200, 10, 125), Vector3(0, 1, 0));
@@ -804,15 +800,12 @@ void SceneMuseum::StartGame1()
 			indialogue = true;
 			EndGame1 = true;
 
-		}
-	}
-}
-}
-
+		}*/
 
 void SceneMuseum::StartGame2()
 {
 	if (EndGame2 == false && EndGame1 == true)
+	{
 		if (RenderIntruction2)
 		{
 			RenderMinigameIntro("Good job! Now go to the end of the musem and talk to Mr Tang, he will tell you to gather 3 items. Gather 3 items and make sure to place them IN THE CORRECT ORDER around him and he will grant you the Changi pass for the next scene.", "Introduction", 3, modelStack, viewStack, projectionStack, m_parameters);
@@ -834,8 +827,8 @@ void SceneMuseum::StartGame2()
 					//Application::enableMouse = true;
 					//Goes to some orange background to view image
 					camera.Init(Vector3(-260, 10, 10), Vector3(220.717, 5, 241.881), Vector3(0, 1, 0));
-					RenderMeshOnScreen(meshList[GEO_PIC], 40, 30, 80, 65);
-					RenderMeshOnScreen(meshList[GEO_BOX], 4 + MoveX, 29, 3 + AddSize, 8.9);
+					RenderMeshOnScreen(meshList[GEO_PIC], 40, 30, 80, 65, modelStack, viewStack, projectionStack, m_parameters);
+					RenderMeshOnScreen(meshList[GEO_BOX], 4 + MoveX, 29, 3 + AddSize, 8.9, modelStack, viewStack, projectionStack, m_parameters);
 				}
 			}
 			if (place1 == true && place2 == true && place3 == true)
@@ -843,15 +836,11 @@ void SceneMuseum::StartGame2()
 				EndGame2 = true;
 			}
 		}
-		
 	}
 }
-		RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
-	}
-}
-}
-
+	
 void SceneMuseum::ExitMuseum()
+{
 	if (EndGame2 == true && EndGame1 == true && !RenderIntruction1 && !RenderIntruction2)
 	{
 		if (RenderIntruction3)
@@ -875,8 +864,8 @@ void SceneMuseum::ExitMuseum()
 					//Application::enableMouse = true;
 					//Goes to some orange background to view image
 					camera.Init(Vector3(-260, 10, 10), Vector3(220.717, 5, 241.881), Vector3(0, 1, 0));
-					RenderMeshOnScreen(meshList[GEO_PIC], 40, 30, 80, 65);
-					RenderMeshOnScreen(meshList[GEO_BOX], 4 + MoveX, 29, 3 + AddSize, 8.9);
+					RenderMeshOnScreen(meshList[GEO_PIC], 40, 30, 80, 65, modelStack, viewStack, projectionStack, m_parameters);
+					RenderMeshOnScreen(meshList[GEO_BOX], 4 + MoveX, 29, 3 + AddSize, 8.9, modelStack, viewStack, projectionStack, m_parameters);
 				}
 			}
 		}
@@ -897,255 +886,9 @@ void SceneMuseum::ExitMuseum()
 	//	}
 	//}
 }
-	RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
-	if (ToExit)
-	{
-		MousePreview = true;
-		GameCam1 = camera;
-		//Application::enableMouse = true;
-		//Goes to some orange background to view image
-		camera.Init(Vector3(-260, 10, 10), Vector3(220.717, 5, 241.881), Vector3(0, 1, 0));
-		RenderMeshOnScreen(meshList[GEO_PIC], 40, 30, 80, 65, modelStack, viewStack, projectionStack, m_parameters);
-		RenderMeshOnScreen(meshList[GEO_BOX], 4 + MoveX, 29, 3 + AddSize, 8.9, modelStack, viewStack, projectionStack, m_parameters);
-	}
-}
 
-//void SceneMuseum::RenderGame1UI()
-//{
-//	if (indialogue)
-//	{
-//		string dialoguetext = (*currentline);
-//		string currentname;
-//		if (dialoguetext[0] == '1')
-//			currentname = "Player name";
-//		else if (dialoguetext[0] == '2')
-//			currentname = name;
-//		dialoguetext = dialoguetext.substr(1);
-//		RenderNPCDialogue(dialoguetext, currentname);
-//		if (cooldown <= 0 && Application::IsKeyPressed('Z')) //Cooldown added to prevent spamming to pass the dialogues too fast
-//		{
-//			cooldown = 1;
-//			currentline++;
-//			if (currentline == dialogue.end())
-//			{
-//				indialogue = false;
-//				dialogue.clear();
-//			}
-//		}
-//	}
-//	else
-//	{
-//		modelStack.PushMatrix();
-//		RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
-//		int ypos = 52;
-//		vector<InteractableObject*> inventorycontent = inventory->getstorage();
-//		for (std::vector<InteractableObject*>::iterator it = inventorycontent.begin(); it != inventorycontent.end(); it++)
-//		{
-//			RenderTextOnScreen(meshList[GEO_TEXT], (*it)->gettype(), Color(0, 0, 0), 2, 2, ypos);
-//			ypos -= 2;
-//
-//		}
-//		std::ostringstream ss;
-//		ss << "FPS: " << fps;
-//		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 2, 58, 68);
-//		RenderTextOnScreen(meshList[GEO_TEXT], interacttext.str(), Color(0.5, 0.5, 0.5), 5, 40 - (interacttext.str().length()), 30);
-//		interacttext.str("");
-//		modelStack.PopMatrix();
-//	}
-//}
-}
 
-void SceneMuseum::RenderText(Mesh* mesh, std::string text, Color color)
-{
-	if (!mesh || mesh->textureID <= 0) //Proper error check
-		return;
 
-	//glDisable(GL_DEPTH_TEST);
-	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
-	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
-	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
-	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
-	for (unsigned i = 0; i < text.length(); ++i)
-	{
-		Mtx44 characterSpacing;
-		std::vector<std::pair<std::string, std::vector<int>>> result;
-		//std::ifstream myFile("Fontdata.csv");
-		//if (!myFile.is_open()) throw std::runtime_error("Could not open file");
-
-		characterSpacing.SetToTranslation(i * 1.0f, 0, 0); //1.0f is the spacing of each character, you may change this value
-		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
-		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-
-		mesh->Render((unsigned)text[i] * 6, 6);
-	}
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
-	//glEnable(GL_DEPTH_TEST);
-}
-
-void SceneMuseum::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
-{
-	if (!mesh || mesh->textureID <= 0) //Proper error check
-		return;
-
-	glDisable(GL_DEPTH_TEST);
-	Mtx44 ortho;
-	ortho.SetToOrtho(0, 80, 0, 60, -10, 10); //size of screen UI
-	projectionStack.PushMatrix();
-	projectionStack.LoadMatrix(ortho);
-	viewStack.PushMatrix();
-	viewStack.LoadIdentity(); //No need camera for ortho mode
-	modelStack.PushMatrix();
-	modelStack.LoadIdentity(); //Reset modelStack
-	modelStack.Translate(x, y, 0);
-	modelStack.Scale(size, size, size);
-	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
-	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
-	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
-	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
-	for (unsigned i = 0; i < text.length(); ++i)
-	{
-		Mtx44 characterSpacing;
-		characterSpacing.SetToTranslation(0.5f + i * 0.5f, 0.5f, 0); //1.0f is the spacing of each character, you may change this value
-		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
-		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-
-		mesh->Render((unsigned)text[i] * 6, 6);
-	}
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
-	projectionStack.PopMatrix();
-	viewStack.PopMatrix();
-	modelStack.PopMatrix();
-	glEnable(GL_DEPTH_TEST);
-//void SceneMuseum::RenderText(Mesh* mesh, std::string text, Color color)
-//{
-//	if (!mesh || mesh->textureID <= 0) //Proper error check
-//		return;
-//
-//	//glDisable(GL_DEPTH_TEST);
-//	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
-//	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
-//	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
-//	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
-//	glActiveTexture(GL_TEXTURE0);
-//	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-//	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
-//	for (unsigned i = 0; i < text.length(); ++i)
-//	{
-//		Mtx44 characterSpacing;
-//		std::vector<std::pair<std::string, std::vector<int>>> result;
-//		//std::ifstream myFile("Fontdata.csv");
-//		//if (!myFile.is_open()) throw std::runtime_error("Could not open file");
-//
-//		characterSpacing.SetToTranslation(i * 1.0f, 0, 0); //1.0f is the spacing of each character, you may change this value
-//		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
-//		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-//
-//		mesh->Render((unsigned)text[i] * 6, 6);
-//	}
-//	glBindTexture(GL_TEXTURE_2D, 0);
-//	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
-//	//glEnable(GL_DEPTH_TEST);
-//}
-	glEnable(GL_DEPTH_TEST);
-
-//void SceneMuseum::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
-//{
-//	if (!mesh || mesh->textureID <= 0) //Proper error check
-//		return;
-//
-//	glDisable(GL_DEPTH_TEST);
-//	Mtx44 ortho;
-//	ortho.SetToOrtho(0, 80, 0, 60, -10, 10); //size of screen UI
-//	projectionStack.PushMatrix();
-//	projectionStack.LoadMatrix(ortho);
-//	viewStack.PushMatrix();
-//	viewStack.LoadIdentity(); //No need camera for ortho mode
-//	modelStack.PushMatrix();
-//	modelStack.LoadIdentity(); //Reset modelStack
-//	modelStack.Translate(x, y, 0);
-//	modelStack.Scale(size, size, size);
-//	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
-//	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
-//	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
-//	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
-//	glActiveTexture(GL_TEXTURE0);
-//	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-//	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
-//	for (unsigned i = 0; i < text.length(); ++i)
-//	{
-//		Mtx44 characterSpacing;
-//		characterSpacing.SetToTranslation(0.5f + i * 0.5f, 0.5f, 0); //1.0f is the spacing of each character, you may change this value
-//		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
-//		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-//
-//		mesh->Render((unsigned)text[i] * 6, 6);
-//	}
-//	glBindTexture(GL_TEXTURE_2D, 0);
-//	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
-//	projectionStack.PopMatrix();
-//	viewStack.PopMatrix();
-//	modelStack.PopMatrix();
-//	glEnable(GL_DEPTH_TEST);
-//
-//}
-
-//void SceneMuseum::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey)
-//{
-//	glDisable(GL_DEPTH_TEST);
-//	Mtx44 ortho;
-//	ortho.SetToOrtho(0, 80, 0, 60, -10, 10); //size of screen UI
-//	projectionStack.PushMatrix();
-//	projectionStack.LoadMatrix(ortho);
-//	viewStack.PushMatrix();
-//	viewStack.LoadIdentity(); //No need camera for ortho mode
-//	modelStack.PushMatrix();
-//	modelStack.LoadIdentity();
-//	modelStack.Translate(x, y, 0);
-//	modelStack.Scale(sizex, sizey, 0);
-//	RenderMesh(mesh, false, modelStack, viewStack, projectionStack, m_parameters); //UI should not have light
-//	projectionStack.PopMatrix();
-//	viewStack.PopMatrix();
-//	modelStack.PopMatrix();
-//	glEnable(GL_DEPTH_TEST);
-//}
-//void SceneMuseum::RenderInteractableText()
-//{
-//	RenderTextOnScreen(meshList[GEO_TEXT], "Interable object! Press 'T'", Color(0, 1, 0), 2, 0, 58);
-//}
-
-//void SceneMuseum::RenderNPCDialogue(std::string NPCText, std::string headerText)
-//{
-//	//float headerTextPos = 4.f;
-//	RenderMeshOnScreen(meshList[GEO_HEADER], 14.75, 19.25, 30, 6);
-//	//headerText.size()
-//	RenderTextOnScreen(meshList[GEO_TEXTINTEXTBOX], headerText, Color(0, 0, 0), 4, 14.5 - (headerText.size()), 17.5);	//header text
-//	RenderMeshOnScreen(meshList[GEO_TEXTBOX], 40, 8.75, 80, 17.5);
-//	string word;																	//automating text
-//	int wordpos = 0, ypos = 13, last = NPCText.find_last_of(" ");
-//	float xpos = 2.f;
-//	while (true)
-//	{
-//		word = NPCText.substr(wordpos, NPCText.find(" ", wordpos + 1) - wordpos);
-//		if (xpos + word.length() * 1.5 + 1 > 80)		//if new word will exceed screensize
-//		{
-//			ypos -= 3;
-//			xpos = 2;
-//		}
-//		RenderTextOnScreen(meshList[GEO_TEXT], word, Color(0, 0, 0), 3, xpos, ypos);
-//		if (wordpos > last)
-//			break;
-//		wordpos += word.length() + 1;
-//		xpos += 1.5 * word.length() + 1;
-//	}
-//}
 
 void SceneMuseum::Render()
 {
