@@ -26,6 +26,9 @@ Guide|1Tour guide for Changi Airport.
 stairs|1Press [E] to board the plane. [I] to move forward, [J] to move left, [L] to move right, [K] to move backward.
 gardentocity|1That path leads back to the city center
 citytomuseum|1That leads to the museum
+citytochangi|1Changi Airport seems to be right ahead.
+citytomarina|1This path leads to Marina Bay Sands.
+citytogarden|1Looks like Botanic Garden is in this direction.
 pool|1It's a really long pool known as an infinity pool.|1An infinity pool is a reflecting or swimming pool where the water flows over one or more edges, producing a visual effect of water with no boundary.|1This infinity pool in particular is the world's longest elevated pool with it being 150m long.
 pool2|1It's a really long pool known as an infinit-wait.|1"You find me behind the stars; or in a sixth, seventh, or third it takes something round, a computer, and me to make pie i am bigger than anything you can think of what am i ??"|1The answer's infinity! I should tell this to the old guy quickly.
 badguy|1This guy just did a whole monologue towards me while facing the opposite direction so he's definitely the one who stole my wallet.|1He looks a lot likre Mr.Sazz but last I checked Mr.Sazz had 2 arms so maybe they're related?

@@ -205,7 +205,6 @@ void SceneMain::Init()
 	meshList[GEO_ROADCURVED] = MeshBuilder::GenerateOBJMTL("roadcurved", "OBJ//CityCenter//road_curved.obj", "OBJ//CityCenter//road_curved.mtl");
 	meshList[GEO_ROADINTERSECT] = MeshBuilder::GenerateOBJMTL("roadintersect", "OBJ//CityCenter//road_intersection.obj", "OBJ//CityCenter//road_intersection.mtl");
 
-	inFrontofMuseum = inFrontofChangi = inFrontofGarden = inFrontofMarina = false;
 	minigameMuseum = false;
 	firstEnter = firstRender = walletNotGone = true;
 
@@ -238,12 +237,12 @@ void SceneMain::Init()
 		colorGrid[i] = "Red";
 	}
 	pass = false;
-	locked = false;
 	items.push_back(new InteractableObject(Vector3(-2, 2, 0), 0, 2, 4, "Mr.Sazz", "Mr.Sazz", false));
 	items.push_back(new InteractableObject(Vector3(6, 1, 5), 0, 2, 3, "Andy", "Andy", false));
-	items.push_back(new InteractableObject(Vector3(23, 3, 0), 0, 1, 8, "citytomuseum", "To the museum", false)); //The rest of the code is in the scene.cpp under the press 'Q'
-																												//Don't forget to add a description and talk to in the text file
-																												//Delete these comments after you are done
+	items.push_back(new InteractableObject(Vector3(23, 3, 0), 0, 1, 10, "citytomuseum", "To the museum", false)); 
+	items.push_back(new InteractableObject(Vector3(0, 3, 58), 0, 1, 10, "citytochangi", "To Changi Airport", false));
+	items.push_back(new InteractableObject(Vector3(-48, 3, 0), 0, 1, 10, "citytomarina", "To Marina Bay Sands", false));
+	items.push_back(new InteractableObject(Vector3(0, 3, -58), 0, 1, 10, "citytogarden", "To Botanic Garden", false));
 
 	//wall.push_back(new Terrain(Vector3(26, 0, 0), 0, 1, 50, 1, "wall"));
 	wall.push_back(new Terrain(Vector3(70, 0, 0), 0, 0, 0, 20, 150.f, "Wall"));
@@ -309,69 +308,18 @@ void SceneMain::Update(double dt)
 			walletNotGone = false;
 		}
 
-		//if (inDialogue) {
-		//	inDialogue = false;
-		//	locked = false;
-		//}
 	}
 
-	//You can put this into the scene.cpp function
-	if (Application::IsKeyPressed('Q')) {
-		if (inFrontofMuseum == true) {
-			minigameMuseum = true;
-			cooldown = 1.5;
-		}
-		else if (inFrontofChangi) {
-			if (Scene::inventory->checkinventory("Changi Airport card place holder")){
-				Application::SwitchScene = 2;
-			}
-			else {
-				locked = true;
-			}
-		}
-		else if (inFrontofMarina) {
-			if (Scene::inventory->checkinventory("Marina Bay ticket")) {
-				Application::SwitchScene = 3;
-			}
-			else {
-				locked = true;
-			}
-		}
-		else if (inFrontofGarden) {
-			Application::SwitchScene = 4;
-		}
-	}
-	//if ((camera.position.x >= 18) && (camera.position.x <= 27.5) && (camera.position.z >= -3) && (camera.position.z <= 3)) {
-	//	inFrontofMuseum = true;
-	//}
 	if (trigger == "frontofmuseum")
 	{
-		inFrontofMuseum = true;
 		minigameMuseum = true;
 		cooldown = 1.5;
 	}
-	else
-		inFrontofMuseum = false;
-	if(trigger == "locked") { //Use the interact code return to return the lock condition instead of locked bool
+	if(trigger == "locked") {
 			dialogue.push_back("1It seems that I do not have the item required to open this door.");
 			currentline = dialogue.begin();
 			name = "";
 			indialogue = true;
-		}
-	// The radius seems to be
-	if ((camera.position.x >= -3) && (camera.position.x <= 3) && (camera.position.z >= 53) && (camera.position.z <= 62.5)) {
-		inFrontofChangi = true;
-	}
-	else if ((camera.position.x <= -43) && (camera.position.x >= -52.5) && (camera.position.z >= -3) && (camera.position.z <= 3)) {
-		inFrontofMarina = true;
-	}
-	else if ((camera.position.x >= -3) && (camera.position.x <= 3) && (camera.position.z <= -53) && (camera.position.z >= -62.5)) {
-		inFrontofGarden = true;
-	}
-	else {
-		inFrontofChangi = false;
-		inFrontofMarina = false;
-		inFrontofGarden = false;
 	}
 
 	//minigame for entering museum
@@ -761,67 +709,8 @@ void SceneMain::Render()
 	modelStack.Scale(2, 2, 2);
 	modelStack.Rotate(-90, 0, 1, 0);
 	RenderText(meshList[GEO_TEXT], "Museum", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
-
-	
-	//condition checking
-	if (inFrontofMuseum) {
-		modelStack.PushMatrix();
-		modelStack.Translate(0.35, -2, -0.29);
-		modelStack.Scale(0.7, 0.7, 1);
-		RenderText(meshList[GEO_TEXT], "Q to", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
-
-		modelStack.PushMatrix();
-		modelStack.Translate(-0.2, -1, 0);
-		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
-
-		modelStack.PopMatrix();
-		modelStack.PopMatrix();
-	}
 	modelStack.PopMatrix();
 
-	if (inFrontofChangi) {
-		modelStack.PushMatrix();
-		modelStack.Translate(0.4, 4, 62.4);
-		modelStack.Scale(1, 1, 1);
-		modelStack.Rotate(180, 0, 1, 0);
-		RenderText(meshList[GEO_TEXT], "Q to", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
-
-		modelStack.PushMatrix();
-		modelStack.Translate(-0.2, -1, 0);
-		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
-
-		modelStack.PopMatrix();
-		modelStack.PopMatrix();
-	}
-
-	if (inFrontofMarina) {
-		modelStack.PushMatrix();
-		modelStack.Translate(-52.4, 4, 0.4);
-		modelStack.Scale(1, 1, 1);
-		modelStack.Rotate(90, 0, 1, 0);
-		RenderText(meshList[GEO_TEXT], "Q to", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
-
-		modelStack.PushMatrix();
-		modelStack.Translate(-0.2, -1, 0);
-		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
-
-		modelStack.PopMatrix();
-		modelStack.PopMatrix();
-	}
-
-	if (inFrontofGarden) {
-		modelStack.PushMatrix();
-		modelStack.Translate(-0.4, 4, -62.4);
-		modelStack.Scale(1, 1, 1);
-		RenderText(meshList[GEO_TEXT], "Q to", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
-
-		modelStack.PushMatrix();
-		modelStack.Translate(-0.2, -1, 0);
-		RenderText(meshList[GEO_TEXT], "enter", Color(0, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
-
-		modelStack.PopMatrix();
-		modelStack.PopMatrix();
-	}
 
 	
 	if (firstEnter == true) {

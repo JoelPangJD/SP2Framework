@@ -330,8 +330,33 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 				else if ((*it)->gettype() == "citytomuseum")
 				{
 					//The position here is in the scene before swtiching such that the player will not overlap when they return to the same scene
-					camera.position = Vector3(0, 3, -10); //Change the camera position to somewhere that doesn't overlap to prevent constantly moving back and forth
+					camera.position = Vector3(12, 3, 0); //Change the camera position to somewhere that doesn't overlap to prevent constantly moving back and forth
 					return "frontofmuseum"; //For the other scene you can follow the garden to city example as there is no minigame to trigger before hand
+				}
+				else if ((*it)->gettype() == "citytogarden") 
+				{
+					camera.position = Vector3(0, 3, -48);
+					Application::SwitchScene = 4;
+				}
+				else if ((*it)->gettype() == "citytomarina")
+				{
+					camera.position = Vector3(-37, 3, 0);
+					if (Scene::inventory->checkinventory("Marina Bay ticket")) {
+						Application::SwitchScene = 3;
+					}
+					else {
+						return "locked";
+					}
+				}
+				else if ((*it)->gettype() == "citytochangi")
+				{
+					camera.position = Vector3(0, 3, 48);
+					if (Scene::inventory->checkinventory("Changi airport card placeholder")) {
+						Application::SwitchScene = 2;
+					}
+					else {
+						return "locked";
+					}
 				}
 
 				if (!(inventory->getstorage().empty())) //For uses that rely on inventory, make sure the inventory is 

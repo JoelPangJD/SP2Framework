@@ -132,7 +132,6 @@ private:
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
 
-	bool inFrontofMuseum, inFrontofChangi, inFrontofMarina, inFrontofGarden;
 	bool minigameMuseum/*, minigameChangi, minigameMarina, minigameGarden*/;
 	bool firstEnter, firstRender, walletNotGone;
 
@@ -141,7 +140,6 @@ private:
 	void RenderMinigame();
 	void updateMinigame(double dt);
 
-	bool inDialogue;
 	string name;
 	float cooldown;
 
@@ -151,7 +149,7 @@ private:
 	Vector3* grids[9];
 	Button gridButton[9];
 	std::string colorGrid[9];
-	bool pass, locked;
+	bool pass;
 };
 
 #endif
