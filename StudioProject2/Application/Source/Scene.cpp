@@ -59,10 +59,42 @@ Scene::Scene()
 	ResumeButton.active = true;
 	ResumeButton.hold = false;
 
+	startMenu[0].setButton(28.3, 31.3, 24.1, 7.9);
+	startMenu[1].setButton(28.3, 15.3, 24.1, 7.9);
 }
 
-void Scene::StartMenu()
+void Scene::RenderStartMenu(MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[])
 {
+	RenderMeshOnScreen(baseMeshList[GEO_MENU], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
+}
+
+void Scene::UpdateStartMenu()
+{
+	Application::enableMouse = true;
+	startMenu[1].active = startMenu[0].active = true;
+	startMenu[0].updateButton();
+	startMenu[1].updateButton();
+	if (startMenu[0].isClickedOn()) {
+		start = false;
+		Application::enableMouse = false;
+	}
+	//static bool bLButtonState = true;
+	//if (Application::IsMousePressed(0) && (bLButtonState))
+	//{
+	//	double x, y;
+	//	Application::GetCursorPos(&x, &y);
+	//	unsigned w = Application::GetWindowWidth();
+	//	unsigned h = Application::GetWindowHeight();
+	//	float posX = x / 10;
+	//	float posY = 60 - y / 10;
+	//	std::cout << "posX = " << posX << std::endl;
+	//	std::cout << "posY = " << posY << std::endl;
+	//	bLButtonState = false;
+	//}
+	//else if (!Application::IsMousePressed(0) && !bLButtonState)
+	//{
+	//	bLButtonState = true;
+	//}
 }
 
 void Scene::RenderMesh(Mesh* mesh, bool enableLight, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[])
