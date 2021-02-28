@@ -174,6 +174,10 @@ void Application::Run()
 			SwitchScene = 0;
 		}
 
+
+			
+
+
 		switch (SwitchScene) {
 			case(0): {
 				scene = scene0; break;
