@@ -311,16 +311,22 @@ void SceneMarinaBay::Init()
 		terrains.push_back(new Terrain(Vector3(47, 0, 0), 0, 1, 10, 30, 320, "infinity pool"));
 		terrains.push_back(new Terrain(Vector3(27, 0, -70), 0, 1, 10, 20, 180, "infinity poolside"));
 		terrains.push_back(new Terrain(Vector3(-22, 0, -64), 0, 1, 10, 32, 32, "fountain"));
+		terrains.push_back(new Terrain(Vector3(-50, 5, -100), 0, 0.7, 7, 7, "robot"));
+		terrains.push_back(new Terrain(Vector3(-22, 5, -160), 0, 0.7, 7, 7, "girl"));
+		terrains.push_back(new Terrain(Vector3(0, 5, 300), 0, 0.7, 7, 7, "badguy"));
+		terrains.push_back(new Terrain(Vector3(-30, 5, 44), 0, 0.7, 7, 7, "adventurer"));
+		terrains.push_back(new Terrain(Vector3(15, 5, -70), 0, 0.7, 7, 7, "orc"));
 
 		//items/npcs
-		items.push_back(new InteractableObject(Vector3(-50, 5, -100), 90, 0.7, 7, "robot", "Robot", false));
-		items.push_back(new InteractableObject(Vector3(-22, 5, -160), 180, 0.7, 7, "girl", "Hostess", false));
-		items.push_back(new InteractableObject(Vector3(0, 5, 300), 0, 0.7, 5, "badguy", "Thief", false));
-		items.push_back(new InteractableObject(Vector3(-30, 5, 44), 180, 0.7, 7, "adventurer", "Adventurer", false));
-		items.push_back(new InteractableObject(Vector3(15, 5, -70), 270, 0.7, 7, "orc", "Orc", false));
-		items.push_back(new InteractableObject(Vector3(32, 5, 30), 0, 0.7, 5, "pool", "'Infinity' Pool", false));
-		items.push_back(new InteractableObject(Vector3(50, 5, -160), 0, 0.7, 7, "pool", "'Infinity' Pool", false));
+		items.push_back(new InteractableObject(Vector3(-50, 5, -100), 90, 0.7, 12, "robot", "Robot", false));
+		items.push_back(new InteractableObject(Vector3(-22, 5, -160), 180, 0.7, 12, "girl", "Hostess", false));
+		items.push_back(new InteractableObject(Vector3(0, 5, 300), 0, 0.7, 12, "badguy", "Thief", false));
+		items.push_back(new InteractableObject(Vector3(-30, 5, 44), 180, 0.7, 12, "adventurer", "Adventurer", false));
+		items.push_back(new InteractableObject(Vector3(15, 5, -70), 270, 0.7, 12, "orc", "Orc", false));
+		items.push_back(new InteractableObject(Vector3(32, 5, 32), 0, 0.7, 15, "pool", "'Infinity' Pool", false));
+		items.push_back(new InteractableObject(Vector3(50, 5, -160), 0, 0.7, 17, "pool", "'Infinity' Pool", false));
 		items.push_back(new InteractableObject(Vector3(-22, 0, -64), 0, 1, 20, "fountain", "Fountain", false));
+		items.push_back(new InteractableObject(Vector3(0, 0, -220), 0, 1, 40, "ledge", "Ledge", false));
 	}
 
 }
@@ -439,6 +445,13 @@ void SceneMarinaBay::Update(double dt)
 			idleBreath = enemyAttackScale = 1;
 			idleHandsDir = idleBounceDir = idleMouthDir = idleBreathDir = idleNeckDir = idleHeadDir = 1;
 			moveBack = 71.f;
+			enemyAttackHit = false;
+			enemyAlrAttacked = false;
+			enemyAnimPlaying = false;
+			revert = false;
+			bite = false;
+			revert = false;
+			biteRearedBack = false;
 			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 			{
 				if ((*it)->gettype() == "badguy3")
@@ -461,23 +474,15 @@ void SceneMarinaBay::Update(double dt)
 					break;
 				}
 			}
-			//render the gameWin menu here
+			//calls vars to render the gameWin menu in renderUI
 			Scene::inmenu = true;
 			Scene::GameWin = true;
-		}
-		else if (triedToRun)
-		{
-			playerTurn = false;
-			enemyTurn = true;
-			triedToRun = false;
-			fightSelected = false;
-			itemsSelected = false;
 		}
 	}
 
 	if (fight)
 	{
-		if (fightInit)
+		if (fightInit)	//when fight first triggers
 		{
 			prevCam = camera;
 			camera.Init(Vector3(90, 40, 240), Vector3(0, 8, 240), Vector3(0, 1, 0));
@@ -488,7 +493,6 @@ void SceneMarinaBay::Update(double dt)
 			prevItemsList = itemsList;
 		}
 
-
 		if (actionSelected && fight && !attackSelected)	//if action was selected and in fight and attack is not playing
 		{
 			if (itemsSelected && playerAction > A_RUN)
@@ -497,26 +501,6 @@ void SceneMarinaBay::Update(double dt)
 			}
 			switch (playerAction)
 			{
-			case (A_ATTACK1):					
-				attackSelected = true;
-				fightSelected = false;
-				break;
-			case (A_ATTACK2):
-				attackSelected = true;
-				fightSelected = false;
-				break;
-			case (A_ATTACK3):
-				attackSelected = true;
-				fightSelected = false;
-				break;
-			case (A_ITEM1):
-				itemChosen = true;
-				itemsSelected = false;
-				break;
-			case (A_ITEM2):
-				itemChosen = true;
-				itemsSelected = false;
-				break;
 			case (A_ATTACK):
 				fightSelected = true;
 				itemsSelected = false;
@@ -545,15 +529,32 @@ void SceneMarinaBay::Update(double dt)
 					buttonList[i + A_RUN + 1]->active = true;
 				}
 				break;
-			case (A_RUN):
-				triedToRun = true;
+			case (A_RUN):	//doesn't give them a chance to run and ends player's turn
+				playerTurn = false;
+				enemyTurn = true;
+				fightSelected = false;
+				itemsSelected = false;
+				dialogue.push_back("2Nice try.");
+				currentline = dialogue.begin();
+				name = "Thief";
+				indialogue = true;
 				break;
-			default:
-				cout << "playeraction broke";
 			}
 			actionSelected = false;
 			if (playerAction > A_ITEMS)	//if doing an action that would end the turn
 			{
+				//to remove the need to add a case for every attack/item
+				if (playerAction >= A_ATTACK1 && playerAction <= A_ATTACK3)	//if an attack is chosen
+				{
+					attackSelected = true;
+					fightSelected = false;
+				}
+				else if (playerAction >= A_ITEM1 && playerAction <= A_ITEM2)	//items
+				{
+					itemChosen = true;
+					itemsSelected = false;
+				}
+				//turns all the buttons off
 				for (unsigned int i = 0; i < buttonList.size(); ++i)
 				{
 					buttonList[i]->active = false;
@@ -562,7 +563,7 @@ void SceneMarinaBay::Update(double dt)
 		}
 
 		//player attack animations
-		if (attackSelected && playerTurn)
+		if (attackSelected && playerTurn && !enemyAnimPlaying)
 		{	//gets attack player is trying to execute
 			playerAttack = attacksList[playerAction - A_ATTACK1];
 			switch (playerAttack)
@@ -661,16 +662,29 @@ void SceneMarinaBay::Update(double dt)
 			}
 		}
 		//player item chosen
-		else if (itemChosen && playerTurn)
+		else if (itemChosen && playerTurn && !enemyAnimPlaying)
 		{
 			playerItem = itemsList[playerAction - A_ITEM1];
 			switch (playerItem)
 			{
 			case (MED_KIT):
-				playerHealthGained = 100.f;
+				if (playerHealth > 0)	//player not at full health
+					playerHealthGained = 100.f;
+				else
+				{
+					dialogue.push_back("1I'm already at full health!");
+					currentline = dialogue.begin();
+					name = "";
+					indialogue = true;
+				}
 				break;
 			case (SAND):
 				enemyHealthGained = 15.f;
+				dialogue.push_back("2...Why did you think that would help?");
+				currentline = dialogue.begin();
+				name = "Thief";
+				indialogue = true;
+				break;
 			}
 			//removes the item
 			for (std::vector<ITEMS>::iterator it = itemsList.begin(); it != itemsList.end(); it++)
@@ -688,8 +702,9 @@ void SceneMarinaBay::Update(double dt)
 			itemChosen = false;
 		}
 		//enemy turn actions
-		else if (enemyTurn && enemyHealthLost <= 0 && playerHealthLost <= 0 && enemyHealthGained <= 0 && playerHealthGained <= 0)	
-		//if health not still decreasing/increasing
+		else if (enemyTurn && enemyHealthLost <= 0 && playerHealthLost <= 0 && enemyHealthGained <= 0 && playerHealthGained <= 0 
+		&& dialogue.empty())
+		//if health not still decreasing/increasing and there is no dialogue
 		{
 			if (!enemyAlrAttacked)
 			{
@@ -736,7 +751,7 @@ void SceneMarinaBay::Update(double dt)
 					break;
 				}
 			}
-			else if (enemyAttackHit && playerHealthLost <= 0)	//ends enemy's turn and switches enemy's next attack
+			else if (enemyAttackHit && playerHealthLost <= 0 && !enemyAnimPlaying)	//ends enemy's turn and switches enemy's next attack
 			{
 				enemyAttack = static_cast<ENEMY_ATTACKS>((enemyAttack + 1) % NUM_EATTACKS);	//moves to the next attack
 				attackSelected = false;
@@ -744,7 +759,6 @@ void SceneMarinaBay::Update(double dt)
 				enemyTurn = false;
 				enemyAttackHit = false;
 				enemyAlrAttacked = false;
-				enemyAnimPlaying = false;
 				for (unsigned int i = 0; i < A_RUN + 1; ++i)	//reenabling the 3 main buttons
 				{
 					buttonList[i]->active = true;
@@ -810,7 +824,7 @@ void SceneMarinaBay::Update(double dt)
 				}
 				else	//after it has gone down
 				{
-					if (timer < 15)	//timer before going up
+					if (timer < 10)	//timer before going up
 					{
 						timer += 10 * dt;
 					}
@@ -830,6 +844,7 @@ void SceneMarinaBay::Update(double dt)
 						idle = true;
 						timer = moveAngle = move = 0;
 						moveBack = 71.f;
+						enemyAnimPlaying = false;
 					}
 				}
 			}
@@ -837,14 +852,15 @@ void SceneMarinaBay::Update(double dt)
 			{
 				if (revert == true)	//goes to initial position
 				{
-					enemyAttackAngle -= 20 * dt;
-					enemyAttackMove -= 20 * dt;
+					enemyAttackAngle -= 30 * dt;
+					enemyAttackMove -= 30 * dt;
 					enemyAttackScale = 1;
 					if (enemyAttackAngle <= 0 && enemyAttackMove <= 0)
 					{
 						attack = false;
 						revert = false;
 						idle = true;
+						enemyAnimPlaying = false;
 					}
 				}
 				else {
@@ -886,6 +902,7 @@ void SceneMarinaBay::Update(double dt)
 					else
 					{
 						revert = true;
+						enemyAttackHit = true;
 					}
 				}
 				else							//moving back to original position
@@ -896,21 +913,21 @@ void SceneMarinaBay::Update(double dt)
 					}
 					else if (enemyAttackMove > 0)	//moves back to original position
 					{
-
 						enemyAttackMove -= 60 * dt;
 					}
 					else					//animation finished
 					{
-						enemyAttackHit = true;
 						bite = false;
 						revert = false;
 						biteRearedBack = false;
 						idle = true;
+						enemyAnimPlaying = false;
 					}
 				}
 			}
 		}
 
+		//checks to change player/enemy's health accordingly
 		if (playerHealthLost > 0)
 		{	//health total will be as if it is equal to 100 so since the scaling of health is 20 the speed would be the same as health lost / 5
 			int speedOfHealthLost = 20.f;
@@ -952,7 +969,7 @@ void SceneMarinaBay::Update(double dt)
 			}
 		}
 		
-		//fight resolutions
+		//end of fight resolutions
 		if (playerHealth >= 20 || enemyHealth >= 20)
 		{
 			fightOver = true;
@@ -999,7 +1016,7 @@ void SceneMarinaBay::Update(double dt)
 		if (attacksList.size() > 0 && (*it)->gettype() == "badguy")
 			(*it)->updatedialogue("badguy2");
 		else if (fightLost && (*it)->gettype() == "badguy3")
-			(*it)->settype("badguy2");	//changes type but not dialogue so players won't have to sit through everything
+			(*it)->settype("badguy2");	//changes type but not dialogue so players won't have to sit through dialogue again
 	}
 
 	//==================Updating timers===========
@@ -1857,10 +1874,8 @@ void SceneMarinaBay::Render()
 				}
 			}
 		}
-		/*for (auto it = buttonList.begin(); it != buttonList.end(); ++it)
-			RenderMeshOnScreen(meshList[GEO_QUAD], (*it)->positionX + (*it)->width * 0.5, (*it)->positionY + (*it)->height * 0.5, (*it)->width, (*it)->height);*/
 	}
-	else if (!fight)
+	if (!fight || !dialogue.empty())	//when not in fight or there is dialogue
 	{
 		Scene::RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 	}
@@ -1882,9 +1897,6 @@ void SceneMarinaBay::Render()
 	//winning the fight
 	else if (fightWon)
 		RenderNPCDialogue("Agh, you've killed my prized possession. It is my loss. Take your wallet back.", "Thief", modelStack, viewStack, projectionStack, m_parameters);
-	//running
-	else if (triedToRun)
-		RenderNPCDialogue("Nice try.", "Thief", modelStack, viewStack, projectionStack, m_parameters);
 
 	//TO REMOVE IF NO TIME
 	////text from specific conditions

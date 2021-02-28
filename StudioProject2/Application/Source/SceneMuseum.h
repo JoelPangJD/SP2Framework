@@ -67,6 +67,8 @@ class SceneMuseum : public Scene
 		GEO_MINIPIC1,
 		GEO_MINIPIC2,
 		GEO_SELECTION,
+		GEO_SHOWANSWER,
+		GEO_DISPLAYMINIPIC1,
 		//GAME 2
 		GEO_PIC,
 		GEO_BOX,
@@ -192,8 +194,6 @@ private:
 	bool Minigameintro = true;
 	bool ShowFirstGame = false;
 	void StartGame1();
-	//bool EndGame1 = false;
-	bool Continue = false;
 
 	//Exit Museum
 	//void StartExit();
@@ -206,9 +206,18 @@ private:
 	void StartGame2();
 	bool EndGame2 = false;
 
+	//All introduction text
+	bool RenderIntruction1 = true;
+	bool RenderIntruction2= true;
+	bool RenderIntruction3 = true;
+	bool RenderIntruction4 = true;
+
 	//void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
 	void RenderWalls();
+
+
+
 };
 
 #endif
