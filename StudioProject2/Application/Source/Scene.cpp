@@ -511,6 +511,13 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 							inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Orb", "Orb", true));
 							(*it)->updatedialogue("adventurer3");
 						}
+						else
+						{
+							dialogue.push_back("1I'm not supposed to use it here.");
+							currentline = dialogue.begin();
+							name = "";
+							indialogue = true;
+						}
 
 						//Scene Museum
 						if ((*it)->gettype() == "place key" && inventory->getcurrentitem()->gettype() == "key")
