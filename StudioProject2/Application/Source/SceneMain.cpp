@@ -216,8 +216,7 @@ void SceneMain::Init()
 
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
-			Vector3* gridPos = new Vector3(33.5 + (16.5 * j), 13.5 + (16.5 * i), 0);
-			grids[(i * 3) + j] = gridPos;
+			grids[(i * 3) + j] = new Vector3(33.5 + (16.5 * j), 13.5 + (16.5 * i), 0);
 		}
 	}
 	int height, width;
@@ -333,12 +332,14 @@ void SceneMain::Update(double dt)
 		//minigame for entering museum
 		if (minigameMuseum == true) {
 			Application::enableMouse = true;
+			if (!pass) {
+				updateMinigame(dt);
+			}
 			if (pass == true) {
 				minigameMuseum = false;
 				Application::enableMouse = false;
 				Application::SwitchScene = 1;
 			}
-			updateMinigame(dt);
 		}
 		updateCar(dt);
 	}
@@ -456,6 +457,9 @@ void SceneMain::updateMinigame(double dt)
 		}
 		else if (i == 8) {
 			pass = true;
+			for (int i = 0; i < 9; i++) {
+				delete grids[i];
+			}
 		}
 	}
 
