@@ -459,6 +459,7 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 
 					if (!(inventory->getstorage().empty())) //For uses that rely on inventory, make sure the inventory isn't empty
 					{
+						CantUse = true;
 						//SceneGarden
 						if ((*it)->gettype() == "cat" && inventory->getcurrentitem()->gettype() == "fish")//using fish on cat
 						{
@@ -523,6 +524,8 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 							CantUse = false;
 							place1 = true;
 							inventory->removeitem("key");
+							items.erase(it);
+							break;
 						}
 
 						else if ((*it)->gettype() == "place flag" && inventory->getcurrentitem()->gettype() == "flag")
@@ -530,6 +533,8 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 							CantUse = false;
 							place2 = true;
 							inventory->removeitem("flag");
+							items.erase(it);
+							break;
 						}
 
 						else if ((*it)->gettype() == "place box" && inventory->getcurrentitem()->gettype() == "box")
@@ -537,6 +542,8 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 							CantUse = false;
 							place3 = true;
 							inventory->removeitem("box");
+							items.erase(it);
+							break;
 						}
 						else if (CantUse == true)
 						{
