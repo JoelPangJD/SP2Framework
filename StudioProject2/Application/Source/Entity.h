@@ -5,11 +5,6 @@
 using namespace std;
 class Entity
 {
-protected:
-	int x;
-	int y;
-	Vector3 ItemPosition;
-
 private:
 	string type;
 	string name;
