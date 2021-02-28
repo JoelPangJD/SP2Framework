@@ -578,12 +578,6 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 				}
 				else if (Application::IsKeyPressed('T')) //T is talk to
 				{
-					dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
-					currentline = dialogue.begin(); //Currentline iteratior as the first line of dialogue
-					name = (*it)->getname(); //Set the name of the npc the player talks to
-					indialogue = true;//Set state to in dialogue
-
-					//Scene museum
 					if (place1 == true && place2 == true && place3 == true)
 					{
 						if ((*it)->gettype() == "before gathering item")
@@ -592,6 +586,12 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 							inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 1, 0, "changi pass", "Changi pass", true));
 						}
 					}
+					dialogue = (*it)->dialogue; //Set the dialogue vector to that of the current object
+					currentline = dialogue.begin(); //Currentline iteratior as the first line of dialogue
+					name = (*it)->getname(); //Set the name of the npc the player talks to
+					indialogue = true;//Set state to in dialogue
+
+					//Scene museum
 
 					if (MarinaBay == true)
 					{
