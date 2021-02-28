@@ -124,7 +124,7 @@ public:
 	void RenderStartMenu(MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
 	void UpdateStartMenu();
 	Button startMenu[2];
-	bool start = true;
+	static bool start;
 	bool CantUse = false;
 
 	void RenderMesh(Mesh* mesh, bool enableLight, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);

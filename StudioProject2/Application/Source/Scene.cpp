@@ -7,6 +7,7 @@
 #include "MeshBuilder.h"
 #include <Mtx44.h>
 
+bool Scene::start = true;
 
 Scene::Scene()
 {
@@ -46,17 +47,17 @@ void Scene::RenderStartMenu(MS modelStack, MS viewStack, MS projectionStack, uns
 
 void Scene::UpdateStartMenu()
 {
-	Application::enableMouse = true;
-	startMenu[1].active = startMenu[0].active = true;
-	startMenu[0].updateButton();
-	startMenu[1].updateButton();
-	if (startMenu[0].isClickedOn()) {
-		start = false;
-		Application::enableMouse = false;
-	}
-	if (startMenu[1].isClickedOn()) {
-		Application::GameEnd = true;
-	}
+		Application::enableMouse = true;
+		startMenu[1].active = startMenu[0].active = true;
+		startMenu[0].updateButton();
+		startMenu[1].updateButton();
+		if (startMenu[0].isClickedOn()) {
+			start = false;
+			Application::enableMouse = false;
+		}
+		if (startMenu[1].isClickedOn()) {
+			Application::GameEnd = true;
+		}
 }
 
 void Scene::RenderMesh(Mesh* mesh, bool enableLight, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[])
@@ -135,12 +136,6 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 			RenderMeshOnScreen(baseMeshList[GEO_PRESSE], 76, 3, 7, 7, modelStack, viewStack, projectionStack, m_parameters);
 			return;
 		}
-		if (Menu) // Render menu screen
-		{
-			RenderMeshOnScreen(baseMeshList[GEO_MENU], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
-			return;
-		}
-
 		if (GameWin)//Render GameWin screen
 		{
 			RenderMeshOnScreen(baseMeshList[GEO_WIN], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
@@ -148,7 +143,10 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 			Application::enableMouse = true;
 			if (GameWinButton.isClickedOn())
 			{
-				Menu = true;
+				start = true;
+				Application::enableMouse = false;
+				Application::SwitchScene = 0;
+				GameWin = false;
 			}
 			return;
 		}
@@ -620,8 +618,10 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 	//Interactions while in menu
 	else
 	{
-		if (Application::IsKeyPressed('E'))
-			inmenu = false;
+		if (Application::IsKeyPressed('E')) {
+			if (!GameWin)
+				inmenu = false;
+		}
 	}
 	return ""; //if no special actions occur, return an empty string
 }

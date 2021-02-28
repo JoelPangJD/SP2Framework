@@ -270,7 +270,7 @@ void SceneMain::Init()
 
 void SceneMain::Update(double dt)
 {
-	if (Scene::start == true) {
+	if (Scene::start) {
 		UpdateStartMenu();
 	}
 	else{
@@ -498,7 +498,7 @@ void SceneMain::updateCar(double dt)
 
 void SceneMain::Render()
 {
-	if (Scene::start == true) {
+	if (Scene::start) {
 		RenderStartMenu(modelStack, viewStack, projectionStack, m_parameters);
 	}
 	else {
