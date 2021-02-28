@@ -292,9 +292,9 @@ void SceneMarinaBay::Init()
 		meshList[GEO_HEADER]->textureID = LoadTGA("Image//Marina//header.tga");
 
 		//terrain
-		terrains.push_back(new Terrain(Vector3(-64.5, 0, 25), 0, 1, 5, 5, 440, "boat side wall"));
-		terrains.push_back(new Terrain(Vector3(64.5, 0, 25), 0, 1, 5, 5, 440, "boat side wall"));
-		terrains.push_back(new Terrain(Vector3(0, 0, -194), 0, 1, 5, 125, 5, "boat back wall"));
+		terrains.push_back(new Terrain(Vector3(-64.5, 0, 25), 0, 1, 5, 5, 445, "boat side wall"));
+		terrains.push_back(new Terrain(Vector3(64.5, 0, 25), 0, 1, 5, 5, 445, "boat side wall"));
+		terrains.push_back(new Terrain(Vector3(0, 0, -194), 0, 1, 5, 135, 5, "boat back wall"));
 		for (int i = 0; i < 13; ++i)	//curved hull
 		{
 			terrains.push_back(new Terrain(Vector3(63 - i * 3, 0, 249 + i * 4), 0, 1, 5, 5, 10, "boat hull wall"));
@@ -306,7 +306,7 @@ void SceneMarinaBay::Init()
 			terrains.push_back(new Terrain(Vector3(-24 + i * 3, 0, 299 + i * 1.5), 0, 1, 5, 5, 10, "boat hull front"));
 		}
 		terrains.push_back(new Terrain(Vector3(0, 0, 115), 0, 1, 10, 92, 140, "captain's space"));
-		terrains.push_back(new Terrain(Vector3(47, 0, 0), 0, 1, 10, 30, 320, "infinity pool"));
+		terrains.push_back(new Terrain(Vector3(47, 0, 0), 0, 1, 10, 33, 320, "infinity pool"));
 		terrains.push_back(new Terrain(Vector3(27, 0, -70), 0, 1, 10, 20, 180, "infinity poolside"));
 		terrains.push_back(new Terrain(Vector3(-22, 0, -64), 0, 1, 10, 32, 32, "fountain"));
 		terrains.push_back(new Terrain(Vector3(-50, 5, -100), 0, 0.7, 7, 7, "robot"));
