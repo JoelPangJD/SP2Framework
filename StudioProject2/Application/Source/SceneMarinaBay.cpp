@@ -1080,6 +1080,13 @@ void SceneMarinaBay::Render()
 
 	//========================================================
 
+	//boat
+	modelStack.PushMatrix();
+	modelStack.Translate(0, -27.7, 0);
+	modelStack.Scale(40, 25, 50);
+	RenderMesh(meshList[GEO_BOAT], true, modelStack, viewStack, projectionStack, m_parameters);
+	modelStack.PopMatrix();
+
 	//infinity pool 
 	modelStack.PushMatrix();
 	modelStack.Translate(47, 0.0001, 0);
@@ -1090,12 +1097,6 @@ void SceneMarinaBay::Render()
 	glEnable(GL_CULL_FACE);
 	modelStack.PopMatrix();
 
-	//boat
-	modelStack.PushMatrix();
-	modelStack.Translate(0, -27.7, 0);
-	modelStack.Scale(40, 25, 50);
-	RenderMesh(meshList[GEO_BOAT], true, modelStack, viewStack, projectionStack, m_parameters);
-	modelStack.PopMatrix();
 
 	
 
