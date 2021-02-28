@@ -149,19 +149,12 @@ private:
 	std::vector<InteractableObject*> items;
 	std::vector<Terrain*> terrains;
 
-	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
 	void RenderGroundMesh();
 	void RenderEntity();
-	void RenderUI();
 	void RenderRoad();
 	void RenderWords();
 	void RenderMissile();
-	void RenderText(Mesh* mesh, std::string text, Color color);
-	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
-	void RenderNPCDialogue(std::string NPCText, std::string headerText);
-
 };
 
 #endif
