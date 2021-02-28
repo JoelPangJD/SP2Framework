@@ -540,15 +540,6 @@ void SceneMuseum::RenderSkybox()
 
 void SceneMuseum::RenderWalls()
 {
-	for (std::vector<Terrain*>::iterator it = hitbox.begin(); it != hitbox.end(); it++)
-	{
-		modelStack.PushMatrix();
-		modelStack.Translate((*it)->getposition().x + movex,(*it)->getposition().y + (*it)->getheight() * 0.5, (*it)->getposition().z + movez);
-		modelStack.Scale((*it)->getxwidth(), (*it)->getheight(), (*it)->getzwidth());
-		RenderMesh(meshList[GEO_CUBE], false, modelStack, viewStack, projectionStack, m_parameters);
-		modelStack.PopMatrix();
-	}
-
 	modelStack.PushMatrix();
 	modelStack.Translate(54.5, 0, -113.507);
 	modelStack.Rotate(180, 0, 1, 0);
