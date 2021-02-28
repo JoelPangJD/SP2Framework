@@ -320,7 +320,7 @@ void SceneMain::Update(double dt)
 		if (trigger == "frontofmuseum")
 		{
 			minigameMuseum = true;
-			cooldown = 1.5;
+			cooldown = 0.5;
 		}
 		if (trigger == "locked") {
 			dialogue.push_back("1It seems that I do not have the item required to open this door.");
