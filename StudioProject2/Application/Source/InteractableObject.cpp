@@ -68,8 +68,3 @@ void InteractableObject::updatedescription(string type)
 	readfromfile("Itemdescriptions.txt", lookat);
 }
 
-int InteractableObject::interact()
-{
-	return 0;
-}
-

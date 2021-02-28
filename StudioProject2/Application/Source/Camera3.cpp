@@ -206,22 +206,6 @@ void Camera3::Updatepos(double dt)
 			right = right.Normalized();
 			position += right * speed * dt;
 		}
-		if (Application::IsKeyPressed('R'))
-		{
-			Reset();
-		}
-		if (Application::IsKeyPressed('C'))
-		{
-			//set scenery view
-		}
-		if (Application::IsKeyPressed(VK_SPACE)) {
-			position.y += speed * dt;
-		}
-		if (Application::IsKeyPressed(VK_CONTROL)) {
-			position.y -= speed * dt;
-		}
-
-		//4 is the distance that the target is away from the position
 	}
 }
 
