@@ -178,6 +178,9 @@ void Camera3::Updatepos(double dt)
 	{
 		speed = 50.f;
 	}
+	else if (Application::SwitchScene == 0) {
+		speed = 25.f;
+	}
 	if (Application::enableMouse == false) {
 
 		if (Application::IsKeyPressed('W')) {
