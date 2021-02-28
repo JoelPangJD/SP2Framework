@@ -7,7 +7,6 @@
 #include "shader.hpp"
 #include <Mtx44.h>
 #include"MeshBuilder.h"
-#include "Menu.h"
 #include "Entity.h"
 
 
@@ -279,29 +278,29 @@ void SceneMuseum::Init()
 	meshList[GEO_PICBOX]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[GEO_PICBOX]->material.kShininess = 1.f;
 	//VECTORS FOR WALLS TO CHECK HITBOX
-	hitbox.push_back(new Terrain(Vector3(46, 0, -119.707), 0, 0, 0, 3, 220.66, "Wall"));
-	hitbox.push_back(new Terrain(Vector3(93.77, 0, -243.091), 0, 0, 0, 70.626, 3, "Wall"));
-	hitbox.push_back(new Terrain(Vector3(152.5, 0, -120.507), 0, 0, 0, 3, 220.430, "Wall"));
-	hitbox.push_back(new Terrain(Vector3(206.5, 0, -10.8), 0, 0, 0, 110.721, 3, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(46, 0, -119.707), 0, 0, 0, 8, 220.66, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(93.77, 0, -243.091), 0, 0, 0, 70.626, 8, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(152.5, 0, -120.507), 0, 0, 0, 8, 220.430, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(206.5, 0, -10.8), 0, 0, 0, 110.721, 8, "Wall"));
 	hitbox.push_back(new Terrain(Vector3(-107.9315, 0, 72), 0, 22, 10, 300.9754, 4.5, "Wall"));
-	hitbox.push_back(new Terrain(Vector3(42, 0, 130), 0, 22, 10, 3, 115.732, "Wall"));
-	hitbox.push_back(new Terrain(Vector3(97.606, 0, 206.3716), 0, 22, 10, 100, 3, "Wall"));
-	hitbox.push_back(new Terrain(Vector3(260, 0, 70.479), 0, 22, 10, 221.105, 3, "Wall"));
-	hitbox.push_back(new Terrain(Vector3(153.5, 0, 130), 0, 22, 10, 3, 125, "Wall"));
-	hitbox.push_back(new Terrain(Vector3(-101.273, 0, -10.2017), 0, 22, 10, 295.839, 3, "Wall"));
-	hitbox.push_back(new Terrain(Vector3(-246.153, 0, -20.2017), 0, 22, 10, 3, 21.1293, "Wall"));
-	hitbox.push_back(new Terrain(Vector3(-246.153, 0, -55.374), 0, 22, 10, 3, 84, "Wall"));
-	hitbox.push_back(new Terrain(Vector3(-265.3887, 0, -89.354), 0, 22, 10, 39.725, 3, "Wall"));
-	hitbox.push_back(new Terrain(Vector3(-284.3725, 0, 84.472), 0, 22, 10, 3, 351.252, "Wall"));
-	hitbox.push_back(new Terrain(Vector3(-236.308, 0, 260.323), 0, 22, 10, 98.564, 3, "Wall"));
-	hitbox.push_back(new Terrain(Vector3(-186.628, 0, 168.187), 0, 22, 10, 3, 190.936, "Wall"));
-	hitbox.push_back(new Terrain(Vector3(371.538, 0, -100.3729), 0, 22, 10, 3, 223.8275 , "Wall"));
-	hitbox.push_back(new Terrain(Vector3(371.538, 0, -36.144), 0, 22, 10, 3, 223.8275, "Wall"));
-	hitbox.push_back(new Terrain(Vector3(371.538, 0, 62.02704), 0, 22, 10, 3, 20, "Wall"));
-	hitbox.push_back(new Terrain(Vector3(261.7488, 0, -205.3159), 0, 22, 10, 218.204, 3, "Wall"));
-	hitbox.push_back(new Terrain(Vector3(261.7488, 0, -205.3159), 0, 22, 10, 218.204, 3, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(42, 0, 130), 0, 22, 10, 8, 115.732, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(97.606, 0, 206.3716), 0, 22, 10, 100, 8, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(260, 0, 70.479), 0, 22, 10, 221.105, 8, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(153.5, 0, 130), 0, 22, 10, 8, 125, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(-101.273, 0, -10.2017), 0, 22, 10, 295.839, 8, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(-246.153, 0, -20.2017), 0, 22, 10, 8, 21.1293, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(-246.153, 0, -55.374), 0, 22, 10, 8, 84, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(-265.3887, 0, -89.354), 0, 22, 10, 39.725, 8, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(-284.3725, 0, 84.472), 0, 22, 10, 8, 351.252, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(-236.308, 0, 260.323), 0, 22, 10, 98.564, 8, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(-186.628, 0, 168.187), 0, 22, 15, 8, 190.936, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(371.538, 0, -100.3729), 0, 22, 10, 8, 223.8275 , "Wall"));
+	hitbox.push_back(new Terrain(Vector3(371.538, 0, -36.144), 0, 22, 10, 8, 223.8275, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(371.538, 0, 62.02704), 0, 22, 10, 8, 20, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(261.7488, 0, -205.3159), 0, 22, 10, 218.204, 8, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(261.7488, 0, -205.3159), 0, 22, 10, 218.204, 8, "Wall"));
 	//Door hitbox 
-	hitbox.push_back(new Terrain(Vector3(-272.215, 0, 73.66698), 0, 22, 10, 218.204, 3, "door"));
+	hitbox.push_back(new Terrain(Vector3(-272.215, 0, 73.66698), 0, 22, 10, 218.204, 8, "door"));
 	//DECORATION HITBOX
 	hitbox.push_back(new Terrain(Vector3(90.2891, 20, -196.527), 0, 22, 10, 228.204, 3, "Elephant hitbox"));
 	hitbox.push_back(new Terrain(Vector3(97.15, 0, 151.471), 0, 22, 10, 218.204, 3, "Rickshaw hitbox"));
@@ -404,6 +403,7 @@ void SceneMuseum::Update(double dt)
 			ShowAnswer = false;
 		}
 	}
+
 	if (MousePreview == true)
 	{
 		if (EndGame1 == false) //Button for the First Game

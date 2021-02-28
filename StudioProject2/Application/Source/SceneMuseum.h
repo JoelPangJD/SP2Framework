@@ -14,7 +14,6 @@
 #include "InteractableObject.h"
 #include "Inventory.h"
 #include "Button.h"
-#include "Menu.h"
 
 
 class SceneMuseum : public Scene
@@ -136,6 +135,9 @@ public:
 	//Animation for game2
 	float TranslateBoxY = 0.0f;
 	int TranslateBoxDirectional = 1;
+
+	float movex;
+	float movez;
 
 	float TranslateFlagY = 0;
 	int TranslateFlagDirectional = 1;

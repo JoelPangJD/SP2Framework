@@ -99,7 +99,7 @@ void Application::Init()
 	//Create a window and create its OpenGL context
 	m_width = 800;
 	m_height = 600;
-	m_window = glfwCreateWindow(m_width, m_height, "Test Window", NULL, NULL);
+	m_window = glfwCreateWindow(m_width, m_height, "Quest for a missing wallet", NULL, NULL);
 
 	//If the window couldn't be created
 	if (!m_window)
@@ -158,22 +158,6 @@ void Application::Run()
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	while (!glfwWindowShouldClose(m_window) && !GameEnd)
 	{
-		if (IsKeyPressed(VK_F1)) {
-			SwitchScene = 1;
-		}
-		else if (IsKeyPressed(VK_F2)) {
-			SwitchScene = 2;
-		}
-		else if (IsKeyPressed(VK_F3)) {
-			SwitchScene = 3;
-		}
-		else if (IsKeyPressed(VK_F4)) {
-			SwitchScene = 4;
-		}
-		else if (IsKeyPressed(VK_RETURN)) {
-			SwitchScene = 0;
-		}
-
 		switch (SwitchScene) {
 			case(0): {
 				scene = scene0; break;
