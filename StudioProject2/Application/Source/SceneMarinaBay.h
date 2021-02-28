@@ -169,7 +169,6 @@ private:
 	unsigned m_programID;
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
-	float x, z, scale=1.f;	//debug thing to remove
 	Camera3 prevCam;
 
 	float cooldown = 0; //cooldown time for actions
@@ -195,7 +194,7 @@ private:
 	bool fight = false, fightInit, fightWon, fightLost, fightOver, fightDia, playerTurn, enemyTurn, fightSelected, itemsSelected, itemChosen, backSelected, attackSelected, actionSelected, attackHit;
 	
 	//health vars
-	float pointerX, pointerY, playerHealth, playerHealthPos, playerHealthLost, playerHealthGained, enemyHealth, enemyHealthPos, enemyHealthLost, enemyHealthGained;
+	float playerHealth, playerHealthPos, playerHealthLost, playerHealthGained, enemyHealth, enemyHealthPos, enemyHealthLost, enemyHealthGained;
 	
 	//player's
 	float attackScale, attackAngle, attackTranslateY, attackTranslateZ;
@@ -215,7 +214,6 @@ private:
 	
 	//animation bools
 	bool movement, goneDown, idle, attack, revert, bite, biteRearedBack;
-	bool hitboxshow;
 
 	void RenderSkybox();
 	//function to convert enums from ENUMs to string

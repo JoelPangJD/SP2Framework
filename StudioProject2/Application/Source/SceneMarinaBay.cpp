@@ -28,9 +28,7 @@ void SceneMarinaBay::Init()
 	buttonList.push_back(new Button(53, 8.25, 30, 8.25));	//top right button of right side
 
 	//======Initialising variables========
-	talkIntro = false;	//to change
-	pointerX = 2;
-	pointerY = 11;
+	talkIntro = true;	
 	enemyHealthPos = 20.f;
 	playerHealthPos = 60.f;
 	enemyHealth = playerHealth = 0;
@@ -54,9 +52,9 @@ void SceneMarinaBay::Init()
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
 	//==========================
-	camera.Init(Vector3(0, 8, 0), Vector3(0, 8, 5), Vector3(0, 1, 0));
+	camera.Init(Vector3(-20, 8, -180), Vector3(0, 8, 5), Vector3(0, 1, 0));
 	//camera.Init(Vector3(90, 40, 240), Vector3(0, 8, 240), Vector3(0, 1, 0));
-	// Enable depth test		//just so i have to scroll less
+	// Enable depth test		//less scrolling required
 	{
 		glEnable(GL_DEPTH_TEST);
 
@@ -307,7 +305,7 @@ void SceneMarinaBay::Init()
 		}
 		terrains.push_back(new Terrain(Vector3(0, 0, 115), 0, 1, 10, 92, 140, "captain's space"));
 		terrains.push_back(new Terrain(Vector3(47, 0, 0), 0, 1, 10, 33, 320, "infinity pool"));
-		terrains.push_back(new Terrain(Vector3(27, 0, -70), 0, 1, 10, 20, 180, "infinity poolside"));
+		terrains.push_back(new Terrain(Vector3(27, 0, -70), 0, 1, 10, 23, 180, "infinity poolside"));
 		terrains.push_back(new Terrain(Vector3(-22, 0, -64), 0, 1, 10, 32, 32, "fountain"));
 		terrains.push_back(new Terrain(Vector3(-50, 5, -100), 0, 0.7, 7, 7, "robot"));
 		terrains.push_back(new Terrain(Vector3(-22, 5, -160), 0, 0.7, 7, 7, "girl"));
@@ -352,17 +350,6 @@ void SceneMarinaBay::Update(double dt)
 		{
 			if ((*it)->active)
 			{
-				/*double x, y;
-				Application::GetCursorPos(&x, &y);
-				unsigned w = Application::GetWindowWidth();
-				unsigned h = Application::GetWindowHeight();
-				float posX = x / 10;
-				float posY = 60 - y / 10;
-				if (posX > (*it)->positionX && posX < ((*it)->positionX + (*it)->width) && posY >(*it)->positionY && posY < ((*it)->positionY + (*it)->height))
-				{
-					pointerY = (*it)->positionY + 1;
-					pointerX = (*it)->positionX + 1;
-				}*/
 				(*it)->updateButton();	//checking to see which buttons are clicked on
 				if ((*it)->isClickedOn())
 				{
@@ -374,58 +361,8 @@ void SceneMarinaBay::Update(double dt)
 			++count;
 		}
 	}
-	if (Application::IsKeyPressed('1'))
-		glEnable(GL_CULL_FACE);
-	else if (Application::IsKeyPressed('2'))
- 		glDisable(GL_CULL_FACE);
-	else if (Application::IsKeyPressed('3'))
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //default fill mode
-	else if (Application::IsKeyPressed('4'))
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //wireframe mode
-	if (Application::IsKeyPressed('Z'))
-		lighton = false;						//to test whether colours and stuff are working properly
-	else if (Application::IsKeyPressed('X'))
-		lighton = true;
-	if (Application::IsKeyPressed('I'))	//debug buttons
-		x -= 10 * dt;
-	if (Application::IsKeyPressed('K'))
-		x += 10 * dt;
-	if (Application::IsKeyPressed('J'))
-		z += 10 * dt;
-	if (Application::IsKeyPressed('L'))
-		z -= 10 * dt;
-	if (Application::IsKeyPressed('O'))
-		scale += 10*dt;
-	if (Application::IsKeyPressed('P'))
-		scale -= 10 * dt;
-	if (Application::IsKeyPressed('H'))	//test for attack button
-	{
-		attackSelected = true;
-		playerAction = A_ATTACK3;
-	}
-	else if (Application::IsKeyPressed('G'))	//test for dragon attack
-	{
-		enemyTurn = true;
-		playerTurn = false;
-		enemyAttack = BITE;
-	}
-	if (Application::IsKeyPressed('U'))
-		fight = false;
-	else if (Application::IsKeyPressed('Y') && cooldown<=0)
-	{
-		fight = true;
-		fightInit = true;
-		attacksList.push_back(BIG);
-		attacksList.push_back(ROCKET_PUNCH);
-		attacksList.push_back(MIND_POWERS);
-		cooldown = 1.f;
-	}
-	else if (Application::IsKeyPressed('N'))
-		hitboxshow = true;
-	else if (Application::IsKeyPressed('M'))
-		hitboxshow = false;
 	//not a debug key
-	else if (Application::IsKeyPressed('E'))
+	if (Application::IsKeyPressed('E'))
 	{
 		if (fightIntro && fight && cooldown <= 0)
 			fightIntro = false;
@@ -1143,8 +1080,6 @@ void SceneMarinaBay::Render()
 
 	//========================================================
 
-	RenderMesh(meshList[GEO_AXES], false, modelStack, viewStack, projectionStack, m_parameters);
-
 	//infinity pool 
 	modelStack.PushMatrix();
 	modelStack.Translate(47, 0.0001, 0);
@@ -1213,7 +1148,7 @@ void SceneMarinaBay::Render()
 		//renders most of the items/npcs
 		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 		{
-			modelStack.PushMatrix();						//minus 5 to make the hitbox line up properly
+			modelStack.PushMatrix();						//minus 5 to make the hitboxes from their head instead
 			modelStack.Translate((*it)->getposition().x, (*it)->getposition().y - 5, (*it)->getposition().z);
 			modelStack.Rotate((*it)->getangle(), 0, 1, 0);
 			modelStack.Scale((*it)->getscale(), (*it)->getscale(), (*it)->getscale());
@@ -1229,14 +1164,6 @@ void SceneMarinaBay::Render()
 				RenderMesh(meshList[GEO_BADGUY], true, modelStack, viewStack, projectionStack, m_parameters);
 
 			modelStack.PopMatrix();
-			if (hitboxshow)
-			{
-				modelStack.PushMatrix();
-				modelStack.Translate((*it)->getposition().x, (*it)->getposition().y + 5, (*it)->getposition().z);
-				modelStack.Scale((*it)->getradius(), (*it)->getradius(), (*it)->getradius());
-				RenderMesh(meshList[GEO_SPHERE], false, modelStack, viewStack, projectionStack, m_parameters);
-				modelStack.PopMatrix();
-			}
 		}
 	}
 	//if in fight
@@ -1837,18 +1764,6 @@ void SceneMarinaBay::Render()
 			modelStack.PopMatrix();
 		}
 	}
-	//terrain hitbox checking, to remove in final
-	for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
-	{
-		if (hitboxshow)
-		{
-			modelStack.PushMatrix();
-			modelStack.Translate((*it)->getposition().x + x, (*it)->getposition().y + (*it)->getheight() * 0.5, (*it)->getposition().z + z);
-			modelStack.Scale((*it)->getxwidth(), (*it)->getheight(), (*it)->getzwidth());
-			RenderMesh(meshList[GEO_CUBE], false, modelStack, viewStack, projectionStack, m_parameters);
-			modelStack.PopMatrix();
-		}
-	}
 	
 	//text and layouts
 	if (fight && !attackSelected)
@@ -1868,7 +1783,6 @@ void SceneMarinaBay::Render()
 			RenderTextOnScreen(meshList[GEO_TEXT], "Attack", Color(0, 0, 0), 4, 4, 11, modelStack, viewStack, projectionStack, m_parameters);
 			RenderTextOnScreen(meshList[GEO_TEXT], "Items", Color(0, 0, 0), 4, 4, 6, modelStack, viewStack, projectionStack, m_parameters);
 			RenderTextOnScreen(meshList[GEO_TEXT], "Run", Color(0, 0, 0), 4, 4, 1, modelStack, viewStack, projectionStack, m_parameters);
-			RenderTextOnScreen(meshList[GEO_TEXT], ">", Color(0, 0, 0), 4, pointerX, pointerY, modelStack, viewStack, projectionStack, m_parameters);	  //to potentially remove
 			if (fightSelected)	
 			{	
 				string attack1 = EnumToStr(attacksList[0]);	//no need to check cause there will always be at least one attack
@@ -1914,7 +1828,7 @@ void SceneMarinaBay::Render()
 		RenderMinigameIntro("This game is a turn-based gamemode, if your healthbar turns all red you'll lose. Similarly, if your opponent's bar turns all red they'll lose. You have access to a few options on the bottom of the screen that can be done in a turn, just click on the buttons and they will either show more actions or do an action that ends your turn.", "Turn-based fight", 4, modelStack, viewStack, projectionStack, m_parameters);
 	//talking minigame intro
 	else if (talkIntro)
-		RenderMinigameIntro("This game is a minigame where you talk to NPCs and try to convince them to help you by giving you attacks to fight the thief with some of them having conditions to give it to you. There are 3 attacks in total to get, good luck!","Talking", 4, modelStack, viewStack, projectionStack, m_parameters);
+		RenderMinigameIntro("This first minigame is a minigame where you talk to NPCs and try to convince them to help you by giving you attacks to fight the thief. There are 3 attacks in total to get, good luck!","Talking", 4, modelStack, viewStack, projectionStack, m_parameters);
 }
 
 string SceneMarinaBay::EnumToStr(ATTACK enumToConvert)	//function to convert enums from ATTACK to string

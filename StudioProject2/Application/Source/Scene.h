@@ -127,7 +127,7 @@ public:
 	void UpdateStartMenu();
 	Button startMenu[2];
 	static bool start;
-	bool CantUse = false;
+	bool CantUse = false;	//variable for SceneMuseum
 
 	void RenderMesh(Mesh* mesh, bool enableLight, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
 	void RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS projectionStack, unsigned m_parameters[]);
