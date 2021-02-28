@@ -219,7 +219,7 @@ private:
 	bool hitboxshow;
 
 	void RenderSkybox();
-	//function to convert enums from ATTACK to string
+	//function to convert enums from ENUMs to string
 	string EnumToStr(ATTACK enumToConvert);
 	string EnumToStr(ITEMS enumToConvert);
 };

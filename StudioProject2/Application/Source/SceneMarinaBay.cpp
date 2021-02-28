@@ -338,7 +338,7 @@ void SceneMarinaBay::Update(double dt)
 	fps = 1.f / dt;
 	if (!fight)	//not in fight
 	{
-		if ((!firstEnter || camera.position.z<200) && !fightLost && !talkIntro)	//dramatic first entry of bad guy not triggered yet
+		if (!talkIntro)	//if not first meeting bad guy, minigame intro or in dialogue	
 			this->Scene::movement(camera, terrains, dt);
 		string trigger = this->interact(camera, items, true);
 		if (trigger == "battleStart" && !fightLost && !fightOver)
@@ -418,9 +418,7 @@ void SceneMarinaBay::Update(double dt)
 	//not a debug key
 	else if (Application::IsKeyPressed('E'))
 	{
-		if (firstEnter && camera.position.z >= posZ)
-			firstEnter = false;
-		else if (fightIntro && fight && cooldown <= 0)
+		if (fightIntro && fight && cooldown <= 0)
 			fightIntro = false;
 		else if (talkIntro && cooldown <= 0)
 			talkIntro = false;
@@ -437,7 +435,6 @@ void SceneMarinaBay::Update(double dt)
 			playerTurn = true;
 			enemyTurn = false;
 			playerAttack = NO_ATTACK;
-			Application::enableMouse = false;
 			movement = attack = goneDown = false, idle = true;
 			move = moveAngle = timer = 0;
 			idleMouth = idleHands = idleBounce = idleNeck = idleHead = 0;
@@ -452,6 +449,7 @@ void SceneMarinaBay::Update(double dt)
 			bite = false;
 			revert = false;
 			biteRearedBack = false;
+			Application::enableMouse = false;
 			for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 			{
 				if ((*it)->gettype() == "badguy3")
@@ -983,40 +981,61 @@ void SceneMarinaBay::Update(double dt)
 			if (enemyHealth >= 20)		//player won
 			{
 				fightWon = true;
+				dialogue.push_back("2Agh, you've killed my prized possession. It is my loss. Take your wallet back.");
+				currentline = dialogue.begin();
+				name = "Thief";
+				indialogue = true;
 				camera = prevCam;
 			}
 			else						//player lost
 			{
-				fightLost = true;	//spawns player away from boss
-				camera.Init(Vector3(-57, 8, 157), Vector3(-57, 8, 158), Vector3(0, 1, 0));
-				itemsList = prevItemsList;
+				fightLost = true;	
+				if (attacksList.size() < 3)
+					dialogue.push_back("2More attacks can be gained from the previous section. Also, a 2-on-1 makes it hard to run and throwing sand at something made out of sand is a bad idea.");
+				else
+					dialogue.push_back("2A 2-on-1 makes it quite hard to run. Also, throwing sand at something made out of sand is a bad idea.");
+				currentline = dialogue.begin();
+				name = "Tips";
+				indialogue = true;
+				camera.Init(Vector3(-57, 8, 157), Vector3(-57, 8, 158), Vector3(0, 1, 0));	//spawns player away from boss
+				itemsList = prevItemsList;	//resetting player's items
 			}
 		}
 	}
-
-	for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
+	else
 	{
-		if (!bigAdded && (*it)->gettype() == "girl2")	//adds big attack
+		if (firstEnter && camera.position.z >= posZ)
 		{
-			attacksList.push_back(BIG);
-			inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Mushroom", "Mushroom", true));
-			bigAdded = true;
+			firstEnter = false;
+			dialogue.push_back("2So, you chased me all the way here. If you really think you can take me, then step forward but be prepared I'm not going to go down easy.");
+			currentline = dialogue.begin();
+			name = "???";
+			indialogue = true;
 		}
-		else if (!punchAdded && (*it)->gettype() == "robot2")	//adds punch attack
+		for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); it++)
 		{
-			attacksList.push_back(ROCKET_PUNCH);
-			inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Robot Arm", "Robot Arm", true));
-			punchAdded = true;
+			if (!bigAdded && (*it)->gettype() == "girl2")	//adds big attack
+			{
+				attacksList.push_back(BIG);
+				inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Mushroom", "Mushroom", true));
+				bigAdded = true;
+			}
+			else if (!punchAdded && (*it)->gettype() == "robot2")	//adds punch attack
+			{
+				attacksList.push_back(ROCKET_PUNCH);
+				inventory->additem(new InteractableObject(Vector3(0, 0, 0), 0, 0, 0, "Robot Arm", "Robot Arm", true));
+				punchAdded = true;
+			}
+			else if (!mindAdded && (*it)->gettype() == "orc2")	//adds mind swords attack
+			{
+				attacksList.push_back(MIND_POWERS);
+				mindAdded = true;
+			}
+			if (attacksList.size() > 0 && (*it)->gettype() == "badguy")
+				(*it)->updatedialogue("badguy2");
+			else if (fightLost && (*it)->gettype() == "badguy3")
+				(*it)->settype("badguy2");	//changes type but not dialogue so players won't have to sit through dialogue again
 		}
-		else if (!mindAdded && (*it)->gettype() == "orc2")	//adds mind swords attack
-		{
-			attacksList.push_back(MIND_POWERS);
-			mindAdded = true;
-		}
-		if (attacksList.size() > 0 && (*it)->gettype() == "badguy")
-			(*it)->updatedialogue("badguy2");
-		else if (fightLost && (*it)->gettype() == "badguy3")
-			(*it)->settype("badguy2");	//changes type but not dialogue so players won't have to sit through dialogue again
 	}
 
 	//==================Updating timers===========
@@ -1879,69 +1898,6 @@ void SceneMarinaBay::Render()
 	{
 		Scene::RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 	}
-
-	//text from specific conditions
-	//first meeting bad guy
-	if (firstEnter && camera.position.z >= posZ)
-	{
-		RenderNPCDialogue("So, you chased me all the way here. If you really think you can take me, then step forward but be prepared I'm not going to go down easy", "???", modelStack, viewStack, projectionStack, m_parameters);
-	}
-	//losing the fight 
-	else if (fightLost)
-	{
-		if (attacksList.size() < 3)
-			RenderNPCDialogue("More attacks can be gained from the previous section. Also, a 2-on-1 makes it hard to run and throwing sand at something made out of sand is a bad idea.", "Tips", modelStack, viewStack, projectionStack, m_parameters);
-		else
-			RenderNPCDialogue("A 2-on-1 makes it quite hard to run. Also, throwing sand at something made out of sand is a bad idea", "Tips", modelStack, viewStack, projectionStack, m_parameters);
-	}
-	//winning the fight
-	else if (fightWon)
-		RenderNPCDialogue("Agh, you've killed my prized possession. It is my loss. Take your wallet back.", "Thief", modelStack, viewStack, projectionStack, m_parameters);
-
-	//TO REMOVE IF NO TIME
-	////text from specific conditions
-	////first meeting bad guy
-	//if (firstEnter && camera.position.z >= posZ)
-	//{
-	//	dialogue.push_back("2So, you chased me all the way here. If you really think you can take me, then step forward but be prepared I'm not going to go down easy.");
-	//	currentline = dialogue.begin();
-	//	name = "???";
-	//	indialogue = true;
-	//}
-	////losing the fight 
-	//else if (fightLost)
-	//{
-	//	if (attacksList.size() < 3)
-	//	{
-	//		dialogue.push_back("2More attacks can still be gained from the previous section. Also, a 2-on-1 makes it hard to run.");
-	//		currentline = dialogue.begin();
-	//		name = "Tips";
-	//		indialogue = true;
-	//	}
-	//	else
-	//	{
-	//		dialogue.push_back("2A 2-on-1 makes it hard to run.");
-	//		currentline = dialogue.begin();
-	//		name = "Tips";
-	//		indialogue = true;
-	//	}
-	//}
-	////winning the fight
-	//else if (fightWon)
-	//{
-	//	dialogue.push_back("2Agh, you've killed my prized possession. It is my loss. Take your wallet back.");
-	//	currentline = dialogue.begin();
-	//	name = "Mr.Sazz's Bro";
-	//	indialogue = true;
-	//}
-	////running
-	//else if (triedToRun)
-	//{
-	//	dialogue.push_back("2Nice try.");
-	//	currentline = dialogue.begin();
-	//	name = "Mr.Sazz's Bro";
-	//	indialogue = true;
-	//}
 
 	//minigame intros
 	//fighting intro
