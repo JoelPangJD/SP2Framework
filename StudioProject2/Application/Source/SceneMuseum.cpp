@@ -404,33 +404,6 @@ void SceneMuseum::Update(double dt)
 		}
 	}
 
-	if (Application::IsKeyPressed('J'))
-	{
-		movex--;
-	}
-
-	if (Application::IsKeyPressed('L'))
-	{
-		movex++;
-	}
-
-	if (Application::IsKeyPressed('I'))
-	{
-		movez++;
-	}
-
-	if (Application::IsKeyPressed('K'))
-	{
-		movez--;
-	}
-
-	if (Application::IsKeyPressed('Z'))
-	{
-		cout << "YOUR POSITION X IS : " << camera.position.x << std::endl;
-		cout << "YOUR POSITION Y IS : " << camera.position.y << std::endl;
-		cout << "YOUR POSITION Z IS : " << camera.position.z << std::endl;
-	}
-
 	if (MousePreview == true)
 	{
 		if (EndGame1 == false) //Button for the First Game
