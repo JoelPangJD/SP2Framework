@@ -14,7 +14,7 @@ key|1It's a key, it seems like it is close to 100 years old.
 box|1It's a box, a box in a museum?
 place flag|1This looks like it's been placed by Mr Tang.
 place key|1This looks like it's been placed by Mr Tang.
-place box|11This looks like it's been placed by Mr Tang.
+place box|1This looks like it's been placed by Mr Tang.
 exit|1I think i have to hold the button to exit the museum.
 after gathering item|1I can now go to Changi Airport with this pass.
 rickshaw|1It's a 1940's rickshaw, heard from my grandpa he used to transport people with this.

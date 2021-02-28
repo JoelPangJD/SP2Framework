@@ -168,11 +168,6 @@ void SceneMuseum::Init()
 	meshList[GEO_HEADER] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
 	meshList[GEO_HEADER]->textureID = LoadTGA("Image//Marina//header.tga");
 
-
-	meshList[GEO_INVENTORY] = MeshBuilder::GenerateQuad("Testing", Color(1, 1, 1), 1.0f);
-	meshList[GEO_INVENTORY]->textureID = LoadTGA("Image//inventory.tga");
-
-
 	//Skybox quads
 	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.0f);
 	meshList[GEO_LEFT]->textureID = LoadTGA("Image//Museum//newleft.tga");
@@ -284,35 +279,35 @@ void SceneMuseum::Init()
 	meshList[GEO_PICBOX]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[GEO_PICBOX]->material.kShininess = 1.f;
 	//VECTORS FOR WALLS TO CHECK HITBOX
-	terrains.push_back(new Terrain(Vector3(46, 0, -119.707), 0, 0, 0, 3, 220.66, "Wall"));
-	terrains.push_back(new Terrain(Vector3(93.77, 0, -243.091), 0, 0, 0, 70.626, 3, "Wall"));
-	terrains.push_back(new Terrain(Vector3(152.5, 0, -120.507), 0, 0, 0, 3, 220.430, "Wall"));
-	terrains.push_back(new Terrain(Vector3(206.5, 0, -10.8), 0, 0, 0, 110.721, 3, "Wall"));
-	terrains.push_back(new Terrain(Vector3(-107.9315, 0, 72), 0, 22, 10, 300.9754, 4.5, "Wall"));
-	terrains.push_back(new Terrain(Vector3(42, 0, 130), 0, 22, 10, 3, 115.732, "Wall"));
-	terrains.push_back(new Terrain(Vector3(97.606, 0, 206.3716), 0, 22, 10, 100, 3, "Wall"));
-	terrains.push_back(new Terrain(Vector3(260, 0, 70.479), 0, 22, 10, 221.105, 3, "Wall"));
-	terrains.push_back(new Terrain(Vector3(153.5, 0, 130), 0, 22, 10, 3, 125, "Wall"));
-	terrains.push_back(new Terrain(Vector3(-101.273, 0, -10.2017), 0, 22, 10, 295.839, 3, "Wall"));
-	terrains.push_back(new Terrain(Vector3(-246.153, 0, -20.2017), 0, 22, 10, 3, 21.1293, "Wall"));
-	terrains.push_back(new Terrain(Vector3(-246.153, 0, -55.374), 0, 22, 10, 3, 84, "Wall"));
-	terrains.push_back(new Terrain(Vector3(-265.3887, 0, -89.354), 0, 22, 10, 39.725, 3, "Wall"));
-	terrains.push_back(new Terrain(Vector3(-284.3725, 0, 84.472), 0, 22, 10, 3, 351.252, "Wall"));
-	terrains.push_back(new Terrain(Vector3(-236.308, 0, 260.323), 0, 22, 10, 98.564, 3, "Wall"));
-	terrains.push_back(new Terrain(Vector3(-186.628, 0, 168.187), 0, 22, 10, 3, 190.936, "Wall"));
-	terrains.push_back(new Terrain(Vector3(371.538, 0, -100.3729), 0, 22, 10, 3, 223.8275 , "Wall"));
-	terrains.push_back(new Terrain(Vector3(371.538, 0, -36.144), 0, 22, 10, 3, 223.8275, "Wall"));
-	terrains.push_back(new Terrain(Vector3(371.538, 0, 62.02704), 0, 22, 10, 3, 20, "Wall"));
-	terrains.push_back(new Terrain(Vector3(261.7488, 0, -205.3159), 0, 22, 10, 218.204, 3, "Wall"));
-	terrains.push_back(new Terrain(Vector3(261.7488, 0, -205.3159), 0, 22, 10, 218.204, 3, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(46, 0, -119.707), 0, 0, 0, 3, 220.66, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(93.77, 0, -243.091), 0, 0, 0, 70.626, 3, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(152.5, 0, -120.507), 0, 0, 0, 3, 220.430, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(206.5, 0, -10.8), 0, 0, 0, 110.721, 3, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(-107.9315, 0, 72), 0, 22, 10, 300.9754, 4.5, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(42, 0, 130), 0, 22, 10, 3, 115.732, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(97.606, 0, 206.3716), 0, 22, 10, 100, 3, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(260, 0, 70.479), 0, 22, 10, 221.105, 3, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(153.5, 0, 130), 0, 22, 10, 3, 125, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(-101.273, 0, -10.2017), 0, 22, 10, 295.839, 3, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(-246.153, 0, -20.2017), 0, 22, 10, 3, 21.1293, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(-246.153, 0, -55.374), 0, 22, 10, 3, 84, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(-265.3887, 0, -89.354), 0, 22, 10, 39.725, 3, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(-284.3725, 0, 84.472), 0, 22, 10, 3, 351.252, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(-236.308, 0, 260.323), 0, 22, 10, 98.564, 3, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(-186.628, 0, 168.187), 0, 22, 10, 3, 190.936, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(371.538, 0, -100.3729), 0, 22, 10, 3, 223.8275 , "Wall"));
+	hitbox.push_back(new Terrain(Vector3(371.538, 0, -36.144), 0, 22, 10, 3, 223.8275, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(371.538, 0, 62.02704), 0, 22, 10, 3, 20, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(261.7488, 0, -205.3159), 0, 22, 10, 218.204, 3, "Wall"));
+	hitbox.push_back(new Terrain(Vector3(261.7488, 0, -205.3159), 0, 22, 10, 218.204, 3, "Wall"));
 	//Door hitbox 
-	terrains.push_back(new Terrain(Vector3(-272.215, 0, 73.66698), 0, 22, 10, 218.204, 3, "door")); 
+	hitbox.push_back(new Terrain(Vector3(-272.215, 0, 73.66698), 0, 22, 10, 218.204, 3, "door"));
 	//DECORATION HITBOX
-	terrains.push_back(new Terrain(Vector3(90.2891, 20, -196.527), 0, 22, 10, 228.204, 3, "Elephant hitbox"));
-	terrains.push_back(new Terrain(Vector3(97.15, 0, 151.471), 0, 22, 10, 218.204, 3, "Rickshaw hitbox"));
-	terrains.push_back(new Terrain(Vector3(12.7309, 0, 5.72924), 0, 22, 20, 20, 20, "Andy hitbox"));
-	terrains.push_back(new Terrain(Vector3(268.052, 0, -108.232), 0, 22, 20, 20, 20, "Mr Tang hitbox"));
-	terrains.push_back(new Terrain(Vector3(-104.012, 0, -2.04312), 0, 22, 20, 20, 20, "Table and box hitbox"));
+	hitbox.push_back(new Terrain(Vector3(90.2891, 20, -196.527), 0, 22, 10, 228.204, 3, "Elephant hitbox"));
+	hitbox.push_back(new Terrain(Vector3(97.15, 0, 151.471), 0, 22, 10, 218.204, 3, "Rickshaw hitbox"));
+	hitbox.push_back(new Terrain(Vector3(12.7309, 0, 5.72924), 0, 22, 20, 20, 20, "Andy hitbox"));
+	hitbox.push_back(new Terrain(Vector3(268.052, 0, -108.232), 0, 22, 20, 20, 20, "Mr Tang hitbox"));
+	hitbox.push_back(new Terrain(Vector3(-104.012, 0, -2.04312), 0, 22, 20, 20, 20, "Table and box hitbox"));
 
 	//Items vector
 	items.push_back(new InteractableObject(Vector3(-210.785, 16.0715, 78.3848), 0, 0, 30, "preview", "preview for game", false));
@@ -350,25 +345,22 @@ void SceneMuseum::Init()
 void SceneMuseum::Update(double dt)
 {
 	fps = 1.f / dt;
-	//if (Application::IsKeyPressed('E') && Minigameintro && (Preview || ShowAnswer))
-	//	Minigameintro = false;
-	//interact(camera, items);
 	if (cooldown > 0)
 		cooldown -= dt;
 
-	TranslateBoxY += dt * TranslateBoxDirectional * 10; //spped of translation of Y
+	TranslateBoxY += dt * TranslateBoxDirectional * 10; //speed of translation of Y
 	if (TranslateBoxY > 5|| TranslateBoxY < -5)
 	{
 		TranslateBoxDirectional *= -1; // changes direction
 	}
 
-	TranslateKeyY += dt * TranslateKeyDirectional * 10; //spped of translation of Y
+	TranslateKeyY += dt * TranslateKeyDirectional * 10; //speed of translation of Y
 	if (TranslateKeyY > 5 || TranslateKeyY < -5)
 	{
 		TranslateKeyDirectional *= -1; // changes direction
 	}
 
-	TranslateFlagY -= dt * TranslateFlagDirectional * 10; //spped of translation of Y
+	TranslateFlagY -= dt * TranslateFlagDirectional * 10; //speed of translation of Y
 	if (TranslateFlagY > 5 || TranslateFlagY < -5)
 	{
 		TranslateFlagDirectional *= -1; // changes direction
@@ -377,10 +369,10 @@ void SceneMuseum::Update(double dt)
 	if (Preview == false || FoundAnswer == true)
 	{
 		Application::enableMouse = false;
-		movement(camera, terrains, dt);
+		movement(camera, hitbox, dt);
 	}
 
-	if (Application::IsKeyPressed('E'))
+	if (Application::IsKeyPressed('E')) // To summon introduction
 	{
 		if (RenderIntruction1)
 		{
@@ -400,7 +392,7 @@ void SceneMuseum::Update(double dt)
 		}
 	}
 
-	if (Application::IsKeyPressed('E'))
+	if (Application::IsKeyPressed('E')) //during preview and show answer to look out
 	{
 		if (Preview)
 		{
@@ -422,11 +414,11 @@ void SceneMuseum::Update(double dt)
 			{
 				Application::enableMouse = false;
 				FoundAnswer = true;
-				for (std::vector<Terrain*>::iterator it = terrains.begin(); it != terrains.end(); it++)
+				for (std::vector<Terrain*>::iterator it = hitbox.begin(); it != hitbox.end(); it++)
 				{
 					if ((*it)->gettype() == "door")
 					{
-						terrains.erase(it);
+						hitbox.erase(it);
 						break;
 					}
 				}
@@ -436,7 +428,7 @@ void SceneMuseum::Update(double dt)
 				std::cout << "Hit!" << std::endl;
 			}
 		}
-		else if(ToExit)
+		else if(ToExit) // button for exit door
 		{
 			button2.updateButton();
 			Application::enableMouse = true;
@@ -449,7 +441,6 @@ void SceneMuseum::Update(double dt)
 					AddSize = 0;
 					MoveX = 0;
 					Application::enableMouse = false;
-					StartTheHoldingGame = false;
 					MousePreview = false;
 					RenderIntruction4 = true;
 					ToExit = false;
@@ -728,28 +719,28 @@ void SceneMuseum::RenderWalls()
 
 void SceneMuseum::StartGame1()
 {
-	if (!EndGame1)
+	if (!EndGame1) //if game 1 is not ended yet
 	{
-		if (RenderIntruction1)
+		if (RenderIntruction1) //render intruction
 		{
-			RenderMinigameIntro("Look at the image at Preview and choose the correct image to unlock the door.", "Introduction", 3, modelStack, viewStack, projectionStack, m_parameters);
+			RenderMinigameIntro("Look at the image at Preview and choose the correct image to unlock the door.", "Instruction", 3, modelStack, viewStack, projectionStack, m_parameters);
 		}
-		else
+		else //after rendering intruction render all of these
 		{
 			RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 			interact(camera, items);
-			if (Preview && !inmenu)
+			if (Preview && !inmenu) //prevent image to overlay menu image during pause. Also in preview mode render the image to show preview
 			{
 				RenderMeshOnScreen(meshList[GEO_DISPLAYMINIPIC1], 45, 20, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
 				camera.Init(Vector3(-210, 10, 125), Vector3(-200, 10, 125), Vector3(0, 1, 0));
 			}
-			else if (ShowAnswer && !inmenu)
+			else if (ShowAnswer && !inmenu) //prevent image to overlay menu image during pause.Also in answer mode render the images and enable mouse for players to choose
 			{
 				RenderMeshOnScreen(meshList[GEO_SELECTION], 40, 25, 70, 60, modelStack, viewStack, projectionStack, m_parameters);
 				camera.Init(Vector3(-210, 10, 125), Vector3(-200, 10, 125), Vector3(0, 1, 0));
 				MousePreview = true;
 			}
-			else if (FoundAnswer)
+			else if (FoundAnswer) //if found answer, get out of the answer mode and end the game 1
 			{
 				MousePreview = false;
 				for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); ++it)
@@ -776,23 +767,23 @@ void SceneMuseum::StartGame1()
 		
 void SceneMuseum::StartGame2()
 {
-	if (EndGame2 == false && EndGame1 == true)
+	if (EndGame2 == false && EndGame1 == true) //to check if game 1 has ended
 	{
-		if (RenderIntruction2)
+		if (RenderIntruction2) //render introduction
 		{
-			RenderMinigameIntro("Good job! Now go to the end of the musem and talk to Mr Tang, he will tell you to gather 3 items. Gather 3 items and MAKE SURE TO PLACE THEM IN THE CORRECT ORDER around him. Use the arrow key to navigate through your inventory. He will grant you the Changi pass for the next scene afterwards.", "Introduction", 3, modelStack, viewStack, projectionStack, m_parameters);
+			RenderMinigameIntro("Good job! Now go to the end of the musem and talk to Mr Tang, he will tell you to gather 3 items. Gather 3 items and MAKE SURE TO PLACE THEM IN THE CORRECT ORDER around him. Use the arrow key to navigate through your inventory. He will grant you the Changi pass for the next scene afterwards.", "Instruction", 3, modelStack, viewStack, projectionStack, m_parameters);
 		}
-		else
+		else //after introduction render all these
 		{
 			RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
 			interact(camera, items);
 			if (ToExit && !inmenu) // If player want to go back city center
 			{
-				if (RenderIntruction4)
+				if (RenderIntruction4) // redner intruction
 				{
 					RenderMinigameIntro("Hold the button to exit the museum.", "Security", 3, modelStack, viewStack, projectionStack, m_parameters);
-				}
-				else
+				} 
+				else //show the holding button game to exit museum
 				{
 					MousePreview = true;
 					GameCam1 = camera;
@@ -801,7 +792,7 @@ void SceneMuseum::StartGame2()
 					RenderMeshOnScreen(meshList[GEO_BOX], 4 + MoveX, 29, 3 + AddSize, 8.9, modelStack, viewStack, projectionStack, m_parameters);
 				}
 			}
-			if (place1 == true && place2 == true && place3 == true)
+			if (place1 == true && place2 == true && place3 == true) //after placing all the item, end the game2
 			{
 				EndGame2 = true;
 			}
@@ -811,11 +802,11 @@ void SceneMuseum::StartGame2()
 	
 void SceneMuseum::ExitMuseum()
 {
-	if (EndGame2 == true && EndGame1 == true && !RenderIntruction1 && !RenderIntruction2)
+	if (EndGame2 == true && EndGame1 == true && !RenderIntruction1 && !RenderIntruction2) //checks that game 1 and 2 is over and intruction 1 and 2 has been rendered
 	{
-		if (RenderIntruction3)
+		if (RenderIntruction3) //render final intruction
 		{
-			RenderMinigameIntro("Nicely Done! Now go to Mr Tang and get your Changi Pass.", "Introduction", 3, modelStack, viewStack, projectionStack, m_parameters);
+			RenderMinigameIntro("Nicely Done! Now go to Mr Tang and get your Changi Pass.", "Instruction", 3, modelStack, viewStack, projectionStack, m_parameters);
 		}
 		else
 		{
@@ -898,6 +889,7 @@ void SceneMuseum::Render()
 	//Skybox
 	RenderSkybox();
 
+	//all the walls
 	RenderWalls();
 
 	//GROUND MESH
@@ -1035,7 +1027,8 @@ void SceneMuseum::Render()
 
 void SceneMuseum::Exit()
 {
-	for (auto it = terrains.begin(); it != terrains.end(); ++it)
+	//prevent memory leaked also a good habit to remove :D
+	for (auto it = hitbox.begin(); it != hitbox.end(); ++it)
 		delete (*it);
 	for (auto it = items.begin(); it != items.end(); ++it)
 		delete (*it);

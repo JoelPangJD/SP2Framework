@@ -133,7 +133,7 @@ public:
 	float fps;
 	float cooldown = 0; //cooldown time for actions
 
-	//Animation
+	//Animation for game2
 	float TranslateBoxY = 0.0f;
 	int TranslateBoxDirectional = 1;
 
@@ -163,32 +163,18 @@ private:
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
 
+	//storing vectors for hitbox and items
 	std::vector<InteractableObject*> items;
-	std::vector<Terrain*> terrains;
+	std::vector<Terrain*> hitbox;
 
-	float movex = 0;
-	float movez = 0;
-
-	float scale = 1;
-	float rotate = 0;
-
+	//For buttons on exit
 	float AddSize = 0;
 	float MoveX = 0;
-
 	float TotalSize = 0;
 	float TotalX = 0;
 
 	//Enable mouse
 	bool MousePreview = false;
-
-	bool GameTisPressed = false;
-	bool QuitGame1 = true;
-	bool RenderingMesh = false;
-	bool RenderingText = true;
-	bool WhenEisPressed = false;
-	bool WhenRisPressed = false;
-	bool testing = false;
-	bool CorrectAnswer = false;
 
 	//1st game
 	bool Minigameintro = true;
@@ -196,10 +182,7 @@ private:
 	void StartGame1();
 
 	//Exit Museum
-	//void StartExit();
 	void ExitMuseum();
-	bool EndHoldingGame = false;
-	bool StartTheHoldingGame = false;
 
 
 	//2nd game
