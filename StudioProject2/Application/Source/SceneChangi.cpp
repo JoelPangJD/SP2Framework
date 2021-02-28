@@ -9,7 +9,6 @@
 #include"MeshBuilder.h"
 #include <iostream>
 #include <sstream>
-//testing 12132132123
 
 SceneChangi::SceneChangi()
 {
@@ -194,7 +193,7 @@ void SceneChangi::Init()
 
 	meshList[GEO_POLICE] = MeshBuilder::GenerateOBJMTL("police", "OBJ//Changi//police.obj", "OBJ//Changi//police.mtl");
 
-	meshList[GEO_WOMAN] = MeshBuilder::GenerateOBJ("woman", "OBJ//Marina//defaultCharacter.obj");
+	meshList[GEO_WOMAN] = MeshBuilder::GenerateOBJMTL("woman", "OBJ//Marina//defaultCharacter.obj", "OBJ//Marina//defaultCharacter.mtl");
 	meshList[GEO_WOMAN]->textureID = LoadTGA("Image//Changi//woman.tga");
 
 	meshList[GEO_NPC] = MeshBuilder::GenerateQuad("NPC", Color(1, 1, 1), 1.0f);
@@ -363,7 +362,6 @@ void SceneChangi::Render()
 		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
 	}
 
-	//RenderMeshOnScreen(meshList[GEO_INVENTORY], 40, 20, 30, 30);
 	if (use == true) {
 		camera.position.x =  -18;
 		camera.position.y = 51;
@@ -377,8 +375,6 @@ void SceneChangi::Render()
 
 	//========================================================
 	modelStack.LoadIdentity();
-
-	//RenderMesh(meshList[GEO_AXES], false);
 
 	RenderRoad();
 	RenderGroundMesh();
@@ -581,13 +577,6 @@ void SceneChangi::RenderRoad()
 
 void SceneChangi::RenderWords()
 {
-	modelStack.PushMatrix();
-	modelStack.Translate(-100, 20, 53);
-	modelStack.Rotate(-90, 0, 1, 0);
-	modelStack.Scale(2, 2, 2);
-	RenderText(meshList[GEO_TEXT], "Touch me", Color(1, 0, 0), modelStack, viewStack, projectionStack, m_parameters);
-	modelStack.PopMatrix();
-
 	if (gameStart == true) {
 		RenderMinigameIntro("Use [I],[J],[K],[L] to move the plane. Dodge incoming missiles, 1 is enough to kill you. You will be awarded with a map of garden.", "Escape", 6, modelStack, viewStack, projectionStack, m_parameters);
 
@@ -604,7 +593,7 @@ void SceneChangi::RenderWords()
 	}
 
 	if (gameEnd == true && camera.position.x == -4300) {
-		RenderTextOnScreen(meshList[GEO_TEXT], "Goodjob, you make it out.", Color(1, 0, 0), 4, 16, 28, modelStack, viewStack, projectionStack, m_parameters);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Goodjob, you made it out.", Color(1, 0, 0), 4, 16, 28, modelStack, viewStack, projectionStack, m_parameters);
 		RenderTextOnScreen(meshList[GEO_TEXT], "[ENTER] Bck to main", Color(1, 0, 0), 4, 20, 24, modelStack, viewStack, projectionStack, m_parameters);
 		if (Application::IsKeyPressed(VK_RETURN)) {
 			Application::SwitchScene = 0;
