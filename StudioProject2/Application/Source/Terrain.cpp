@@ -8,15 +8,6 @@ Terrain::Terrain()
 	settype("");
 }
 
-Terrain::Terrain(Vector3 pos, float angle, float scale, float radius, string type)
-{
-	setposition(pos);
-	setangle(angle);
-	setscale(scale);
-	setradius(radius);
-	settype(type);
-}
-
 Terrain::Terrain(Vector3 pos, float angle, float scale, float xwidth, float zwidth, string type)
 {
 	setposition(pos);

@@ -14,7 +14,6 @@
 #include "InteractableObject.h"
 #include "Inventory.h"
 #include "Button.h"
-#include "Menu.h"
 
 
 class SceneMuseum : public Scene
