@@ -361,7 +361,7 @@ void SceneMarinaBay::Update(double dt)
 			++count;
 		}
 	}
-	//not a debug key
+	//key for some updates
 	if (Application::IsKeyPressed('E'))
 	{
 		if (fightIntro && fight && cooldown <= 0)
