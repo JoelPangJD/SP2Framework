@@ -137,6 +137,9 @@ public:
 	float TranslateBoxY = 0.0f;
 	int TranslateBoxDirectional = 1;
 
+	float movex;
+	float movez;
+
 	float TranslateFlagY = 0;
 	int TranslateFlagDirectional = 1;
 
