@@ -54,11 +54,8 @@ void Button::updateButton()
 			unsigned h = Application::GetWindowHeight();
 			float posX = x / 10;
 			float posY = 60 - y / 10;
-			//std::cout << "posX = " << posX << std::endl;
-			//std::cout << "posY = " << posY << std::endl;
 			if (posX > positionX && posX < (positionX + width) && posY > positionY && posY < (positionY + height)) 
 			{
-				//std::cout << "hit!"<< std::endl;
 				clickedOn = true;
 				hold = true;
 			}

@@ -425,7 +425,6 @@ void SceneMuseum::Update(double dt)
 				Preview = false;
 				ShowAnswer = false;
 				ShowFirstGame = false;
-				std::cout << "Hit!" << std::endl;
 			}
 		}
 		else if(ToExit) // button for exit door
@@ -745,7 +744,6 @@ void SceneMuseum::StartGame1()
 				MousePreview = false;
 				for (std::vector<InteractableObject*>::iterator it = items.begin(); it != items.end(); ++it)
 				{
-					std::cout << (*it)->gettype() << std::endl;
 					if ((*it)->gettype() == "preview")
 					{
 						items.erase(it);
