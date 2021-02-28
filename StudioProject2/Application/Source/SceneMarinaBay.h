@@ -54,7 +54,6 @@ class SceneMarinaBay : public Scene
 		//environment
 		GEO_BOAT,
 		GEO_TREE,
-		GEO_TALLTREE,
 		GEO_WATER,
 		GEO_CHAIR,
 		GEO_FOUNTAIN,
@@ -170,7 +169,7 @@ private:
 	unsigned m_programID;
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
-	float x, z, scale=1.f;
+	float x, z, scale=1.f;	//debug thing to remove
 	Camera3 prevCam;
 
 	float cooldown = 0; //cooldown time for actions
@@ -182,10 +181,10 @@ private:
 	vector<Terrain*> terrains;		//terrain list
 	vector<InteractableObject*> items;	//objects/npcs list
 
-	ACTION_TYPE playerAction, enemyAction;
-	ATTACK playerAttack;
-	ITEMS playerItem;
-	ENEMY_ATTACKS enemyAttack;	
+	ACTION_TYPE playerAction;		//holds player's current selected action
+	ATTACK playerAttack;			//the attack player chose
+	ITEMS playerItem;				//the item player chose
+	ENEMY_ATTACKS enemyAttack;		//the attack the enemy chose
 	
 	//vars to check whether the attacks have already been added
 	bool bigAdded = false, punchAdded = false, mindAdded = false;

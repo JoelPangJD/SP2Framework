@@ -247,7 +247,7 @@ void SceneMarinaBay::Init()
 		meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.0f);
 		meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//Marina//negy.tga");
 		//main boat
-		meshList[GEO_BOAT] = MeshBuilder::GenerateOBJMTL("boat", "OBJ//Marina//boat2.obj", "OBJ//Marina//boat.mtl");
+		meshList[GEO_BOAT] = MeshBuilder::GenerateOBJMTL("boat", "OBJ//Marina//boat.obj", "OBJ//Marina//boat.mtl");
 
 		//NPCs
 		meshList[GEO_MC] = MeshBuilder::GenerateOBJMTL("MC", "OBJ//Marina//character.obj", "OBJ//Marina//defaultCharacter.mtl");
@@ -272,8 +272,6 @@ void SceneMarinaBay::Init()
 		meshList[GEO_WATER]->material.kDiffuse.Set(0.4f, 0.4f, 0.4f);
 		meshList[GEO_WATER]->material.kSpecular.Set(0.5f, 0.5f, 0.5f);
 		meshList[GEO_TREE] = MeshBuilder::GenerateOBJMTL("short tree", "OBJ//Marina//palm_tree_short.obj", "OBJ//Marina//palm_tree_short.mtl");
-		meshList[GEO_WATER]->material.kAmbient.Set(0.3f, 0.3f, 0.3f);
-		meshList[GEO_TALLTREE] = MeshBuilder::GenerateOBJMTL("tree", "OBJ//Marina//big_tree.obj", "OBJ//Marina//big_tree.mtl");
 		meshList[GEO_CHAIR] = MeshBuilder::GenerateOBJMTL("chair", "OBJ//Marina//modifiedchair.obj", "OBJ//Marina//modifiedchair.mtl");
 		meshList[GEO_FOUNTAIN] = MeshBuilder::GenerateOBJMTL("fountain", "OBJ//Marina//fountain.obj", "OBJ//Marina//fountain.mtl");
 
@@ -338,7 +336,7 @@ void SceneMarinaBay::Update(double dt)
 	fps = 1.f / dt;
 	if (!fight)	//not in fight
 	{
-		if (!talkIntro)	//if not first meeting bad guy, minigame intro or in dialogue	
+		if (!talkIntro)	//if not in minigame intro 
 			this->Scene::movement(camera, terrains, dt);
 		string trigger = this->interact(camera, items, true);
 		if (trigger == "battleStart" && !fightLost && !fightOver)
@@ -354,7 +352,18 @@ void SceneMarinaBay::Update(double dt)
 		{
 			if ((*it)->active)
 			{
-				(*it)->updateButton();
+				/*double x, y;
+				Application::GetCursorPos(&x, &y);
+				unsigned w = Application::GetWindowWidth();
+				unsigned h = Application::GetWindowHeight();
+				float posX = x / 10;
+				float posY = 60 - y / 10;
+				if (posX > (*it)->positionX && posX < ((*it)->positionX + (*it)->width) && posY >(*it)->positionY && posY < ((*it)->positionY + (*it)->height))
+				{
+					pointerY = (*it)->positionY + 1;
+					pointerX = (*it)->positionX + 1;
+				}*/
+				(*it)->updateButton();	//checking to see which buttons are clicked on
 				if ((*it)->isClickedOn())
 				{
 					playerAction = static_cast<ACTION_TYPE>(count);	//makes player action = the button number
@@ -985,7 +994,7 @@ void SceneMarinaBay::Update(double dt)
 				currentline = dialogue.begin();
 				name = "Thief";
 				indialogue = true;
-				camera = prevCam;
+				camera = prevCam;	//moving player's cam to location before starting fight
 			}
 			else						//player lost
 			{
@@ -1135,8 +1144,8 @@ void SceneMarinaBay::Render()
 	//========================================================
 
 	RenderMesh(meshList[GEO_AXES], false, modelStack, viewStack, projectionStack, m_parameters);
-	
-	//infinity pool (to be changed to fix the need for face culling, maybe)
+
+	//infinity pool 
 	modelStack.PushMatrix();
 	modelStack.Translate(47, 0.0001, 0);
 	modelStack.Rotate(90, 1, 0, 0);
