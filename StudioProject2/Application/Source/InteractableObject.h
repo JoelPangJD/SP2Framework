@@ -11,7 +11,7 @@ class InteractableObject : public Entity
 
 private:
 	void readfromfile(string filename, vector<string>& type);//private function for reading information from text files
-	bool pickupable;
+	bool pickupable; //For whether an interactable object can be picked up
 public:
 	vector<string> lookat; //store descriptions
 	vector<string> dialogue; //store dialogues
@@ -22,6 +22,5 @@ public:
 	InteractableObject(Vector3 pos, float angle, float scale, float radius, string type, string name, bool pickupable); //Create an interactable object with an interact radius around it
 	~InteractableObject();
 	void updatedialogue(string type);// to update the dialogue by changing the type
-	void updatedescription(string type);
-	int interact();
+	void updatedescription(string type); // to update the description by changing the type
 };

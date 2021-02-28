@@ -46,8 +46,8 @@ public:
 	void setname(string name);
 
 	void moveentity(int direction, float speed, double dt);
-	bool spherecollider(Vector3 position);
-	bool circlecollider(Vector3 position);
-	bool boxcollider(Vector3 camera);
+	bool spherecollider(Vector3 position); //Checks for collisions is a sphere around an entity
+	bool circlecollider(Vector3 position); //Checks for collisions in a circle around an entity
+	bool boxcollider(Vector3 camera); //Check for collisions in a box around an entity
 };
 

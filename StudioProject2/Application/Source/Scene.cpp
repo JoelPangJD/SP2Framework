@@ -133,7 +133,6 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 		if (Help)//Render help screen
 		{
 			RenderMeshOnScreen(baseMeshList[GEO_HELP], 40, 30, 80, 60, modelStack, viewStack, projectionStack, m_parameters);
-			RenderMeshOnScreen(baseMeshList[GEO_PRESSE], 76, 3, 7, 7, modelStack, viewStack, projectionStack, m_parameters);
 			return;
 		}
 		if (GameWin)//Render GameWin screen
@@ -618,9 +617,13 @@ string Scene::interact(Camera3 &camera, vector<InteractableObject*>& items, bool
 	//Interactions while in menu
 	else
 	{
-		if (Application::IsKeyPressed('E')) {
-			if (!GameWin)
-				inmenu = false;
+		if (Application::IsKeyPressed('E')) 
+		{
+			if (!GameWin && Help) // Exit the help screen 
+			{
+				Pause = true;
+				Help = false;
+			}
 		}
 	}
 	return ""; //if no special actions occur, return an empty string
