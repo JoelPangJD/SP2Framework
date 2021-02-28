@@ -142,9 +142,7 @@ void Scene::RenderUI(float &cooldown, float fps, MS modelStack, MS viewStack, MS
 			Application::enableMouse = true;
 			if (GameWinButton.isClickedOn())
 			{
-				start = true;
-				Application::enableMouse = false;
-				Application::SwitchScene = 0;
+				Application::GameEnd = true;
 				GameWin = false;
 			}
 			return;
