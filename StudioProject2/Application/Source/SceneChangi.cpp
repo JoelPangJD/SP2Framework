@@ -222,6 +222,7 @@ void SceneChangi::Init()
 	terrains.push_back(new Terrain(Vector3(10.3, 10.3, 294), 0, 0, 0, 75, 38, "firetruck"));
 
 	collide = false;
+
 }
 
 
@@ -304,7 +305,6 @@ void SceneChangi::Update(double dt)
 		(planeX + 33) >= -3730 && (planeX - 33) <= -3670 && (planeZ + 50) >= 91 && (planeZ - 50) <= 109 || (planeX + 33) >= -3730 && (planeX - 33) <= -3670 && (planeZ + 50) >= -91 && (planeZ - 50) <= -109 || 
 		(planeX + 33) >= -4230 && (planeX - 33) <= -4170 && (planeZ + 50) >= 9 && (planeZ - 50) <= -9 || (planeX + 33) >= -4230 && (planeX - 33) <= -4170 && (planeZ + 50) >= -91 && (planeZ - 50) <= -109 )
 	{
-		std::cout << "Collided" << std::endl;
 		collide = true;
 	}
 	
@@ -388,7 +388,9 @@ void SceneChangi::Render()
 	RenderWords();
 
 	//RenderMeshOnScreen(meshList[GEO_INVENTORY], 8, 37, 33, 45);
-	Scene::RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
+	if (takeFlight != true) {
+		Scene::RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
+	}
 }
 
 void SceneChangi::RenderMesh(Mesh* mesh, bool enableLight)
