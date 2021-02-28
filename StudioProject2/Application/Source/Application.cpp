@@ -99,7 +99,7 @@ void Application::Init()
 	//Create a window and create its OpenGL context
 	m_width = 800;
 	m_height = 600;
-	m_window = glfwCreateWindow(m_width, m_height, "Test Window", NULL, NULL);
+	m_window = glfwCreateWindow(m_width, m_height, "Quest for a missing wallet", NULL, NULL);
 
 	//If the window couldn't be created
 	if (!m_window)
