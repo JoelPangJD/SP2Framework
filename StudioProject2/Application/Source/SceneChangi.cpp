@@ -305,7 +305,6 @@ void SceneChangi::Update(double dt)
 		(planeX + 33) >= -3730 && (planeX - 33) <= -3670 && (planeZ + 50) >= 91 && (planeZ - 50) <= 109 || (planeX + 33) >= -3730 && (planeX - 33) <= -3670 && (planeZ + 50) >= -91 && (planeZ - 50) <= -109 || 
 		(planeX + 33) >= -4230 && (planeX - 33) <= -4170 && (planeZ + 50) >= 9 && (planeZ - 50) <= -9 || (planeX + 33) >= -4230 && (planeX - 33) <= -4170 && (planeZ + 50) >= -91 && (planeZ - 50) <= -109 )
 	{
-		std::cout << "Collided" << std::endl;
 		collide = true;
 	}
 	
