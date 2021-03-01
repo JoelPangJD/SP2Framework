@@ -380,9 +380,9 @@ void SceneChangi::Render()
 	RenderGroundMesh();
 	RenderEntity();
 	RenderMissile();
-	RenderWords();
 
 	Scene::RenderUI(cooldown, fps, modelStack, viewStack, projectionStack, m_parameters);
+	RenderWords();
 }
 
 void SceneChangi::RenderSkybox()
